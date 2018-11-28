@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-11-28 17:09 on marvin
+# - L@ST MODIFIED: 2018-11-28 19:06 on marvin
 # -------------------------------------------------------------------
 
 
@@ -52,16 +52,43 @@ iwls_logit <- function(X, y, beta = NULL, maxit = 20L, tol = 1e-8, ...) {
 # moments for the parameters of the two Gaussian clusters, and a
 # logistic regression model for the concomitant part.
 # -------------------------------------------------------------------
-foehndiag <- function(formula, data, ...) {
+foehndiag <- function(formula, data, windsector = NULL, ...) {
     left  <- as.character(formula)[2]
     right <- as.character(formula)[3]
     stopifnot(grepl("^\\S+$", left))
 
     # Initial guess of the two clusters
-    y  <- data[,left]
+    mf <- model.frame(formula, data)
+    y  <- model.response(mf)
+
+    # Identify indices of the data we will use for model estimation
+    # and prediction
+    # Only those with no missing data in the model.frame, if an additional
+    # wind sector is given: filter the data by wind direction.
+    if ( is.null(windsector) ) {
+        take <- as.integer(which(apply(mf, 1, function(x) sum(is.na(x)) == 0)))
+    } else {
+        # FIXME: is it possible to use custom names?
+        if ( ! "dd" %in% names(data) ) {
+            stop("If wind sector is given the data object requires to have a column \"dd\".")
+        }
+        # Filtering
+        if ( windsector[1L] < windsector[2L] ) {
+            take <- as.integer(which(apply(mf, 1, function(x) sum(is.na(x)) == 0) &
+                       (data$dd >= windsector[1L] & data$dd <= windsector[2L])))
+        } else {
+            take <- as.integer(which(apply(mf, 1, function(x) sum(is.na(x)) == 0) &
+                       (data$dd <= windsector[1L] | data$dd >= windsector[2L])))
+        }
+    }
+    if ( length(take) == 0 )
+        stop("No data left after applying the required filters.")
+
+    mf <- mf[take,]
+    y  <- y[take]
 
     # model frame/model matrix for the logistic regression model
-    logitX <- model.matrix(model.frame(formula, data = data), data = data) 
+    logitX <- model.matrix(formula, data = data[take,])
 
     # Initialize regression coefficients
     logsd  <- function(y) log(sqrt(sum((y-mean(y))^2) / length(y)))
@@ -118,14 +145,26 @@ foehndiag <- function(formula, data, ...) {
         cat(sprintf("       Gauss 2: %10.5f %10.5f\n", theta$mu2, exp(theta$logsd2)))
     
     }
-    print(theta)
-    print(alpha)
-    #return(llpath)
+
+    # Create the return list object (phoeton object)
+    rval <- list()
+    rval$call <- match.call()
+    rval$coef <- list(mu1 = theta$mu1, sd1 = exp(theta$logsd1), mu2 = theta$mu2, sd2 = exp(theta$logsd2),
+                      concomitants = alpha)
+
+    rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath))
+    rval$data <- data
+
     # Calculate final probabilities and classes
     prob <- plogis(drop(logitX %*% alpha))
-    d1 <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
-    d2 <- pnorm(y, theta$mu2, exp(theta$logsd2)) * prob
-    return(d2 / (d2 + d1))
+    d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
+    d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * prob
+    rval$prob <- d2 / (d2 + d1)
+
+    # Return new object
+    class(rval) <- "phoeton"
+    print(class(rval))
+    return(rval)
 }
 
 
