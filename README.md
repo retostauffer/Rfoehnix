@@ -7,7 +7,7 @@ geometry: margin=3cm
 Statistical Models
 ==================
 
-Binary Logistic Regression Model (IWLS)
+Binomial Logistic Regression Model (IWLS)
 ---------------------------------------
 
 
