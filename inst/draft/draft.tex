@@ -1,0 +1,202 @@
+\documentclass[article,nojss,shortnames]{jss}
+
+\usepackage{thumbpdf,lmodern}
+\usepackage{framed}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage[]{algorithm2e}
+
+
+% Draft
+%\hypersetup{draft}
+%\shortcites{rasmussen2012}
+
+\author{Reto Stauffer\\Universit\"at Innsbruck
+\And Matthias Dusch\\Universit\"at Innsbruck
+\AND Fabien Maussion\\Universit\"at Innsbruck
+\And Georg J. Mayr\\Universit\"at Innsbruck}
+
+\Plainauthor{Reto Stauffer, Matthias Dusch, Fabien Maussion, Georg J. Mayr}
+
+\title{phoeton: Software for Objective Probabilistic Foehn Classification}
+\Plaintitle{phoeton: Objective Probabilistic Foehn Classification}
+\Shorttitle{phoeton: Objective Probabilistic Foehn Classification}
+
+\Abstract{
+    This is the abstract here \dots
+}
+
+\Keywords{meteorology, foehn, objective classification, flexible mixture model}
+\Plainkeywords{meteorology, foehn, objective classification, flexible mixture model}
+
+\Address{
+  Reto Stauffer\\
+  Department of Statistics\\
+  Faculty of Economics and Statistics\\
+  Universit\"at Innsbruck\\
+  Universit\"atsstr.~15\\
+  6020 Innsbruck, Austria\\
+  E-mail: \email{Reto.Stauffer@uibk.ac.at}\\
+  URL: \url{https://retostauffer.org}\\
+
+  Matthias Dusch, Fabien Maussion, Georg J. Mayr\\
+  Department of Atmospheric and Cryospheric Sciences\\
+  Faculty of Geo- and Atmospheric Sciences\\
+  Universit\"at Innsbruck\\
+  Innrain~52f\\
+  6020 Innsbruck, Austria\\
+  E-mail: \email{Georg.Mayr@uibk.ac.at},
+          \email{Matthias.Dusch@uibk.ac.at},
+          \email{Fabien.Maussion@uibk.ac.at}
+}
+
+
+\begin{document}
+
+% -------------------------------------------------------------------
+% SECTION: INTRODUCTION
+% -------------------------------------------------------------------
+\section{Introduction}
+
+Introduction why this is so great.
+
+
+
+
+
+% -------------------------------------------------------------------
+% SECTION: METHODS
+% -------------------------------------------------------------------
+\section{Methods}
+
+\textit{Note by Reto:}
+The original publication (\code{FlexMix}, \citealt{gruen2008})
+provides general framework for flexible mixture models for multiple
+clusters. For this application we will concentrate on the special
+case with only two distinct clusters ($K = 2$).
+
+\subsection{Finite Mixture Models with Two Clusters}
+
+The density $h(\dots)$ of a finite mixture model can be written as follows:
+
+\begin{equation}
+    h(\mathit{y} ~|~ \mathbf{x}, \mathit{\omega}, \mathit{\alpha}, \mathit{\theta}) =
+        \sum_{k=1}^K \pi_k(\mathbf{\omega}, \mathit{\alpha}) \cdot f_k(\mathit{y} ~|~ \mathbf{x}, \mathit{\theta}_k)l
+\end{equation}
+
+The density is the sum over the individual densities $f(\dots)$ of the $K$ clusters
+times the 
+
+
+.....
+....
+
+$\mathit{y}$ denotes the response, $\mathbf{x}$ the predictors for the main part,
+and $\mathit{\omega}$ the concomitant variables for the probability model.
+
+
+
+... where in our case $K$ is 2 (two groups). $y$ denotes our response, $x$ the predictors
+for the main part of the model, and $\omega$ the concomitant variables used for the
+probability model.
+The density $h(\dots)$
+$f_k$ is the density of the (Gaussian) mixture model is the sum over the density
+of the two groups $k=1,2$ multiplied by the probability $\pi_k$.
+
+In case of a two-group Gaussian mixture model the density $f_\bullet$ is simply the
+Gaussian density $\phi$ defined by the parameters $\theta_k = (\mu_k, \sigma_k)$ and
+the probability of an observation being observed in $k=2$ is $1 - \pi_k$.
+The only constraint is that $\sum_{k=1}^K = 1$, but basically any probability model
+or classifier could be used. We are, for now, using a logistic regression model
+with $g(\pi) = \omega^\top \alpha$. $\alpha$ are the regression coefficients from
+the logistic regression model.
+
+
+
+\subsection{Model Estimation}
+
+To be able to estimate the model an maximum likelihood based EM algorithm is required.
+It is assumed that there is an unobservable latent variable $z_n \in \{0, 1\}^K$
+which exists for each observation $n = 1, \dots, N$ which defines the membership (the probability
+that observation $n$ is a member of class $k$ (e.g., $z_{ik} = 1$ if observation $i$ comes from
+class $k$).
+
+Initially we have to guess $z_{nk}$.
+
+$z_{i1} = \begin{cases} 0 & \text{if} ~~ y_i < \text{median}(y) \\ 1 & \text{else}\end{cases}$
+
+In my case I am taking the first and third quartile
+of `ff` for $\mu_1$, $\mu_2$ and the standard deviation of the data `ff` for the two
+parameters $\sigma_1$, $\sigma_2$. Thus,
+
+$\theta = (\theta_1, \theta_2) = (F^{-1}(y|p = 0.25), \text{sd}(y), F^{-1}(y|p = 0.75), \text{sd}(y))$
+
+For the initial parameters $\alpha$ of the logistic model we can
+apply a logistic regression model of the form:
+
+$z = \frac{\exp(\omega^\top \alpha)}{1 + \exp(\omega^\top \alpha)}$
+
+The following lines prepare the prior information $z$, $\theta$, and $\alpha$:
+
+
+
+
+
+% -------------------------------------------------------------------
+% SECTION: SOFTWARE
+% -------------------------------------------------------------------
+\section{Software}
+
+Explain software.
+
+
+% -------------------------------------------------------------------
+% SECTION: DATA
+% -------------------------------------------------------------------
+\section{Data}
+
+Maybe just combine data and the case study.
+
+% -------------------------------------------------------------------
+% SECTION: RESULTS
+% -------------------------------------------------------------------
+\section{Case Study/Results}
+
+
+% -------------------------------------------------------------------
+% SECTION: Discussion and Outlook
+% -------------------------------------------------------------------
+\section{Discussion and Outlook}
+
+
+% -------------------------------------------------------------------
+% Copernicus extra sections
+% -------------------------------------------------------------------
+
+
+\section*{Acknowledgments}
+
+Acknowledgments dow here \dots
+
+
+% -------------------------------------------------------------------
+% Bibliography here
+% -------------------------------------------------------------------
+\newpage
+\bibliography{references}
+
+% -------------------------------------------------------------------
+% Appendix section
+% -------------------------------------------------------------------
+\newpage
+
+\begin{appendix}
+
+\section{Appendix Section}
+
+This is the appendix, if needed \dots
+
+\end{appendix}
+
+\end{document}
+

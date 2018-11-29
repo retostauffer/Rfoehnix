@@ -1,0 +1,9 @@
+
+
+# Ignore these file types in general:
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+

@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-11-29 12:05 on marvin
+# - L@ST MODIFIED: 2018-11-29 12:52 on marvin
 # -------------------------------------------------------------------
 
 
@@ -308,7 +308,7 @@ print.summary.phoeton <- function(x, ...) {
 #       follow our naming conventions, or make it much more
 #       flexible/generig.
 # -------------------------------------------------------------------
-plot.phoeton <- function(x, start = NULL, end = NULL, ...) {
+plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
 
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
@@ -318,7 +318,7 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ...) {
     print(end)
     tmp <- window(tmp, start = start, end = end)
 
-    par(mfrow = c(3,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
+    par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
 
     # Air temperature
     plot(tmp$t, col ="red", lwd = 2, ylab = NA, xaxt = "n")
@@ -330,6 +330,10 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ...) {
     abline(h = seq(20, 100, by = 20), lty = 3, col = "gray")
     axis(side = 4, at = seq(20, 100, by = 20))
     mtext(side = 4, line = 3, "relative humidity")
+
+    # Temperature difference
+    plot(tmp$diff_t, col = "magenta", lwd = 2, xaxt = "n")
+    mtext(side = 2, line = 3, "temperature difference")
 
     # Wind speed and direction
     if ( ! is.null(x$windsector) ) {
@@ -357,6 +361,7 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ...) {
     plot(tmp$prob * 100, ylab = NA, col = "blue", ylim = c(0,100), yaxs = "i") 
     abline(h = seq(20, 80, by = 20), col = "gray", lty = 3)
     mtext(side = 2, line = 3, "foehn probability")
+    if ( ! is.null(xtra) ) lines(xtra * 100, col = 2)
 
     # Adding a title to the plot
     title <- sprintf("Foehn Diagnosis %s to %s", min(index(tmp)), max(index(tmp)))
