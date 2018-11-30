@@ -6,6 +6,8 @@
 \usepackage{amsmath}
 \usepackage[]{algorithm2e}
 
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
 
 % Draft
 %\hypersetup{draft}
@@ -58,9 +60,14 @@
 % -------------------------------------------------------------------
 \section{Introduction}
 
-Introduction why this is so great.
+Introduction why this is so great. Georg might like to contribute
+here. Just to leave/include some references:
 
-
+\begin{itemize}
+    \item finite mixture model \citep{leisch2004,gruen2008}
+    \item automatic probabilistic foehn classification \cite{plavcan2014}
+    \item IWLS/IRLS \citep{mccullagh1989}
+\end{itemize}
 
 
 
@@ -75,70 +82,297 @@ provides general framework for flexible mixture models for multiple
 clusters. For this application we will concentrate on the special
 case with only two distinct clusters ($K = 2$).
 
-\subsection{Finite Mixture Models with Two Clusters}
+\subsection{Finite mixture models}
 
-The density $h(\dots)$ of a finite mixture model can be written as follows:
+The finite mixture model in its general form is given by
 
 \begin{equation}
-    h(\mathit{y} ~|~ \mathbf{x}, \mathit{\omega}, \mathit{\alpha}, \mathit{\theta}) =
-        \sum_{k=1}^K \pi_k(\mathbf{\omega}, \mathit{\alpha}) \cdot f_k(\mathit{y} ~|~ \mathbf{x}, \mathit{\theta}_k)l
+    h(\mathit{y} | \mathit{x}, \mathit{\omega}, \mathit{\alpha}, \mathit{\theta}) =
+        \sum_{k=1}^K \pi_k(\mathit{\alpha}, \mathbf{\omega}) \cdot f_k(\mathit{y} | \mathit{x}, \mathit{\theta}_k)
+        ~~\text{for}~~k=1,\dots,K
+    \label{eqn:flexmix-density-general}
 \end{equation}
 
-The density is the sum over the individual densities $f(\dots)$ of the $K$ clusters
-times the 
+where $\mathit{\theta}$ and $\mathit{\alpha}$ denote the parameters for the
+mixture density $h()$. $\mathit{y}$ denotes the response, $\mathit{x}$ the
+predictor variable (one single variable) and $\mathbf{\omega}$ the concomitant
+variables (multiple variables allowed) for the probability model.
+
+For the special case of a finite mixture model with $K=2$ Gaussian clusters
+the specification as shown in Equation~\ref{eqn:flexmix-density-general} simplifies to
+
+\begin{equation}
+    h(\mathit{y} | \mathit{x}, \mathit{\omega}, \mathit{\alpha}, \mathit{\theta}) =
+        \underbrace{
+            (1 - \mathit{\pi}(\mathbf{\omega}, \mathit{\alpha})) \cdot
+            \phi(\mathit{y} | \mathit{\theta}_1, \mathit{x})
+        }_{\text{cluster 1}}
+        \cdot
+        \underbrace{
+            \mathit{\pi}(\mathbf{\omega}, \mathit{\alpha}) \cdot \phi(\mathit{\theta}_2|\mathit{x})
+        }_{\text{cluster 2}}
+    \label{eqn:flexmix-density-gaussian}
+\end{equation}
+
+where $\phi()$ is the probability function of the Gaussian distribution.
+The concomitant model for $\pi()$ reduces to a binomial problem as the probability
+for a specific observation $y_i$ to be observed in the first cluster is the
+counter probability of $y_i$ being observed in the second cluster.
+Thus, for $\pi()$ any type of binomial model can be used which satisfies
+that $\pi \in [0,1] \forall i=1,\dots,N$.
+
+One frequently used model for a binary response is the binomial logistic regression
+model or binomial logit model (BLM), however, any appropriate binomial probability
+model could be used for $\pi$.
+The BLM is defined as follows:
+
+\begin{equation}
+    \log\Big(\frac{\pi}{1 - \pi}\Big) =
+        \omega^\top \alpha = \alpha_0 + \omega_1 \alpha_1 + \dots + \omega_P \alpha_P,
+\end{equation}
+
+where $\mathit{\pi}$ is the probability that an observation belongs to the
+second cluster (Eqn.~\ref{eqn:flexmix-density-gaussian}).
+The probabilities are modelled using multilinear regression
+$\mathit{\omega}^\top \mathit{\alpha}$ with $p=1,\dots,P$ concomitant
+variables $\mathit{\omega}$ times the corresponding parameters or regression
+coefficients $\mathit{\alpha}$.
+
+As the BLM is a generalized linear model, the parameters can be estimated using
+an iterative (re-)weighted least squares (IWLS) solver.
+The IWLS procedure to estimate the parameters $\mathit{\alpha}$ of the BLM
+is shown in Algorithm~\ref{alg:iwls}.
+
+\begin{algorithm}
+    \caption{Iterative (re-)weighted least squares (IWLS) solver for the binomial logit model (BLM).}
+    \label{alg:iwls}
+
+    \textbf{Initialization ($j = 0$):}
+    \begin{enumerate}
+        \item Initialize $\mathit{\alpha}^{0} = 0$.
+        \item Compute initial latent response $\mathit{\eta}^{(0)} = \mathbf{\omega}^\top\mathit{\alpha}^{(0)}$.
+        \item Compute initial probabilities $\pi^{(0)} = \frac{\exp(\eta^{(0)})}{1 + \exp(\eta^{(0)})}$. 
+        \item Evaluate initial log-likelihood:
+            \begin{equation*}
+                \ell^{(0)} = %(\mathit{\alpha} | \mathbf{\omega})^{(0)} =
+                \sum_{i=1}^{N} \Big(\log(1 - \pi_i^{(0)})^{(y_i = 0)} + \log(\pi_i)^{(y_i=1)}\Big)
+            \end{equation*}
+
+    \end{enumerate}
+    \textbf{Iterative parameter estimation ($j = 1, \dots, J$):}
+    \begin{enumerate}
+        \item Compute new inverse square root weights:
+            \begin{equation*}
+                \mathit{W}^{(j)} = \Big(\big(\frac{d\eta}{d\pi}\big)^{(j-1)}\Big)^{-\frac{1}{2}} =
+                    \big(\mathit{\pi}^{(j-1)} (1 - \mathit{\pi}^{(j-1)})\big)^\frac{1}{2}
+            \end{equation*}
+        %%%\item Compute new latent response:
+        %%%    \begin{equation*}
+        %%%        \mathit{z}^{(j+1)} = \mathit{\eta}^{(j)} + (\mathit{y} - \mathit{\pi}^{(j)})
+        %%%            \Big(\frac{d \mathit{\eta}}{d \mathit{\pi}}\Big)^{(j)} =
+        %%%            \mathit{\eta}^{(j)} + \frac{\mathit{y} - \mathit{\pi}^{(j)}}{\mathit{\pi}^{(j)}(1 - \mathit{\pi}^{(j)})}
+        %%%    \end{equation*}
+        \item Update parameters:
+            \begin{equation*}
+                \mathit{\alpha}^{(j)} =
+                    \big((\mathbf{\omega} \mathit{W}^{(j)})^\top
+                    (\mathbf{\omega} \mathit{W}^{(j)})\big)^{-1}
+                    (\mathbf{\omega} \mathit{W}^{(j)})^\top
+                    \mathit{W}^{(j)} \mathit{z}^{(j)}
+            \end{equation*}
+
+            with $\mathit{z}^{(j)} = \mathit{\eta}^{(j-1)} + (\mathit{y} - \mathit{\pi}^{(j-1)}) \Big(\frac{d\pi}{d\eta}\Big)^{(j-1)}$ this yields
+
+            \begin{equation*}
+                \mathit{\alpha}^{(j)} =
+                    \big((\mathbf{\omega} \mathit{W}^{(j)})^\top
+                    (\mathbf{\omega} \mathit{W}^{(j)})\big)^{-1}
+                    (\mathbf{\omega} \mathit{W}^{(j)})^\top
+                    \Big(\mathit{\eta}^{(j-1)} \mathit{W}^{(j)} + \frac{\mathit{y} - \mathit{\pi}^{(j-1)}}{W^{(j)}}\Big)
+            \end{equation*}
+
+        \item Update response:
+            \begin{equation*}
+                \mathit{\eta}^{(j)} = \mathbf{\omega}\mathit{\alpha}^{(j)}
+                ~~\text{and}~~
+                \mathit{\pi}^{(j)} = \frac{\exp(\mathit{\eta}^{(j)})}{1 + \exp(\mathit{\eta}^{(j)})}
+            \end{equation*}
+
+        \item Evaluate log-likelihood sum:
+            \begin{equation*}
+                \ell^{(j)} = %(\mathit{\alpha}^{(j+1)} | \mathbf{\omega}) =
+                \sum_{i=1}^{N} \Big(\log(1 - \pi_i^{(j)})^{(y_i = 0)} + \log(\pi_i^{(j)})^{(y_i=1)}\Big)
+            \end{equation*}
+
+        \item Repeat until convergence, e.g., until the log-likelihood improvement
+            $\ell^{(j)} - \ell^{(j-1)}$ falls below a certain threshold or $j$ reaches
+            $J$, the maximum number of iterations.
+
+    \end{enumerate}
+\end{algorithm}
 
 
-.....
-....
 
-$\mathit{y}$ denotes the response, $\mathbf{x}$ the predictors for the main part,
-and $\mathit{\omega}$ the concomitant variables for the probability model.
+\subsection{Model estimation}
+
+The parameters $\mathit{\theta}$ and $\mathit{\alpha}$ of the finite mixture model
+can be estimated using a likelihood based EM algorithm (\note{citation?}).
+
+For the special case of a two-cluster Gaussian finite mixture model the estimation
+can be performed using iterative (re-)weighted empirical moments for the parameters
+of the Gaussian densities ($\mathit{\theta}$) and IWLS to estimate the parameters
+of the binomial logit model ($\mathit{\theta}$).
+\note{This is true for $K>2$ as well, only the probability model would have to be adjusted.}
+
+It is assumed that an unobservable latent variable $z_i \in [0,1]$ exists
+for each observation $i=1, \dots N$ which defines the membership of the observation,
+the probability that observation $n$ comes from the second cluster.
+As the membership is unknown it has to be initially guessed:
+
+\begin{equation}
+    \mathit{z}^{(0)} = \begin{cases}
+        1 & \text{if}~x_n > \text{median}(x), \\
+        0 & \text{else}.
+    \end{cases}
+    \label{eqn:init-zn}
+\end{equation}
+\note{This $z$ is basically the initial guess of the probability!}
+
+In addition, initial values for the parameters of the two Gaussian distributions
+for cluster one and cluster two have to be estimated which are used as starting
+values for the EM procedure. The parameters $\mathit{\theta}$ are thus initialized
+as follows:
+
+\begin{equation}
+    \begin{split}
+        \mathit{\theta}_1^{(0)} = (\mu_1^{(0)}, \sigma_1^{(0)}) = \Big(q_{0.25}(x), \text{sd}(x)\Big) \\
+        \mathit{\theta}_2^{(0)} = (\mu_2^{(0)}, \sigma_2^{(0)}) = \Big(q_{0.75}(x), \text{sd}(x)\Big)
+    \end{split}
+    \label{eqn:init-theta}
+\end{equation}
+
+The first ($q_{0.25}()$) and the third ($q_{0.75}()$) quartile of the predictor 
+variable $\mathit{x}$ are used as inital guess for the location parameters
+$\hat{\mu}_1$ and $\hat{\mu}_2$ while the standard deviation of $\mathit{x}$ is used as initial
+guess for the scale parameter $\hat{\sigma}_1$ and $\hat{\sigma}_2$.
+The parameters $\mathit{\alpha}$ of the binomial logit model are simply initialized
+with $0$ (\note{find a way for better initial values}).
 
 
 
-... where in our case $K$ is 2 (two groups). $y$ denotes our response, $x$ the predictors
-for the main part of the model, and $\omega$ the concomitant variables used for the
-probability model.
-The density $h(\dots)$
-$f_k$ is the density of the (Gaussian) mixture model is the sum over the density
-of the two groups $k=1,2$ multiplied by the probability $\pi_k$.
+The EM algorithm can be written as follows:
 
-In case of a two-group Gaussian mixture model the density $f_\bullet$ is simply the
-Gaussian density $\phi$ defined by the parameters $\theta_k = (\mu_k, \sigma_k)$ and
-the probability of an observation being observed in $k=2$ is $1 - \pi_k$.
-The only constraint is that $\sum_{k=1}^K = 1$, but basically any probability model
-or classifier could be used. We are, for now, using a logistic regression model
-with $g(\pi) = \omega^\top \alpha$. $\alpha$ are the regression coefficients from
-the logistic regression model.
+\begin{algorithm}
+    \caption{Parameter estimation for the two-cluster Gaussian finite mixture model
+    using iterative (re-)weighted optimization. $\Phi()$ is the cumulative distribution
+    function of the standard Gaussian distribution.}
+    
+    \textbf{Initialization ($j = 0$):}
+    \begin{enumerate}
+        \item Initialize $\mathit{z}$ and $\mathit{\theta}$ as shown in
+            Equation~\ref{eqn:init-zn}\,\&\,\ref{eqn:init-theta}.\label{item:a2:1}
+
+        \item Estimate initial $\alpha^{(0)}$ parameters using $\mathit{z}$ from
+            Step~\ref{item:a2:1} as $\mathit{y}$ and the IWLS solver from
+            Algorithm~\ref{alg:iwls}.
+
+        \item Compute response of the BLM with initial parameters:
+            \begin{equation*}
+                \mathit{\eta}^{(0)} = \mathbf{\omega}^\top \mathit{\alpha}^{(0)}
+                ~~\text{and}~~
+                \mathit{\pi}^{(0)} = \frac{\exp(\mathit{\eta}^{(0)})}{1 - \exp(\mathit{\eta}^{(0)})}
+            \end{equation*}
+    \end{enumerate}
+
+    \textbf{EM iterations ($j = 1, \dots, J$):}
+    \begin{enumerate}
+
+        \item Compute finite mixture model densities for both clusters:
+            \begin{equation*}
+                    d_1^{(j)} = (1 - \mathit{\pi}^{(j)}) \Phi\Big(\frac{\mathit{y} - \mu_1^{(j-1)}}{\sigma_1^{(j-1)}}\Big),
+                    ~~
+                    d_2^{(j)} = \mathit{\pi}^{(j)} \Phi\Big(\frac{\mathit{y} - \mu_2^{(j-1)}}{\sigma_2^{(j-1)}}\Big)
+            \end{equation*}
+
+        \item Compute posterior probabilities:
+            \begin{equation*}
+                \tilde{\mathit{p}}^{(j)} = \frac{d_2^{(j)}}{d_1^{(j)} + d_2^{(j)}}
+            \end{equation*}
+
+        %%%\item Compute initial log-likelihood sum:
+        %%%    \begin{equation*}
+        %%%        \ell^{(j)} = \sum_{i=1}^N 
+        %%%        \underbrace{
+        %%%            (1 - \tilde{p}_i^{(j)}) \log(d_{1,i}^{(j)})
+        %%%        }_{\text{cluster 1}}
+        %%%        +
+        %%%        \underbrace{
+        %%%            \tilde{p}_i^{(j)} \log(d_{2,i}^{(j)})
+        %%%        }_{\text{cluster 2}}
+        %%%        +
+        %%%        \underbrace{
+        %%%            (1 - \tilde{p}_i^{(j)}) \log(1 - \pi_i^{(j)}) + \tilde{p}_i^{(j)} \log(\pi_i^{(j)})
+        %%%        }_{\text{concomitant model}}
+        %%%        \Big)
+        %%%    \end{equation*}
+            
+        \item Update $\mathit{\theta}$ using weighted empirical moments:
+            \begin{equation*}
+                \begin{split}
+                    \mu_1^{(j)} = \frac{\sum \mathit{x} (1 - \tilde{p}^{(j)})}{\sum (1 - \tilde{p}^{(j)})}
+                    ~~\text{and}~~
+                    \sigma_1^{(j)} = \Big( \frac{\sum (x - \mu_1^{(j)})^2 (1 - \tilde{p}^{(j)})}{\sum(1 - \tilde{p}^{(j)})} \Big)^\frac{1}{2} \\
+                    \mu_2^{(j)} = \frac{\sum \mathit{x} \tilde{p}^{(j)}}{\sum \tilde{p}^{(j)}}
+                    ~~\text{and}~~
+                    \sigma_2^{(j)} = \Big( \frac{\sum (x - \mu_2^{(j)})^2 \tilde{p}^{(j)}}{\sum \tilde{p}^{(j)}} \Big)^\frac{1}{2} \\
+                \end{split}
+            \end{equation*}
+
+        \item Update $\mathit{\alpha}$ parameters using the new probabilities $\pi^{(j)}$
+            as $\mathit{y}$ and the IWLS solver from Algorithm~\ref{alg:iwls}.
+
+        \item Update response of the concomitant model:
+            \begin{equation*}
+                \mathit{\eta}^{(j)} = \mathbf{\omega}\mathit{\alpha}^{(j)}
+                ~~\text{and}~~
+                \mathit{\pi}^{(j)} = \frac{\exp(\mathit{\eta}^{(j)})}{1 + \exp(\mathit{\eta}^{(j)})}
+            \end{equation*}
+
+        \item Evaluate log-likelihood given the new parameters $\mathit{\alpha}$ and $\mathit{\theta}$
+            as well as the updated posterior probabilities $\mathit{\tilde{p}}$:
+            \begin{equation*}
+                \ell^{(j)} = \sum_{i=1}^N 
+                \underbrace{
+                    (1 - \tilde{p}_i^{(j)}) \log(d_{1,i}^{(j)})
+                }_{\text{cluster 1}}
+                +
+                \underbrace{
+                    \tilde{p}_i^{(j)} \log(d_{2,i}^{(j)})
+                }_{\text{cluster 2}}
+                +
+                \underbrace{
+                    (1 - \tilde{p}_i^{(j)}) \log(1 - \pi_i^{(j)}) + \tilde{p}_i^{(j)} \log(\pi_i^{(j)})
+                }_{\text{concomitant model}}
+                \Big)
+            \end{equation*}
+
+        \item Stop if $j = J$ and the maximum number of iterations is reached or
+            (for $j > 1$) if the improvements in the log-likelihood $\ell^{(j)} - \ell^{(j-1)}$
+            fall below a certain threshold.
+    \end{enumerate}
+\end{algorithm}
 
 
+\begin{equation}
+    z_{i1} = \begin{cases} 0 & \text{if} ~~ y_i < \text{median}(y) \\ 1 & \text{else}\end{cases}
+\end{equation}
 
-\subsection{Model Estimation}
 
-To be able to estimate the model an maximum likelihood based EM algorithm is required.
-It is assumed that there is an unobservable latent variable $z_n \in \{0, 1\}^K$
-which exists for each observation $n = 1, \dots, N$ which defines the membership (the probability
-that observation $n$ is a member of class $k$ (e.g., $z_{ik} = 1$ if observation $i$ comes from
-class $k$).
-
-Initially we have to guess $z_{nk}$.
-
-$z_{i1} = \begin{cases} 0 & \text{if} ~~ y_i < \text{median}(y) \\ 1 & \text{else}\end{cases}$
-
-In my case I am taking the first and third quartile
-of `ff` for $\mu_1$, $\mu_2$ and the standard deviation of the data `ff` for the two
-parameters $\sigma_1$, $\sigma_2$. Thus,
-
-$\theta = (\theta_1, \theta_2) = (F^{-1}(y|p = 0.25), \text{sd}(y), F^{-1}(y|p = 0.75), \text{sd}(y))$
-
-For the initial parameters $\alpha$ of the logistic model we can
-apply a logistic regression model of the form:
-
-$z = \frac{\exp(\omega^\top \alpha)}{1 + \exp(\omega^\top \alpha)}$
+\begin{equation}
+    z = \frac{\exp(\omega^\top \alpha)}{1 + \exp(\omega^\top \alpha)}
+\end{equation}
 
 The following lines prepare the prior information $z$, $\theta$, and $\alpha$:
-
-
 
 
 
@@ -160,13 +394,13 @@ Maybe just combine data and the case study.
 % -------------------------------------------------------------------
 % SECTION: RESULTS
 % -------------------------------------------------------------------
-\section{Case Study/Results}
+\section{Case study/results}
 
 
 % -------------------------------------------------------------------
 % SECTION: Discussion and Outlook
 % -------------------------------------------------------------------
-\section{Discussion and Outlook}
+\section{Discussion and outlook}
 
 
 % -------------------------------------------------------------------
