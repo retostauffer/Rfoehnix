@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-11-29 12:52 on marvin
+# - L@ST MODIFIED: 2018-11-30 14:10 on marvin
 # -------------------------------------------------------------------
 
 
@@ -144,10 +144,8 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     # assignment.
     alpha <- iwls_logit(logitX, as.numeric(y > median(y)), maxit = tail(maxit, 1), tol = tail(tol, 1))
 
-    # Initial log-likelihood given the initial guess
-    prob <- plogis(drop(logitX %*% alpha))
-    post <- foehndiag_gauss_posterior(y, prob, theta)
-    ll0  <- foehndiag_gauss_loglik(y, post, prob, theta)$ll - 1000
+    # Initial value
+    ll0 <- NULL
 
     # Start optimization using weighted empirical moments for
     # location and scale of the two Gaussian distributions plus
@@ -171,6 +169,11 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
         #        ((1 - prob) * dnorm(y, theta$mu1, exp(theta$logsd1)) +
         #         prob * dnorm(y, theta$mu2, exp(theta$logsd2)))
         post <- foehndiag_gauss_posterior(y, prob, theta)
+
+        # Initial log-likelihood given the initial guess
+        #prob <- plogis(drop(logitX %*% alpha))
+        #post <- foehndiag_gauss_posterior(y, prob, theta)
+        if ( is.null(ll0) ) ll0  <- foehndiag_gauss_loglik(y, post, prob, theta)$ll - 1000
     
         ##### M-Step ######
         # Empirical moments for the two clusters (mu1/sd1 and mu2/sd2)

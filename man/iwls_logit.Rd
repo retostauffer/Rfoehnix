@@ -1,5 +1,5 @@
-\name{iwls_logis}
-\alias{iwls_logis}
+\name{iwls_logit}
+\alias{iwls_logit}
 \title{IWLS Solver for Binary Logistic Regression Model}
 \usage{
     iwls_solver(X, y)
