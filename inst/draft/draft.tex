@@ -62,25 +62,93 @@
 
 Introduction why this is so great. Georg might like to contribute
 here. Just to leave/include some references:
-
 \begin{itemize}
     \item finite mixture model \citep{leisch2004,gruen2008}
     \item automatic probabilistic foehn classification \cite{plavcan2014}
     \item IWLS/IRLS \citep{mccullagh1989}
+    \item Community foehn classification experiment \cite{mayr2018unpublished}
 \end{itemize}
 
+I would go for something like:
+
+Gap winds are typically characterized by strong ncrease of wind speed with a rapid
+increase in temperature and a drop in relative humidity. Such winds can be
+found in various regions on our globe and bear different names for specific
+regions such as the Santa-Anna winds in California which became infamous due to
+their destructive effect in combination with wilde fires, the Chinook winds in
+the Rocky Mountain area, Mistral and Bora in south France and Croatia, or the
+Foehn winds in the European Alps.  Over the past decades \textit{foehn wind}
+has become a synonym for such gap flows and will be used in this article,
+however, the method as presented is applicable for all gap flow winds
+independent from their geographical location.
+
+The conceptual model of foehn winds is quite well known
+\citep{armi2007,mayr2008,mayr2011}, however, foehn cannot measured directly.
+Historically foehn was often diagnosed manually by looking at available
+meteorological records such as wind speed and direction, time series of
+temperature and humidity, the conditions of the sky (e.g., occurence of
+lenticularis clouds in the region), or observations upstream and downstream of
+the location of interest.  Some of the longest records of foehn observations
+can be found in Switzerland (Altdorf \note{i'm just guessing!}) reaching back
+to 1850 (\note{just guessing!}) for a hand full of stations.  These records are
+typically based manual classification made by experienced weather observers,
+weather enthusiasts, and meteorologists.  This task is time consuming and is
+only done for some selected sites, typically sites with long historical
+records. To be able to extend the diagnosis and to perform foehn classification
+on a large number of meteorological sites computer amed classification is
+needed.
+
+Few attepmts to automatically classify foehn winds have been proposed over the
+past years such as \note{cite this and that}. These methods are only binary
+(either \textit{yes} or \textit{no}) and reqire manual intervention to tune the
+hyper-parameters, e.g., thresholds used to classify a specific observation as
+foehn. In \citeyear{plavcan2014} \citeauthor{plavcan2014} proposed a new
+objective and probabilistic foehn classification method based on a finite
+mixture model, a statistical regression-based model for automatic foehn
+classification. In a recent study of \cite{mayr2018unpublished} this new method
+has been tested against existing methods, students, and experts to to proof the
+diagnostic power of the new approach.
+
+Overall, the automatic finite mixture model based foehn classification
+\citep{plavcan2014} is able to compete with the human classification and 
+has the advantages that it is (i) reproductable, and (ii) can easily be
+applied to large volumes of data. This allows one to perform foehn classification
+for a wide range of different sites.
+
+The article by \citep{plavcan2014} introduced the method using a powerful
+package called \code{FlexMix} \citep{leisch2004,gruen2007,gruen2008} available
+for the statistical software \textit{R}.  However, only little guidance was
+given by \citep{plavcan2014} on how to apply this method to own data and an
+implementation of the method outside the \textit{R} programming language has
+was not available until today.
+Thus, the aim of this article is to introduce the algorithm behind the
+automated probabilistic foehn classification \citep{plavcan2014} in more
+detail and introducing new open-source software for \textit{R} and \textit{Python}
+which provide the required methods to perform the classification and a set
+of diagnostic tools for this specific task.
+
+Section~\ref{sec:methods} describes the method itself followed by
+Section~\ref{sec:software}  introducing the software with a set of
+examples. Section~\dots \note{case study? Required for this article?}
 
 
 % -------------------------------------------------------------------
 % SECTION: METHODS
 % -------------------------------------------------------------------
-\section{Methods}
+\section{Methods}\label{sec:methods}
 
 \textit{Note by Reto:}
 The original publication (\code{FlexMix}, \citealt{gruen2008})
 provides general framework for flexible mixture models for multiple
 components. For this application we will concentrate on the special
 case with only two distinct components ($K = 2$).
+
+Thus, this section introduces a simplified approach to estimate 
+a finite mixture model for the special case with two distinct
+Gaussian distributions and a binomial logit model to estimate
+the coefficients for the concomitant variables.
+
+\note{\dots ... and so far, and so on.}
 
 \subsection{Finite mixture models}
 
@@ -422,7 +490,7 @@ The following lines prepare the prior information $z$, $\theta$, and $\alpha$:
 % -------------------------------------------------------------------
 % SECTION: SOFTWARE
 % -------------------------------------------------------------------
-\section{Software}
+\section{Software}\label{sec:software}
 
 Explain software.
 
