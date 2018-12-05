@@ -7,14 +7,18 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-11-30 14:10 on marvin
+# - L@ST MODIFIED: 2018-12-05 19:45 on marvin
 # -------------------------------------------------------------------
+
 
 
 # -------------------------------------------------------------------
 # IWLS optimizer for logistic regression model (concomitant model)
 # -------------------------------------------------------------------
-iwls_logit <- function(X, y, beta = NULL, maxit = 100L, tol = 1e-8, ...) {
+iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-8,
+                       standardize = TRUE, ...) {
+
+    if ( standardize ) X <- standardize_model_matrix(X)
 
     ## initialize regression coefficients if needed
     if ( is.null(beta) ) beta <- rep.int(0, ncol(X)) ## FIXME: there is surely a better solution!
@@ -32,20 +36,42 @@ iwls_logit <- function(X, y, beta = NULL, maxit = 100L, tol = 1e-8, ...) {
 
     ## IWLS
     while( (iter < maxit) & ( (ll - ll0) > tol ) ) {
+        # Initialize new iteration
         ll0 <- ll
         iter <- iter + 1L
+        # New weights
         w <- sqrt(mu * (1 - mu))
-
         #beta <- lm.fit(X * w, eta * w + (y - mu)/w)$coefficients
-        beta <- solve(t(X*w) %*% (X*w)) %*% t(X*w) %*% (eta * w + (y - mu) / w)
+        if( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
+        beta <- solve(t(X*w) %*% (X*w) + reg) %*% t(X*w) %*% (eta * w + (y - mu) / w)
+        # Update latent response eta (X^\top \beta)
         eta  <- drop(X %*% beta)
+        # Update response (probabilities)
         mu   <- plogis(eta)
+        # Update log-likelihood sum
         ll   <- sum(ifelse(y > 0, log(mu), log(1 - mu)))
-    }
-    # Return updated/estimated parameters
-    return(beta)
-}
+        cat(sprintf("Iteration %d, ll = %15.4f\r", iter, ll))
+    }; cat("\n")
 
+    # Calculate effective degrees of freedom
+    if ( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
+    edf <- sum(diag(t(X*w) %*% (X*w) %*% solve(t(X*w) %*% (X*w) + reg)))
+
+    # Unscale coefficients if needed
+    rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
+                 BIC = -2 * ll + log(nrow(X)) * edf,
+                 converged = ifelse(iter < maxit, TRUE, FALSE))
+    rval$beta <- beta
+    rval$coef <- if ( ! standardize ) beta else destandardize_coefficients(beta, X)
+
+    # Return list object containing
+    # - edf (numeric): effective degrees of freedom
+    # - loglik (numeric): log-likelihood of the model
+    # - converged (logical): flag whether or not the iterative solver converged
+    # - beta/coef (matrix): standardized and de-standardized coefficients. If
+    #       input "standardized = FALSE" beta and coef are identical.
+    return(rval)
+}
 
 
 # -------------------------------------------------------------------
@@ -58,10 +84,10 @@ iwls_logit <- function(X, y, beta = NULL, maxit = 100L, tol = 1e-8, ...) {
 # -------------------------------------------------------------------
 foehndiag_gauss_loglik <- function(y, post, prob, theta) {
         # Calculate/trace loglik
-        ll <- list(Q1 =   sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
+        ll <- list(component =   sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
                         + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                   Q2 = sum((1 - post) * log(1 - prob) + post * log(prob)))
-        ll$ll <- ll$Q1 + ll$Q2
+                   concomitant = sum((1 - post) * log(1 - prob) + post * log(prob)))
+        ll$full <- sum(unlist(ll))
         return(ll)
 }
 
@@ -76,11 +102,24 @@ foehndiag_gauss_posterior <- function(y, prob, theta) {
 # moments for the parameters of the two Gaussian clusters, and a
 # logistic regression model for the concomitant part.
 # -------------------------------------------------------------------
-foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, ...) {
+foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, lambda.min = "AIC",
+                      standardize = TRUE, ...) {
+
+    # Regularization for the logit model (concomitant model) can be either
+    # loglik (no regularization), AIC, or BIC. In case of AIC and BIC
+    # the optimal penalization is based on AIC/BIC criteria using
+    # a ridge penalization. Requires to estimate
+    # the logit model multiple times for different lambdas.
+    lambda.min <- match.arg(lambda.min, c("loglik", "AIC", "BIC"))
+    if ( ! inherits(standardize, "logical") )
+        stop("Input \"standardize\" has to be logical (TRUE or FALSE).")
     if ( ! inherits(data, "zoo") )
         stop("Input \"data\" to foehndiag needs to be a time series object of class \"zoo\".")
+
+    # Deconstruct the formula
     left  <- as.character(formula)[2]
     right <- as.character(formula)[3]
+
     # Stop if the main covariate for the flexible Gaussian mixture model
     # is not a valid variable name.
     stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
@@ -139,10 +178,16 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     theta  <- list(mu1 = as.numeric(quantile(y, 0.25)), logsd1 = logsd(y),
                    mu2 = as.numeric(quantile(y, 0.75)), logsd2 = logsd(y))
 
-    # Initial parameters for the concomitant model
+    # Initial parameters for the concomitant model (ccmodel)
     # as.numeric(y > median(y)) is the initial best guess cluster
     # assignment.
-    alpha <- iwls_logit(logitX, as.numeric(y > median(y)), maxit = tail(maxit, 1), tol = tail(tol, 1))
+    ccmodel <- iwls_logit(logitX, as.numeric(y > median(y)), maxit = tail(maxit, 1), tol = tail(tol, 1))
+    print(ccmodel$coef)
+
+    # calculate current probabilities (probability to be in second cluster)
+    # ccmodel$coef are the non-standardized coefficients (alpha)
+    prob <- plogis(drop(logitX %*% ccmodel$coef))
+        plot(logitX[,2], prob, col = 2)
 
     # Initial value
     ll0 <- NULL
@@ -161,20 +206,12 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
         iter <- iter + 1
 
         ##### E-Step ######
-        # calculate current probabilities (probability to be in second cluster)
-        prob <- plogis(drop(logitX %*% alpha))
-
         # Calculate the posterior weights
         #post <- (prob) * dnorm(y, theta$mu2, exp(theta$logsd2)) /
         #        ((1 - prob) * dnorm(y, theta$mu1, exp(theta$logsd1)) +
         #         prob * dnorm(y, theta$mu2, exp(theta$logsd2)))
         post <- foehndiag_gauss_posterior(y, prob, theta)
 
-        # Initial log-likelihood given the initial guess
-        #prob <- plogis(drop(logitX %*% alpha))
-        #post <- foehndiag_gauss_posterior(y, prob, theta)
-        if ( is.null(ll0) ) ll0  <- foehndiag_gauss_loglik(y, post, prob, theta)$ll - 1000
-    
         ##### M-Step ######
         # Empirical moments for the two clusters (mu1/sd1 and mu2/sd2)
         theta$mu1    <- 1 / sum(1 - post) * sum( y * (1 - post))
@@ -182,35 +219,39 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
         theta$logsd1 <- log(sqrt( 1 / sum(1 - post) * sum( (y - theta$mu1)^2 * (1 - post))))
         theta$logsd2 <- log(sqrt( 1 / sum(post)     * sum( (y - theta$mu2)^2 *     (post))))
 
-        # Re-create the vector theta with c(mu1, log(sigma1), mu2, log(sigma2))
-        alpha <- iwls_logit(logitX, prob, alpha, maxit = tail(maxit, 1), tol = tail(tol, 1))
+        # Update the concomitant model.
+        # Using the (possibly) standardized coefficients from the previous iteration
+        # as initial parameters (alpha).
+        ccmodel <- iwls_logit(logitX, prob, ccmodel$beta, maxit = tail(maxit, 1), tol = tail(tol, 1))
 
-        # Apend likelihood
-        ##ll[i] <- lli
-        prob <- plogis(drop(logitX %*% alpha)) # Update probabilities
-
+        # Update the probabilities using the non-standardized coefficients (alpha)
+        # from the concomitant model (ccmodel)
+        prob <- plogis(drop(logitX %*% ccmodel$coef)) # Update probabilities
 
         # Calculate/trace loglik
         ll <- foehndiag_gauss_loglik(y, post, prob, theta)
         llpath[[iter]] <- ll
 
+        # Initial log-likelihood given the initial guess
+        if ( is.null(ll0) ) ll0 <- ll$full - 1000
+
         ##cat(sprintf("  EM step  %2d: logLik = %10.3f\n", iter, ll$ll))
         ##cat(sprintf("       Gauss 1: %10.5f %10.5f\n", theta$mu1, exp(theta$logsd1)))
         ##cat(sprintf("       Gauss 2: %10.5f %10.5f\n", theta$mu2, exp(theta$logsd2)))
-        cat(sprintf("EM step %3d/%3d, log-likelihood sum: %10.5f\r", iter, maxit[1L], ll$ll))
+        cat(sprintf("EM step %3d/%3d, log-likelihood sum: %10.5f\n", iter, maxit[1L], ll$full))
     
         # Check log-likelihood improvement in the current iteration.
         # If the improvement is smaller than the tolerance the algorithm
         # converged: stop optimization.
-        if ( (ll$ll - ll0) < tol[1L] ) break
-        ll0 <- ll$ll
+        if ( (ll$full - ll0) < tol[1L] ) break
+        ll0 <- ll$full
     }; cat("\n")
 
     # Create the return list object (phoeton object)
     rval <- list()
     rval$call <- match.call()
     rval$coef <- list(mu1 = theta$mu1, sd1 = exp(theta$logsd1), mu2 = theta$mu2, sd2 = exp(theta$logsd2),
-                      concomitants = alpha)
+                      concomitants = ccmodel$coef)
 
     rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath), n.iter = iter,
                            maxit = maxit[1L], tol = tol[1L], converged = ifelse(iter < maxit, TRUE, FALSE))
@@ -219,11 +260,12 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
 
     rval$samples <- list(total = nrow(data), na = length(idx_na), wind = length(idx_wind), taken = length(idx_take))
 
-    # Calculate final probabilities
+    # Calculate final probabilities using the non-standardized coefficients (alpha)
+    # from the final concomitant model (ccmodel).
     # d1: density of cluster 1 given the parameters for the two Gaussian
     #     distributions/clusters and the concomitants
     # d2: density of cluster 2 (see above)
-    prob <- plogis(drop(logitX %*% alpha))
+    prob <- plogis(drop(logitX %*% ccmodel$coef))
     d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
     d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * prob
 
@@ -285,8 +327,8 @@ print.summary.phoeton <- function(x, ...) {
 
     # TODO: Additional statistics for the estimated coefficients would be great
     cat("\nCoefficients of Gaussian distributions\n")
-    cat(sprintf("- Cluster 1:    mu1 = %10.5f   sd1 = %10.5f\n", x$coef$mu1, x$coef$sd1))
-    cat(sprintf("- Cluster 2:    mu2 = %10.5f   sd2 = %10.5f\n", x$coef$mu2, x$coef$sd2))
+    tmp <- matrix(unlist(x$coef[c("mu1", "sd1", "mu2", "sd2")]), ncol = 2, dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
+    print(tmp)
     cat("\nCoefficients of the concomitant model\n")
     print(x$coef$concomitants)
 
@@ -364,12 +406,38 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
     plot(tmp$prob * 100, ylab = NA, col = "blue", ylim = c(0,100), yaxs = "i") 
     abline(h = seq(20, 80, by = 20), col = "gray", lty = 3)
     mtext(side = 2, line = 3, "foehn probability")
-    if ( ! is.null(xtra) ) lines(xtra * 100, col = 2)
+    if ( ! is.null(xtra) ) lines(xtra * 100, col = 2, lty = 5)
+    if ( is.null(xtra) ) {
+        legend("left", bg = "white", col = c("blue"), lty = c(1), legend = c("phoeton"))
+    } else {
+        legend("left", bg = "white", col = c("blue", "red"), lty = c(1,5), legend = c("phoeton", "xtra (flexmix)"))
+    }
 
     # Adding a title to the plot
     title <- sprintf("Foehn Diagnosis %s to %s", min(index(tmp)), max(index(tmp)))
     mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
 
 
+}
+
+standardize_model_matrix <- function(X) {
+    ## Scale covariates
+    tmp <- scale(X[,-1])
+    scaled_center = attr(tmp, "scaled:center")
+    scaled_scale  = attr(tmp, "scaled:scale")
+    X[,-1] <- tmp; rm(tmp)
+    attr(X, "scaled:center") <- scaled_center
+    attr(X, "scaled:scale")  <- scaled_scale
+    return(X)
+}
+
+destandardize_coefficients <- function(beta, X) {
+    scaled_center = attr(X, "scaled:center")
+    scaled_scale  = attr(X, "scaled:scale")
+    # Descaling intercept
+    beta[1L,]  <- beta[1L,] - sum(beta[-1L,] * scaled_center / scaled_scale)
+    # Descaling all other regression coefficients
+    beta[-1L,] <- beta[-1L,] / scaled_scale
+    return(beta)
 }
 

@@ -45,5 +45,5 @@ mf <- model.frame(Ozone ~ ., data = airquality)
 m2 <- iwls_logit(model.matrix(Ozone ~ ., data = airquality), model.response(mf))
 
 # Comparing coefficients
-print(cbind(coef(m1), m2))
+print(cbind(coef(m1), m2$coef))
 }
