@@ -1,1 +1,5 @@
-exportPattern("^[[:alpha:]]+")
+###exportPattern("^[[:alpha:]]+")
+
+export(iwls_logit)
+export(foehndiag)
+

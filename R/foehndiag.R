@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-06 13:49 on marvin
+# - L@ST MODIFIED: 2018-12-06 18:12 on marvin
 # -------------------------------------------------------------------
 
 
@@ -15,8 +15,11 @@
 # -------------------------------------------------------------------
 # IWLS optimizer for logistic regression model (concomitant model)
 # -------------------------------------------------------------------
-iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-8,
-                       standardize = TRUE, ...) {
+iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
+                       maxit = 100L, tol = 1e-8, ...) {
+
+    if(sum(apply(X, 2, sd) == 0) > 1)
+        stop("Multiple columns with constant values!")
 
     #data <- cbind(data.frame(obs = y, a = X[,2]))
     #m <- glm(obs ~ a, data = data, family = binomial)
@@ -29,6 +32,10 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-
     #warning("using glm")
     #return(rval)
 
+
+    stopifnot(all(y %in% 0:1))
+
+    # Standardize design matrix?
     if ( standardize ) X <- standardize_model_matrix(X)
 
     # initialize regression coefficients if needed
@@ -38,17 +45,11 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-
     # calculate the initial values for the linear predictor and the
     # response (probabilities). If y in [0,1] these are already
     # probabilities.
-    if ( all(y %in% 0:1) ) {
-        # Calculate linear predictor eta
-        eta <- drop(X %*% beta)
-        # Apply link function on linear predictor to get response mu (probabilities)
-        mu  <- plogis(eta) 
-    } else {
-        eps <- sqrt(.Machine$double.eps)
-        mu  <- pmax(eps, pmin(1-eps, y))
-        eta <- log(mu / (1 - mu))
-        y   <- as.numeric(y >= 0.5)
-    }
+    # Calculate linear predictor eta
+    eta <- drop(X %*% beta)
+    # Apply link function on linear predictor to get response mu (probabilities)
+    mu  <- plogis(eta) 
+
     # Calculate log-likelihood given initial parameters beta.
     # Initialize ll0 as ll - 1000 such that we don't stop in iteration 0.
     ll  <- sum(ifelse(y > 0, log(mu), log(1 - mu))) # FIXME: possibly avoid ifelse()
@@ -76,6 +77,8 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-
                     ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
     }
 
+    # Not converged? Drop warning.
+    if ( iter == maxit ) warning("IWLS solver for logistic model did not converge.")
 
     # Just naming the column containing the coefficients.
     colnames(beta) <- c("concomitant")
@@ -98,6 +101,49 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, maxit = 100L, tol = 1e-
     # - beta/coef (matrix): standardized and de-standardized coefficients. If
     #       input "standardized = FALSE" beta and coef are identical.
     return(rval)
+}
+
+
+# -------------------------------------------------------------------
+# Standardize coefficients
+# -------------------------------------------------------------------
+standardize_model_matrix <- function(X) {
+    if(sum(apply(X, 2, sd) == 0) > 1)
+        stop("Multiple columns with constant values!")
+    # Scale covariates
+    scaled_center <- structure(rep(0, ncol(X)), names = colnames(X))
+    scaled_scale  <- structure(rep(1, ncol(X)), names = colnames(X))
+    for ( i in take ) {
+        if ( sd(X[,i]) == 0 ) next
+        scaled_center[i] <- mean(X[,i])
+        scaled_scale[i]  <- sd(X[,i])
+        X[,i] <- (X[,i] - scaled_center[i]) / scaled_scale[i]
+    }
+    attr(X, "scaled:center") <- scaled_center
+    attr(X, "scaled:scale")  <- scaled_scale
+    return(X)
+}
+
+
+# -------------------------------------------------------------------
+# Destandardize coefficients. Brings coefficients back to
+# the "real" scale if standardized coefficients are used when
+# estimating the logistic regression model (concomitant model).
+# -------------------------------------------------------------------
+destandardize_coefficients <- function(beta, X) {
+    scaled_center = attr(X, "scaled:center")
+    scaled_scale  = attr(X, "scaled:scale")
+    # Do we have an intercept?
+    ic <- grep("^\\(Intercept\\)$", rownames(beta))
+    if ( length(ic) == 1 ) {
+        # Descaling intercept
+        beta[ic,]  <- beta[ic,] - sum(beta[-ic,] * scaled_center[-ic]  / scaled_scale[-ic])
+        # Descaling all other regression coefficients
+        beta[-ic,] <- beta[-ic,] / scaled_scale[-ic]
+    } else {
+        beta <- beta / scaled_scale
+    }
+    return(beta)
 }
 
 
@@ -144,8 +190,12 @@ foehndiag_logistic_posterior <- function(y, prob, theta) {
 # The simple version for the foehn diagnosis using empirical weighted
 # moments for the parameters of the two Gaussian clusters, and a
 # logistic regression model for the concomitant part.
+# TODO: check what's going on if no intercept is requested by the user
+#       for the concomitant model (e.g., ff ~ -1 + rh). The standardize/
+#       destandardize function should technically be ready to support
+#       this.
 # -------------------------------------------------------------------
-foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, lambda.min = "AIC",
+phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, lambda.min = "auto",
                       standardize = TRUE, family = "gaussian", ...) {
 
     # Regularization for the logit model (concomitant model) can be either
@@ -153,7 +203,7 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     # the optimal penalization is based on AIC/BIC criteria using
     # a ridge penalization. Requires to estimate
     # the logit model multiple times for different lambdas.
-    lambda.min <- match.arg(lambda.min, c("loglik", "AIC", "BIC"))
+    lambda.min <- match.arg(lambda.min, c("auto","loglik", "AIC", "BIC"))
     family     <- match.arg(family, c("gaussian", "logistic"))
     if ( ! inherits(standardize, "logical") )
         stop("Input \"standardize\" has to be logical (TRUE or FALSE).")
@@ -217,6 +267,13 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     mf <- mf[idx_take,]
     y  <- y[idx_take]
 
+    # Check whether regularization is preferred over unpenalized
+    # regression estimation (only if lambda.min is "auto")
+    if ( lambda.min == "auto" ) {
+        tmp <- cor(mf); diag(tmp) <- 0
+        if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
+    }
+
     # Setting up the model matrix for the concomitant model (logit model).
     logitX <- model.matrix(formula, data = data[idx_take,])
 
@@ -256,7 +313,7 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     iter <- 0        # Iteration index for the EM algorithm
 
     # If lambda.min is not loglik: ridge penalization
-    lambdas <- if ( ! lambda.min == "loglik" ) exp(seq(8, -8, length = 100)) else NULL
+    lambdas <- if ( lambda.min %in% c("AIC", "BIC") ) exp(seq(8, -8, length = 100)) else NULL
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -347,9 +404,11 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     # d1: density of cluster 1 given the parameters for the two Gaussian
     #     distributions/clusters and the posterior information
     # d2: density of cluster 2 (see above)
-    pfun <- ifelse(family == "gaussian", pnorm, plogis)
-    d1   <- pfun(y, theta$mu1, exp(theta$logsd1)) * (1 - post)
-    d2   <- pfun(y, theta$mu2, exp(theta$logsd2)) * post
+    #pfun <- ifelse(family == "gaussian", pnorm, plogis)
+    #d1   <- pfun(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
+    #d2   <- pfun(y, theta$mu2, exp(theta$logsd2)) * prob
+    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+                        list(y = y, prob = prob, theta = theta))
 
     # The fohen probability vector: create an object of the
     # same length and class as input "data" and:
@@ -358,11 +417,11 @@ foehndiag <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8
     # - those observations which entered the models get their modelled
     #   foehn probability.
     rval$prob <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
-    rval$prob[idx_take] <- d2 / (d2 + d1)
+    rval$prob[idx_take] <- post#d2 / (d2 + d1)
     rval$prob[idx_wind] <- 0
 
-    d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
-    d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * prob
+    d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - post)
+    d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * post
     rval$probX <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
     rval$probX[idx_take] <- d2 / (d2 + d1)
     rval$probX[idx_wind] <- 0
@@ -447,12 +506,16 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
         up   <- which(diff(x > .5) == 1) + 1
         down <- which(diff(x > .5) == -1)
         if ( length(up) > 0 & length(down) > 0 ) {
-            down <- down[down > min(up)]
+            down <- down[down >= min(up)]
             y <- par()$usr[3:4]
             for ( i in seq(1, min(length(up), length(down))) )
                 rect(index(x)[up[i]] - dx, y[1L], index(x)[down[i]] + dx, y[2L],
                      col = col, border = NA)
         }
+    }
+    add_midnight_lines <- function(x) {
+        at <- as.POSIXct(unique(as.Date(index(x))))
+        abline(v = at, col = 1)
     }
 
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
@@ -467,25 +530,29 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
     par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
 
     # Air temperature
-    plot(tmp$t, type = "n", ylab = NA, xaxt = "n")
-    add_boxes(tmp$prob)
+    plot(tmp$t, type = "n", ylab = NA, xaxt = "n", bty = "n")
+    add_boxes(tmp$prob); add_midnight_lines(tmp)
     lines(tmp$t, col ="red", lwd = 2)
     mtext(side = 2, line = 3, "dry air temperature")
+    box()
 
     # Relative humidity
     par(new = TRUE)
-    plot(tmp$rh, col = "green", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n")
-    abline(h = seq(20, 100, by = 20), lty = 3, col = "gray")
+    plot(tmp$rh, type = "n", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
+    add_polygon(tmp$rh, col = "#009900")
+    abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
     axis(side = 4, at = seq(20, 100, by = 20))
     mtext(side = 4, line = 3, "relative humidity")
+    box()
 
     # Temperature difference
-    plot(tmp$diff_t, type = "n", xaxt = "n")
-    add_boxes(tmp$prob)
-    lines(tmp$diff_t, col = "magenta", lwd = 2)
+    plot(tmp$diff_t, type = "n", xaxt = "n", bty = "n")
+    add_boxes(tmp$prob); add_midnight_lines(tmp)
+    lines(tmp$diff_t, col = "orange", lwd = 2)
     abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
     abline(h = 0, col = 1)
     mtext(side = 2, line = 3, "temperature difference")
+    box()
 
     # Wind speed and direction
     if ( ! is.null(x$windsector) ) {
@@ -496,32 +563,43 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
             ddflag <- ifelse(tmp$dd > x$windsector[1L] | tmp$dd < x$windsector[2L], 1, 2) 
         }
     } else { ddflag <- rep(2, nrow(tmp)) }
-    plot(tmp$dd, type = "n", xaxt = "n", ylab = "", ylim = c(0, 360), yaxt = "n")
-    add_boxes(tmp$prob)
-    points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
-    axis(side = 2, at = seq(45, 360 - 45, by = 45))
+    plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
+             ylim = c(0, 360), yaxt = "n", bty = "n")
+    add_boxes(tmp$prob); add_midnight_lines(tmp)
+    if ( "dd" %in% names(tmp) ) {
+        points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
+    }
+    axis(side = 2, at = seq(90, 360 - 90, by = 90))
     mtext(side = 2, line = 3, "wind direction")
     if ( ! is.null(x$windsector) ) abline(h = x$windsector, col = "gray", lty = 3)
+    box()
 
     # Adding wind speed
     par(new = TRUE)
-    plot(tmp$ff, lwd = 2, col = "orange", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05, yaxt = "n", xaxt = "n")
+    plot(tmp$ff, type = "n", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05,
+         yaxs = "i", yaxt = "n", xaxt = "n")
+    add_polygon(tmp$ff, col = "#005ce6")
     axis(side = 4, at = pretty(tmp$ff))
     mtext(side = 4, line = 3, "wind speed")
+    box()
 
     # Foehn prob
     plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 
-    add_boxes(tmp$prob)
-    lines(tmp$prob * 100, col = "blue")
-    abline(h = seq(20, 80, by = 20), col = "gray", lty = 3)
+    add_boxes(tmp$prob); add_midnight_lines(tmp)
+    abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
     mtext(side = 2, line = 3, "foehn probability")
     # FIXME: remove probX, only for testing
     lines(tmp$probX * 100, col = 3, lwd = 1, lty = 3)
-    if ( ! is.null(xtra) ) lines(xtra * 100, col = 2, lty = 5)
+    add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
+    # Adding RUG
+    at <- index(x$prob)[which(x$prob >= .5)]
+    if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
+    box()
+    if ( ! is.null(xtra) ) lines(xtra * 100, col = "gray50", lty = 5)
     if ( is.null(xtra) ) {
-        legend("left", bg = "white", col = c("blue"), lty = c(1), legend = c("phoeton"))
+        legend("left", bg = "white", col = c("#FF6666"), lty = c(1), legend = c("phoeton"))
     } else {
-        legend("left", bg = "white", col = c("blue", "red"), lty = c(1,5), legend = c("phoeton", "xtra (flexmix)"))
+        legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5), legend = c("phoeton", "xtra (flexmix)"))
     }
 
     # Adding a title to the plot
@@ -531,24 +609,29 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
 
 }
 
-standardize_model_matrix <- function(X) {
-    # Scale covariates
-    tmp <- scale(X[,-1])
-    scaled_center = attr(tmp, "scaled:center")
-    scaled_scale  = attr(tmp, "scaled:scale")
-    X[,-1] <- tmp; rm(tmp)
-    attr(X, "scaled:center") <- scaled_center
-    attr(X, "scaled:scale")  <- scaled_scale
-    return(X)
-}
+# --------------------------------------------------------------------
+# Helper function to draw nice filled polygons with NA's.
+# --------------------------------------------------------------------
+add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
+    # Need hex color
+    if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
+    # All elements NA?
+    if ( all( is.na(x) ) ) return(invisible(NULL))
+    # Else find valid blocks and plot them. Start with 1
+    i <- 1
+    while ( i <= length(x) ) {
+        if ( all(is.na(x)) ) break
+        i1 <- min( which( !is.na(x) ) )
+        if ( i1 > 1 ) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
+        # Else check first NA
+        if ( ! any(is.na(x)) ) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
+        p_x <- as.numeric(index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
+        p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
+        polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
+        lines( x[i1:i2],   col = col, lwd = lwd )
+        # Remove plotted data from time series and continue
+        x <- x[-c(i1:i2)]
+    }
 
-destandardize_coefficients <- function(beta, X) {
-    scaled_center = attr(X, "scaled:center")
-    scaled_scale  = attr(X, "scaled:scale")
-    # Descaling intercept
-    beta[1L,]  <- beta[1L,] - sum(beta[-1L,] * scaled_center / scaled_scale)
-    # Descaling all other regression coefficients
-    beta[-1L,] <- beta[-1L,] / scaled_scale
-    return(beta)
 }
 
