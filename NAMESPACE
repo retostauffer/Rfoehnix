@@ -1,5 +1,5 @@
 ###exportPattern("^[[:alpha:]]+")
 
 export(iwls_logit)
-export(foehndiag)
+export(phoeton)
 

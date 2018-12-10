@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-06 18:12 on marvin
+# - L@ST MODIFIED: 2018-12-10 08:37 on marvin
 # -------------------------------------------------------------------
 
 
@@ -18,21 +18,10 @@
 iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
                        maxit = 100L, tol = 1e-8, ...) {
 
-    if(sum(apply(X, 2, sd) == 0) > 1)
-        stop("Multiple columns with constant values!")
-
-    #data <- cbind(data.frame(obs = y, a = X[,2]))
-    #m <- glm(obs ~ a, data = data, family = binomial)
-    # Unscale coefficients if needed
-    #rval <- list(lambda = 99, edf = 2, loglik = as.numeric(logLik(m)), AIC = AIC(m), BIC = BIC(m),
-    #             converged = TRUE)
-    #rval$beta <- as.matrix(coef(m))
-    #rval$coef <- as.matrix(coef(m))
-
-    #warning("using glm")
-    #return(rval)
-
-
+    # Checking inputs. Constant covariates (concomitant variables)
+    # are not allowed except one column (intercept).
+    if(sum(apply(X, 2, sd) == 0) > 1) stop("Multiple columns with constant values!")
+    # Response "y" needs to be binary zero or one.
     stopifnot(all(y %in% 0:1))
 
     # Standardize design matrix?
@@ -113,7 +102,7 @@ standardize_model_matrix <- function(X) {
     # Scale covariates
     scaled_center <- structure(rep(0, ncol(X)), names = colnames(X))
     scaled_scale  <- structure(rep(1, ncol(X)), names = colnames(X))
-    for ( i in take ) {
+    for ( i in ncol(X) ) {
         if ( sd(X[,i]) == 0 ) next
         scaled_center[i] <- mean(X[,i])
         scaled_scale[i]  <- sd(X[,i])
@@ -226,7 +215,9 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     stopifnot(is.numeric(maxit) | length(maxit) > 2)
     stopifnot(is.numeric(tol)   | length(tol) > 2)
 
-    # Create strictly regular time series object
+    # Create strictly regular time series object with POSIXct
+    # time stamp.
+    index(data) <- as.POSIXct(index(data))
     if ( is.regular(data) & ! is.regular(data, strict = TRUE) ) {
         interval <- min(diff(index(data)))
         tmp <- seq(min(index(data)), max(index(data)), by = interval)
@@ -264,7 +255,7 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # Subset the model.frame (mf) and the response (y) and pick
     # all valid rows (without missing values on the mandatory columns
     # and, if a wind sector is given, with valid wind direction observations).
-    mf <- mf[idx_take,]
+    mf <- matrix(mf[idx_take,], ncol = ncol(mf), dimnames = list(NULL, colnames(mf)))
     y  <- y[idx_take]
 
     # Check whether regularization is preferred over unpenalized
@@ -499,7 +490,7 @@ print.summary.phoeton <- function(x, ...) {
 #       follow our naming conventions, or make it much more
 #       flexible/generig.
 # -------------------------------------------------------------------
-plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
+plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
 
     add_boxes <- function(x, col = "gray94") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
@@ -514,97 +505,154 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ..., xtra = NULL) {
         }
     }
     add_midnight_lines <- function(x) {
-        at <- as.POSIXct(unique(as.Date(index(x))))
-        abline(v = at, col = 1)
+        ndays <- as.numeric(diff(range(index(x))), unit = "days")
+        if ( ndays < 50 ) {
+            at <- as.POSIXct(unique(as.Date(index(x))))
+            abline(v = at, col = 1)
+        }
     }
 
+    # Convert start/end to POSIXct
+    if ( ! is.null(start) ) {
+        start <- try(as.POSIXct(start))
+        if ( inherits(start, "try-error") )
+            stop("Invalid input for \"start\". Cannot be converted to POSIXt.")
+    }
+    if ( ! is.null(end) ) {
+        end <- try(as.POSIXct(end))
+        if ( inherits(end, "try-error") )
+            stop("Invalid input for \"end\". Cannot be converted to POSIXt.")
+    }
+
+    # Default plot type/plot interval if start and end are not
+    # provided:
+    if ( is.null(start) & is.null(end) ) {
+        # Extracting zoo index (range of dates)
+        dates <- as.POSIXct(as.Date(range(index(x$prob))))
+        if ( max(index(x$prob)) > dates[2L] ) dates <- dates + c(0,86400)
+        # If less than ndays days: plot all 10 days.
+        if ( as.numeric(diff(dates), units = "days") <= ndays ) {
+            start <- dates[1L]; end <- dates[2L]
+        # Else create a set of sequences to plot
+        } else {
+            start <- seq(dates[1L], dates[2L], by = 86400 * ndays)
+            end   <- start + 86400 * ndays
+            start <- start[start < dates[2L]]
+            end   <- pmin(end[start < dates[2L]], dates[2L])
+        }
+    } else {
+        if ( is.null(end) & length(start) != 1 )
+            stop("If input \"end\" is not provided \"start\" has to be of length 1")
+        if ( is.null(start) & length(end) != 1 )
+            stop("If input \"start\" is not provided \"end\" has to be of length 1")
+        if ( is.null(end) )   end   <- max(x$prob)
+        if ( is.null(start) ) start <- min(x$prob) 
+    }
+    # Check whether both (start and end) are of same length
+    if ( ! length(start) == length(end) )
+        stop("Input \"start\" and \"end\" have to be of same length!")
+
+    # Check if time range is valid
+    if ( all(start > max(index(x$prob))) | all(end < min(index(x$prob))) )
+        stop("All time periods defined by start/end outside specified data set.")
+
+    # Keep user settings (will be reset when this function ends)
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
+    # If multiple periods have to be plotted: set ask = TRUE
+    if ( length(start) > 1 ) par(ask = ask) else par(ask = FALSE)
+
     # Combine foehn probabilities and observations
-    # FIXME: remove probX, only for testing
-    tmp <- merge(x$prob, x$probX, x$data)
-    tmp <- window(tmp, start = start, end = end)
-    names(tmp)[1:2] <- c("prob", "probX")
-    print(head(tmp))
+    data <- merge(x$prob, x$data)
 
+    # Looping over the different periods we have to plot
     par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
+    for ( k in seq_along(start) ) {
 
-    # Air temperature
-    plot(tmp$t, type = "n", ylab = NA, xaxt = "n", bty = "n")
-    add_boxes(tmp$prob); add_midnight_lines(tmp)
-    lines(tmp$t, col ="red", lwd = 2)
-    mtext(side = 2, line = 3, "dry air temperature")
-    box()
-
-    # Relative humidity
-    par(new = TRUE)
-    plot(tmp$rh, type = "n", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-    add_polygon(tmp$rh, col = "#009900")
-    abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
-    axis(side = 4, at = seq(20, 100, by = 20))
-    mtext(side = 4, line = 3, "relative humidity")
-    box()
-
-    # Temperature difference
-    plot(tmp$diff_t, type = "n", xaxt = "n", bty = "n")
-    add_boxes(tmp$prob); add_midnight_lines(tmp)
-    lines(tmp$diff_t, col = "orange", lwd = 2)
-    abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
-    abline(h = 0, col = 1)
-    mtext(side = 2, line = 3, "temperature difference")
-    box()
-
-    # Wind speed and direction
-    if ( ! is.null(x$windsector) ) {
-        stopifnot("dd" %in% names(tmp))
-        if ( x$windsector[1L] < x$windsector[2L] ) {
-            ddflag <- ifelse(tmp$dd < x$windsector[1L] | tmp$dd > x$windsector[2L], 1, 2) 
-        } else {
-            ddflag <- ifelse(tmp$dd > x$windsector[1L] | tmp$dd < x$windsector[2L], 1, 2) 
+        tmp <- window(data, start = start[k], end = end[k])
+        # No data, or only missing data?
+        if ( nrow(tmp) == 0 | sum(!is.na(tmp)) == 0 ) {
+            tmp <- paste("No data (or only missing values) for the time period",
+                         strftime(start[k], "%Y-%m-%d %H:%M"), "to",
+                         strftime(end[k], "%Y-%m-%d %H:%M"))
+            warning(sprintf("%s. Skip plotting.", str))
+            next
         }
-    } else { ddflag <- rep(2, nrow(tmp)) }
-    plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
-             ylim = c(0, 360), yaxt = "n", bty = "n")
-    add_boxes(tmp$prob); add_midnight_lines(tmp)
-    if ( "dd" %in% names(tmp) ) {
-        points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
-    }
-    axis(side = 2, at = seq(90, 360 - 90, by = 90))
-    mtext(side = 2, line = 3, "wind direction")
-    if ( ! is.null(x$windsector) ) abline(h = x$windsector, col = "gray", lty = 3)
-    box()
 
-    # Adding wind speed
-    par(new = TRUE)
-    plot(tmp$ff, type = "n", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05,
-         yaxs = "i", yaxt = "n", xaxt = "n")
-    add_polygon(tmp$ff, col = "#005ce6")
-    axis(side = 4, at = pretty(tmp$ff))
-    mtext(side = 4, line = 3, "wind speed")
-    box()
-
-    # Foehn prob
-    plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 
-    add_boxes(tmp$prob); add_midnight_lines(tmp)
-    abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
-    mtext(side = 2, line = 3, "foehn probability")
-    # FIXME: remove probX, only for testing
-    lines(tmp$probX * 100, col = 3, lwd = 1, lty = 3)
-    add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
-    # Adding RUG
-    at <- index(x$prob)[which(x$prob >= .5)]
-    if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
-    box()
-    if ( ! is.null(xtra) ) lines(xtra * 100, col = "gray50", lty = 5)
-    if ( is.null(xtra) ) {
-        legend("left", bg = "white", col = c("#FF6666"), lty = c(1), legend = c("phoeton"))
-    } else {
-        legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5), legend = c("phoeton", "xtra (flexmix)"))
-    }
-
-    # Adding a title to the plot
-    title <- sprintf("Foehn Diagnosis %s to %s", min(index(tmp)), max(index(tmp)))
-    mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
+        # Air temperature
+        plot(tmp$t, type = "n", ylab = NA, xaxt = "n", bty = "n")
+        add_boxes(tmp$prob); add_midnight_lines(tmp)
+        lines(tmp$t, col ="red", lwd = 2)
+        mtext(side = 2, line = 3, "dry air temperature")
+        box()
+    
+        # Relative humidity
+        par(new = TRUE)
+        plot(tmp$rh, type = "n", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
+        add_polygon(tmp$rh, col = "#009900")
+        abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
+        axis(side = 4, at = seq(20, 100, by = 20))
+        mtext(side = 4, line = 3, "relative humidity")
+        box()
+    
+        # Temperature difference
+        plot(tmp$diff_t, type = "n", xaxt = "n", bty = "n")
+        add_boxes(tmp$prob); add_midnight_lines(tmp)
+        lines(tmp$diff_t, col = "orange", lwd = 2)
+        abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
+        abline(h = 0, col = 1)
+        mtext(side = 2, line = 3, "temperature difference")
+        box()
+    
+        # Wind speed and direction
+        if ( ! is.null(x$windsector) ) {
+            stopifnot("dd" %in% names(tmp))
+            if ( x$windsector[1L] < x$windsector[2L] ) {
+                ddflag <- ifelse(tmp$dd < x$windsector[1L] | tmp$dd > x$windsector[2L], 1, 2) 
+            } else {
+                ddflag <- ifelse(tmp$dd > x$windsector[1L] | tmp$dd < x$windsector[2L], 1, 2) 
+            }
+        } else { ddflag <- rep(2, nrow(tmp)) }
+        plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
+                 ylim = c(0, 360), yaxt = "n", bty = "n")
+        add_boxes(tmp$prob); add_midnight_lines(tmp)
+        if ( "dd" %in% names(tmp) ) {
+            points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
+        }
+        axis(side = 2, at = seq(90, 360 - 90, by = 90))
+        mtext(side = 2, line = 3, "wind direction")
+        if ( ! is.null(x$windsector) ) abline(h = x$windsector, col = "gray", lty = 3)
+        box()
+    
+        # Adding wind speed
+        par(new = TRUE)
+        plot(tmp$ff, type = "n", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05,
+             yaxs = "i", yaxt = "n", xaxt = "n")
+        add_polygon(tmp$ff, col = "#005ce6")
+        axis(side = 4, at = pretty(tmp$ff))
+        mtext(side = 4, line = 3, "wind speed")
+        box()
+    
+        # Foehn prob
+        plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 
+        add_boxes(tmp$prob); add_midnight_lines(tmp)
+        abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
+        mtext(side = 2, line = 3, "foehn probability")
+        add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
+        # Adding RUG
+        at <- index(x$prob)[which(x$prob >= .5)]
+        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
+        box()
+        if ( ! is.null(xtra) ) {
+            lines(xtra * 100, col = "gray50", lty = 5)
+            legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),
+                   legend = c("phoeton", "xtra"))
+        }
+    
+        # Adding a title to the plot
+        title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])
+        mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
+    } # End of loop over start/end (loop index k)
 
 
 }

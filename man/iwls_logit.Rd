@@ -26,27 +26,55 @@
     Returns a matrix size \code{p x 1} where \code{p} is the
     number of coefficients (equal to the number of columns in
     the model matrix \code{X}.
+
+    Returns a list with a set of values and information about optimization.
+    \itemize{
+        \item \code{lambda} value used (or \code{NULL}).
+        \item \code{edf} effective degrees of freedom. Equal to \code{P}
+            (\code{ncol(X)}) if no regularization is used.
+        \item \code{loglik} final log-likelihood sum of the model.
+        \item \code{AIC} Akaike information criterium.
+        \item \code{BIC} Bayesian information criterium.
+        \item \code{converged} logical flag whether or not the algorithm
+            converged (see \code{maxit}, \code{tol}).
+        \item \code{beta} matrix of dimension \code{P x 1} containing the
+            estimated and possibly standardized regression coefficients
+            (see input \code{standardize}). If input \code{standardize = FALSE}
+            \code{beta == coef}.
+        \item \code{coef} matrix of dimension \code{P x 1} containing the
+            destandardized regression coefficients. 
+    }
 }
 \details{
-    Iterative (re-)weighted least squares solver for logistic
-    regression model. The basic call (\code{iwls_solver(X, y)})
-    solves the unregularized problem.
+    Iterative (re-)weighted least squares solver for logistic regression model.
+    The basic call (\code{iwls_solver(X, y)}) solves the unregularized problem.
+    Input matrix \code{X} is the design matrix containing the concomitant
+    variables for the logistic regression model. Matrix is of dimension
+    \code{N x P} where \code{N} is the number of of observations, \code{P} the
+    number of concomitant variables (including the intercept, if required). If
+    more than one column contains constant values the script will throw an
+    error (solution no more identifiable).  \code{y} is the binary response
+    vector of length \code{N} containing \code{0}s and \code{1}s.
 
-    If \code{lambda} is set (\code{float}) a ridge penalty will be added
-    to shrink the regression parameters.
+    \code{beta} can be used to specify the initial regression parameters.  If
+    not set (\code{beta = NULL}; default) all parameters will be initialized
+    with \code{0}s.
 
-    The logical option \code{standardize} controls whether or not the
-    model matrix (covariates) should be standardized using Gaussian
-    standartization (\code{(x - mean(x)) / sd(x)}) for all columns with
-    non-constant data. It is recommended to use standardization
-    (\code{standardize = TRUE}) to avoid numerical problems.
+    If \code{lambda} is set (\code{float}) a ridge penalty will be added to
+    shrink the regression parameters.
 
-    \code{maxit} and \code{tol} allow to control the iterations of the
-    IWLS solver. \code{maxit} is the maximum number of iterations allowed.
+    The logical option \code{standardize} controls whether or not the model
+    matrix (covariates) should be standardized using Gaussian standartization
+    (\code{(x - mean(x)) / sd(x)}) for all columns with non-constant data. It
+    is recommended to use standardization (\code{standardize = TRUE}) to avoid
+    numerical problems.
+
+    \code{maxit} and \code{tol} allow to control the iterations of the IWLS
+    solver. \code{maxit} is the maximum number of iterations allowed.
     \code{tol} is used to check the log-likelihood improvements. If the
-    imrovements compared with the previous iteration falls below this
-    tolerance the optimizer converged. If \code{maxit} is reached the
-    solver will stop, even if not converged.
+    imrovements compared with the previous iteration falls below this tolerance
+    the optimizer converged. If \code{maxit} is reached the solver will stop,
+    even if not converged.
 }
 \seealso{
     \code{\link{destandardize_coefficients}},
