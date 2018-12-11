@@ -11,7 +11,7 @@
 }
 \arguments{
     \item{X}{model matrix including intercept (if required).}
-    \item{y}{binary response (vector with \code{0}s and \code{1}s).}
+    \item{y}{response, can be binary or probabilities (values in \code{]0,1[}).}
     \item{beta}{initial regression coefficients. If not set (\code{beta = NULL}, default),
         all coefficients will be initialized with \code{0}.}
     \item{lambda}{if set to \code{NULL} (default) no penalty is used during optimization.
