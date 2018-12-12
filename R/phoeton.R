@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 07:48 on marvin
+# - L@ST MODIFIED: 2018-12-12 09:32 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -178,14 +178,13 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # Subset the model.frame (mf) and the response (y) and pick
     # all valid rows (without missing values on the mandatory columns
     # and, if a wind sector is given, with valid wind direction observations).
-    mf <- matrix(mf[idx,], ncol = ncol(mf), dimnames = list(NULL, names(mf)))
+    mf <- matrix(unlist(mf[idx,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
     y  <- y[idx_take]
 
     # Check whether regularization is preferred over unpenalized
     # regression estimation (only if lambda.min is "auto")
-    browser()
-    if ( lambda.min == "auto" ) {
-        tmp <- cor(mf); diag(tmp) <- 0
+    if ( lambda.min == "auto" && ncol(mf) > 2 ) {
+        tmp <- cor(na.omit(mf)[,-1]); diag(tmp) <- 0
         if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
     }
 
