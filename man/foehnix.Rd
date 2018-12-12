@@ -1,12 +1,12 @@
-\name{phoeton}
-\alias{phoeton}
+\name{foehnix}
+\alias{foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
     ## TODO: extend/adjust usage
     ## Basic usage
-    phoeton(formula, data)
+    foehnix(formula, data)
     ## Advanced usage
-    phoeton(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8,
+    foehnix(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8,
             lambda.min = "auto", standardize = TRUE, family = "gaussian", ...) 
 }
 \arguments{
@@ -96,7 +96,7 @@
     model.
 }
 \value{
-    Returns an object of class \code{phoeton}. A set of 
+    Returns an object of class \code{foehnix}. A set of 
     default and custom methods is available for these objects
     such as \code{print}, \code{summary}, \code{coef}, \code{plot}, \dots
 }

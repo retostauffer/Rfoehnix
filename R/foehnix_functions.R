@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# - NAME:        phoeton_simple.R
+# - NAME:        foehnix_simple.R
 # - AUTHOR:      Reto Stauffer
 # - DATE:        2018-11-28
 # -------------------------------------------------------------------
@@ -15,12 +15,12 @@
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
-# Prepare data for classification. Used for both, phoeton and
-# advanced phoeton as the first part of both functions is the
+# Prepare data for classification. Used for both, foehnix and
+# advanced foehnix as the first part of both functions is the
 # same for both methods.
 # Returns a list which will be attached in the parent function.
 # -------------------------------------------------------------------
-phoeton_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
+foehnix_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
                             standardize, family, nlambda) {
 
     # Regularization for the logit model (concomitant model) can be either
@@ -121,7 +121,7 @@ phoeton_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
     # Initial parameters for the concomitant model (ccmodel)
     # as.numeric(y > median(y)) is the initial best guess component assignment.
     # Force standardize = FALSE as logitX is already standardized if input
-    # standardize = TRUE for the main function phoeton and advanced_phoeton.
+    # standardize = TRUE for the main function foehnix and advanced_foehnix.
     ccmodel <- iwls_logit(logitX, as.numeric(y > median(y)), standardize = FALSE,
                           maxit = tail(maxit, 1), tol = tail(tol, 1), nlambda = nlambda)
     cat("\nInitial parameters:\n")
@@ -138,7 +138,7 @@ phoeton_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
 
 
     # Returning a set of objects as named list used in the parent
-    # function (phoeton and advanced_phoeton):
+    # function (foehnix and advanced_foehnix):
     return(list(theta  = theta,      ccmodel  = ccmodel,
                 prob   = prob,
                 y      = y,          logitX   = logitX,
@@ -247,7 +247,7 @@ foehndiag_logistic_posterior <- function(y, prob, theta) {
 # -------------------------------------------------------------------
 # Estimated regression coefficients
 # -------------------------------------------------------------------
-coef.phoeton <- function(x, ...) {
+coef.foehnix <- function(x, ...) {
     res <- rbind(matrix(c(x$coef$mu1, x$coef$sd1, x$coef$mu2, x$coef$sd2), ncol = 1,
                         dimnames = list(c("mu1", "sd1", "mu2", "sd2"), NULL)),
                  x$coef$concomitants)
@@ -258,7 +258,7 @@ coef.phoeton <- function(x, ...) {
 # -------------------------------------------------------------------
 # Model/classification summary
 # -------------------------------------------------------------------
-summary.phoeton <- function(x, ...) {
+summary.foehnix <- function(x, ...) {
     rval <- list()
     rval$call    <- x$call
     rval$samples <- x$samples
@@ -278,10 +278,10 @@ summary.phoeton <- function(x, ...) {
     rval$meanprob  <- 100 * mean(x$prob, na.rm = TRUE)
     rval$meanfoehn <- 100 * sum(x$prob >= .5, na.rm = TRUE) / sum(!is.na(x$prob))
 
-    class(rval) <- "summary.phoeton"
+    class(rval) <- "summary.foehnix"
     return(rval)
 }
-print.summary.phoeton <- function(x, ...) {
+print.summary.foehnix <- function(x, ...) {
     cat("\nCall: "); print(x$call)
 
     # TODO: Additional statistics for the estimated coefficients would be great
@@ -313,7 +313,7 @@ print.summary.phoeton <- function(x, ...) {
 #       follow our naming conventions, or make it much more
 #       flexible/generig.
 # -------------------------------------------------------------------
-plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
+plot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
 
     add_boxes <- function(x, col = "gray94") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
@@ -469,7 +469,7 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NU
         box()
         if ( ! is.null(xtra) )
             legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),
-                   legend = c("phoeton", "xtra"))
+                   legend = c("foehnix", "xtra"))
     
         # Adding a title to the plot
         title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])
