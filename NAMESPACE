@@ -1,7 +1,8 @@
 ###exportPattern("^[[:alpha:]]+")
 
 export(iwls_logit)
-export(bfgs_logit)
 export(foehnix)
-export(advanced_foehnix)
+export(foehnix.noconcomitants)
+export(foehnix.unreg)
+export(foehnix.reg)
 

@@ -11,90 +11,26 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 12:35 on marvin
+# - L@ST MODIFIED: 2018-12-12 20:13 on marvin
 # -------------------------------------------------------------------
 
-# -------------------------------------------------------------------
-# IWLS optimizer for logistic regression model (concomitant model)
-# -------------------------------------------------------------------
-iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
-                       maxit = 100L, tol = 1e-8, ...) {
-
-    # Checking inputs. Constant covariates (concomitant variables)
-    # are not allowed except one column (intercept).
-    if(sum(apply(X, 2, sd) == 0) > 1) stop("Multiple columns with constant values!")
-    if ( min(y) < 0 | max(y) > 1 ) stop("y values out of range. Have to be within ]0,1[.")
-
-    # Standardize design matrix?
-    if ( standardize ) X <- standardize_model_matrix(X)
-
-    # initialize regression coefficients if needed
-    if ( is.null(beta) ) beta <- rep.int(0, ncol(X)) # FIXME: there is surely a better solution!
-
-    # If all y in {0, 1} this is the binary response and we have to
-    # calculate the initial values for the linear predictor and the
-    # response (probabilities). If y in [0,1] these are already
-    # probabilities.
-    # Calculate linear predictor eta
-    eta <- drop(X %*% beta)
-    # Apply link function on linear predictor to get response mu (probabilities)
-    mu  <- plogis(eta) 
-
-    # Calculate log-likelihood given initial parameters beta.
-    # Initialize ll0 as ll - 1000 such that we don't stop in iteration 0.
-    ll  <- sum(y * eta - log(1 + exp(eta)))
-    ll0 <- ll - 1000
-    # Maximum number of iterations
-    iter <- 0
-
-    # IWLS
-    while( (iter < maxit) & ( (ll - ll0) > tol ) ) {
-        ll0 <- ll
-        # Initialize new iteration
-        iter <- iter + 1L
-        # New weights
-        w <- sqrt(mu * (1 - mu)) + 1e-10
-        if( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
-        beta <- solve(t(X*w) %*% (X*w) + reg) %*% t(X*w) %*% (eta * w + (y - mu) / w)
-        #beta <- matrix(lm.fit(X * w, eta * w + (y - mu)/w)$coefficients, ncol = 1)
-        # Update latent response eta (X^\top \beta)
-        eta  <- drop(X %*% beta)
-        # Update response (probabilities)
-        mu   <- plogis(eta)
-        # Update log-likelihood sum
-        ll   <- sum(y * eta - log(1 + exp(eta)))
-        cat(sprintf("Iteration %d, ll = %15.4f, %s\r", iter, ll,
-                    ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
-    }
-
-    # Not converged? Drop warning.
-    if ( iter == maxit ) warning("IWLS solver for logistic model did not converge.")
-
-    # Just naming the column containing the coefficients.
-    colnames(beta) <- c("concomitant")
-
-    # Calculate effective degrees of freedom
-    if ( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
-    edf <- sum(diag(t(X*w) %*% (X*w) %*% solve(t(X*w) %*% (X*w) + reg)))
-
-    # Unscale coefficients if needed
-    rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
-                 BIC = -2 * ll + log(nrow(X)) * edf,
-                 converged = ifelse(iter < maxit, TRUE, FALSE))
-    rval$beta <- beta
-    rval$coef <- if ( ! standardize ) beta else destandardize_coefficients(beta, X)
-
-    # Return list object containing
-    # - edf (numeric): effective degrees of freedom
-    # - loglik (numeric): log-likelihood of the model
-    # - converged (logical): flag whether or not the iterative solver converged
-    # - beta/coef (matrix): standardized and de-standardized coefficients. If
-    #       input "standardized = FALSE" beta and coef are identical.
-    return(rval)
+foehnix.noconcomitant <- function(formula, data, windsector = NULL, family = "gaussian",
+                    maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
+    print("hallo von foehnmix.noconcomitant")
 }
 
 
+foehnix.unreg <- function(formula, data, windsector = NULL, family = "gaussian",
+                    maxit = 100L, tol = 1e-8, standardize = TRUE,
+                    verbose = FALSE, ...) {
+    print("hallo from foehix.unreg")
+}
 
+foehnix.reg <- function(formula, data, windsector = NULL, family = "gaussian",
+                    maxit = 100L, tol = 1e-8, standardize = TRUE,
+                    alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
+    print("hallo from foehix.reg")
+}
 
 # -------------------------------------------------------------------
 # The simple version for the foehn diagnosis using empirical weighted
@@ -105,16 +41,187 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
 #       destandardize function should technically be ready to support
 #       this.
 # -------------------------------------------------------------------
-foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, lambda.min = "auto",
-                      standardize = TRUE, family = "gaussian", nlambda = 100L, ...) {
+foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
+                    maxit = 100L, tol = 1e-8,
+                    standardize = TRUE, alpha = NULL, nlambda = 100L,
+                    verbose = FALSE, ...) {
 
+    # Checking input args
+    arg <- as.list(match.call()); arg[[1]] <- NULL
+
+    # Non-concomitant model
+    if ( length(labels(terms(formula))) == 0 ) {
+        rval <- do.call("foehnix.noconcomitant", arg)
+    } else if ( is.null(alpha) ) {
+        rval <- do.call("foehnix.unreg", arg)
+    } else {
+        rval <- do.call("foehnix.reg", arg)
+    }
+
+    return(rval)
+
+
+    # Measure execution time
     timing <- Sys.time()
 
-    # Prepare inputs. foehnix_prepare returns a list of required objects.
-    x <- foehnix_prepare(formula, data, windsector, maxit, tol, lambda.min,
-                         standardize, family, nlambda)
-    # Attach to current environment to be used in the EM algorithm.
-    for ( n in names(x) ) eval(parse(text = sprintf("%1$s <- x$%1$s", n))); rm(x)
+
+    # Loading family object
+    family <- match.arg(family, c("gaussian", "logistic"))
+    family <- get(sprintf("foehnix_%s", family))()
+
+    # Deconstruct the formula
+    left  <- as.character(formula)[2]
+    right <- as.character(formula)[3]
+
+    # Stop if the main covariate for the flexible Gaussian mixture model
+    # is not a valid variable name.
+    stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
+
+    # Maxit and tol are the maximum number of iterations for the
+    # optimization. Need to be numeric. If one value is given it will
+    # be used for both, the EM algorithm and the IWLS optimization for
+    # the concomitants. If two values are given the first one is used
+    # for the EM algorithm, the second for the IWLS solver.
+    stopifnot(is.numeric(maxit) | length(maxit) > 2)
+    stopifnot(is.numeric(tol)   | length(tol) > 2)
+
+    # Create strictly regular time series object with POSIXct
+    # time stamp.
+    index(data) <- as.POSIXct(index(data))
+    if ( is.regular(data) & ! is.regular(data, strict = TRUE) ) {
+        interval <- min(diff(index(data)))
+        tmp <- seq(min(index(data)), max(index(data)), by = interval)
+        data <- merge(data, zoo(,tmp))
+    }
+
+    # Extracting model.frame used for the concomitant model,
+    # and the vector y used for the clustering (main covariate).
+    # Keep missing values.
+    mf <- model.frame(formula, data, na.action = na.pass)
+    y  <- model.response(mf)
+
+    # Identify rows with missing values
+    idx_na   <- which(is.na(y) | apply(mf, 1, function(x) sum(is.na(x))) != 0)
+    # If a wind sector is given: identify observations with a wind direction
+    # outside the user defined sector. These will not be considered in the
+    # statistical models.
+    if ( is.null(windsector) ) {
+        idx_wind <- NULL # No wind sector filter
+    } else {
+        # FIXME: is it possible to use custom names?
+        if ( ! "dd" %in% names(data) )
+            stop("If wind sector is given the data object requires to have a column \"dd\".")
+        # Filtering
+        if ( windsector[1L] < windsector[2L] ) {
+            idx_wind <- which(data$dd < windsector[1L] | data$dd > windsector[2L])
+        } else {
+            idx_wind <- which(data$dd > windsector[1L] & data$dd < windsector[2L])
+        }
+    }
+    # Indes of all values which should be considered in the model
+    idx_take <- which(! 1:nrow(data) %in% c(idx_na, idx_wind))
+    if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
+
+    # Subset the model.frame (mf) and the response (y) and pick
+    # all valid rows (without missing values on the mandatory columns
+    # and, if a wind sector is given, with valid wind direction observations).
+    mf <- matrix(unlist(mf[idx,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
+    y  <- y[idx_take]
+
+    # Check whether regularization is preferred over unpenalized
+#  regression estimation (only if lambda.min is "auto")
+#   if ( lambda.min == "auto" & ncol(mf) > 2 ) {
+#       tmp <- cor(na.omit(mf[,-1])); diag(tmp) <- 0
+#       if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
+#   }
+
+    # Setting up the model matrix for the concomitant model (logit model).
+    logitX <- model.matrix(formula, data = data[idx_take,])
+
+
+    # Non-concomitant model
+    if ( ncol(logitX) == 1 & grepl("^\\(Intercept\\)$", colnames(logitX)[1L]) ) {
+        stop("super simple model")
+    } else if ( is.null(alpha) ) {
+        stop("non-penalized iwls model")
+    } else {
+        stop("flexible model")
+    }
+    print(head(logitX))
+    print(right)
+    stop()
+
+    # Best guess for prior
+    prob  <- as.numeric(y >= mean(y))
+    theta <- family$theta(y, prob)
+    post  <- family$posterior(y, prob, theta)
+    trace <- as.data.frame(theta)
+    llpath <- list()
+    coefpath <- list()
+
+    # Initial values
+    llpath[[1]]   <- family$loglik(y, post, prob, theta)
+    coefpath[[1]] <- as.data.frame(theta)
+
+    iter <- 0
+    while ( iter <= maxit ) {
+        iter <- iter + 1;
+        prob  <- (y - (theta$mu1 + theta$mu2) / 2) > 0
+        theta <- family$theta(y, prob)
+        post  <- family$posterior(y, prob, theta)
+        trace <- rbind(trace, as.data.frame(theta))
+        llpath[[iter+1]] <- family$loglik(y, post, prob, theta)
+        coefpath[[iter+1]] <- as.data.frame(theta)
+        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter+1]]))
+
+        if ( llpath[[iter]] > llpath[[iter+1]] ) next
+        if ( (llpath[[iter]] - llpath[[iter+1]]) < tol ) break
+    }; cat("\n")
+
+    print(unlist(llpath))
+    plot(unlist(llpath))
+    print(trace)
+    stop()
+
+    # Regularization for the logit model (concomitant model) can be either
+    # loglik (no regularization), AIC, or BIC. In case of AIC and BIC
+    # the optimal penalization is based on AIC/BIC criteria using
+    # a ridge penalization. Requires to estimate
+    # the logit model multiple times for different lambdas.
+##    lambda.min <- match.arg(lambda.min, c("auto","loglik", "AIC", "BIC"))
+##    family     <- match.arg(family, c("gaussian", "logistic"))
+##    if ( ! inherits(standardize, "logical") )
+##        stop("Input \"standardize\" has to be logical (TRUE or FALSE).")
+##    if ( ! inherits(data, "zoo") )
+##        stop("Input \"data\" to foehndiag needs to be a time series object of class \"zoo\".")
+
+
+    # Initial parameters for the concomitant model (ccmodel)
+    # as.numeric(y > median(y)) is the initial best guess component assignment.
+    # Force standardize = FALSE as logitX is already standardized if input
+    # standardize = TRUE for the main function foehnix and advanced_foehnix.
+    prob <- rep(0.5, length(y))
+    post <- do.call(sprintf("foehnix_%s_posterior", family), list(y = y, prob = prob, theta = theta))
+    ccmodel <- iwls_logit(logitX, post, standardize = FALSE,
+                          maxit = tail(maxit, 1), tol = tail(tol, 1),
+                          nlambda = nlambda, verbose = verbose)
+
+    # Initial parameters
+    if ( verbose) {
+        cat("\nInitial parameters:\n")
+        print(matrix(c(theta$mu1, exp(theta$logsd1), theta$mu2, exp(theta$logsd2)), ncol = 2,
+                     dimnames = list(c("mu", "sd"), c("Comp.1", "Comp.2"))))
+    }
+
+
+    # calculate current probabilities (probability to be in second cluster)
+    # ccmodel$coef are the non-standardized coefficients (alpha)
+    prob <- plogis(drop(logitX %*% ccmodel$coef))
+
+    # If standardize = TRUE: standardize model matrix for
+    # the concomitant model (logitX)
+    if ( standardize ) logitX <- standardize_model_matrix(logitX)
+
 
     # Start optimization using weighted empirical moments for
     # location and scale of the two Gaussian distributions plus
@@ -140,10 +247,11 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
                    selected = ifelse(selected == x$lambda, TRUE, FALSE))
 
 
-    # Getting lambdas for ridge penalty
-    if ( lambda.min %in% c("AIC", "BIC") ) {
-        lambdas <- get_lambdas(nlambda, logitX, post, maxit, tol)
-    } else { lambdas <- NULL }
+###    # Getting lambdas for ridge penalty
+###    if ( lambda.min %in% c("AIC", "BIC") ) {
+###        lambdas <- get_lambdas(nlambda, logitX, post, maxit, tol)
+###    } else { lambdas <- NULL }
+    lambdas <- NULL
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -170,30 +278,32 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         # Update the concomitant model.
         # Using the (possibly) standardized coefficients from the previous iteration
         # as initial parameters (alpha).
-        if ( is.null(lambdas) ) {
-            ccmodel <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
-                                  maxit = tail(maxit, 1), tol = tail(tol, 1))
-        } else {
-            tmp <- list()
-            for ( la in lambdas ) {
-                m <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
-                                maxit = tail(maxit, 1), tol = tail(tol, 1), lambda = la)
-                # Break early if increase AIC/BIC (as specified for lambda.min)
-                # is smaller than the tolerance.
-                if ( length(tmp) > 1 ) {
-                    #TODO: manual, state that algorithm stops early if
-                    # no changes can be see anymore with decreased lambda.
-                    if ( (tmp[[length(tmp)]][[lambda.min]] - m[[lambda.min]]) < tol ) break
-                }
-                tmp[[length(tmp)+1]] <- m
-            }
-            # Search for iteration with lowest criterium ("score")
-            tmp_idx <- which.min(sapply(tmp, function(x, score) x[[score]], score = lambda.min))
-            # Append information to regpath (regularization path)
-            regpath[[iter]] <- do.call(rbind, lapply(tmp, regpath_fun, tmp[[tmp_idx]]$lambda))
-            # Pick the one model we need, drop tmp
-            ccmodel <- tmp[[tmp_idx]]; rm(tmp)
-        }
+        ####if ( is.null(lambdas) ) {
+        ccmodel <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
+                              maxit = tail(maxit, 1), tol = tail(tol, 1),
+                              verbose = verbose)
+        ####} else {
+        ####    tmp <- list()
+        ####    for ( lambda in lambdas ) {
+        ####        m <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
+        ####                        maxit = tail(maxit, 1), tol = tail(tol, 1),
+        ####                        lambda = lambda, verbose = verbose)
+        ####        # Break early if increase AIC/BIC (as specified for lambda.min)
+        ####        # is smaller than the tolerance.
+        ####        if ( length(tmp) > 1 ) {
+        ####            #TODO: manual, state that algorithm stops early if
+        ####            # no changes can be see anymore with decreased lambda.
+        ####            if ( (tmp[[length(tmp)]][[lambda.min]] - m[[lambda.min]]) < tol ) break
+        ####        }
+        ####        tmp[[length(tmp)+1]] <- m
+        ####    }
+        ####    # Search for iteration with lowest criterium ("score")
+        ####    tmp_idx <- which.min(sapply(tmp, function(x, score) x[[score]], score = lambda.min))
+        ####    # Append information to regpath (regularization path)
+        ####    regpath[[iter]] <- do.call(rbind, lapply(tmp, regpath_fun, tmp[[tmp_idx]]$lambda))
+        ####    # Pick the one model we need, drop tmp
+        ####    ccmodel <- tmp[[tmp_idx]]; rm(tmp)
+        ####}
         cat("\n")
 
 
@@ -211,7 +321,7 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         # Initial log-likelihood given the initial guess
         if ( is.null(ll0) ) { ll0 <- ll$full - 1000 }
 
-        cat(sprintf("EM step %3d/%3d, log-likelihood sum: %10.5f\n", iter, maxit[1L], ll$full))
+        if ( verbose ) cat(sprintf("EM step %3d/%3d, log-likelihood sum: %10.5f\n", iter, maxit[1L], ll$full))
 
         # At least do maxit * 0.05 iterations
         if ( iter < (maxit * .05) ) next

@@ -21,4 +21,4 @@ LazyData: true
 BugReports: https://github.com/retostauffer/Rfoehnix/issues
 Depends: R (>= 3.0.0), zoo
 Imports: graphics
-Suggests: colorspace
+Suggests: colorspace, glmnet

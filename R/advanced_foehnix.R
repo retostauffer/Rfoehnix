@@ -10,91 +10,91 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 14:24 on marvin
+# - L@ST MODIFIED: 2018-12-12 17:07 on marvin
 # -------------------------------------------------------------------
 
 
 
-# -------------------------------------------------------------------
-# IWLS optimizer for logistic regression model (concomitant model)
-# -------------------------------------------------------------------
-bfgs_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
-                       maxit = 100L, tol = 1e-8, ...) {
-
-    # Checking inputs. Constant covariates (concomitant variables)
-    # are not allowed except one column (intercept).
-    if(sum(apply(X, 2, sd) == 0) > 1) stop("Multiple columns with constant values!")
-    if ( min(y) < 0 | max(y) > 1 ) stop("y values out of range. Have to be within ]0,1[.")
-
-    # Standardize design matrix?
-    if ( standardize ) X <- standardize_model_matrix(X)
-
-    # initialize regression coefficients if needed
-    if ( is.null(beta) ) beta <- rep.int(0, ncol(X)) # FIXME: there is surely a better solution!
-
-    # Calculate logistic regression likelihood
-    loglik <- function(beta, post, X, lambda) {
-        eta <- drop(X %*% beta) 
-        # Penalize all non-intercept coefficients
-        idx <- which(!grepl("^\\(Intercept\\)$", colnames(X)))
-        if ( is.null(lambda) | length(idx) == 0 ) return(sum(y * eta - log(1 + exp(eta))))
-        # Penalized log-likelihood sum
-        sum(y * eta - log(1 + exp(eta))) - lambda / 2 * sum(beta[idx]^2)
-    }
-    # Gradient for the 
-    gradfun <- function(beta, post, X, lambda) {
-        eta  <- drop(X %*% beta)
-        prob <- plogis(eta)
-        idx  <- which(!grepl("^\\(Intercept\\)$", colnames(X)))
-        grad <- (post / prob - (1-post) / (1-prob)) * exp(eta) / (1 + exp(eta))^2
-
-        res <- colSums(X * grad)
-        for ( i in which(!grepl("^\\(Intercept\\)$", colnames(X))) )
-            res[i] = res[i] - lambda * as.numeric(beta[i])
-        return(res)
-        return(colSums(X * grad))
-    }
-
-
-    # Start optimizer. fnscale = -1 makes the minimization problem
-    # a maximization problem (maximum likelihood)
-    post <- y
-    if ( is.null(lambda) ) lambda <- 0
-    opt <- optim(beta, fn = loglik, gr = gradfun,
-                 X = X, post = post, lambda = lambda, method = "BFGS",
-                 control = list(maxit = maxit, abstol = tol, fnscale = -1, ...))
-
-    # Create coefficient matrix of estimated parameters "beta"
-    beta <- matrix(opt$par, ncol = 1, dimnames = list(colnames(X), "concomitant"))
-
-    # Just naming the column containing the coefficients.
-    colnames(beta) <- c("concomitant")
-
-    # Calculate effective degrees of freedom
-    # TODO: regularization not yet implemented
-    ##if ( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
-    ##edf <- sum(diag(t(X*w) %*% (X*w) %*% solve(t(X*w) %*% (X*w) + reg)))
-
-    ll <- loglik(beta, post, X, lambda)
-    edf <- ncol(X)
-    cat(sprintf("Concomitant model, ll = %15.4f, %s\r", ll,
-                ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
-
-    # Unscale coefficients if needed
-    rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
-                 BIC = -2 * ll + log(nrow(X)) * edf,
-                 converged = ifelse(opt$convergence == 0, TRUE, FALSE))
-    rval$beta <- beta
-    rval$coef <- if ( ! standardize ) beta else destandardize_coefficients(beta, X)
-
-    # Return list object containing
-    # - edf (numeric): effective degrees of freedom
-    # - loglik (numeric): log-likelihood of the model
-    # - converged (logical): flag whether or not the iterative solver converged
-    # - beta/coef (matrix): standardized and de-standardized coefficients. If
-    #       input "standardized = FALSE" beta and coef are identical.
-    return(rval)
-}
+#### -------------------------------------------------------------------
+#### IWLS optimizer for logistic regression model (concomitant model)
+#### -------------------------------------------------------------------
+###bfgs_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
+###                       maxit = 100L, tol = 1e-8, ...) {
+###
+###    # Checking inputs. Constant covariates (concomitant variables)
+###    # are not allowed except one column (intercept).
+###    if(sum(apply(X, 2, sd) == 0) > 1) stop("Multiple columns with constant values!")
+###    if ( min(y) < 0 | max(y) > 1 ) stop("y values out of range. Have to be within ]0,1[.")
+###
+###    # Standardize design matrix?
+###    if ( standardize ) X <- standardize_model_matrix(X)
+###
+###    # initialize regression coefficients if needed
+###    if ( is.null(beta) ) beta <- rep.int(0, ncol(X)) # FIXME: there is surely a better solution!
+###
+###    # Calculate logistic regression likelihood
+###    loglik <- function(beta, post, X, lambda) {
+###        eta <- drop(X %*% beta) 
+###        # Penalize all non-intercept coefficients
+###        idx <- which(!grepl("^\\(Intercept\\)$", colnames(X)))
+###        if ( is.null(lambda) | length(idx) == 0 ) return(sum(y * eta - log(1 + exp(eta))))
+###        # Penalized log-likelihood sum
+###        sum(y * eta - log(1 + exp(eta))) - lambda / 2 * sum(beta[idx]^2)
+###    }
+###    # Gradient for the 
+###    gradfun <- function(beta, post, X, lambda) {
+###        eta  <- drop(X %*% beta)
+###        prob <- plogis(eta)
+###        idx  <- which(!grepl("^\\(Intercept\\)$", colnames(X)))
+###        grad <- (post / prob - (1-post) / (1-prob)) * exp(eta) / (1 + exp(eta))^2
+###
+###        res <- colSums(X * grad)
+###        for ( i in which(!grepl("^\\(Intercept\\)$", colnames(X))) )
+###            res[i] = res[i] - lambda * as.numeric(beta[i])
+###        return(res)
+###        return(colSums(X * grad))
+###    }
+###
+###
+###    # Start optimizer. fnscale = -1 makes the minimization problem
+###    # a maximization problem (maximum likelihood)
+###    post <- y
+###    if ( is.null(lambda) ) lambda <- 0
+###    opt <- optim(beta, fn = loglik, gr = gradfun,
+###                 X = X, post = post, lambda = lambda, method = "BFGS",
+###                 control = list(maxit = maxit, abstol = tol, fnscale = -1, ...))
+###
+###    # Create coefficient matrix of estimated parameters "beta"
+###    beta <- matrix(opt$par, ncol = 1, dimnames = list(colnames(X), "concomitant"))
+###
+###    # Just naming the column containing the coefficients.
+###    colnames(beta) <- c("concomitant")
+###
+###    # Calculate effective degrees of freedom
+###    # TODO: regularization not yet implemented
+###    ##if ( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
+###    ##edf <- sum(diag(t(X*w) %*% (X*w) %*% solve(t(X*w) %*% (X*w) + reg)))
+###
+###    ll <- loglik(beta, post, X, lambda)
+###    edf <- ncol(X)
+###    cat(sprintf("Concomitant model, ll = %15.4f, %s\r", ll,
+###                ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
+###
+###    # Unscale coefficients if needed
+###    rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
+###                 BIC = -2 * ll + log(nrow(X)) * edf,
+###                 converged = ifelse(opt$convergence == 0, TRUE, FALSE))
+###    rval$beta <- beta
+###    rval$coef <- if ( ! standardize ) beta else destandardize_coefficients(beta, X)
+###
+###    # Return list object containing
+###    # - edf (numeric): effective degrees of freedom
+###    # - loglik (numeric): log-likelihood of the model
+###    # - converged (logical): flag whether or not the iterative solver converged
+###    # - beta/coef (matrix): standardized and de-standardized coefficients. If
+###    #       input "standardized = FALSE" beta and coef are identical.
+###    return(rval)
+###}
 
 
 # -------------------------------------------------------------------
