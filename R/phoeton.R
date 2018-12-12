@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 07:48 on marvin
+# - L@ST MODIFIED: 2018-12-12 09:03 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -110,123 +110,14 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
 
     timing <- Sys.time()
 
-    # Regularization for the logit model (concomitant model) can be either
-    # loglik (no regularization), AIC, or BIC. In case of AIC and BIC
-    # the optimal penalization is based on AIC/BIC criteria using
-    # a ridge penalization. Requires to estimate
-    # the logit model multiple times for different lambdas.
-    lambda.min <- match.arg(lambda.min, c("auto","loglik", "AIC", "BIC"))
-    family     <- match.arg(family, c("gaussian", "logistic"))
-    if ( ! inherits(standardize, "logical") )
-        stop("Input \"standardize\" has to be logical (TRUE or FALSE).")
-    if ( ! inherits(data, "zoo") )
-        stop("Input \"data\" to foehndiag needs to be a time series object of class \"zoo\".")
+    # Prepare inputs. phoeton_prepare returns a list of required objects.
+    x <- phoeton_prepare(formula, data, windsector, maxit, tol, lambda.min,
+                         standardize, family, nlambda)
+    # Attach to current environment to be used in the EM algorithm.
+    for ( n in names(x) ) eval(parse(text = sprintf("%1$s <- x$%1$s", n))); rm(x)
 
-    # Deconstruct the formula
-    left  <- as.character(formula)[2]
-    right <- as.character(formula)[3]
 
-    # Stop if the main covariate for the flexible Gaussian mixture model
-    # is not a valid variable name.
-    stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
-
-    # Maxit and tol are the maximum number of iterations for the
-    # optimization. Need to be numeric. If one value is given it will
-    # be used for both, the EM algorithm and the IWLS optimization for
-    # the concomitants. If two values are given the first one is used
-    # for the EM algorithm, the second for the IWLS solver.
-    stopifnot(is.numeric(maxit) | length(maxit) > 2)
-    stopifnot(is.numeric(tol)   | length(tol) > 2)
-
-    # Create strictly regular time series object with POSIXct
-    # time stamp.
-    index(data) <- as.POSIXct(index(data))
-    if ( is.regular(data) & ! is.regular(data, strict = TRUE) ) {
-        interval <- min(diff(index(data)))
-        tmp <- seq(min(index(data)), max(index(data)), by = interval)
-        data <- merge(data, zoo(,tmp))
-    }
-
-    # Extracting model.frame used for the concomitant model,
-    # and the vector y used for the clustering (main covariate).
-    # Keep missing values.
-    mf <- model.frame(formula, data, na.action = na.pass)
-    y  <- model.response(mf)
-
-    # Identify rows with missing values
-    idx_na   <- which(is.na(y) | apply(mf, 1, function(x) sum(is.na(x))) != 0)
-    # If a wind sector is given: identify observations with a wind direction
-    # outside the user defined sector. These will not be considered in the
-    # statistical models.
-    if ( is.null(windsector) ) {
-        idx_wind <- NULL # No wind sector filter
-    } else {
-        # FIXME: is it possible to use custom names?
-        if ( ! "dd" %in% names(data) )
-            stop("If wind sector is given the data object requires to have a column \"dd\".")
-        # Filtering
-        if ( windsector[1L] < windsector[2L] ) {
-            idx_wind <- which(data$dd < windsector[1L] | data$dd > windsector[2L])
-        } else {
-            idx_wind <- which(data$dd > windsector[1L] & data$dd < windsector[2L])
-        }
-    }
-    # Indes of all values which should be considered in the model
-    idx_take <- which(! 1:nrow(data) %in% c(idx_na, idx_wind))
-    if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
-
-    # Subset the model.frame (mf) and the response (y) and pick
-    # all valid rows (without missing values on the mandatory columns
-    # and, if a wind sector is given, with valid wind direction observations).
-    mf <- matrix(mf[idx,], ncol = ncol(mf), dimnames = list(NULL, names(mf)))
-    y  <- y[idx_take]
-
-    # Check whether regularization is preferred over unpenalized
-    # regression estimation (only if lambda.min is "auto")
-    browser()
-    if ( lambda.min == "auto" ) {
-        tmp <- cor(mf); diag(tmp) <- 0
-        if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
-    }
-
-    # Setting up the model matrix for the concomitant model (logit model).
-    logitX <- model.matrix(formula, data = data[idx_take,])
-
-    # Initialize coefficients for the two components of the mixture
-    # model (location and log-scale; mean and log-standard deviation).
-    # If family == "logistic": empirical scale for a logistic random
-    # variable is sd(y) * sqrt(3) / pi
-    logsd <- function(y) log(sqrt(sum((y-mean(y))^2) / length(y)))
-    theta  <- list(mu1    = as.numeric(quantile(y, 0.25)),
-                   logsd1 = logsd(y[y <= median(y)]),
-                   mu2    = as.numeric(quantile(y, 0.75)),
-                   logsd2 = logsd(y[y >= median(y)]))
-    if ( family == "logistic" ) {
-        theta$logsd1 <- log(exp(theta$logsd1) * sqrt(3) / pi)
-        theta$logsd2 <- log(exp(theta$logsd2) * sqrt(3) / pi)
-    }
-
-    # Initial parameters for the concomitant model (ccmodel)
-    # as.numeric(y > median(y)) is the initial best guess component assignment.
-    ccmodel <- iwls_logit(logitX, as.numeric(y > median(y)), maxit = tail(maxit, 1), tol = tail(tol, 1), nlambda = nlambda)
-    cat("\nInitial parameters:\n")
-    print(matrix(c(theta$mu1, exp(theta$logsd1), theta$mu2, exp(theta$logsd2)), ncol = 2,
-                 dimnames = list(c("mu", "sd"), c("Comp.1", "Comp.2"))))
-
-    # calculate current probabilities (probability to be in second cluster)
-    # ccmodel$coef are the non-standardized coefficients (alpha)
-    prob <- plogis(drop(logitX %*% ccmodel$coef))
-
-    # Start optimization using weighted empirical moments for
-    # location and scale of the two Gaussian distributions plus
-    # an IWLS solver for the logistic regression model given the
-    # concomitant variables.
-    # Optimization
-    ll0 <- NULL      # Initial value for the log-likelihood sum
-    llpath <- list() # List element to store log-likelihood path
-    t <- Sys.time()  # Measuring execution time
-    iter <- 0        # Iteration index for the EM algorithm
-
+    #TODO: Should be moved into the prepare function.
     # If lambda.min is not loglik: ridge penalization
     if ( lambda.min %in% c("AIC", "BIC") ) {
         # If nlambda is not a positive integer: stop.
@@ -238,7 +129,8 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         # Fitting logistic regression models with different lambdas.
         coef_sum_fun <- function(lambda, logitX, post, maxit, tol) {
             # As response a first guess y >= median(y) is used.
-            m <- bfgs_logit(logitX, as.numeric(y >= median(y)), lambda = lambda, maxit = maxit, tol = tol)
+            m <- iwls_logit(logitX, as.numeric(y >= median(y)), standardize = FALSE,
+                            lambda = lambda, maxit = maxit, tol = tol)
             sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
         }
         x <- sapply(lambdas, coef_sum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
@@ -246,6 +138,17 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         # certain threshold OR take maximum of lambdas tested.
         lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
     } else { lambdas <- NULL }
+
+    # Start optimization using weighted empirical moments for
+    # location and scale of the two Gaussian distributions plus
+    # an IWLS solver for the logistic regression model given the
+    # concomitant variables.
+    # Optimization
+    ll0 <- NULL      # Initial value for the log-likelihood sum
+    llpath <- list() # List element to store log-likelihood path
+    t <- Sys.time()  # Measuring execution time
+    iter <- 0        # Iteration index for the EM algorithm
+
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -273,12 +176,12 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         # Using the (possibly) standardized coefficients from the previous iteration
         # as initial parameters (alpha).
         if ( is.null(lambdas) ) {
-            ccmodel <- iwls_logit(logitX, post, ccmodel$beta,
+            ccmodel <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
                                   maxit = tail(maxit, 1), tol = tail(tol, 1))
         } else {
             tmp <- list()
             for ( la in lambdas ) {
-                m <- iwls_logit(logitX, post, ccmodel$beta,
+                m <- iwls_logit(logitX, post, ccmodel$coef, standardize = FALSE,
                                 maxit = tail(maxit, 1), tol = tail(tol, 1), lambda = la)
                 # Break early if increase AIC/BIC (as specified for lambda.min)
                 # is smaller than the tolerance.
@@ -315,11 +218,17 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         ll0 <- ll$full
     }; cat("\n")
 
+    # Final coefficients of the concomitant model have to be destandardized
+    # if standardize == TRUE.
+    if ( ! is.standardized(logitX) ) { coef <- ccmodel$coef }
+    else { coef <- destandardize_coefficients(ccmodel$coef, logitX) }
+
     # Create the return list object (phoeton object)
     rval <- list()
     rval$call <- match.call()
-    rval$coef <- list(mu1 = theta$mu1, sd1 = exp(theta$logsd1), mu2 = theta$mu2, sd2 = exp(theta$logsd2),
-                      concomitants = ccmodel$coef)
+    rval$coef <- list(mu1 = theta$mu1, sd1 = exp(theta$logsd1),
+                      mu2 = theta$mu2, sd2 = exp(theta$logsd2),
+                      concomitants = coef)
 
     rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath), n.iter = iter,
                            maxit = maxit[1L], tol = tol[1L], converged = ifelse(iter < maxit, TRUE, FALSE))
@@ -333,9 +242,6 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # d1: density of cluster 1 given the parameters for the two Gaussian
     #     distributions/clusters and the posterior information
     # d2: density of cluster 2 (see above)
-    #pfun <- ifelse(family == "gaussian", pnorm, plogis)
-    #d1   <- pfun(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
-    #d2   <- pfun(y, theta$mu2, exp(theta$logsd2)) * prob
     post <- do.call(sprintf("foehndiag_%s_posterior", family),
                         list(y = y, prob = prob, theta = theta))
 
@@ -349,12 +255,7 @@ phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     rval$prob[idx_take] <- post#d2 / (d2 + d1)
     rval$prob[idx_wind] <- 0
 
-    d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - post)
-    d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * post
-    rval$probX <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
-    rval$probX[idx_take] <- d2 / (d2 + d1)
-    rval$probX[idx_wind] <- 0
-
+    # Store execution time
     rval$time <- as.numeric(Sys.time() - timing, units = "mins")
 
     # Return new object

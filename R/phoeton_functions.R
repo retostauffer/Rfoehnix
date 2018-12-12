@@ -11,9 +11,151 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-11 12:57 on marvin
+# - L@ST MODIFIED: 2018-12-12 08:11 on marvin
 # -------------------------------------------------------------------
 
+# -------------------------------------------------------------------
+# Prepare data for classification. Used for both, phoeton and
+# advanced phoeton as the first part of both functions is the
+# same for both methods.
+# Returns a list which will be attached in the parent function.
+# -------------------------------------------------------------------
+phoeton_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
+                            standardize, family, nlambda) {
+
+    # Regularization for the logit model (concomitant model) can be either
+    # loglik (no regularization), AIC, or BIC. In case of AIC and BIC
+    # the optimal penalization is based on AIC/BIC criteria using
+    # a ridge penalization. Requires to estimate
+    # the logit model multiple times for different lambdas.
+    lambda.min <- match.arg(lambda.min, c("auto","loglik", "AIC", "BIC"))
+    family     <- match.arg(family, c("gaussian", "logistic"))
+    if ( ! inherits(standardize, "logical") )
+        stop("Input \"standardize\" has to be logical (TRUE or FALSE).")
+    if ( ! inherits(data, "zoo") )
+        stop("Input \"data\" to foehndiag needs to be a time series object of class \"zoo\".")
+
+    # Deconstruct the formula
+    left  <- as.character(formula)[2]
+    right <- as.character(formula)[3]
+
+    # Stop if the main covariate for the flexible Gaussian mixture model
+    # is not a valid variable name.
+    stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
+
+    # Maxit and tol are the maximum number of iterations for the
+    # optimization. Need to be numeric. If one value is given it will
+    # be used for both, the EM algorithm and the IWLS optimization for
+    # the concomitants. If two values are given the first one is used
+    # for the EM algorithm, the second for the IWLS solver.
+    stopifnot(is.numeric(maxit) | length(maxit) > 2)
+    stopifnot(is.numeric(tol)   | length(tol) > 2)
+
+    # Create strictly regular time series object with POSIXct
+    # time stamp.
+    index(data) <- as.POSIXct(index(data))
+    if ( is.regular(data) & ! is.regular(data, strict = TRUE) ) {
+        interval <- min(diff(index(data)))
+        tmp <- seq(min(index(data)), max(index(data)), by = interval)
+        data <- merge(data, zoo(,tmp))
+    }
+
+    # Extracting model.frame used for the concomitant model,
+    # and the vector y used for the clustering (main covariate).
+    # Keep missing values.
+    mf <- model.frame(formula, data, na.action = na.pass)
+    y  <- model.response(mf)
+
+    # Identify rows with missing values
+    idx_na   <- which(is.na(y) | apply(mf, 1, function(x) sum(is.na(x))) != 0)
+    # If a wind sector is given: identify observations with a wind direction
+    # outside the user defined sector. These will not be considered in the
+    # statistical models.
+    if ( is.null(windsector) ) {
+        idx_wind <- NULL # No wind sector filter
+    } else {
+        # FIXME: is it possible to use custom names?
+        if ( ! "dd" %in% names(data) )
+            stop("If wind sector is given the data object requires to have a column \"dd\".")
+        # Filtering
+        if ( windsector[1L] < windsector[2L] ) {
+            idx_wind <- which(data$dd < windsector[1L] | data$dd > windsector[2L])
+        } else {
+            idx_wind <- which(data$dd > windsector[1L] & data$dd < windsector[2L])
+        }
+    }
+    # Indes of all values which should be considered in the model
+    idx_take <- which(! 1:nrow(data) %in% c(idx_na, idx_wind))
+    if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
+
+    # Subset the model.frame (mf) and the response (y) and pick
+    # all valid rows (without missing values on the mandatory columns
+    # and, if a wind sector is given, with valid wind direction observations).
+    mf <- matrix(unlist(mf[idx,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
+    y  <- y[idx_take]
+
+    # Check whether regularization is preferred over unpenalized
+    # regression estimation (only if lambda.min is "auto")
+    if ( lambda.min == "auto" & ncol(mf) > 2 ) {
+        tmp <- cor(na.omit(mf[,-1])); diag(tmp) <- 0
+        if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
+    }
+
+    # Setting up the model matrix for the concomitant model (logit model).
+    logitX <- model.matrix(formula, data = data[idx_take,])
+
+    # Initialize coefficients for the two components of the mixture
+    # model (location and log-scale; mean and log-standard deviation).
+    # If family == "logistic": empirical scale for a logistic random
+    # variable is sd(y) * sqrt(3) / pi
+    logsd <- function(y) log(sqrt(sum((y-mean(y))^2) / length(y)))
+    theta  <- list(mu1    = as.numeric(quantile(y, 0.25)),
+                   logsd1 = logsd(y[y <= median(y)]),
+                   mu2    = as.numeric(quantile(y, 0.75)),
+                   logsd2 = logsd(y[y >= median(y)]))
+    if ( family == "logistic" ) {
+        theta$logsd1 <- log(exp(theta$logsd1) * sqrt(3) / pi)
+        theta$logsd2 <- log(exp(theta$logsd2) * sqrt(3) / pi)
+    }
+
+    # Initial parameters for the concomitant model (ccmodel)
+    # as.numeric(y > median(y)) is the initial best guess component assignment.
+    # Force standardize = FALSE as logitX is already standardized if input
+    # standardize = TRUE for the main function phoeton and advanced_phoeton.
+    ccmodel <- iwls_logit(logitX, as.numeric(y > median(y)), standardize = FALSE,
+                          maxit = tail(maxit, 1), tol = tail(tol, 1), nlambda = nlambda)
+    cat("\nInitial parameters:\n")
+    print(matrix(c(theta$mu1, exp(theta$logsd1), theta$mu2, exp(theta$logsd2)), ncol = 2,
+                 dimnames = list(c("mu", "sd"), c("Comp.1", "Comp.2"))))
+
+    # calculate current probabilities (probability to be in second cluster)
+    # ccmodel$coef are the non-standardized coefficients (alpha)
+    prob <- plogis(drop(logitX %*% ccmodel$coef))
+
+    # If standardize = TRUE: standardize model matrix for
+    # the concomitant model (logitX)
+    if ( standardize ) logitX <- standardize_model_matrix(logitX)
+
+
+    # Returning a set of objects as named list used in the parent
+    # function (phoeton and advanced_phoeton):
+    return(list(theta  = theta,      ccmodel  = ccmodel,
+                prob   = prob,
+                y      = y,          logitX   = logitX,
+                idx_take = idx_take, idx_na   = idx_na,
+                idx_wind = idx_wind))
+}
+
+# -------------------------------------------------------------------
+# Small helper function to check whether or not the matrix is
+# standardized or not. Considered to be standardized if the matrix
+# contains the two additional attributes "scaled:center" and
+# "scaled:scale".
+# -------------------------------------------------------------------
+is.standardized <- function(x, ...) UseMethod("is.standardized")
+is.standardized.matrix <- function(x, ...) {
+    all(c("scaled:center", "scaled:scale") %in% names(attributes(x)))
+}
 
 # -------------------------------------------------------------------
 # Standardize coefficients
