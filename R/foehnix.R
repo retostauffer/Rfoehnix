@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 09:16 on marvin
+# - L@ST MODIFIED: 2018-12-12 12:35 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -116,29 +116,6 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # Attach to current environment to be used in the EM algorithm.
     for ( n in names(x) ) eval(parse(text = sprintf("%1$s <- x$%1$s", n))); rm(x)
 
-
-    #TODO: Should be moved into the prepare function.
-    # If lambda.min is not loglik: ridge penalization
-    if ( lambda.min %in% c("AIC", "BIC") ) {
-        # If nlambda is not a positive integer: stop.
-        stopifnot(inherits(nlambda, c("integer", "numeric")))
-        stopifnot(nlambda >= 0)
-        # Find large lambda where all parameters are close to 0.
-        # Trying lambdas between exp(6) and exp(12).
-        lambdas <- exp(seq(6, 12, by = 2))
-        # Fitting logistic regression models with different lambdas.
-        coef_sum_fun <- function(lambda, logitX, post, maxit, tol) {
-            # As response a first guess y >= median(y) is used.
-            m <- iwls_logit(logitX, as.numeric(y >= median(y)), standardize = FALSE,
-                            lambda = lambda, maxit = maxit, tol = tol)
-            sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
-        }
-        x <- sapply(lambdas, coef_sum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
-        # Pick the lambda where sum of parameters is smaller than a 
-        # certain threshold OR take maximum of lambdas tested.
-        lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
-    } else { lambdas <- NULL }
-
     # Start optimization using weighted empirical moments for
     # location and scale of the two Gaussian distributions plus
     # an IWLS solver for the logistic regression model given the
@@ -147,14 +124,26 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     ll0      <- NULL   # Initial value for the log-likelihood sum
     llpath   <- list() # List to store log-likelihood path
     coefpath <- list() # List to store coefficient path
+    regpath  <- list() # Store regularization path (if needed)
     iter     <- 0      # Iteration index for the EM algorithm
 
     # Initial likelihoods
-    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+    post <- do.call(sprintf("foehnix_%s_posterior", family),
                     list(y = y, prob = prob, theta = theta))
-    llpath[[1]] <- do.call(sprintf("foehndiag_%s_loglik", family),
+    llpath[[1]] <- do.call(sprintf("foehnix_%s_loglik", family),
                       list(y = y, post = post, prob = prob, theta = theta))
     coefpath[[1]] <- cbind(as.data.frame(theta), as.data.frame(t(ccmodel$beta)))
+
+    # Helper function to extract regularization path
+    regpath_fun <- function(x, selected)
+        data.frame(lambda = x$lambda, edf = x$edf, AIC = x$AIC, BIC = x$BIC,
+                   selected = ifelse(selected == x$lambda, TRUE, FALSE))
+
+
+    # Getting lambdas for ridge penalty
+    if ( lambda.min %in% c("AIC", "BIC") ) {
+        lambdas <- get_lambdas(nlambda, logitX, post, maxit, tol)
+    } else { lambdas <- NULL }
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -164,7 +153,7 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
 
         ## E-Step ##
         # Calculate the posterior weights
-        post <- do.call(sprintf("foehndiag_%s_posterior", family),
+        post <- do.call(sprintf("foehnix_%s_posterior", family),
                         list(y = y, prob = prob, theta = theta))
 
         ## M-Step ##
@@ -192,12 +181,18 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
                 # Break early if increase AIC/BIC (as specified for lambda.min)
                 # is smaller than the tolerance.
                 if ( length(tmp) > 1 ) {
-                    if ( (tmp[[length(tmp)]][[lambda.min]] - m[[lambda.min]]) < tol )
-                        break
+                    #TODO: manual, state that algorithm stops early if
+                    # no changes can be see anymore with decreased lambda.
+                    if ( (tmp[[length(tmp)]][[lambda.min]] - m[[lambda.min]]) < tol ) break
                 }
                 tmp[[length(tmp)+1]] <- m
             }
-            ccmodel = tmp[[which.min(sapply(tmp, function(x, score) x[[score]], score = lambda.min))]]
+            # Search for iteration with lowest criterium ("score")
+            tmp_idx <- which.min(sapply(tmp, function(x, score) x[[score]], score = lambda.min))
+            # Append information to regpath (regularization path)
+            regpath[[iter]] <- do.call(rbind, lapply(tmp, regpath_fun, tmp[[tmp_idx]]$lambda))
+            # Pick the one model we need, drop tmp
+            ccmodel <- tmp[[tmp_idx]]; rm(tmp)
         }
         cat("\n")
 
@@ -207,7 +202,7 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
         prob <- plogis(drop(logitX %*% ccmodel$coef)) # Update probabilities
 
         # Calculate/trace loglik
-        ll <- do.call(sprintf("foehndiag_%s_loglik", family),
+        ll <- do.call(sprintf("foehnix_%s_loglik", family),
                       list(y = y, post = post, prob = prob, theta = theta))
         if ( !is.finite(ll$full) ) browser()
         llpath[[iter + 1]] <- ll
@@ -241,7 +236,7 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
                       concomitants = coef)
 
     rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath), n.iter = iter,
-                           coefpath = do.call(rbind, coefpath),
+                           coefpath = do.call(rbind, coefpath), ccmodel = ccmodel,
                            maxit = maxit[1L], tol = tol[1L], converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$data <- data
     rval$windsector <- windsector
@@ -253,7 +248,7 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # d1: density of cluster 1 given the parameters for the two Gaussian
     #     distributions/clusters and the posterior information
     # d2: density of cluster 2 (see above)
-    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+    post <- do.call(sprintf("foehnix_%s_posterior", family),
                         list(y = y, prob = prob, theta = theta))
 
     # The fohen probability vector: create an object of the
@@ -262,9 +257,10 @@ foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8, 
     # - observations outside the requested wind sector get a 0 (no foehn)
     # - those observations which entered the models get their modelled
     #   foehn probability.
-    rval$prob <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
-    rval$prob[idx_take] <- post#d2 / (d2 + d1)
-    rval$prob[idx_wind] <- 0
+    tmp <- rep(NA, ncol(data))
+    tmp[idx_take] <- post
+    tmp[idx_wind] <- 0
+    rval$prob <- zoo(tmp, index(data))
 
     # Store execution time
     rval$time <- as.numeric(Sys.time() - timing, units = "mins")

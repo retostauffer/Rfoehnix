@@ -1,4 +1,4 @@
-Package: phoeton
+Package: foehnix
 Type: Package
 Title: Objectiv Foehn Diagnosis
 Version: 0.0.1
@@ -18,7 +18,7 @@ Description: A package providing tools to perform objective probabilistic foehn
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-BugReports: https://github.com/retostauffer/Rphoeton/issues
+BugReports: https://github.com/retostauffer/Rfoehnix/issues
 Depends: R (>= 3.0.0), zoo
 Imports: graphics
 Suggests: colorspace

@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 10:24 on marvin
+# - L@ST MODIFIED: 2018-12-12 14:35 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -122,7 +122,9 @@ foehnix_prepare <- function(formula, data, windsector, maxit, tol, lambda.min,
     # as.numeric(y > median(y)) is the initial best guess component assignment.
     # Force standardize = FALSE as logitX is already standardized if input
     # standardize = TRUE for the main function foehnix and advanced_foehnix.
-    ccmodel <- iwls_logit(logitX, as.numeric(y > median(y)), standardize = FALSE,
+    post <- do.call(sprintf("foehnix_%s_posterior", family),
+                    list(y = y, prob = rep(.5, length(y)), theta = theta))
+    ccmodel <- iwls_logit(logitX, post, standardize = FALSE,
                           maxit = tail(maxit, 1), tol = tail(tol, 1), nlambda = nlambda)
     cat("\nInitial parameters:\n")
     print(matrix(c(theta$mu1, exp(theta$logsd1), theta$mu2, exp(theta$logsd2)), ncol = 2,
@@ -199,6 +201,38 @@ destandardize_coefficients <- function(beta, X) {
     return(beta)
 }
 
+# -------------------------------------------------------------------
+# Trying to estimate a reasonably high upper bound for lambda
+# if ridge penalization is needed.
+# -------------------------------------------------------------------
+get_lambdas <- function(nlambda, logitX, post, maxit, tol) {
+
+    # If nlambda is not a positive integer: stop.
+    stopifnot(inherits(nlambda, c("integer", "numeric")))
+    stopifnot(nlambda >= 0)
+
+    # Fitting logistic regression models with different lambdas.
+    csum_fun <- function(lambda, logitX, post, maxit, tol) {
+        # As response a first guess y >= median(y) is used.
+        # Force standardize = FALSE as logitX is already standardized if
+        # standardize == TRUE for this function.
+        m <- iwls_logit(logitX, post, standardize = FALSE,
+                        lambda = lambda, maxit = maxit, tol = tol)
+        sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
+    }
+
+    # Find large lambda where all parameters are close to 0.
+    # Trying lambdas between exp(6) and exp(12).
+    lambdas <- exp(seq(5, 15, by = 1))
+    x <- sapply(lambdas, csum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
+
+    # Pick the lambda where sum of parameters is smaller than a 
+    # certain threshold OR take maximum of lambdas tested.
+    lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
+    cat(sprintf("Use penalization lambda within %.5f to %.5f\n", max(lambdas), min(lambdas)))
+    return(lambdas)
+}
+
 
 # -------------------------------------------------------------------
 # Calculates and returns the log-likelihood for the two parts
@@ -208,7 +242,7 @@ destandardize_coefficients <- function(beta, X) {
 # theta: list object containing the location/scale parameters (or
 #        coefficients for location/scale for the Gaussian distributions)
 # -------------------------------------------------------------------
-foehndiag_gaussian_loglik <- function(y, post, prob, theta) {
+foehnix_gaussian_loglik <- function(y, post, prob, theta) {
         # Calculate/trace loglik
         eps  <- sqrt(.Machine$double.eps)
         ll <- data.frame(
@@ -219,13 +253,13 @@ foehndiag_gaussian_loglik <- function(y, post, prob, theta) {
         ll$full <- sum(unlist(ll))
         return(ll)
 }
-foehndiag_gaussian_posterior <- function(y, prob, theta) {
+foehnix_gaussian_posterior <- function(y, prob, theta) {
     (prob) * dnorm(y, theta$mu2, exp(theta$logsd2)) /
     ((1 - prob) * dnorm(y, theta$mu1, exp(theta$logsd1)) +
     prob * dnorm(y, theta$mu2, exp(theta$logsd2)))
 }
 
-foehndiag_logistic_loglik <- function(y, post, prob, theta) {
+foehnix_logistic_loglik <- function(y, post, prob, theta) {
         # Calculate/trace loglik
         eps  <- sqrt(.Machine$double.eps)
         prob <- pmax(eps, pmin(1-eps, prob))
@@ -237,7 +271,7 @@ foehndiag_logistic_loglik <- function(y, post, prob, theta) {
         ll$full <- sum(unlist(ll))
         return(ll)
 }
-foehndiag_logistic_posterior <- function(y, prob, theta) {
+foehnix_logistic_posterior <- function(y, prob, theta) {
     (prob) * dlogis(y, theta$mu2, exp(theta$logsd2)) /
     ((1 - prob) * dlogis(y, theta$mu1, exp(theta$logsd1)) +
     prob * dlogis(y, theta$mu2, exp(theta$logsd2)))
@@ -387,6 +421,7 @@ plot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NU
 
     # Combine foehn probabilities and observations
     data <- merge(x$prob, x$data)
+    names(data)[1L] <- "prob"
 
     # Looping over the different periods we have to plot
     par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
@@ -464,7 +499,7 @@ plot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NU
         mtext(side = 2, line = 3, "foehn probability")
         add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
         # Adding RUG
-        at <- index(x$prob)[which(x$prob >= .5)]
+        at <- index(tmp$prob)[which(tmp$prob >= .5)]
         if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
         box()
         if ( ! is.null(xtra) )

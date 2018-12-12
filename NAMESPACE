@@ -2,6 +2,6 @@
 
 export(iwls_logit)
 export(bfgs_logit)
-export(phoeton)
-export(advanced_phoeton)
+export(foehnix)
+export(advanced_foehnix)
 

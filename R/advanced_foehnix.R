@@ -10,7 +10,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 10:19 on marvin
+# - L@ST MODIFIED: 2018-12-12 14:24 on marvin
 # -------------------------------------------------------------------
 
 
@@ -120,27 +120,31 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
 
      #TODO: Should be moved into the prepare function.
     # If lambda.min is not loglik: ridge penalization
-    if ( lambda.min %in% c("AIC", "BIC") ) {
-        # If nlambda is not a positive integer: stop.
-        stopifnot(inherits(nlambda, c("integer", "numeric")))
-        stopifnot(nlambda >= 0)
-        # Find large lambda where all parameters are close to 0.
-        # Trying lambdas between exp(6) and exp(12).
-        lambdas <- exp(seq(6, 12, by = 2))
-        # Fitting logistic regression models with different lambdas.
-        coef_sum_fun <- function(lambda, logitX, post, maxit, tol) {
-            # As response a first guess y >= median(y) is used.
-            # Force standardize = FALSE as logitX is already standardized if
-            # standardize == TRUE for this function.
-            m <- bfgs_logit(logitX, as.numeric(y >= median(y)), standardize = FALSE,
-                            lambda = lambda, maxit = maxit, tol = tol)
-            sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
-        }
-        x <- sapply(lambdas, coef_sum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
-        # Pick the lambda where sum of parameters is smaller than a 
-        # certain threshold OR take maximum of lambdas tested.
-        lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
-    } else { lambdas <- NULL }
+#    if ( lambda.min %in% c("AIC", "BIC") ) {
+#        lambdas <- get_lambdas(nlambda, logitX, post, maxit, tol)
+#        browser()
+#        print(lambdas)
+#        stop('laaa')
+#        # If nlambda is not a positive integer: stop.
+#        stopifnot(inherits(nlambda, c("integer", "numeric")))
+#        stopifnot(nlambda >= 0)
+#        # Find large lambda where all parameters are close to 0.
+#        # Trying lambdas between exp(6) and exp(12).
+#        lambdas <- exp(seq(6, 12, by = 2))
+#        # Fitting logistic regression models with different lambdas.
+#        coef_sum_fun <- function(lambda, logitX, post, maxit, tol) {
+#            # As response a first guess y >= median(y) is used.
+#            # Force standardize = FALSE as logitX is already standardized if
+#            # standardize == TRUE for this function.
+#            m <- bfgs_logit(logitX, as.numeric(y >= median(y)), standardize = FALSE,
+#                            lambda = lambda, maxit = maxit, tol = tol)
+#            sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
+#        }
+#        x <- sapply(lambdas, coef_sum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
+#        # Pick the lambda where sum of parameters is smaller than a 
+#        # certain threshold OR take maximum of lambdas tested.
+#        lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
+#    } else { lambdas <- NULL }
 
 
     # Helper function to compute the log-likelihoood sum contribution
@@ -171,12 +175,16 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
     iter     <- 0      # Iteration index for the EM algorithm
 
     # Initial likelihoods
-    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+    post <- do.call(sprintf("foehnix_%s_posterior", family),
                     list(y = y, prob = prob, theta = theta))
-    llpath[[1]] <- do.call(sprintf("foehndiag_%s_loglik", family),
+    llpath[[1]] <- do.call(sprintf("foehnix_%s_loglik", family),
                       list(y = y, post = post, prob = prob, theta = theta))
     coefpath <- list()
     coefpath[[1]] <- cbind(as.data.frame(theta), as.data.frame(t(ccmodel$beta)))
+
+    if ( lambda.min %in% c("AIC", "BIC") ) {
+        lambdas <- get_lambdas(nlambda, logitX, post, maxit, tol)
+    } else { lambdas <- NULL }
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -186,7 +194,7 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
 
         ## E-Step ##
         # Calculate the posterior weights
-        post <- do.call(sprintf("foehndiag_%s_posterior", family),
+        post <- do.call(sprintf("foehnix_%s_posterior", family),
                         list(y = y, prob = prob, theta = theta))
 
         ## M-Step ##
@@ -229,7 +237,7 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
         prob <- plogis(drop(logitX %*% ccmodel$coef)) # Update probabilities
 
         # Calculate/trace loglik
-        ll <- do.call(sprintf("foehndiag_%s_loglik", family),
+        ll <- do.call(sprintf("foehnix_%s_loglik", family),
                       list(y = y, post = post, prob = prob, theta = theta))
         if ( !is.finite(ll$full) ) browser()
         llpath[[iter + 1]] <- ll
@@ -266,7 +274,7 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
                       concomitants = coef)
 
     rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath), n.iter = iter,
-                           coefpath = do.call(rbind, coefpath),
+                           coefpath = do.call(rbind, coefpath), ccmodel = ccmodel,
                            maxit = maxit[1L], tol = tol[1L], converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$data <- data
     rval$windsector <- windsector
@@ -281,7 +289,7 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
     #pfun <- ifelse(family == "gaussian", pnorm, plogis)
     #d1   <- pfun(y, theta$mu1, exp(theta$logsd1)) * (1 - prob)
     #d2   <- pfun(y, theta$mu2, exp(theta$logsd2)) * prob
-    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+    post <- do.call(sprintf("foehnix_%s_posterior", family),
                         list(y = y, prob = prob, theta = theta))
 
     # The fohen probability vector: create an object of the
@@ -290,15 +298,10 @@ advanced_foehnix <- function(formula, data, windsector = NULL, maxit = 100L, tol
     # - observations outside the requested wind sector get a 0 (no foehn)
     # - those observations which entered the models get their modelled
     #   foehn probability.
-    rval$prob <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
-    rval$prob[idx_take] <- post#d2 / (d2 + d1)
-    rval$prob[idx_wind] <- 0
-
-    d1   <- pnorm(y, theta$mu1, exp(theta$logsd1)) * (1 - post)
-    d2   <- pnorm(y, theta$mu2, exp(theta$logsd2)) * post
-    rval$probX <- zoo(data.frame(prob = rep(NA, nrow(data))), index(data))
-    rval$probX[idx_take] <- d2 / (d2 + d1)
-    rval$probX[idx_wind] <- 0
+    tmp <- rep(NA, ncol(data))
+    tmp[idx_take] <- post
+    tmp[idx_wind] <- 0
+    rval$prob <- zoo(tmp, index(data))
 
     rval$time <- as.numeric(Sys.time() - timing, units = "mins")
 

@@ -1,5 +1,5 @@
 ---
-title: "R package phoeton"
+title: "R package foehnix"
 geometry: margin=3cm
 ---
 
