@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 08:11 on marvin
+# - L@ST MODIFIED: 2018-12-12 10:24 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -211,9 +211,11 @@ destandardize_coefficients <- function(beta, X) {
 foehndiag_gaussian_loglik <- function(y, post, prob, theta) {
         # Calculate/trace loglik
         eps  <- sqrt(.Machine$double.eps)
-        ll <- list(component = sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                             + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                   concomitant = sum((1 - post) * log(1 - prob) + post * log(prob)))
+        ll <- data.frame(
+                 component = sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
+                           + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
+                 concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
+              )
         ll$full <- sum(unlist(ll))
         return(ll)
 }
@@ -227,9 +229,11 @@ foehndiag_logistic_loglik <- function(y, post, prob, theta) {
         # Calculate/trace loglik
         eps  <- sqrt(.Machine$double.eps)
         prob <- pmax(eps, pmin(1-eps, prob))
-        ll <- list(component = sum(post       * dlogis(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                             + sum((1 - post) * dlogis(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                   concomitant = sum((1 - post) * log(1 - prob) + post * log(prob)))
+        ll <- data.frame(
+                component = sum(post       * dlogis(y, theta$mu2, exp(theta$logsd2), log = TRUE))
+                          + sum((1 - post) * dlogis(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
+                concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
+              )
         ll$full <- sum(unlist(ll))
         return(ll)
 }

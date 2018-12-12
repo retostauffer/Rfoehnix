@@ -10,7 +10,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 00:27 on marvin
+# - L@ST MODIFIED: 2018-12-12 10:19 on marvin
 # -------------------------------------------------------------------
 
 
@@ -165,10 +165,18 @@ advanced_phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol
     # an IWLS solver for the logistic regression model given the
     # concomitant variables.
     # Optimization
-    ll0 <- NULL      # Initial value for the log-likelihood sum
-    llpath <- list() # List element to store log-likelihood path
-    iter <- 0        # Iteration index for the EM algorithm
+    ll0      <- NULL   # Initial value for the log-likelihood sum
+    llpath   <- list() # Listto store log-likelihood path
+    coefpath <- list() # List to store coefficient path
+    iter     <- 0      # Iteration index for the EM algorithm
 
+    # Initial likelihoods
+    post <- do.call(sprintf("foehndiag_%s_posterior", family),
+                    list(y = y, prob = prob, theta = theta))
+    llpath[[1]] <- do.call(sprintf("foehndiag_%s_loglik", family),
+                      list(y = y, post = post, prob = prob, theta = theta))
+    coefpath <- list()
+    coefpath[[1]] <- cbind(as.data.frame(theta), as.data.frame(t(ccmodel$beta)))
 
     # Perform EM algorithm
     while ( iter < maxit[1L] ) { 
@@ -224,15 +232,19 @@ advanced_phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol
         ll <- do.call(sprintf("foehndiag_%s_loglik", family),
                       list(y = y, post = post, prob = prob, theta = theta))
         if ( !is.finite(ll$full) ) browser()
-        llpath[[iter]] <- ll
+        llpath[[iter + 1]] <- ll
+
+        coefpath[[iter + 1]] <- cbind(as.data.frame(theta), as.data.frame(t(ccmodel$beta)))
 
         # Initial log-likelihood given the initial guess
-        if ( is.null(ll0) ) ll0 <- ll$full - 1000
+        if ( is.null(ll0) ) { ll0 <- ll$full - 1000 }
 
-        #cat(sprintf("  EM step  %2d: logLik = %10.3f\n", iter, ll$ll))
-        #cat(sprintf("       Gauss 1: %10.5f %10.5f\n", theta$mu1, exp(theta$logsd1)))
-        #cat(sprintf("       Gauss 2: %10.5f %10.5f\n", theta$mu2, exp(theta$logsd2)))
         cat(sprintf("EM step %3d/%3d, log-likelihood sum: %10.5f\n", iter, maxit[1L], ll$full))
+
+        # At least do maxit * 0.05 iterations
+        if ( iter < (maxit * .05) ) next
+
+    
     
         # Check log-likelihood improvement in the current iteration.
         # If the improvement is smaller than the tolerance the algorithm
@@ -254,6 +266,7 @@ advanced_phoeton <- function(formula, data, windsector = NULL, maxit = 100L, tol
                       concomitants = coef)
 
     rval$optimizer <- list(loglik = ll, loglikpath = do.call(rbind, llpath), n.iter = iter,
+                           coefpath = do.call(rbind, coefpath),
                            maxit = maxit[1L], tol = tol[1L], converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$data <- data
     rval$windsector <- windsector
