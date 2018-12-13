@@ -11,26 +11,130 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 20:13 on marvin
+# - L@ST MODIFIED: 2018-12-13 16:38 on marvin
 # -------------------------------------------------------------------
 
-foehnix.noconcomitant <- function(formula, data, windsector = NULL, family = "gaussian",
+
+
+
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+foehnix.noconcomitant.fit <- function(y, logitX, family,
                     maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
-    print("hallo von foehnmix.noconcomitant")
+
+    # Lists to trace log-likelihood path and the development of
+    # the coefficients during EM optimization.
+    llpath   <- list()
+    coefpath <- list()
+
+    
+    # Given the initial probabilities: calculate parameters
+    # for the two components (mu1, logsd1, mu2, logsd2) given
+    # the selected family and calculate the a-posteriori probabilities.
+    z     <- as.numeric(y >= mean(y))
+    theta <- family$theta(y, z, init = TRUE) # M-step
+
+    # Initial probability: fifty/fifty!
+    prob <- rep(.5, length(y))
+
+    # EM algorithm: estimate probabilities (prob; E-step), update the model
+    # given the new probabilities (M-step). Always with respect to the
+    # selected family.
+    iter <- 0
+    while ( iter <= maxit ) {
+        iter <- iter + 1;
+
+        # E-step: calculate a-posteriori probability
+        post  <- family$posterior(y, prob, theta)
+
+        # M-step: update probabilites and theta
+        prob <- mean(post)
+        theta <- family$theta(y, post)
+
+        # Store log-likelihood and coefficients of the current
+        # iteration.
+        llpath[[iter+1]] <- family$loglik(y, post, prob, theta)
+        coefpath[[iter+1]] <- as.data.frame(theta)
+        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter+1]]))
+
+        # If the log-likelihood decreases: proceed!
+        if ( iter == 1 ) next
+
+        # If the log-likelihood improvement falls below the
+        # specified tolerance we assume that the algorithm
+        # converged: stop iteration.
+        if ( (llpath[[iter+1]]$full - llpath[[iter]]$full) < tol ) break
+    }; cat("\n")
+
+    # Check if algorithm converged before maxit was reached
+    converged <- ifelse(iter < maxit, TRUE, FALSE)
+
+    # Combine to data.frame (number of rows corresponds to iter + 1)
+    llpath    <- do.call(rbind, llpath)
+    coefpath  <- do.call(rbind, coefpath)
+
+    # In this case we have no concomitants, however, the log-likelihood
+    # contribution of the concomitants is not == 0 (as log(0) is set to
+    # log(sqrt(.Machine$double.eps)) to avoid -Inf). Fix this here.
+    llpath$concomitant <- 0; llpath$full <- llpath$component
+
+    # Return a list with results
+if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!")
+    ll   <- tail(llpath$full, 1)
+    rval <- list(loglik     = ll,
+                 edf        = ncol(coefpath),
+                 AIC        = - 2 * ll + 2 * ncol(coefpath),
+                 BIC        = - 2 * ll + log(length(y)) * ncol(coefpath),
+                 loglikpath = llpath,
+                 coefpath   = coefpath)
+    class(rval) <- c("foehnix.noconcomitant.fit", "foehnix.fit")
+    # Return
+    return(rval)
 }
 
 
-foehnix.unreg <- function(formula, data, windsector = NULL, family = "gaussian",
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+foehnix.unreg.fit <- function(formula, data, windsector = NULL, family = "gaussian",
                     maxit = 100L, tol = 1e-8, standardize = TRUE,
                     verbose = FALSE, ...) {
+    timing <- Sys.time() # Measure execution time
     print("hallo from foehix.unreg")
+    #rval$time <- as.numeric(Sys.time() - timing, units = "mins")
 }
 
-foehnix.reg <- function(formula, data, windsector = NULL, family = "gaussian",
+
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+# -------------------------------------------------------------------
+foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian",
                     maxit = 100L, tol = 1e-8, standardize = TRUE,
                     alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
+    timing <- Sys.time() # Measure execution time
     print("hallo from foehix.reg")
+    #rval$time <- as.numeric(Sys.time() - timing, units = "mins")
 }
+
 
 # -------------------------------------------------------------------
 # The simple version for the foehn diagnosis using empirical weighted
@@ -46,36 +150,18 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
                     standardize = TRUE, alpha = NULL, nlambda = 100L,
                     verbose = FALSE, ...) {
 
-    # Checking input args
-    arg <- as.list(match.call()); arg[[1]] <- NULL
-
-    # Non-concomitant model
-    if ( length(labels(terms(formula))) == 0 ) {
-        rval <- do.call("foehnix.noconcomitant", arg)
-    } else if ( is.null(alpha) ) {
-        rval <- do.call("foehnix.unreg", arg)
-    } else {
-        rval <- do.call("foehnix.reg", arg)
-    }
-
-    return(rval)
-
-
-    # Measure execution time
-    timing <- Sys.time()
-
+    timing <- Sys.time() # Measure execution time
 
     # Loading family object
-    family <- match.arg(family, c("gaussian", "logistic"))
+    family <- match.arg(family, c("gaussian", "cgaussian", "tgaussian", "logistic", "clogistic", "tlogistic"))
     family <- get(sprintf("foehnix_%s", family))()
-
-    # Deconstruct the formula
-    left  <- as.character(formula)[2]
-    right <- as.character(formula)[3]
 
     # Stop if the main covariate for the flexible Gaussian mixture model
     # is not a valid variable name.
-    stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
+    left  <- as.character(formula)[2]
+    if ( ! length(as.character(as.list(formula)[[2]])) == 1 )
+        stop("Unsuitable formula given. Exactly one term allowed on the left hand side.")
+    ##stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
 
     # Maxit and tol are the maximum number of iterations for the
     # optimization. Need to be numeric. If one value is given it will
@@ -99,6 +185,12 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
     # Keep missing values.
     mf <- model.frame(formula, data, na.action = na.pass)
     y  <- model.response(mf)
+
+    # Check if we have multiple columns with constant values.
+    # This would lead to a non-identifiable problem.
+    if( sum(apply(mf, 2, function(x) length(unique(na.omit(x)))) <= 1) > 1 )
+        stop("Multiple columns with constant values in model.matrix. Stop!")
+
 
     # Identify rows with missing values
     idx_na   <- which(is.na(y) | apply(mf, 1, function(x) sum(is.na(x))) != 0)
@@ -137,51 +229,20 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
 
     # Setting up the model matrix for the concomitant model (logit model).
     logitX <- model.matrix(formula, data = data[idx_take,])
-
+    if ( standardize ) logitX <- standardize(logitX)
 
     # Non-concomitant model
-    if ( ncol(logitX) == 1 & grepl("^\\(Intercept\\)$", colnames(logitX)[1L]) ) {
-        stop("super simple model")
+    if ( length(labels(terms(formula))) == 0 ) {
+        rval <- do.call("foehnix.noconcomitant.fit", list(
+                 y = y, logitX = logitX, family = family, maxit = maxit, tol = tol))
     } else if ( is.null(alpha) ) {
-        stop("non-penalized iwls model")
+        rval <- do.call("foehnix.unreg.fit", arg)
     } else {
-        stop("flexible model")
+        rval <- do.call("foehnix.reg.fit", arg)
     }
-    print(head(logitX))
-    print(right)
-    stop()
+print(rval)
 
-    # Best guess for prior
-    prob  <- as.numeric(y >= mean(y))
-    theta <- family$theta(y, prob)
-    post  <- family$posterior(y, prob, theta)
-    trace <- as.data.frame(theta)
-    llpath <- list()
-    coefpath <- list()
-
-    # Initial values
-    llpath[[1]]   <- family$loglik(y, post, prob, theta)
-    coefpath[[1]] <- as.data.frame(theta)
-
-    iter <- 0
-    while ( iter <= maxit ) {
-        iter <- iter + 1;
-        prob  <- (y - (theta$mu1 + theta$mu2) / 2) > 0
-        theta <- family$theta(y, prob)
-        post  <- family$posterior(y, prob, theta)
-        trace <- rbind(trace, as.data.frame(theta))
-        llpath[[iter+1]] <- family$loglik(y, post, prob, theta)
-        coefpath[[iter+1]] <- as.data.frame(theta)
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter+1]]))
-
-        if ( llpath[[iter]] > llpath[[iter+1]] ) next
-        if ( (llpath[[iter]] - llpath[[iter+1]]) < tol ) break
-    }; cat("\n")
-
-    print(unlist(llpath))
-    plot(unlist(llpath))
-    print(trace)
-    stop()
+stop(' ---------- stop in foehnix -------------- ')
 
     # Regularization for the logit model (concomitant model) can be either
     # loglik (no regularization), AIC, or BIC. In case of AIC and BIC
@@ -221,6 +282,7 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
     # If standardize = TRUE: standardize model matrix for
     # the concomitant model (logitX)
     if ( standardize ) logitX <- standardize_model_matrix(logitX)
+    stop('xx')
 
 
     # Start optimization using weighted empirical moments for

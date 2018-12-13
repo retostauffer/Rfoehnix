@@ -1,1 +1,4 @@
 *.pdf
+# Ignore modules and shared object files
+src/*.o
+src/*.so

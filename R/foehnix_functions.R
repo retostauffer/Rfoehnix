@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 17:08 on marvin
+# - L@ST MODIFIED: 2018-12-12 23:16 on marvin
 # -------------------------------------------------------------------
 
 
@@ -22,29 +22,30 @@
 # "scaled:scale".
 # -------------------------------------------------------------------
 is.standardized <- function(x, ...) UseMethod("is.standardized")
-is.standardized.matrix <- function(x, ...) {
-    all(c("scaled:center", "scaled:scale") %in% names(attributes(x)))
-}
+is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
 
 # -------------------------------------------------------------------
-# Standardize coefficients
+# Standardize (model) matrix
 # -------------------------------------------------------------------
-standardize_model_matrix <- function(X) {
-    if(sum(apply(X, 2, sd) == 0) > 1)
-        stop("Multiple columns with constant values!")
+standardize <- function(x, ...) UseMethod("standardize")
+standardize.matrix <- function(x, ...) {
     # Scale covariates
-    scaled_center <- structure(rep(0, ncol(X)), names = colnames(X))
-    scaled_scale  <- structure(rep(1, ncol(X)), names = colnames(X))
-    for ( i in ncol(X) ) {
-        if ( sd(X[,i]) == 0 ) next
-        scaled_center[i] <- mean(X[,i])
-        scaled_scale[i]  <- sd(X[,i])
-        X[,i] <- (X[,i] - scaled_center[i]) / scaled_scale[i]
+    scaled_center <- structure(rep(0, ncol(x)), names = colnames(x))
+    scaled_scale  <- structure(rep(1, ncol(x)), names = colnames(x))
+    for ( i in 1:ncol(x) ) {
+        if ( sd(x[,i], na.rm = TRUE) == 0 ) next
+        scaled_center[i] <- mean(x[,i], na.rm = TRUE)
+        scaled_scale[i]  <- sd(x[,i], na.rm = TRUE)
+        x[,i] <- (x[,i] - scaled_center[i]) / scaled_scale[i]
     }
-    attr(X, "scaled:center") <- scaled_center
-    attr(X, "scaled:scale")  <- scaled_scale
-    return(X)
+    attr(x, "scaled:center") <- scaled_center
+    attr(x, "scaled:scale")  <- scaled_scale
+    class(x) <- c("standardized", class(x))
+    return(x)
 }
+scale.standardized <- function(x) return(attr(x, "scaled:scale"))
+center <- function(x, ...) UseMethod("center")
+center.standardized <- function(x) return(attr(x, "scaled:center"))
 
 
 # -------------------------------------------------------------------
