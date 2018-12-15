@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-12 17:13 on marvin
+# - L@ST MODIFIED: 2018-12-15 20:12 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -90,8 +90,17 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # - converged (logical): flag whether or not the iterative solver converged
     # - beta/coef (matrix): standardized and de-standardized coefficients. If
     #       input "standardized = FALSE" beta and coef are identical.
+    class(rval) <- "ccmodel"
     return(rval)
 }
+
+coef.ccmodel <- function(x, which = "coef", ...) {
+    which <- match.arg(which, c("coef", "beta"))
+    c <- as.data.frame(t(x[[which]][,1]))
+    names(c) <- sprintf("cc.%s", names(c))
+    c
+}
+
 
 
 

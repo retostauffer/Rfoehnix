@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 15:15 on marvin
+# - L@ST MODIFIED: 2018-12-15 20:12 on marvin
 # -------------------------------------------------------------------
 
 
@@ -27,7 +27,7 @@
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.noconcomitant.fit <- function(y, family,
-                    maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
+                    maxit = 100L, tol = 1e-5, verbose = FALSE, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -55,7 +55,8 @@ foehnix.noconcomitant.fit <- function(y, family,
         post  <- family$posterior(y, prob, theta)
 
         # M-step: update probabilites and theta
-        prob  <- mean(post)
+        # TODO: Is this correct, Mr. Reto?
+        prob  <- as.numeric(post >= .5)
         theta <- family$theta(y, post, theta = theta)
 
         # Store log-likelihood and coefficients of the current
@@ -68,7 +69,7 @@ foehnix.noconcomitant.fit <- function(y, family,
         if ( iter == 1 ) next
 
         # Improvement < 0 (model got worse): continue
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
+        ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
 
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
@@ -117,7 +118,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.unreg.fit <- function(y, logitX, family,
-                    maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
+                    maxit = 100L, tol = 1e-5, verbose = FALSE, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -149,24 +150,25 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # M-step: update probabilites and theta
         ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE)
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
-        theta <- family$theta(y, post, theta = theta)
+        theta   <- family$theta(y, post, theta = theta)
 
         # Store log-likelihood and coefficients of the current
         # iteration.
-        llpath[[iter]] <- family$loglik(y, post, prob, theta)
-        coefpath[[iter]] <- cbind(as.data.frame(theta), as.data.frame(t(ccmodel$beta[,1])))
+        llpath[[iter]]   <- family$loglik(y, post, prob, theta)
+        coefpath[[iter]] <- cbind(as.data.frame(theta), coef(ccmodel, which = "beta"))
         cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
 
         # Improvement < 0 (model got worse): continue
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
+        ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
 
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol ) break
+
     }; cat("\n")
 
     # Check if algorithm converged before maxit was reached
@@ -210,7 +212,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian",
-                    maxit = 100L, tol = 1e-8, standardize = TRUE,
+                    maxit = 100L, tol = 1e-5, standardize = TRUE,
                     alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
     timing <- Sys.time() # Measure execution time
     print("hallo from foehix.reg")
@@ -228,7 +230,7 @@ foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian
 #       this.
 # -------------------------------------------------------------------
 foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
-                    maxit = 100L, tol = 1e-8,
+                    maxit = 100L, tol = 1e-5,
                     standardize = TRUE, alpha = NULL, nlambda = 100L,
                     verbose = FALSE, ...) {
 
