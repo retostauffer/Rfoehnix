@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 20:24 on marvin
+# - L@ST MODIFIED: 2018-12-15 20:42 on marvin
 # -------------------------------------------------------------------
 
 
@@ -153,6 +153,15 @@ foehnix_logistic_posterior <- function(y, prob, theta) {
     prob * dlogis(y, theta$mu2, exp(theta$logsd2)))
 }
 
+
+# -------------------------------------------------------------------
+# Information criterium 
+# -------------------------------------------------------------------
+logLik.foehnix <- function(x, ...)  structure(x$optimizer$loglik, names = "loglik")
+AIC.foehnix <- function(x, ...)     structure(x$optimizer$AIC, names = "AIC")
+BIC.foehnix <- function(x, ...)     structure(x$optimizer$BIC, names = "BIC")
+edf <- function(x, ...) UseMethod("edf")
+edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
