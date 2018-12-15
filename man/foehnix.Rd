@@ -27,7 +27,7 @@
     \item{tol}{similar as for \code{maxit}. Used to identify convergence of the
         iterative solvers. Default is \code{1e-8}, if two values are given the
         first will be used for the EM algorithm, the second one for the IWLS backfitting
-        procedure.}
+        procedure. If set to \code{NULL} the algorithm will run until \code{maxit} is reached.}
     \item{lambda.min}{one of \code{"auto"} (default), \code{"loglik"}, \code{"BIC"}, or \code{"AIC"}.
         See 'Details' for more information.}
     \item{standardize}{logical flag, default is \code{TRUE}. Defines whether or not

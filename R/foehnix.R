@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 20:12 on marvin
+# - L@ST MODIFIED: 2018-12-15 21:03 on marvin
 # -------------------------------------------------------------------
 
 
@@ -65,8 +65,9 @@ foehnix.noconcomitant.fit <- function(y, family,
         coefpath[[iter]] <- as.data.frame(theta)
         cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
 
-        # If the log-likelihood decreases: proceed!
-        if ( iter == 1 ) next
+        # If the log-likelihood decreases: proceed! Same if
+        # no tolerance is specified (is.null(tol)).
+        if ( iter == 1 | is.null(tol) ) next
 
         # Improvement < 0 (model got worse): continue
         ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
@@ -159,7 +160,8 @@ foehnix.unreg.fit <- function(y, logitX, family,
         cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
-        if ( iter == 1 ) next
+        # no tolerance is specified (is.null(tol)).
+        if ( iter == 1 | is.null(tol) ) next
 
         # Improvement < 0 (model got worse): continue
         ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
@@ -323,10 +325,12 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
     # Non-concomitant model
     if ( length(labels(terms(formula))) == 0 ) {
         rval <- do.call("foehnix.noconcomitant.fit", list(
-                 y = y, family = family, maxit = maxit, tol = tol))
+                 y = y, family = family, maxit = maxit,
+                 tol = head(tol, 1)))
     } else if ( is.null(alpha) ) {
         rval <- do.call("foehnix.unreg.fit", list(
-                 y = y, logitX = logitX, family = family, maxit = maxit, tol = tol))
+                 y = y, logitX = logitX, family = family, maxit = maxit,
+                 tol = head(tol, 1)))
     } else {
         rval <- do.call("foehnix.reg.fit", arg)
     }
