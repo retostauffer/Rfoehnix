@@ -71,12 +71,10 @@ SEXP cpcnorm(SEXP q, SEXP in_mu, SEXP in_sigma, SEXP in_left, SEXP in_right,
         for(i = 0; i < n; i++) {
             // If q below left censoring point
             if(qptr[i] < left) {
-                Rprintf("1aaab\n");
                 if(log_p == 1) { rvalptr[i] = log(0.); }
                 else           { rvalptr[i] = 0.;      }
             // If q above or on right censoring point
             } else if ( qptr[i] >= right ) {
-                Rprintf("1bbbb\n");
                 rvalptr[i] = 1. * (1. - log_p);
             // Uncensored
             } else {
@@ -88,11 +86,9 @@ SEXP cpcnorm(SEXP q, SEXP in_mu, SEXP in_sigma, SEXP in_left, SEXP in_right,
         for(i = 0; i < n; i++) {
             // If q below left censoring point
             if(qptr[i] <= left) {
-                Rprintf("2aaaa\n");
                 rvalptr[i] = 1 * (1 - log_p);
             // If q above or on right censoring point
             } else if ( qptr[i] > right ) {
-                Rprintf("2bba\n");
                 if(log_p == 1) { rvalptr[i] = log(0.); }
                 else {  rvalptr[i] = 0; }
             // Uncensored

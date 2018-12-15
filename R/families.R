@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-13 17:11 on marvin
+# - L@ST MODIFIED: 2018-12-15 15:19 on marvin
 # -------------------------------------------------------------------
 
 
@@ -53,14 +53,14 @@ foehnix_logistic <- function() {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
+        theta = function(y, post, init = FALSE, ...) {
+            mu1 <- sum(y * (1 - post)) / sum(1 - post)
+            mu2 <- sum(y * post) / sum(post)
             if ( init ) {
                 sigma1 <- sigma2 <- sd(y) * sqrt(3) / pi
             } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob)) * sqrt(3) / pi
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob)) * sqrt(3) / pi
+                sigma1 <- sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)) * sqrt(3) / pi
+                sigma2 <- sqrt(sum((y-mu2)^2 * (post)) / sum(post)) * sqrt(3) / pi
             }
             list(mu1    = mu1, 
                  logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
@@ -123,19 +123,38 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
-            if ( init ) {
-                sigma1 <- sigma2 <- sd(y)
-            } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob))
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob))
+        theta = function(y, post, init = FALSE, theta = NULL) {
+            # non-censored estimate
+            if ( is.null(theta) ) {
+                theta <- list()
+                theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
+                theta$mu2 <- sum(y * post) / sum(post)
+                if ( init ) {
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                } else {
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                }
             }
-            list(mu1    = mu1, 
-                 logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
-                 mu2    = mu2,
-                 logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
+
+            fun <- function(par, y, post, left, right) {
+                d1 <- .Call("cdclogis", as.numeric(y), as.numeric(par[1L]), as.numeric(exp(par[2L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                mu2 <- exp(par[3L]) + par[1L]
+                d2 <- .Call("cdclogis", as.numeric(y), as.numeric(mu2), as.numeric(exp(par[4L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                return(sum((1-post) * d1 + d2 * post))
+            }
+            par <- c(theta$mu1, theta$logsd1, log(theta$mu2 - theta$mu1), theta$logsd2)
+            opt <- optim(par, fun, y = y, post = post,
+                        left = left, right = right, method = "BFGS",
+                        control = list(fnscale = -1))
+
+            rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
+                 mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
+            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
+                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            return(rval)
         }
     )
 }
@@ -193,19 +212,38 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
-            if ( init ) {
-                sigma1 <- sigma2 <- sd(y)
-            } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob))
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob))
+        theta = function(y, post, init = FALSE, theta = NULL) {
+            # non-censored estimate
+            if ( is.null(theta) ) {
+                theta <- list()
+                theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
+                theta$mu2 <- sum(y * post) / sum(post)
+                if ( init ) {
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                } else {
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                }
             }
-            list(mu1    = mu1, 
-                 logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
-                 mu2    = mu2,
-                 logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
+
+            fun <- function(par, y, post, left, right) {
+                d1 <- .Call("cdtlogis", as.numeric(y), as.numeric(par[1L]), as.numeric(exp(par[2L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                mu2 <- exp(par[3L]) + par[1L]
+                d2 <- .Call("cdtlogis", as.numeric(y), as.numeric(mu2), as.numeric(exp(par[4L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                return(sum((1-post) * d1 + d2 * post))
+            }
+            par <- c(theta$mu1, theta$logsd1, log(theta$mu2 - theta$mu1), theta$logsd2)
+            opt <- optim(par, fun, y = y, post = post,
+                        left = left, right = right, method = "BFGS",
+                        control = list(fnscale = -1))
+
+            rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
+                 mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
+            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
+                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            return(rval)
         }
     )
 }
@@ -252,14 +290,14 @@ foehnix_gaussian <- function() {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
+        theta = function(y, post, init = FALSE, ...) {
+            mu1 <- sum(y * (1 - post)) / sum(1 - post)
+            mu2 <- sum(y * post) / sum(post)
             if ( init ) {
                 sigma1 <- sigma2 <- sd(y)
             } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob))
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob))
+                sigma1 <- sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post))
+                sigma2 <- sqrt(sum((y-mu2)^2 * (post)) / sum(post))
             }
             list(mu1    = mu1, 
                  logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
@@ -322,19 +360,38 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
-            if ( init ) {
-                sigma1 <- sigma2 <- sd(y)
-            } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob))
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob))
+        theta = function(y, post, init = FALSE, theta = NULL) {
+            # non-censored estimate
+            if ( is.null(theta) ) {
+                theta <- list()
+                theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
+                theta$mu2 <- sum(y * post) / sum(post)
+                if ( init ) {
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                } else {
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                }
             }
-            list(mu1    = mu1, 
-                 logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
-                 mu2    = mu2,
-                 logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
+
+            fun <- function(par, y, post, left, right) {
+                d1 <- .Call("cdcnorm", as.numeric(y), as.numeric(par[1L]), as.numeric(exp(par[2L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                mu2 <- exp(par[3L]) + par[1L]
+                d2 <- .Call("cdcnorm", as.numeric(y), as.numeric(mu2), as.numeric(exp(par[4L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                return(sum((1-post) * d1 + d2 * post))
+            }
+            par <- c(theta$mu1, theta$logsd1, log(theta$mu2 - theta$mu1), theta$logsd2)
+            opt <- optim(par, fun, y = y, post = post,
+                        left = left, right = right, method = "BFGS",
+                        control = list(fnscale = -1))
+
+            rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
+                 mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
+            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
+                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            return(rval)
         }
     )
 }
@@ -392,19 +449,38 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
         },
         # Update the parameters of the two components.
         # Returns a list containing mu1, logsd1, mu2, and logsd2.
-        theta = function(y, prob, init = FALSE) {
-            mu1 <- sum(y * (1 - prob)) / sum(1 - prob)
-            mu2 <- sum(y * prob) / sum(prob)
-            if ( init ) {
-                sigma1 <- sigma2 <- sd(y)
-            } else {
-                sigma1 <- sqrt(sum((y-mu1)^2 * (1-prob)) / sum(1-prob))
-                sigma2 <- sqrt(sum((y-mu2)^2 * (prob)) / sum(prob))
+        theta = function(y, post, init = FALSE, theta = NULL) {
+            # non-censored estimate
+            if ( is.null(theta) ) {
+                theta <- list()
+                theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
+                theta$mu2 <- sum(y * post) / sum(post)
+                if ( init ) {
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                } else {
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                }
             }
-            list(mu1    = mu1, 
-                 logsd1 = ifelse(sigma1 < exp(-6), -6, log(sigma1)),
-                 mu2    = mu2,
-                 logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
+
+            fun <- function(par, y, post, left, right) {
+                d1 <- .Call("cdtnorm", as.numeric(y), as.numeric(par[1L]), as.numeric(exp(par[2L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                mu2 <- exp(par[3L]) + par[1L]
+                d2 <- .Call("cdtnorm", as.numeric(y), as.numeric(mu2), as.numeric(exp(par[4L])),
+                           as.numeric(left), as.numeric(right), TRUE, package = "foehnix")
+                return(sum((1-post) * d1 + d2 * post))
+            }
+            par <- c(theta$mu1, theta$logsd1, log(theta$mu2 - theta$mu1), theta$logsd2)
+            opt <- optim(par, fun, y = y, post = post,
+                        left = left, right = right, method = "BFGS",
+                        control = list(fnscale = -1))
+
+            rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
+                 mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
+            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
+                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            return(rval)
         }
     )
 }
