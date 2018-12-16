@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 17:12 on marvin
+# - L@ST MODIFIED: 2018-12-16 18:44 on marvin
 # -------------------------------------------------------------------
 
 
@@ -52,7 +52,7 @@ foehnix.noconcomitant.fit <- function(y, family,
         iter <- iter + 1;
 
         # E-step: calculate a-posteriori probability
-        post  <- family$posterior(y, prob, theta)
+        post  <- family$posterior(y, mean(prob), theta)
 
         # M-step: update probabilites and theta
         prob  <- as.numeric(post >= .5)
@@ -229,22 +229,43 @@ foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian
 foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
                     family = "gaussian", maxit = 100L, tol = 1e-5,
                     standardize = TRUE, alpha = NULL, nlambda = 100L,
-                    verbose = FALSE, ...) {
+                    verbose = FALSE, left = NULL, right = NULL, truncated = FALSE, ...) {
 
     timing <- Sys.time() # Measure execution time
 
     # Loading family object
-    family <- match.arg(family, c("gaussian", "cgaussian", "tgaussian", "logistic", "clogistic", "tlogistic"))
-    if ( grepl("^(c|t).*$", family ) ) {
-        warning("Fixed left = 0 at the moment!")
-        family <- get(sprintf("foehnix_%s", family))(left = 0)
+    family <- match.arg(family, c("gaussian", "logistic"))
+    
+    # If left or right are set
+    if ( any(!is.null(c(left, right))) ) {
+        left  <- max(-Inf, left); right <- min(Inf, right)
+        # Left has to be smaller than right.
+        if ( left >= right )
+            stop("For censoring and truncation: \"left\" has to be smaller than \"right\"!")
+        # If left has been set to -Inf and right to Inf: set
+        # both to NULL, the default value using a non-censored
+        # and non-truncated Gaussian or logistic distribution.
+        if ( all(is.infinite(c(left, right))) ) left <- right <- NULL
+    }
+
+    # If not both, left and right, are infinite: use censored or
+    # truncated distribution for the mixture model
+    if ( ! all(is.infinite(c(left, right))) ) {
+        # Take censored version of "family" using the censoring
+        # thresholds left and right.
+        if ( ! truncated ) {
+            family <- get(sprintf("foehnix_c%s", family))(left = left, right = right)
+        # Else take the truncated version of the "family".
+        } else {
+            family <- get(sprintf("foehnix_t%s", family))(left = left, right = right)
+        }
+    # Else (left = -Inf, right = Inf): use non-truncated/non-censored version.
     } else {
         family <- get(sprintf("foehnix_%s", family))()
     }
 
     # Stop if the main covariate for the flexible Gaussian mixture model
     # is not a valid variable name.
-    left  <- as.character(formula)[2]
     if ( ! length(as.character(as.list(formula)[[2]])) == 1 )
         stop("Unsuitable formula given. Exactly one term allowed on the left hand side.")
 
@@ -270,6 +291,17 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     # Keep missing values.
     mf <- model.frame(formula, data, na.action = na.pass)
     y  <- model.response(mf)
+
+    # If a truncated family is used: y has to lie within the
+    # truncation points. Density is not defined outside the
+    # range ]left, right[.
+    if ( is.truncated(family) ) {
+        if ( min(y, na.rm = TRUE) < left |
+             max(y, na.rm = TRUE) > right )
+            stop(paste(sprintf("Data \"%s\"", as.character(as.list(formula)[[2]])),
+                      "outside the specified range for truncation",
+                       sprintf("(left = %d, right = %d)", left, right)))
+    }
 
     # Check if we have multiple columns with constant values.
     # This would lead to a non-identifiable problem.
@@ -382,9 +414,10 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
     # which the model has been estimated.
     if ( is.null(newdata) ) newdata <- x$data
 
+
     # Probability model
     if ( is.null(x$coef$concomitants) ) {
-        stop("What's the probability in the non-concomitant case?")
+        prob <- mean(x$optimizer$prob)
     } else {
         logitX <- model.matrix(x$formula, newdata)
         prob   <- plogis(drop(logitX %*% x$coef$concomitants))
@@ -398,7 +431,7 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 
     # If wind filter is used:
     if ( ! is.null(x$windsec) ) {
-        idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
+        idx_wind <- windsector_filter(newdata, x$windsector, x$winddirvar)
         if ( length(idx_wind) > 0 ) post[idx_wind] <- 0
     }
 
@@ -411,7 +444,7 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
     # thus the probability of foehn. This is returned as "prob" for the
     # end-user. TODO: Confusing?
     zoo(data.frame(density1 = d1, density2 = d2, ccmodel = prob, prob = post),
-        index(x$data))
+        index(newdata))
 
 
 }
@@ -422,6 +455,7 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 # lies within the wind sector. Used to filter for wind directions.
 # -------------------------------------------------------------------
 windsector_filter <- function(x, windsector, winddirvar) {
+
         if ( ! winddirvar %in% names(x) )
             stop(paste("Wind sector specified, but",
                        sprintf("winddirvar = \"%s\"", winddirvar),
@@ -434,4 +468,5 @@ windsector_filter <- function(x, windsector, winddirvar) {
             which(x[,winddirvar] > windsector[1L] &
                   x[,winddirvar] < windsector[2L])
         }
+
 }

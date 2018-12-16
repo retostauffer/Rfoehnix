@@ -7,16 +7,34 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 15:51 on marvin
+# - L@ST MODIFIED: 2018-12-16 18:28 on marvin
 # -------------------------------------------------------------------
 
 
+# -------------------------------------------------------------------
+# Small print method for foehnix.family objects.
+# -------------------------------------------------------------------
+print.foehnix.family <- function(x, ...) {
+
+    cat(sprintf("foehnix family of class: %s\n", x$name))
+
+    if ( all(c("left", "right") %in% names(x)) ) {
+        if ( "censored" %in% names(x)  ) cat("Censoring thresholds:    ")
+        if ( "truncated" %in% names(x) ) cat("Truncation thresholds:   ")
+        # Load thresholds
+        tmp <- x[c("left", "right")]
+        cat(paste(sprintf("%s = %s", names(tmp), tmp), collapse = ", "), "\n")
+    }
+
+}
+is.truncated <- function(x, ...) UseMethod("is.truncated")
+is.truncated.foehnix.family <- function(x, ...) "truncated" %in% names(x)
 
 # -------------------------------------------------------------------
 # Logistic distribution family
 # -------------------------------------------------------------------
 foehnix_logistic <- function() {
-    list(
+    rval <- list(
         name = "logistic",
         # Density function
         d = function(y, mu, sigma, log = FALSE)
@@ -69,6 +87,8 @@ foehnix_logistic <- function() {
                  logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }
 
 
@@ -78,8 +98,8 @@ foehnix_logistic <- function() {
 foehnix_clogistic <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
-    list(
-        name = "censored logistic",
+    rval <- list(
+        name = "censored logistic", left = left, right = right, censored = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdclogis", as.numeric(y), as.numeric(mu),
@@ -154,11 +174,13 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
 
             rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
                  mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
-            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
-                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            #cat(sprintf("Current theta            %.2f %.2f %.2f %.2f\n", rval$mu1,
+            #            exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
             return(rval)
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }
 
 
@@ -168,8 +190,8 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
 foehnix_tlogistic <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
-    list(
-        name = "truncated logistic",
+    rval <- list(
+        name = "truncated logistic", left = left, right = right, truncated = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdtlogis", as.numeric(y), as.numeric(mu),
@@ -244,11 +266,13 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
 
             rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
                  mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
-            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
-                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            #cat(sprintf("Current theta            %.2f %.2f %.2f %.2f\n", rval$mu1,
+            #            exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
             return(rval)
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }
 
 
@@ -256,7 +280,7 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
 # Gaussian distribution family
 # -------------------------------------------------------------------
 foehnix_gaussian <- function() {
-    list(
+    rval <- list(
         name = "Gaussian",
         # Density function
         d = function(y, mu, sigma, log = FALSE)
@@ -309,6 +333,8 @@ foehnix_gaussian <- function() {
                  logsd2 = ifelse(sigma2 < exp(-6), -6, log(sigma2)))
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }
 
 
@@ -318,8 +344,8 @@ foehnix_gaussian <- function() {
 foehnix_cgaussian <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
-    list(
-        name = "censored Gaussian",
+    rval <- list(
+        name = "censored Gaussian", left = left, right = right, censored = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdcnorm", as.numeric(y), as.numeric(mu),
@@ -394,11 +420,13 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
 
             rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
                  mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
-            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
-                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            #cat(sprintf("Current theta            %.2f %.2f %.2f %.2f\n", rval$mu1,
+            #            exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
             return(rval)
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }
 
 
@@ -408,8 +436,8 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
 foehnix_tgaussian <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
-    list(
-        name = "truncated Gaussian",
+    rval <- list(
+        name = "truncated Gaussian", left = left, right = right, truncated = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdtnorm", as.numeric(y), as.numeric(mu),
@@ -484,9 +512,11 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
 
             rval <- list(mu1 = opt$par[1L], logsd1 = opt$par[2L],
                  mu2 = exp(opt$par[3L]) + opt$par[1L], logsd2 = opt$par[4L])
-            cat(sprintf("Optimized to             %.2f %.2f %.2f %.2f\n", rval$mu1,
-                        exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
+            #cat(sprintf("Current theta            %.2f %.2f %.2f %.2f\n", rval$mu1,
+            #            exp(rval$logsd1), rval$mu2, exp(rval$logsd2)))
             return(rval)
         }
     )
+    class(rval) <- c("foehnix.family")
+    return(rval)
 }

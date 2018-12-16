@@ -1,17 +1,15 @@
 # -------------------------------------------------------------------
-# - NAME:        foehnix_simple.R
+# - NAME:        foehnix_functions.R
 # - AUTHOR:      Reto Stauffer
-# - DATE:        2018-11-28
+# - DATE:        2018-12-16
 # -------------------------------------------------------------------
-# - DESCRIPTION: Scripts to estimate Gaussian and logistic
-#                two-component mixture models with IWLS and
-#                weighted empirical moments.
-#                "simple" here referrs to non-gradient non-optimizer
-#                based model estimates.
+# - DESCRIPTION: Contains a set of S3 methods for the foehnix model
+#                itself and some helper functions used within the
+#                foehnix function.
 # -------------------------------------------------------------------
-# - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
+# - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 16:58 on marvin
+# - L@ST MODIFIED: 2018-12-16 18:00 on marvin
 # -------------------------------------------------------------------
 
 
@@ -23,6 +21,7 @@
 # -------------------------------------------------------------------
 is.standardized <- function(x, ...) UseMethod("is.standardized")
 is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
+
 
 # -------------------------------------------------------------------
 # Standardize (model) matrix
@@ -69,99 +68,51 @@ destandardize_coefficients <- function(beta, X) {
     return(beta)
 }
 
-# -------------------------------------------------------------------
-# Trying to estimate a reasonably high upper bound for lambda
-# if ridge penalization is needed.
-# -------------------------------------------------------------------
-get_lambdas <- function(nlambda, logitX, post, maxit, tol) {
 
-    # If nlambda is not a positive integer: stop.
-    stopifnot(inherits(nlambda, c("integer", "numeric")))
-    stopifnot(nlambda >= 0)
-
-    # Fitting logistic regression models with different lambdas.
-    csum_fun <- function(lambda, logitX, post, maxit, tol) {
-        # As response a first guess y >= median(y) is used.
-        # Force standardize = FALSE as logitX is already standardized if
-        # standardize == TRUE for this function.
-        m <- iwls_logit(logitX, post, standardize = FALSE,
-                        lambda = lambda, maxit = maxit, tol = tol)
-        sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
-    }
-
-    # Find large lambda where all parameters are close to 0.
-    # Trying lambdas between exp(6) and exp(12).
-    lambdas <- exp(seq(5, 15, by = 1))
-    x <- sapply(lambdas, csum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
-
-    # Pick the lambda where sum of parameters is smaller than a 
-    # certain threshold OR take maximum of lambdas tested.
-    lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
-    cat(sprintf("Use penalization lambda within %.5f to %.5f\n", max(lambdas), min(lambdas)))
-    return(lambdas)
-}
-
-
-# -------------------------------------------------------------------
-# Calculates and returns the log-likelihood for the two parts
-# of the Gaussian mixture model with two clusters.
-# y: response
-# post: posterior weights
-# theta: list object containing the location/scale parameters (or
-#        coefficients for location/scale for the Gaussian distributions)
-# -------------------------------------------------------------------
-foehnix_gaussian_loglik <- function(y, post, prob, theta) {
-    # Calculate/trace loglik
-    eps  <- sqrt(.Machine$double.eps)
-    ll <- data.frame(
-             component = sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                       + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-             concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
-          )
-    ll$full <- sum(unlist(ll))
-    return(ll)
-}
-
-foehnix_gaussian_posterior <- function(y, prob, theta) {
-    # Calculate posterior:
-    # Ratio between weighted density of component 2 divided by the sum
-    # of the weighted density of both components gives the posterior.
-    (prob) * dnorm(y, theta$mu2, exp(theta$logsd2)) /
-    ( (1 - prob) * dnorm(y, theta$mu1, exp(theta$logsd1)) +
-       prob * dnorm(y, theta$mu2, exp(theta$logsd2)) )
-}
-
-foehnix_logistic_loglik <- function(y, post, prob, theta) {
-    # Calculate/trace loglik
-    eps  <- sqrt(.Machine$double.eps)
-    prob <- pmax(eps, pmin(1-eps, prob))
-    ll <- data.frame(
-            component = sum(post       * dlogis(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                      + sum((1 - post) * dlogis(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-            concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
-          )
-    ll$full <- sum(unlist(ll))
-    return(ll)
-}
-
-foehnix_logistic_posterior <- function(y, prob, theta) {
-    # Calculate posterior:
-    # Ratio between weighted density of component 2 divided by the sum
-    # of the weighted density of both components gives the posterior.
-    (prob) * dlogis(y, theta$mu2, exp(theta$logsd2)) /
-    ((1 - prob) * dlogis(y, theta$mu1, exp(theta$logsd1)) +
-    prob * dlogis(y, theta$mu2, exp(theta$logsd2)))
-}
-
+# TODO: DELETE ME
+### -------------------------------------------------------------------
+### Trying to estimate a reasonably high upper bound for lambda
+### if ridge penalization is needed.
+### -------------------------------------------------------------------
+##get_lambdas <- function(nlambda, logitX, post, maxit, tol) {
+##
+##    # If nlambda is not a positive integer: stop.
+##    stopifnot(inherits(nlambda, c("integer", "numeric")))
+##    stopifnot(nlambda >= 0)
+##
+##    # Fitting logistic regression models with different lambdas.
+##    csum_fun <- function(lambda, logitX, post, maxit, tol) {
+##        # As response a first guess y >= median(y) is used.
+##        # Force standardize = FALSE as logitX is already standardized if
+##        # standardize == TRUE for this function.
+##        m <- iwls_logit(logitX, post, standardize = FALSE,
+##                        lambda = lambda, maxit = maxit, tol = tol)
+##        sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
+##    }
+##
+##    # Find large lambda where all parameters are close to 0.
+##    # Trying lambdas between exp(6) and exp(12).
+##    lambdas <- exp(seq(5, 15, by = 1))
+##    x <- sapply(lambdas, csum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
+##
+##    # Pick the lambda where sum of parameters is smaller than a 
+##    # certain threshold OR take maximum of lambdas tested.
+##    lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
+##    cat(sprintf("Use penalization lambda within %.5f to %.5f\n", max(lambdas), min(lambdas)))
+##    return(lambdas)
+##}
+# TODO: DELETE ME
 
 # -------------------------------------------------------------------
-# Information criterium 
+# Information criteria: logLik, AIC, BIC, and effective degrees of
+# freedom
 # -------------------------------------------------------------------
 logLik.foehnix <- function(x, ...)  structure(x$optimizer$loglik, names = "loglik")
 AIC.foehnix <- function(x, ...)     structure(x$optimizer$AIC, names = "AIC")
 BIC.foehnix <- function(x, ...)     structure(x$optimizer$BIC, names = "BIC")
 edf <- function(x, ...) UseMethod("edf")
 edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
+
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
@@ -171,30 +122,30 @@ coef.foehnix <- function(x, type = "parameter", ...) {
     type <- match.arg(type, c("parameter", "coefficient"))
 
     if ( type == "parameter" ) {
-        res <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
+        rval <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
                               x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
                             dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
                      x$coef$concomitants)
     } else {
-        res <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
+        rval <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
                               x$coef$mu2, x$coef$logsd2), ncol = 1,
                             dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
                      x$coef$concomitants)
     }
-    res <- setNames(as.vector(res), rownames(res))
+    rval <- setNames(as.vector(rval), rownames(rval))
     
     # Appending some attributes and a new class
-    attr(res, "concomitants") <- ! is.null(x$coef$concomitants)
-    attr(res, "formula")      <- x$formula
-    attr(res, "family")       <- x$family$name
-    class(res) <- c("coef.foehnix", class(res))
-    res
+    attr(rval, "concomitants") <- ! is.null(x$coef$concomitants)
+    attr(rval, "formula")      <- x$formula
+    attr(rval, "family")       <- x$family
+    class(rval) <- c("coef.foehnix", class(rval))
+    rval
 }
 print.coef.foehnix <- function(x, ...) {
     cat("Coefficients of foehnix model\n")
-    cat(sprintf("Model formula:         %s\n",
+    cat(sprintf("Model formula:           %s\n",
                 paste(as.character(attr(x, "formula"))[c(2,1,3)], collapse = " ")))
-    cat(sprintf("Mixture model family:  %s\n", attr(x, "family")))
+    print(attr(x, "family"))
     if ( ! attr(x, "concomitants") ) {
         cat("No concomitant model in use\n")
     }
@@ -207,11 +158,11 @@ print.coef.foehnix <- function(x, ...) {
 # Model/classification summary
 # -------------------------------------------------------------------
 summary.foehnix <- function(x, ...) {
-    print(names(x))
+
     rval <- list()
     rval$call    <- x$call
     rval$samples <- x$samples
-    rval$coef    <- x$coef;
+    rval$coef    <- coef(x, type = "parameter")
 
     # Optimizer statistics
     rval$time      <- x$time
@@ -230,21 +181,14 @@ summary.foehnix <- function(x, ...) {
     return(rval)
 }
 print.summary.foehnix <- function(x, ...) {
-    cat("\nCall: "); print(x$call)
 
-    # TODO: Additional statistics for the estimated coefficients would be great
-    cat("\nCoefficients of Gaussian distributions\n")
-    tmp <- matrix(unlist(x$coef[c("mu1", "logsd1", "mu2", "logsd2")]), ncol = 2,
-                  dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
-    tmp["sigma",] <- exp(tmp["sigma",])
-    print(tmp)
-    cat("\nCoefficients of the concomitant model\n")
-    if ( is.null(x$coef$concomitants) ) {
-        cat("   No concomitants specified\n")
-    } else {
-        print(x$coef$concomitants)
-    }
+    # Model call
+    cat("\nCall: "); print(x$call); cat("\n")
 
+    # Coefficient information
+    print(x$coef)
+
+    # Additional information about the data/model
     cat(sprintf("\nNumber of observations (total) %8d\n", x$samples$total)) 
     cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
                 x$samples$na,    100 * x$samples$na / x$samples$total)) 
@@ -263,324 +207,5 @@ print.summary.foehnix <- function(x, ...) {
     } else {
         cat(sprintf("Time required for model estimation: %.1f minutes\n", x$time / 60))
     }
-}
-
-
-# -------------------------------------------------------------------
-# Plot routine for foehnix classes.
-# -------------------------------------------------------------------
-plot.foehnix <- function(x, which = NULL, ...) {
-
-    # Define plot type
-    allowed <- c('loglik','loglikcontribution', 'coef')
-    print(which)
-    print(class(which))
-    if ( is.null(which) ) {
-        which <- allowed
-    } else if ( inherits(which, c("integer", "numeric")) ) {
-        which <- allowed[as.integer(which)]
-    } else {
-        which <- match.arg(which, allowed, several.ok = TRUE)
-    }
-
-    # Keep user params
-    hold <- par(no.readonly = TRUE); on.exit(par(hold))
-    if ( length(which) > 1 ) par(ask = TRUE)
-
-    flagging <- function(x, log = FALSE) {
-        at <- if ( log ) log(1L:length(x)) else 1L:length(x)
-        points(at, x, pch = 1, cex = 0.5,
-               col = c(1, as.integer(diff(x) > 0) + 2))
-    }
-
-    # Plotting likelihood path if requested
-    if ( "loglik" %in% which ) {
-        ll <- x$optimizer$loglikpath
-        ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
-        # Plot
-        matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
-                ylab = "log-likelihood sum",
-                xlab = "log(EM iteration)",
-                main = "foehnix log-likelihood path")
-        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = TRUE)
-        tmp <- 1L:ncol(ll)
-        legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-               legend = colnames(ll))
-    }
-
-    # Plotting likelihood path if requested
-    if ( "loglikcontribution" %in% which ) {
-        ll <- x$optimizer$loglikpath
-        for ( i in 1:ncol(ll) ) ll[,i] <- ll[,i] - ll[1,i]
-        ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
-        # plot
-        matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
-                ylab = "log-likelihood contribution",
-                xlab = "log(EM iteration)",
-                main = "foehnix log-likelihood contribution")
-        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = TRUE)
-        tmp <- 1L:ncol(ll)
-        legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-               legend = colnames(ll))
-    }
-
-    # Path of estimated coefficients
-    if ( "coef" %in% which ) {
-        # Extract path
-        path <- x$optimizer$coefpath
-
-        # Model without concomitant variables
-        if ( is.null(x$optimizer$ccmodel) ) {
-            ylim <- range(path) + c(0, 0.1) * diff(range(path))
-            matplot(log(1L:nrow(path)), path, ylim = ylim, type = "l",
-                    ylab = "coefficient (components)",
-                    xlab = "log(EM iteration)",
-                    main = "coefficient path (components)")
-            tmp <- 1L:ncol(path)
-            legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-                   legend = colnames(path))
-
-        # Model with additional concomitants
-        } else {
-            holdx <- par(no.readonly = TRUE)
-            par(mfrow = c(1,2))
-            # Components
-            idx_comp <- which(! grepl("^cc\\..*$", names(path)))
-            ylim <- range(path[,idx_comp]) + c(0, 0.1) * diff(range(path[,idx_comp]))
-            matplot(log(1L:nrow(path)), path[,idx_comp], ylim = ylim, type = "l",
-                    ylab = "coefficient (components)",
-                    xlab = "log(EM iteration)",
-                    main = "coefficient path (components)")
-            tmp <- 1L:length(idx_comp)
-            legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-                   legend = colnames(path)[idx_comp])
-
-            # Concomitant model
-            idx_cc <- which(grepl("^cc\\..*$", names(path)))
-            ylim <- range(path[,idx_cc]) + c(0, 0.1) * diff(range(path[,idx_cc]))
-            matplot(log(1L:nrow(path)), path[,idx_cc], ylim = ylim, type = "l",
-                    ylab = "concomitant coefficients (standardized)",
-                    xlab = "log(EM iteration)",
-                    main = "coefficient path (concomitants)")
-            tmp <- 1L:length(idx_cc)
-            legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-                   legend = colnames(path)[idx_cc])
-            par(holdx)
-        }
-
-    }
-
-}
-
-# -------------------------------------------------------------------
-# Development time series plot routine.
-# TODO: this is very specific to our data and our variable names.
-#       either provide something like this and force the users to
-#       follow our naming conventions, or make it much more
-#       flexible/generig.
-# -------------------------------------------------------------------
-tsplot <- function(x, ...) UseMethod("tsplot")
-tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
-
-    add_boxes <- function(x, col = "gray90") {
-        dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
-        up   <- which(diff(x >= .5) == 1) + 1
-        down <- which(diff(x >= .5) == -1)
-        if ( min(down) < min(up) ) up <- c(1, up)
-        isna <- which(is.na(x))
-        if ( length(up) > 0 & length(down) > 0 ) {
-            y <- par()$usr[3:4]
-            for ( i in seq(1, length(up))) {
-                if ( length(isna) > 0 ) {
-                    to <- min(min(isna[isna > up[i]]), down[i])
-                } else {
-                    to <- down[i]
-                }
-                if ( is.na(to) ) to <- nrow(tmp)
-                rect(index(x)[up[i]] - dx, y[1L], index(x)[to] + dx, y[2L],
-                     col = col, border = NA)
-            }
-        }
-    }
-    add_midnight_lines <- function(x) {
-        ndays <- as.numeric(diff(range(index(x))), unit = "days")
-        if ( ndays < 50 ) {
-            at <- as.POSIXct(unique(as.Date(index(x))))
-            abline(v = at, col = 1)
-        }
-    }
-
-    # Convert start/end to POSIXct
-    if ( ! is.null(start) ) {
-        start <- try(as.POSIXct(start))
-        if ( inherits(start, "try-error") )
-            stop("Invalid input for \"start\". Cannot be converted to POSIXt.")
-    }
-    if ( ! is.null(end) ) {
-        end <- try(as.POSIXct(end))
-        if ( inherits(end, "try-error") )
-            stop("Invalid input for \"end\". Cannot be converted to POSIXt.")
-    }
-
-    # Default plot type/plot interval if start and end are not
-    # provided:
-    if ( is.null(start) & is.null(end) ) {
-        # Extracting zoo index (range of dates)
-        dates <- as.POSIXct(as.Date(range(index(x$prob))))
-        if ( max(index(x$prob)) > dates[2L] ) dates <- dates + c(0,86400)
-        # If less than ndays days: plot all 10 days.
-        if ( as.numeric(diff(dates), units = "days") <= ndays ) {
-            start <- dates[1L]; end <- dates[2L]
-        # Else create a set of sequences to plot
-        } else {
-            start <- seq(dates[1L], dates[2L], by = 86400 * ndays)
-            end   <- start + 86400 * ndays
-            start <- start[start < dates[2L]]
-            end   <- pmin(end[start < dates[2L]], dates[2L])
-        }
-    } else {
-        if ( is.null(end) & length(start) != 1 )
-            stop("If input \"end\" is not provided \"start\" has to be of length 1")
-        if ( is.null(start) & length(end) != 1 )
-            stop("If input \"start\" is not provided \"end\" has to be of length 1")
-        if ( is.null(end) )   end   <- max(x$prob)
-        if ( is.null(start) ) start <- min(x$prob) 
-    }
-    # Check whether both (start and end) are of same length
-    if ( ! length(start) == length(end) )
-        stop("Input \"start\" and \"end\" have to be of same length!")
-
-    # Check if time range is valid
-    if ( all(start > max(index(x$prob))) | all(end < min(index(x$prob))) )
-        stop("All time periods defined by start/end outside specified data set.")
-
-    # Keep user settings (will be reset when this function ends)
-    hold <- par(no.readonly = TRUE); on.exit(par(hold))
-
-    # If multiple periods have to be plotted: set ask = TRUE
-    if ( length(start) > 1 ) par(ask = ask) else par(ask = FALSE)
-
-    # Combine foehn probabilities and observations
-    data <- merge(x$prob, x$data)
-    names(data)[1L] <- "prob"
-
-    # Looping over the different periods we have to plot
-    par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
-    for ( k in seq_along(start) ) {
-
-        tmp <- window(data, start = start[k], end = end[k])
-        # No data, or only missing data?
-        if ( nrow(tmp) == 0 | sum(!is.na(tmp)) == 0 ) {
-            tmp <- paste("No data (or only missing values) for the time period",
-                         strftime(start[k], "%Y-%m-%d %H:%M"), "to",
-                         strftime(end[k], "%Y-%m-%d %H:%M"))
-            warning(sprintf("%s. Skip plotting.", str))
-            next
-        }
-
-        # Air temperature
-        plot(tmp$t, type = "n", ylab = NA, xaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        lines(tmp$t, col ="red", lwd = 2)
-        mtext(side = 2, line = 3, "dry air temperature")
-        box()
-    
-        # Relative humidity
-        par(new = TRUE)
-        plot(tmp$rh, type = "n", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-        add_polygon(tmp$rh, col = "#009900")
-        abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
-        axis(side = 4, at = seq(20, 100, by = 20))
-        mtext(side = 4, line = 3, "relative humidity")
-        box()
-    
-        # Temperature difference
-        plot(tmp$diff_t, type = "n", xaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        lines(tmp$diff_t, col = "orange", lwd = 2)
-        abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
-        abline(h = 0, col = 1)
-        mtext(side = 2, line = 3, "temperature difference")
-        box()
-    
-        # Wind speed and direction
-        if ( ! is.null(x$windsector) ) {
-            stopifnot("dd" %in% names(tmp))
-            if ( x$windsector[1L] < x$windsector[2L] ) {
-                ddflag <- ifelse(tmp$dd < x$windsector[1L] | tmp$dd > x$windsector[2L], 1, 2) 
-            } else {
-                ddflag <- ifelse(tmp$dd > x$windsector[1L] | tmp$dd < x$windsector[2L], 1, 2) 
-            }
-        } else { ddflag <- rep(2, nrow(tmp)) }
-        plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
-                 ylim = c(0, 360), yaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        if ( "dd" %in% names(tmp) ) {
-            points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
-        }
-        axis(side = 2, at = seq(90, 360 - 90, by = 90))
-        mtext(side = 2, line = 3, "wind direction")
-        if ( ! is.null(x$windsector) ) abline(h = x$windsector, col = "gray", lty = 3)
-        box()
-    
-        # Adding wind speed
-        par(new = TRUE)
-        plot(tmp$ff, type = "n", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05,
-             yaxs = "i", yaxt = "n", xaxt = "n")
-        add_polygon(tmp$ff, col = "#005ce6")
-        axis(side = 4, at = pretty(tmp$ff))
-        mtext(side = 4, line = 3, "wind speed")
-        box()
-    
-        # Foehn prob
-        plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        if ( ! is.null(xtra) ) lines(xtra * 100, col = "gray50", lty = 5)
-        abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
-        mtext(side = 2, line = 3, "foehn probability")
-        add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
-        # Adding RUG
-        at <- index(tmp$prob)[which(tmp$prob >= .5)]
-        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
-        # Adding "missing data" RUG
-        at <- index(tmp$prob)[which(is.na(tmp$prob))]
-        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = "gray50")
-        box()
-        if ( ! is.null(xtra) )
-            legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),
-                   legend = c("foehnix", "xtra"))
-    
-        # Adding a title to the plot
-        title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])
-        mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
-    } # End of loop over start/end (loop index k)
-
-
-}
-
-# --------------------------------------------------------------------
-# Helper function to draw nice filled polygons with NA's.
-# --------------------------------------------------------------------
-add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
-    # Need hex color
-    if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
-    # All elements NA?
-    if ( all( is.na(x) ) ) return(invisible(NULL))
-    # Else find valid blocks and plot them. Start with 1
-    i <- 1
-    while ( i <= length(x) ) {
-        if ( all(is.na(x)) ) break
-        i1 <- min( which( !is.na(x) ) )
-        if ( i1 > 1 ) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
-        # Else check first NA
-        if ( ! any(is.na(x)) ) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
-        p_x <- as.numeric(index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
-        p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
-        polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
-        lines( x[i1:i2],   col = col, lwd = lwd )
-        # Remove plotted data from time series and continue
-        x <- x[-c(i1:i2)]
-    }
-
 }
 
