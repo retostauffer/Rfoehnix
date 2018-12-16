@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 23:10 on marvin
+# - L@ST MODIFIED: 2018-12-16 15:51 on marvin
 # -------------------------------------------------------------------
 
 
@@ -17,6 +17,7 @@
 # -------------------------------------------------------------------
 foehnix_logistic <- function() {
     list(
+        name = "logistic",
         # Density function
         d = function(y, mu, sigma, log = FALSE)
             dlogis(y, mu, sigma, log = log),
@@ -78,6 +79,7 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
     list(
+        name = "censored logistic",
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdclogis", as.numeric(y), as.numeric(mu),
@@ -167,6 +169,7 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
     list(
+        name = "truncated logistic",
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdtlogis", as.numeric(y), as.numeric(mu),
@@ -254,6 +257,7 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
 # -------------------------------------------------------------------
 foehnix_gaussian <- function() {
     list(
+        name = "Gaussian",
         # Density function
         d = function(y, mu, sigma, log = FALSE)
             dnorm(y, mu, sigma, log = log),
@@ -315,6 +319,7 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
     list(
+        name = "censored Gaussian",
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdcnorm", as.numeric(y), as.numeric(mu),
@@ -404,6 +409,7 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
     if ( ! length(left) == 1 | ! length(right) == 1 )
         stop("Input left/right have to be numeric values of length 1!")
     list(
+        name = "truncated Gaussian",
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
             .Call("cdtnorm", as.numeric(y), as.numeric(mu),

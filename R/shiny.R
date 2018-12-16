@@ -70,36 +70,48 @@ shiny_tsplot <- function(output, x, start, end) {
         lines(x$t, col = 2, lwd = 2)
         ##
         par(new = TRUE)
-        plot(NA, xlim = range(index(x)), ylim = c(0, 150), xaxs = "i", yaxs = "i",
+        plot(NA, xlim = range(index(x)), ylim = c(0, 180), xaxs = "i", yaxs = "i",
              xaxt = "n", yaxt = "n", xlab = NA, ylab = NA, main = NA)
         add_polygon(x$rh, col = "#003300")
         abline(h = seq(20, 100, by = 20), lty = 5, col = "#003300")
         axis(side = 4, at = seq(20, 100, by = 20))
         mtext(side = 4, line = 3, "rel humidity")
     }
-    output$ts_trh <- renderPlot(ts_trh_plot(tmp), height = 300, width = 1000)
+    output$ts_trh <- renderPlot(ts_trh_plot(tmp), height = 300, width = 1400)
 
     # -----------------------------------------------------------
     ts_dd_plot <- function(x, ...) {
         par(mar = c(2.1, 4.1, 0.1, 4.1))
         plot(x$ff, type = "n", xlim = range(index(x)), xaxs = "i", yaxs = "i",
-             xlab = NA, ylab = NA, main = NA, ylim = c(0, max(x$ff, na.rm = TRUE)) * 1.05)
+             xlab = NA, ylab = NA, main = NA, ylim = c(0, max(15, max(x$ff, na.rm = TRUE))) * 1.05)
         mtext(side = 2, line = 3, "wind speed")
-        add_polygon(x$ff, col = "#0033CC")
         add_boxes(x$prob)
+        add_polygon(x$ff, col = "#0033CC")
         add_midnight_lines(x)
-        abline(h = seq(2.5, 20, by = 2.5), lty = 5, col = "#003300")
+        abline(h = seq(5, 25, by = 5), lty = 5, col = "#0033CC")
         ####
         par(new = TRUE)
         plot(NA, xlim = range(index(x)), xaxs = "i", yaxs = "i", ylim = c(0, 360),
              xaxt = "n", yaxt = "n", xlab = NA, ylab = NA, main = NA)
-        add_boxes(x$prob)
         add_midnight_lines(x)
-        points(x$dd, col = 2, lwd = 2)
+        points(x$dd, col = 1, lwd = 2)
         axis(side = 4, at = seq(60, 300, by = 60)) 
         mtext(side = 4, line = 3, "wind dir")
     }
-    output$ts_dd <- renderPlot(ts_dd_plot(tmp), height = 300, width = 1000)
+    output$ts_dd <- renderPlot(ts_dd_plot(tmp), height = 300, width = 1400)
+
+    # -----------------------------------------------------------
+    ts_prob_plot <- function(x, ...) {
+        par(mar = c(2.1, 4.1, 0.1, 4.1))
+        plot(NA, type = "n", xlim = range(index(x)), ylim = c(-2.5, 102.5),
+             xaxs = "i", yaxs = "i", xlab = NA, ylab = NA, main = NA, xaxt = "n", yaxt = "n")
+        axis(side = 2, at = seq(25, 75, by = 25))
+        mtext(side = 2, line = 3, "foehn probability")
+        add_polygon(x$prob * 100, col = "#CC3300", lower.limit = -5)
+        abline(h = seq(25, 75, by = 25), lty = 5, col = "#CC3300")
+        add_midnight_lines(x)
+    }
+    output$ts_prob <- renderPlot(ts_prob_plot(tmp), height = 300, width = 1400)
 }
 
 
@@ -118,9 +130,17 @@ shiny_check <- function(x, ...) {
     library("shiny")
     # User interface
     ui <- basicPage(
+        tags$head(
+            tags$style(HTML("
+            div.shiny-plot-output {
+                height: auto !important;
+            }
+            "))
+        ),
         titlePanel("foehnix time series check"),
-        plotOutput("ts_trh", click = "tsplot_click", brush = "tsplot_brush"),
-        plotOutput("ts_dd",  click = "tsplot_click", brush = "tsplot_brush"),
+        plotOutput("ts_trh",   click = "tsplot_click", brush = "tsplot_brush"),
+        plotOutput("ts_dd",    click = "tsplot_click", brush = "tsplot_brush"),
+        plotOutput("ts_prob",  click = "tsplot_click", brush = "tsplot_brush"),
         verbatimTextOutput("info"),
         plotOutput("plot2")
     )
@@ -131,7 +151,7 @@ shiny_check <- function(x, ...) {
         #output$tsplot <- renderPlot({
         #    shiny_tsplot(x, start = "2010-02-01", end = "2010-02-04")
         #}, height = 800, width = 1200)
-        shiny_tsplot(output, x, start = index(x$prob)[1L], end = index(x$prob)[100L])
+        shiny_tsplot(output, x, start = index(x$prob)[1L], end = index(x$prob)[500L])
     
         output$info <- renderText({
             paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)

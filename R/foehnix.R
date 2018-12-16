@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 13:11 on marvin
+# - L@ST MODIFIED: 2018-12-16 17:12 on marvin
 # -------------------------------------------------------------------
 
 
@@ -247,7 +247,6 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     left  <- as.character(formula)[2]
     if ( ! length(as.character(as.list(formula)[[2]])) == 1 )
         stop("Unsuitable formula given. Exactly one term allowed on the left hand side.")
-    ##stopifnot(grepl("^\\S+$", left) & ! grepl("[+~]", left))
 
     # Maxit and tol are the maximum number of iterations for the
     # optimization. Need to be numeric. If one value is given it will
@@ -286,20 +285,9 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     if ( is.null(windsector) ) {
         idx_wind <- NULL # No wind sector filter
     } else {
-        # FIXME: is it possible to use custom names?
-        if ( ! winddirvar %in% names(data) )
-            stop(paste("Wind sector specified, but",
-                       sprintf("winddirvar = \"%s\"", winddirvar),
-                       "not in present. Rename your inputs or change \"winddirvar\"."))
-        # Filtering
-        if ( windsector[1L] < windsector[2L] ) {
-            idx_wind <- which(data[,winddirvar] < windsector[1L] |
-                              data[,winddirvar] > windsector[2L])
-        } else {
-            idx_wind <- which(data[,winddirvar] > windsector[1L] &
-                              data[,winddirvar] < windsector[2L])
-        }
+        idx_wind <- windsector_filter(data, windsector, winddirvar)
     }
+
     # Indes of all values which should be considered in the model
     idx_take <- which(! 1:nrow(data) %in% c(idx_na, idx_wind))
     if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
@@ -335,6 +323,7 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     }
     cat("Model estimated, create return\n")
 
+
     # Final coefficients of the concomitant model have to be destandardized
     # if standardize == TRUE.
     if ( ! is.null(rval$ccmodel) ) {
@@ -347,16 +336,18 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     }
 
     # Create the return list object (foehnix object)
-    res <- list(optimizer = rval)
-    res$call <- match.call()
-    res$coef <- list(mu1 = rval$theta$mu1, sd1 = exp(rval$theta$logsd1),
-                     mu2 = rval$theta$mu2, sd2 = exp(rval$theta$logsd2),
-                     concomitants = coef)
+    res <- list(optimizer = rval, data = data,
+                windsector = windsector, winddirvar = winddirvar,
+                call = match.call(), formula = formula, family = family)
 
-    res$data <- data
-    res$windsector <- windsector
+    # Store coefficients
+    res$coef <- rval$theta; res$coef$concomitants = coef
 
-    res$samples <- list(total = nrow(data), na = length(idx_na), wind = length(idx_wind), taken = length(idx_take))
+    # Indizes of the samples dropped/used/filtered
+    res$samples <- list(total = nrow(data),
+                        na    = length(idx_na),
+                        wind  = length(idx_wind),
+                        taken = length(idx_take))
 
     # The fohen probability vector: create an object of the
     # same length and class as input "data" and:
@@ -364,10 +355,10 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     # - observations outside the requested wind sector get a 0 (no foehn)
     # - those observations which entered the models get their modelled
     #   foehn probability.
+    # Foehn probability (a-posteriori probability)
     tmp <- rep(NA, ncol(data))
     tmp[idx_take] <- rval$post
     tmp[idx_wind] <- 0
-    # Foehn probability (a-posteriori probability)
     res$prob <- zoo(tmp, index(data))
 
     # Store execution time
@@ -378,4 +369,69 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     return(res)
 }
 
+predict.foehnix <- function(x, newdata = NULL, type = "response") {
 
+    # Allowed input types
+    type <- match.arg(type, c("response", "all"))
+
+    # Pass NA trough function
+    hold <- options(); on.exit(options(hold))
+    options(na.action = na.pass)
+
+    # If no newdata is provided: take the data set on
+    # which the model has been estimated.
+    if ( is.null(newdata) ) newdata <- x$data
+
+    # Probability model
+    if ( is.null(x$coef$concomitants) ) {
+        stop("What's the probability in the non-concomitant case?")
+    } else {
+        logitX <- model.matrix(x$formula, newdata)
+        prob   <- plogis(drop(logitX %*% x$coef$concomitants))
+    }
+
+    # Calculate density
+    y    <- model.response(model.frame(x$formula, newdata))
+    d1   <- x$family$d(y, x$coef$mu1, exp(x$coef$logsd1))
+    d2   <- x$family$d(y, x$coef$mu2, exp(x$coef$logsd2))
+    post <- x$family$posterior(y, prob, x$coef)
+
+    # If wind filter is used:
+    if ( ! is.null(x$windsec) ) {
+        idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
+        if ( length(idx_wind) > 0 ) post[idx_wind] <- 0
+    }
+
+    # If type is response: return foehn probability
+    if ( type == "response" ) return(post)
+
+    # Else return everything we have
+    # The "prob" is the probability of the concomitant model. Thus,
+    # return as "ccmodel". "post" is the a-posteriori probability and
+    # thus the probability of foehn. This is returned as "prob" for the
+    # end-user. TODO: Confusing?
+    zoo(data.frame(density1 = d1, density2 = d2, ccmodel = prob, prob = post),
+        index(x$data))
+
+
+}
+
+
+# -------------------------------------------------------------------
+# Returns the indizes of all rows in x where the wind direction
+# lies within the wind sector. Used to filter for wind directions.
+# -------------------------------------------------------------------
+windsector_filter <- function(x, windsector, winddirvar) {
+        if ( ! winddirvar %in% names(x) )
+            stop(paste("Wind sector specified, but",
+                       sprintf("winddirvar = \"%s\"", winddirvar),
+                       "not in present. Rename your inputs or change \"winddirvar\"."))
+        # Filtering
+        if ( windsector[1L] < windsector[2L] ) {
+            which(x[,winddirvar] < windsector[1L] |
+                  x[,winddirvar] > windsector[2L])
+        } else {
+            which(x[,winddirvar] > windsector[1L] &
+                  x[,winddirvar] < windsector[2L])
+        }
+}

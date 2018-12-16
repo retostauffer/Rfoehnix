@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 20:12 on marvin
+# - L@ST MODIFIED: 2018-12-16 16:57 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -89,7 +89,7 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
                  BIC = -2 * ll + log(nrow(X)) * edf,
                  converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$beta <- beta
-    rval$coef <- if ( ! is.standardized(X) ) beta else destandardize_coefficients(beta, X)
+    rval$coef <- if ( standardize ) destandardize_coefficients(beta, X) else beta
 
     # Return list object containing
     # - edf (numeric): effective degrees of freedom

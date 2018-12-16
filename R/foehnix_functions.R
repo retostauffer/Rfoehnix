@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 22:44 on marvin
+# - L@ST MODIFIED: 2018-12-16 16:58 on marvin
 # -------------------------------------------------------------------
 
 
@@ -165,12 +165,41 @@ edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
+# TODO: Print method for coef is missing.
 # -------------------------------------------------------------------
-coef.foehnix <- function(x, ...) {
-    res <- rbind(matrix(c(x$coef$mu1, x$coef$sd1, x$coef$mu2, x$coef$sd2), ncol = 1,
-                        dimnames = list(c("mu1", "sd1", "mu2", "sd2"), NULL)),
-                 x$coef$concomitants)
-    setNames(as.vector(res), rownames(res))
+coef.foehnix <- function(x, type = "parameter", ...) {
+    type <- match.arg(type, c("parameter", "coefficient"))
+
+    if ( type == "parameter" ) {
+        res <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
+                              x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
+                            dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
+                     x$coef$concomitants)
+    } else {
+        res <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
+                              x$coef$mu2, x$coef$logsd2), ncol = 1,
+                            dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
+                     x$coef$concomitants)
+    }
+    res <- setNames(as.vector(res), rownames(res))
+    
+    # Appending some attributes and a new class
+    attr(res, "concomitants") <- ! is.null(x$coef$concomitants)
+    attr(res, "formula")      <- x$formula
+    attr(res, "family")       <- x$family$name
+    class(res) <- c("coef.foehnix", class(res))
+    res
+}
+print.coef.foehnix <- function(x, ...) {
+    cat("Coefficients of foehnix model\n")
+    cat(sprintf("Model formula:         %s\n",
+                paste(as.character(attr(x, "formula"))[c(2,1,3)], collapse = " ")))
+    cat(sprintf("Mixture model family:  %s\n", attr(x, "family")))
+    if ( ! attr(x, "concomitants") ) {
+        cat("No concomitant model in use\n")
+    }
+    cat("\nCoefficients\n")
+    print(structure(as.numeric(x), names = names(x)))
 }
 
 
@@ -205,8 +234,9 @@ print.summary.foehnix <- function(x, ...) {
 
     # TODO: Additional statistics for the estimated coefficients would be great
     cat("\nCoefficients of Gaussian distributions\n")
-    tmp <- matrix(unlist(x$coef[c("mu1", "sd1", "mu2", "sd2")]), ncol = 2,
+    tmp <- matrix(unlist(x$coef[c("mu1", "logsd1", "mu2", "logsd2")]), ncol = 2,
                   dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
+    tmp["sigma",] <- exp(tmp["sigma",])
     print(tmp)
     cat("\nCoefficients of the concomitant model\n")
     if ( is.null(x$coef$concomitants) ) {
