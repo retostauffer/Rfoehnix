@@ -1,0 +1,148 @@
+
+
+shiny_tsplot <- function(output, x, start, end) {
+
+    tmp <- merge(window(x$prob, start = start, end = end),
+                 window(x$data, start = start, end = end))
+    names(tmp)[1L] <- "prob"
+
+    add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
+        # Need hex color
+        if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
+        # All elements NA?
+        if ( all( is.na(x) ) ) return(invisible(NULL))
+        # Else find valid blocks and plot them. Start with 1
+        i <- 1
+        while ( i <= length(x) ) {
+            if ( all(is.na(x)) ) break
+            i1 <- min( which( !is.na(x) ) )
+            if ( i1 > 1 ) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
+            # Else check first NA
+            if ( ! any(is.na(x)) ) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
+            p_x <- as.numeric(index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
+            p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
+            polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
+            lines( x[i1:i2],   col = col, lwd = lwd )
+            # Remove plotted data from time series and continue
+            x <- x[-c(i1:i2)]
+        }
+    
+    }
+    add_boxes <- function(x, col = "gray90") {
+        dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
+        up   <- which(diff(x >= .5) == 1) + 1
+        down <- which(diff(x >= .5) == -1)
+        if ( length(up) == 0 | length(down) == 0 ) return()
+        if ( min(down) < min(up) ) up <- c(1, up)
+        isna <- which(is.na(x))
+        if ( length(up) > 0 & length(down) > 0 ) {
+            y <- par()$usr[3:4]
+            for ( i in seq(1, length(up))) {
+                if ( length(isna) > 0 ) {
+                    to <- min(min(isna[isna > up[i]]), down[i])
+                } else {
+                    to <- down[i]
+                }
+                if ( is.na(to) ) to <- nrow(tmp)
+                rect(index(x)[up[i]] - dx, y[1L], index(x)[to] + dx, y[2L],
+                     col = col, border = NA)
+            }
+        }
+    }
+    add_midnight_lines <- function(x) {
+        ndays <- as.numeric(diff(range(index(x))), unit = "days")
+        if ( ndays < 50 ) {
+            at <- as.POSIXct(unique(as.Date(index(x))))
+            abline(v = at, col = 1)
+        }
+    }
+
+
+
+    # -----------------------------------------------------------
+    ts_trh_plot <- function(x, ...) {
+        par(mar = c(2.1, 4.1, 0.1, 4.1))
+        plot(x$t, type = "n", xlim = range(index(x)), xaxs = "i",
+             xlab = NA, ylab = NA, main = NA)
+        mtext(side = 2, line = 3, "temperature")
+        add_boxes(x$prob)
+        add_midnight_lines(x)
+        lines(x$t, col = 2, lwd = 2)
+        ##
+        par(new = TRUE)
+        plot(NA, xlim = range(index(x)), ylim = c(0, 150), xaxs = "i", yaxs = "i",
+             xaxt = "n", yaxt = "n", xlab = NA, ylab = NA, main = NA)
+        add_polygon(x$rh, col = "#003300")
+        abline(h = seq(20, 100, by = 20), lty = 5, col = "#003300")
+        axis(side = 4, at = seq(20, 100, by = 20))
+        mtext(side = 4, line = 3, "rel humidity")
+    }
+    output$ts_trh <- renderPlot(ts_trh_plot(tmp), height = 300, width = 1000)
+
+    # -----------------------------------------------------------
+    ts_dd_plot <- function(x, ...) {
+        par(mar = c(2.1, 4.1, 0.1, 4.1))
+        plot(x$ff, type = "n", xlim = range(index(x)), xaxs = "i", yaxs = "i",
+             xlab = NA, ylab = NA, main = NA, ylim = c(0, max(x$ff, na.rm = TRUE)) * 1.05)
+        mtext(side = 2, line = 3, "wind speed")
+        add_polygon(x$ff, col = "#0033CC")
+        add_boxes(x$prob)
+        add_midnight_lines(x)
+        abline(h = seq(2.5, 20, by = 2.5), lty = 5, col = "#003300")
+        ####
+        par(new = TRUE)
+        plot(NA, xlim = range(index(x)), xaxs = "i", yaxs = "i", ylim = c(0, 360),
+             xaxt = "n", yaxt = "n", xlab = NA, ylab = NA, main = NA)
+        add_boxes(x$prob)
+        add_midnight_lines(x)
+        points(x$dd, col = 2, lwd = 2)
+        axis(side = 4, at = seq(60, 300, by = 60)) 
+        mtext(side = 4, line = 3, "wind dir")
+    }
+    output$ts_dd <- renderPlot(ts_dd_plot(tmp), height = 300, width = 1000)
+}
+
+
+shiny_check <- function(x, ...) {
+
+    # Click string
+    xy_str <- function(e) {
+        if ( is.null(e) ) return("NULL\n")
+        sprintf("x = %.1f, y = %.1f", e$x, e$y)
+    }
+    tsplot_click_event <- function(x, e) {
+        # Find closest index
+        closest <- index(x$prob)[which.min(abs(as.numeric(index(x$prob)) - e$x))]
+        showNotification(sprintf("Closest is %s", as.character(closest)))
+    }
+    library("shiny")
+    # User interface
+    ui <- basicPage(
+        titlePanel("foehnix time series check"),
+        plotOutput("ts_trh", click = "tsplot_click", brush = "tsplot_brush"),
+        plotOutput("ts_dd",  click = "tsplot_click", brush = "tsplot_brush"),
+        verbatimTextOutput("info"),
+        plotOutput("plot2")
+    )
+
+    
+    # Shiny server function
+    server <- function(input, output) {
+        #output$tsplot <- renderPlot({
+        #    shiny_tsplot(x, start = "2010-02-01", end = "2010-02-04")
+        #}, height = 800, width = 1200)
+        shiny_tsplot(output, x, start = index(x$prob)[1L], end = index(x$prob)[100L])
+    
+        output$info <- renderText({
+            paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
+        })
+
+        observeEvent(input$tsplot_click, {
+            tsplot_click_event(x, input$tsplot_click)
+        })
+        observeEvent(input$tsplot_brush, {
+            showNotification("brush event")
+        })
+    }
+    shinyApp(ui, server)
+}

@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 20:51 on marvin
+# - L@ST MODIFIED: 2018-12-15 22:44 on marvin
 # -------------------------------------------------------------------
 
 
@@ -178,16 +178,16 @@ coef.foehnix <- function(x, ...) {
 # Model/classification summary
 # -------------------------------------------------------------------
 summary.foehnix <- function(x, ...) {
+    print(names(x))
     rval <- list()
     rval$call    <- x$call
     rval$samples <- x$samples
     rval$coef    <- x$coef;
-    colnames(rval$coef$concomitants) <- "coef"
 
     # Optimizer statistics
     rval$time      <- x$time
-    rval$ll        <- x$optimizer$loglik$ll
-    rval$df        <- length(coef(x))
+    rval$logLik    <- logLik(x)
+    rval$edf       <- edf(x)
     rval$n.iter    <- x$optimizer$n.iter
     rval$maxit     <- x$optimizer$maxit
     rval$converged <- x$optimizer$converged
@@ -205,22 +205,34 @@ print.summary.foehnix <- function(x, ...) {
 
     # TODO: Additional statistics for the estimated coefficients would be great
     cat("\nCoefficients of Gaussian distributions\n")
-    tmp <- matrix(unlist(x$coef[c("mu1", "sd1", "mu2", "sd2")]), ncol = 2, dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
+    tmp <- matrix(unlist(x$coef[c("mu1", "sd1", "mu2", "sd2")]), ncol = 2,
+                  dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
     print(tmp)
     cat("\nCoefficients of the concomitant model\n")
-    print(x$coef$concomitants)
+    if ( is.null(x$coef$concomitants) ) {
+        cat("   No concomitants specified\n")
+    } else {
+        print(x$coef$concomitants)
+    }
 
     cat(sprintf("\nNumber of observations (total) %8d\n", x$samples$total)) 
-    cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n", x$samples$na,    100 * x$samples$na / x$samples$total)) 
-    cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", x$samples$wind,  100 * x$samples$wind / x$samples$total)) 
-    cat(sprintf("Used for classification        %8d (%3.1f percent)\n", x$samples$taken, 100 * x$samples$taken / x$samples$total)) 
+    cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
+                x$samples$na,    100 * x$samples$na / x$samples$total)) 
+    cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", 
+                x$samples$wind,  100 * x$samples$wind / x$samples$total)) 
+    cat(sprintf("Used for classification        %8d (%3.1f percent)\n",
+                x$samples$taken, 100 * x$samples$taken / x$samples$total)) 
     cat(sprintf("\nClimatological foehn occurance %.2f percent\n", x$meanfoehn))
     cat(sprintf("Mean foehn probability %.2f percent\n", x$meanprob))
 
     cat(sprintf("\nLog-likelihood: %.1f on %d Df\n",   x$ll, x$df))
     cat(sprintf("Number of EM iterations %d/%d (%s)\n", x$n.iter, x$maxit,
                 ifelse(x$converged, "converged", "not converged")))
-    cat(sprintf("Time for optimization: %.1f minutes\n", x$time))
+    if ( x$time < 60 ) {
+        cat(sprintf("Time required for model estimation: %.1f seconds\n", x$time))
+    } else {
+        cat(sprintf("Time required for model estimation: %.1f minutes\n", x$time / 60))
+    }
 }
 
 
@@ -340,16 +352,24 @@ plot.foehnix <- function(x, which = NULL, ...) {
 tsplot <- function(x, ...) UseMethod("tsplot")
 tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
 
-    add_boxes <- function(x, col = "gray94") {
+    add_boxes <- function(x, col = "gray90") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
-        up   <- which(diff(x > .5) == 1) + 1
-        down <- which(diff(x > .5) == -1)
+        up   <- which(diff(x >= .5) == 1) + 1
+        down <- which(diff(x >= .5) == -1)
+        if ( min(down) < min(up) ) up <- c(1, up)
+        isna <- which(is.na(x))
         if ( length(up) > 0 & length(down) > 0 ) {
-            down <- down[down >= min(up)]
             y <- par()$usr[3:4]
-            for ( i in seq(1, min(length(up), length(down))) )
-                rect(index(x)[up[i]] - dx, y[1L], index(x)[down[i]] + dx, y[2L],
+            for ( i in seq(1, length(up))) {
+                if ( length(isna) > 0 ) {
+                    to <- min(min(isna[isna > up[i]]), down[i])
+                } else {
+                    to <- down[i]
+                }
+                if ( is.na(to) ) to <- nrow(tmp)
+                rect(index(x)[up[i]] - dx, y[1L], index(x)[to] + dx, y[2L],
                      col = col, border = NA)
+            }
         }
     }
     add_midnight_lines <- function(x) {
@@ -492,6 +512,9 @@ tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = 
         # Adding RUG
         at <- index(tmp$prob)[which(tmp$prob >= .5)]
         if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
+        # Adding "missing data" RUG
+        at <- index(tmp$prob)[which(is.na(tmp$prob))]
+        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = "gray50")
         box()
         if ( ! is.null(xtra) )
             legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),

@@ -4,6 +4,7 @@ useDynLib(foehnix, .registration = TRUE)
 # Export functions
 export(iwls_logit)
 export(foehnix)
+export(windrose)
 
 
 

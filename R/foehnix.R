@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-15 21:03 on marvin
+# - L@ST MODIFIED: 2018-12-16 13:11 on marvin
 # -------------------------------------------------------------------
 
 
@@ -55,7 +55,6 @@ foehnix.noconcomitant.fit <- function(y, family,
         post  <- family$posterior(y, prob, theta)
 
         # M-step: update probabilites and theta
-        # TODO: Is this correct, Mr. Reto?
         prob  <- as.numeric(post >= .5)
         theta <- family$theta(y, post, theta = theta)
 
@@ -65,9 +64,8 @@ foehnix.noconcomitant.fit <- function(y, family,
         coefpath[[iter]] <- as.data.frame(theta)
         cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
 
-        # If the log-likelihood decreases: proceed! Same if
-        # no tolerance is specified (is.null(tol)).
-        if ( iter == 1 | is.null(tol) ) next
+        # If the log-likelihood decreases: proceed!
+        if ( iter == 1 ) next
 
         # Improvement < 0 (model got worse): continue
         ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
@@ -160,8 +158,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
         cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
-        # no tolerance is specified (is.null(tol)).
-        if ( iter == 1 | is.null(tol) ) next
+        if ( iter == 1 ) next
 
         # Improvement < 0 (model got worse): continue
         ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
@@ -216,9 +213,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian",
                     maxit = 100L, tol = 1e-5, standardize = TRUE,
                     alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
-    timing <- Sys.time() # Measure execution time
     print("hallo from foehix.reg")
-    #rval$time <- as.numeric(Sys.time() - timing, units = "mins")
 }
 
 
@@ -231,8 +226,8 @@ foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian
 #       destandardize function should technically be ready to support
 #       this.
 # -------------------------------------------------------------------
-foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
-                    maxit = 100L, tol = 1e-5,
+foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
+                    family = "gaussian", maxit = 100L, tol = 1e-5,
                     standardize = TRUE, alpha = NULL, nlambda = 100L,
                     verbose = FALSE, ...) {
 
@@ -292,13 +287,17 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
         idx_wind <- NULL # No wind sector filter
     } else {
         # FIXME: is it possible to use custom names?
-        if ( ! "dd" %in% names(data) )
-            stop("If wind sector is given the data object requires to have a column \"dd\".")
+        if ( ! winddirvar %in% names(data) )
+            stop(paste("Wind sector specified, but",
+                       sprintf("winddirvar = \"%s\"", winddirvar),
+                       "not in present. Rename your inputs or change \"winddirvar\"."))
         # Filtering
         if ( windsector[1L] < windsector[2L] ) {
-            idx_wind <- which(data$dd < windsector[1L] | data$dd > windsector[2L])
+            idx_wind <- which(data[,winddirvar] < windsector[1L] |
+                              data[,winddirvar] > windsector[2L])
         } else {
-            idx_wind <- which(data$dd > windsector[1L] & data$dd < windsector[2L])
+            idx_wind <- which(data[,winddirvar] > windsector[1L] &
+                              data[,winddirvar] < windsector[2L])
         }
     }
     # Indes of all values which should be considered in the model
@@ -372,7 +371,7 @@ foehnix <- function(formula, data, windsector = NULL, family = "gaussian",
     res$prob <- zoo(tmp, index(data))
 
     # Store execution time
-    res$time <- as.numeric(Sys.time() - timing, units = "mins")
+    res$time <- as.numeric(Sys.time() - timing, units = "secs")
 
     # Return new object
     class(res) <- "foehnix"
