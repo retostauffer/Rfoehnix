@@ -126,8 +126,10 @@ plot.foehnix <- function(x, which = NULL, ...) {
         tmp <- data.frame(y = as.numeric(y), prob = as.numeric(x$prob))
 
         # Apply wind filter if required
-        idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
-        if ( ! is.null(idx_wind) ) tmp <- tmp[-idx_wind,]
+        if ( ! is.null(x$windsector) ) {
+            idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
+            if ( ! is.null(idx_wind) ) tmp <- tmp[-idx_wind,]
+        }
 
         # Remove missing values
         tmp <- na.omit(tmp)

@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 00:50 on marvin
+# - L@ST MODIFIED: 2018-12-17 01:37 on marvin
 # -------------------------------------------------------------------
 
 
@@ -41,8 +41,10 @@ foehnix.noconcomitant.fit <- function(y, family,
     z     <- as.numeric(y >= mean(y))
     theta <- family$theta(y, z, init = TRUE) # M-step
 
-    # Initial probability: fifty/fifty!
-    prob <- rep(.5, length(y))
+    # Initial probability (fifty fifty) and inital prior
+    # probabilites for the component membership.
+    prob  <- rep(.5, length(y))
+    post  <- family$posterior(y, mean(prob), theta)
 
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
@@ -51,14 +53,14 @@ foehnix.noconcomitant.fit <- function(y, family,
     while ( iter < maxit[1L] ) {
         iter <- iter + 1;
 
-        # E-step: calculate a-posteriori probability
-        post  <- family$posterior(y, mean(prob), theta)
-
         # M-step: update probabilites and theta
         prob  <- as.numeric(post >= .5)
         ##TODO: prob <- post
         #prob <- post
         theta <- family$theta(y, post, theta = theta)
+
+        # E-step: calculate a-posteriori probability
+        post  <- family$posterior(y, mean(prob), theta)
 
         # Store log-likelihood and coefficients of the current
         # iteration.
@@ -82,9 +84,6 @@ foehnix.noconcomitant.fit <- function(y, family,
 
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
     }; cat("\n")
-
-    # Final posterior update
-    post  <- family$posterior(y, mean(prob), theta)
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
@@ -145,7 +144,9 @@ foehnix.unreg.fit <- function(y, logitX, family,
     # standardized in the parent function (foehnix).
     ccmodel <- iwls_logit(logitX, z, standardize = FALSE,
                           maxit = tail(maxit, 1L), tol = tail(tol, 1L))
+    # Initial probabilites and prior probabilities
     prob    <- plogis(drop(logitX %*% ccmodel$beta))
+    post    <- family$posterior(y, prob, theta)
 
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
@@ -154,14 +155,15 @@ foehnix.unreg.fit <- function(y, logitX, family,
     while ( iter < maxit[1L] ) {
         iter <- iter + 1;
 
-        # E-step: calculate a-posteriori probability
-        post  <- family$posterior(y, prob, theta)
 
         # M-step: update probabilites and theta
         ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE,
                               maxit = tail(maxit, 1L), tol = tail(tol, 1L))
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
         theta   <- family$theta(y, post, theta = theta)
+
+        # E-step: update expected a-posteriori
+        post    <- family$posterior(y, prob, theta)
 
         # Store log-likelihood and coefficients of the current
         # iteration.
@@ -181,9 +183,6 @@ foehnix.unreg.fit <- function(y, logitX, family,
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
 
     }; cat("\n")
-
-    # Final posterior update
-    post  <- family$posterior(y, prob, theta)
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
