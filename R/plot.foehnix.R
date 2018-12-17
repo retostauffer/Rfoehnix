@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2014-09-13 15:12 on thinkreto
+# - L@ST MODIFIED: 2018-12-17 01:22 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -15,10 +15,10 @@
 # -------------------------------------------------------------------
 plot.foehnix <- function(x, which = NULL, ...) {
 
+
+
     # Define plot type
-    allowed <- c('loglik','loglikcontribution', 'coef')
-    print(which)
-    print(class(which))
+    allowed <- c("loglik","loglikcontribution", "coef", "hist")
     if ( is.null(which) ) {
         which <- allowed
     } else if ( inherits(which, c("integer", "numeric")) ) {
@@ -113,6 +113,45 @@ plot.foehnix <- function(x, which = NULL, ...) {
         }
 
     }
+
+    # Conditional histogram plot
+    if ( "hist" %in% which ) {
+
+        # Create response vector
+        hold_opt <- options("na.action"); options(na.action = "na.pass")
+        y <- model.response(model.frame(x$formula, x$data))
+        options(hold_opt)
+
+        # Combine response vector with estimated probabilities
+        tmp <- data.frame(y = as.numeric(y), prob = as.numeric(x$prob))
+
+        # Apply wind filter if required
+        idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
+        if ( ! is.null(idx_wind) ) tmp <- tmp[-idx_wind,]
+
+        # Remove missing values
+        tmp <- na.omit(tmp)
+
+        # Plot if we have data
+        if ( nrow(tmp) > 0 ) {
+            par(mfrow = c(1,2))
+            # Position where to draw the density
+            at <- seq(min(tmp$y), max(tmp$y), length = 501)
+
+            # Plotting conditional component 1 histogram
+            hist(y[which(x$prob <  .5)], xlim = range(tmp$y), breaks = 30, freq = FALSE,
+                 main = "Conditional Histogram\nComponent 1",
+                 border = "gray50", xlab = expression(paste("y[",pi < 0.5,"]")))
+            lines(at, x$family$d(at, x$coef$mu1, exp(x$coef$logsd1)), col = 2, lwd = 2)
+
+            # Plotting conditional component 2 histogram
+            hist(y[which(x$prob >= .5)], xlim = range(tmp$y), breaks = 30, freq = FALSE,
+                 main = "Conditional Histogram\nComponent 2",
+                 border = "gray50", xlab = expression(paste("y[",pi >= 0.5,"]")))
+            lines(at, x$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 2, lwd = 2)
+        }
+    }
+
 
 }
 

@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 18:44 on marvin
+# - L@ST MODIFIED: 2018-12-17 00:50 on marvin
 # -------------------------------------------------------------------
 
 
@@ -48,7 +48,7 @@ foehnix.noconcomitant.fit <- function(y, family,
     # given the new probabilities (M-step). Always with respect to the
     # selected family.
     iter <- 0
-    while ( iter < maxit ) {
+    while ( iter < maxit[1L] ) {
         iter <- iter + 1;
 
         # E-step: calculate a-posteriori probability
@@ -56,13 +56,15 @@ foehnix.noconcomitant.fit <- function(y, family,
 
         # M-step: update probabilites and theta
         prob  <- as.numeric(post >= .5)
+        ##TODO: prob <- post
+        #prob <- post
         theta <- family$theta(y, post, theta = theta)
 
         # Store log-likelihood and coefficients of the current
         # iteration.
         llpath[[iter]] <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- as.data.frame(theta)
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
+        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -73,11 +75,19 @@ foehnix.noconcomitant.fit <- function(y, family,
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol ) break
+        if( is.na(llpath[[iter]]$full)) {
+            print("kaputte likelihood")
+            browser()
+        }
+
+        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
     }; cat("\n")
 
+    # Final posterior update
+    post  <- family$posterior(y, mean(prob), theta)
+
     # Check if algorithm converged before maxit was reached
-    converged <- ifelse(iter < maxit, TRUE, FALSE)
+    converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
 
     # Combine to data.frame (number of rows corresponds to iter + 1)
     llpath    <- do.call(rbind, llpath)
@@ -133,21 +143,23 @@ foehnix.unreg.fit <- function(y, logitX, family,
     # Initial probability: fifty/fifty!
     # Force standardize = FALSE. If required logitX has alreday been
     # standardized in the parent function (foehnix).
-    ccmodel <- iwls_logit(logitX, z, standardize = FALSE)
+    ccmodel <- iwls_logit(logitX, z, standardize = FALSE,
+                          maxit = tail(maxit, 1L), tol = tail(tol, 1L))
     prob    <- plogis(drop(logitX %*% ccmodel$beta))
 
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
     # selected family.
     iter <- 0
-    while ( iter < maxit ) {
+    while ( iter < maxit[1L] ) {
         iter <- iter + 1;
 
         # E-step: calculate a-posteriori probability
         post  <- family$posterior(y, prob, theta)
 
         # M-step: update probabilites and theta
-        ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE)
+        ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE,
+                              maxit = tail(maxit, 1L), tol = tail(tol, 1L))
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
         theta   <- family$theta(y, post, theta = theta)
 
@@ -155,7 +167,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # iteration.
         llpath[[iter]]   <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- cbind(as.data.frame(theta), coef(ccmodel, which = "beta"))
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit, llpath[[iter]]))
+        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -166,12 +178,15 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol ) break
+        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
 
     }; cat("\n")
 
+    # Final posterior update
+    post  <- family$posterior(y, prob, theta)
+
     # Check if algorithm converged before maxit was reached
-    converged <- ifelse(iter < maxit, TRUE, FALSE)
+    converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
 
     # Combine to data.frame (number of rows corresponds to iter + 1)
     llpath    <- do.call(rbind, llpath)
@@ -183,6 +198,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
     #llpath$concomitant <- 0; llpath$full <- llpath$component
 
     # Return a list with results
+    # TODO: Should we implement the binning?
 if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!")
     ll   <- tail(llpath$full, 1)
     rval <- list(prob       = prob,
@@ -264,11 +280,6 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
         family <- get(sprintf("foehnix_%s", family))()
     }
 
-    # Stop if the main covariate for the flexible Gaussian mixture model
-    # is not a valid variable name.
-    if ( ! length(as.character(as.list(formula)[[2]])) == 1 )
-        stop("Unsuitable formula given. Exactly one term allowed on the left hand side.")
-
     # Maxit and tol are the maximum number of iterations for the
     # optimization. Need to be numeric. If one value is given it will
     # be used for both, the EM algorithm and the IWLS optimization for
@@ -345,13 +356,15 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     if ( length(labels(terms(formula))) == 0 ) {
         rval <- do.call("foehnix.noconcomitant.fit", list(
                  y = y, family = family, maxit = maxit,
-                 tol = head(tol, 1)))
+                 tol = tol))
     } else if ( is.null(alpha) ) {
         rval <- do.call("foehnix.unreg.fit", list(
                  y = y, logitX = logitX, family = family, maxit = maxit,
-                 tol = head(tol, 1)))
+                 tol = tol))
     } else {
-        rval <- do.call("foehnix.reg.fit", arg)
+        rval <- do.call("foehnix.unreg.fit", list(
+                 y = y, logitX = logitX, family = family, maxit = maxit,
+                 tol = tol))
     }
     cat("Model estimated, create return\n")
 
