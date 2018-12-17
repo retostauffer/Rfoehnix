@@ -1,184 +1,44 @@
 # -------------------------------------------------------------------
-# - NAME:        phoeton_simple.R
+# - NAME:        tsplot.R
 # - AUTHOR:      Reto Stauffer
-# - DATE:        2018-11-28
+# - DATE:        2018-12-16
 # -------------------------------------------------------------------
-# - DESCRIPTION: Scripts to estimate Gaussian and logistic
-#                two-component mixture models with IWLS and
-#                weighted empirical moments.
-#                "simple" here referrs to non-gradient non-optimizer
-#                based model estimates.
+# - DESCRIPTION:
 # -------------------------------------------------------------------
-# - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
+# - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-11 12:57 on marvin
+# - L@ST MODIFIED: 2018-12-16 17:30 on marvin
 # -------------------------------------------------------------------
 
 
 # -------------------------------------------------------------------
-# Standardize coefficients
-# -------------------------------------------------------------------
-standardize_model_matrix <- function(X) {
-    if(sum(apply(X, 2, sd) == 0) > 1)
-        stop("Multiple columns with constant values!")
-    # Scale covariates
-    scaled_center <- structure(rep(0, ncol(X)), names = colnames(X))
-    scaled_scale  <- structure(rep(1, ncol(X)), names = colnames(X))
-    for ( i in ncol(X) ) {
-        if ( sd(X[,i]) == 0 ) next
-        scaled_center[i] <- mean(X[,i])
-        scaled_scale[i]  <- sd(X[,i])
-        X[,i] <- (X[,i] - scaled_center[i]) / scaled_scale[i]
-    }
-    attr(X, "scaled:center") <- scaled_center
-    attr(X, "scaled:scale")  <- scaled_scale
-    return(X)
-}
-
-
-# -------------------------------------------------------------------
-# Destandardize coefficients. Brings coefficients back to
-# the "real" scale if standardized coefficients are used when
-# estimating the logistic regression model (concomitant model).
-# -------------------------------------------------------------------
-destandardize_coefficients <- function(beta, X) {
-    scaled_center = attr(X, "scaled:center")
-    scaled_scale  = attr(X, "scaled:scale")
-    # Do we have an intercept?
-    ic <- grep("^\\(Intercept\\)$", rownames(beta))
-    if ( length(ic) == 1 ) {
-        # Descaling intercept
-        beta[ic,]  <- beta[ic,] - sum(beta[-ic,] * scaled_center[-ic]  / scaled_scale[-ic])
-        # Descaling all other regression coefficients
-        beta[-ic,] <- beta[-ic,] / scaled_scale[-ic]
-    } else {
-        beta <- beta / scaled_scale
-    }
-    return(beta)
-}
-
-
-# -------------------------------------------------------------------
-# Calculates and returns the log-likelihood for the two parts
-# of the Gaussian mixture model with two clusters.
-# y: response
-# post: posterior weights
-# theta: list object containing the location/scale parameters (or
-#        coefficients for location/scale for the Gaussian distributions)
-# -------------------------------------------------------------------
-foehndiag_gaussian_loglik <- function(y, post, prob, theta) {
-        # Calculate/trace loglik
-        eps  <- sqrt(.Machine$double.eps)
-        ll <- list(component = sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                             + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                   concomitant = sum((1 - post) * log(1 - prob) + post * log(prob)))
-        ll$full <- sum(unlist(ll))
-        return(ll)
-}
-foehndiag_gaussian_posterior <- function(y, prob, theta) {
-    (prob) * dnorm(y, theta$mu2, exp(theta$logsd2)) /
-    ((1 - prob) * dnorm(y, theta$mu1, exp(theta$logsd1)) +
-    prob * dnorm(y, theta$mu2, exp(theta$logsd2)))
-}
-
-foehndiag_logistic_loglik <- function(y, post, prob, theta) {
-        # Calculate/trace loglik
-        eps  <- sqrt(.Machine$double.eps)
-        prob <- pmax(eps, pmin(1-eps, prob))
-        ll <- list(component = sum(post       * dlogis(y, theta$mu2, exp(theta$logsd2), log = TRUE))
-                             + sum((1 - post) * dlogis(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                   concomitant = sum((1 - post) * log(1 - prob) + post * log(prob)))
-        ll$full <- sum(unlist(ll))
-        return(ll)
-}
-foehndiag_logistic_posterior <- function(y, prob, theta) {
-    (prob) * dlogis(y, theta$mu2, exp(theta$logsd2)) /
-    ((1 - prob) * dlogis(y, theta$mu1, exp(theta$logsd1)) +
-    prob * dlogis(y, theta$mu2, exp(theta$logsd2)))
-}
-
-
-# -------------------------------------------------------------------
-# Estimated regression coefficients
-# -------------------------------------------------------------------
-coef.phoeton <- function(x, ...) {
-    res <- rbind(matrix(c(x$coef$mu1, x$coef$sd1, x$coef$mu2, x$coef$sd2), ncol = 1,
-                        dimnames = list(c("mu1", "sd1", "mu2", "sd2"), NULL)),
-                 x$coef$concomitants)
-    setNames(as.vector(res), rownames(res))
-}
-
-
-# -------------------------------------------------------------------
-# Model/classification summary
-# -------------------------------------------------------------------
-summary.phoeton <- function(x, ...) {
-    rval <- list()
-    rval$call    <- x$call
-    rval$samples <- x$samples
-    rval$coef    <- x$coef;
-    colnames(rval$coef$concomitants) <- "coef"
-
-    # Optimizer statistics
-    rval$time      <- x$time
-    rval$ll        <- x$optimizer$loglik$ll
-    rval$df        <- length(coef(x))
-    rval$n.iter    <- x$optimizer$n.iter
-    rval$maxit     <- x$optimizer$maxit
-    rval$converged <- x$optimizer$converged
-
-    # Mean estimated probability of foehn (climatological probability
-    # of foehn based on the model estimate)
-    rval$meanprob  <- 100 * mean(x$prob, na.rm = TRUE)
-    rval$meanfoehn <- 100 * sum(x$prob >= .5, na.rm = TRUE) / sum(!is.na(x$prob))
-
-    class(rval) <- "summary.phoeton"
-    return(rval)
-}
-print.summary.phoeton <- function(x, ...) {
-    cat("\nCall: "); print(x$call)
-
-    # TODO: Additional statistics for the estimated coefficients would be great
-    cat("\nCoefficients of Gaussian distributions\n")
-    tmp <- matrix(unlist(x$coef[c("mu1", "sd1", "mu2", "sd2")]), ncol = 2, dimnames = list(c("mu","sigma"), c("Comp.1", "Comp.2")))
-    print(tmp)
-    cat("\nCoefficients of the concomitant model\n")
-    print(x$coef$concomitants)
-
-    cat(sprintf("\nNumber of observations (total) %8d\n", x$samples$total)) 
-    cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n", x$samples$na,    100 * x$samples$na / x$samples$total)) 
-    cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", x$samples$wind,  100 * x$samples$wind / x$samples$total)) 
-    cat(sprintf("Used for classification        %8d (%3.1f percent)\n", x$samples$taken, 100 * x$samples$taken / x$samples$total)) 
-    cat(sprintf("\nClimatological foehn occurance %.2f percent\n", x$meanfoehn))
-    cat(sprintf("Mean foehn probability %.2f percent\n", x$meanprob))
-
-    cat(sprintf("\nLog-likelihood: %.1f on %d Df\n",   x$ll, x$df))
-    cat(sprintf("Number of EM iterations %d/%d (%s)\n", x$n.iter, x$maxit,
-                ifelse(x$converged, "converged", "not converged")))
-    cat(sprintf("Time for optimization: %.1f minutes\n", x$time))
-}
-
-
-
-# -------------------------------------------------------------------
-# Development plot routine
+# Development time series plot routine.
 # TODO: this is very specific to our data and our variable names.
 #       either provide something like this and force the users to
 #       follow our naming conventions, or make it much more
 #       flexible/generig.
 # -------------------------------------------------------------------
-plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
+tsplot <- function(x, ...) UseMethod("tsplot")
+tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
 
-    add_boxes <- function(x, col = "gray94") {
+    add_boxes <- function(x, col = "gray90") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
-        up   <- which(diff(x > .5) == 1) + 1
-        down <- which(diff(x > .5) == -1)
+        up   <- which(diff(x >= .5) == 1) + 1
+        down <- which(diff(x >= .5) == -1)
+        if ( min(down) < min(up) ) up <- c(1, up)
+        isna <- which(is.na(x))
         if ( length(up) > 0 & length(down) > 0 ) {
-            down <- down[down >= min(up)]
             y <- par()$usr[3:4]
-            for ( i in seq(1, min(length(up), length(down))) )
-                rect(index(x)[up[i]] - dx, y[1L], index(x)[down[i]] + dx, y[2L],
+            for ( i in seq(1, length(up))) {
+                if ( length(isna) > 0 ) {
+                    to <- min(min(isna[isna > up[i]]), down[i])
+                } else {
+                    to <- down[i]
+                }
+                if ( is.na(to) ) to <- nrow(tmp)
+                rect(index(x)[up[i]] - dx, y[1L], index(x)[to] + dx, y[2L],
                      col = col, border = NA)
+            }
         }
     }
     add_midnight_lines <- function(x) {
@@ -241,6 +101,7 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NU
 
     # Combine foehn probabilities and observations
     data <- merge(x$prob, x$data)
+    names(data)[1L] <- "prob"
 
     # Looping over the different periods we have to plot
     par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
@@ -318,12 +179,15 @@ plot.phoeton <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NU
         mtext(side = 2, line = 3, "foehn probability")
         add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
         # Adding RUG
-        at <- index(x$prob)[which(x$prob >= .5)]
+        at <- index(tmp$prob)[which(tmp$prob >= .5)]
         if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
+        # Adding "missing data" RUG
+        at <- index(tmp$prob)[which(is.na(tmp$prob))]
+        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = "gray50")
         box()
         if ( ! is.null(xtra) )
             legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),
-                   legend = c("phoeton", "xtra"))
+                   legend = c("foehnix", "xtra"))
     
         # Adding a title to the plot
         title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])

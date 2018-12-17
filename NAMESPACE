@@ -1,7 +1,10 @@
-###exportPattern("^[[:alpha:]]+")
+# Include C library
+useDynLib(foehnix, .registration = TRUE)
 
+# Export functions
 export(iwls_logit)
-export(bfgs_logit)
-export(phoeton)
-export(advanced_phoeton)
+export(foehnix)
+export(windrose)
+
+
 

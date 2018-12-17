@@ -89,10 +89,18 @@ airquality$Ozone <- as.numeric(airquality$Ozone > 50)
 # glm model
 m1 <- glm(Ozone ~ ., data = airquality, family = binomial(link = "logit"))
 
-# iwls solver
+# Setting up model.frame, response, and model matrix
 mf <- model.frame(Ozone ~ ., data = airquality)
-m2 <- iwls_logit(model.matrix(Ozone ~ ., data = airquality), model.response(mf))
+X  <- model.matrix(Ozone ~ ., data = airquality)
+y  <- model.response(mf)
+
+# Default call
+m2 <- iwls_logit(X, y)
+# With standardized coefficients
+m3 <- iwls_logit(X, y, standardize = TRUE)
+# No early stop, stop when maxit = 100 is reached. Will through
+m4 <- iwls_logit(X, y, standardize = TRUE, tol = -Inf, maxit = 100)
 
 # Comparing coefficients
-print(cbind(coef(m1), m2$coef))
+print(cbind(coef(m1), m2$coef, m3$coef, m4$coef))
 }

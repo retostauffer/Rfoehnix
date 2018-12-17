@@ -1,12 +1,12 @@
-\name{phoeton}
-\alias{phoeton}
+\name{foehnix}
+\alias{foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
     ## TODO: extend/adjust usage
     ## Basic usage
-    phoeton(formula, data)
+    foehnix(formula, data)
     ## Advanced usage
-    phoeton(formula, data, windsector = NULL, maxit = 100L, tol = 1e-8,
+    foehnix(formula, data, windsector = NULL, winddirvar = "dd", maxit = 100L, tol = 1e-8,
             lambda.min = "auto", standardize = TRUE, family = "gaussian", ...) 
 }
 \arguments{
@@ -19,6 +19,8 @@
     \item{windsector}{either \code{NULL} or a \code{numeric} vector of length \code{2}.
         Defines the foehn wind sector used for filtering the data.
         Details can be found in the 'Details' section.}
+    \item{winddirvar}{character, default is \code{dd}. Name of the variable
+        in input \code{data} used to filter the wind sector.}
     \item{maxit}{control argument for the iterative solvers. Default is \code{100L},
         the maximum number of iterations for the EM algorithm and the IWLS backfitting
         algorithm for the concomitant model.
@@ -27,7 +29,8 @@
     \item{tol}{similar as for \code{maxit}. Used to identify convergence of the
         iterative solvers. Default is \code{1e-8}, if two values are given the
         first will be used for the EM algorithm, the second one for the IWLS backfitting
-        procedure.}
+        procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
+        criteria.}
     \item{lambda.min}{one of \code{"auto"} (default), \code{"loglik"}, \code{"BIC"}, or \code{"AIC"}.
         See 'Details' for more information.}
     \item{standardize}{logical flag, default is \code{TRUE}. Defines whether or not
@@ -96,7 +99,7 @@
     model.
 }
 \value{
-    Returns an object of class \code{phoeton}. A set of 
+    Returns an object of class \code{foehnix}. A set of 
     default and custom methods is available for these objects
     such as \code{print}, \code{summary}, \code{coef}, \code{plot}, \dots
 }
