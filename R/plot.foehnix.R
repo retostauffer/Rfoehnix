@@ -7,15 +7,13 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 01:22 on marvin
+# - L@ST MODIFIED: 2018-12-17 20:11 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
 # Plot routine for foehnix classes.
 # -------------------------------------------------------------------
 plot.foehnix <- function(x, which = NULL, ...) {
-
-
 
     # Define plot type
     allowed <- c("loglik","loglikcontribution", "coef", "hist")
@@ -120,40 +118,50 @@ plot.foehnix <- function(x, which = NULL, ...) {
         # Create response vector
         hold_opt <- options("na.action"); options(na.action = "na.pass")
         y <- model.response(model.frame(x$formula, x$data))
-        options(hold_opt)
 
         # Combine response vector with estimated probabilities
         tmp <- data.frame(y = as.numeric(y), prob = as.numeric(x$prob))
 
-        # Apply wind filter if required
-        if ( ! is.null(x$windsector) ) {
-            idx_wind <- windsector_filter(x$data, x$windsector, x$winddirvar)
-            if ( ! is.null(idx_wind) ) tmp <- tmp[-idx_wind,]
-        }
+        # If wind filter is used, set posterior probability to
+        # 0 for all observations not inside the filter (they have not
+        # been used for modelling as they are not assumed to show
+        # any foehn).
+        idx_wind <- windfilter_get_indizes(x$data, x$windfilter)
+        if ( ! is.null(idx_wind) ) tmp <- tmp[idx_wind,]
 
         # Remove missing values
         tmp <- na.omit(tmp)
+
+        # If left/right censoring/truncation has been specified:
+        if ( has.left(x$control$family) )  tmp$y <- pmax(x$control$family$left,  tmp$y)
+        if ( has.right(x$control$family) ) tmp$y <- pmin(x$control$family$right, tmp$y)
 
         # Plot if we have data
         if ( nrow(tmp) > 0 ) {
             par(mfrow = c(1,2))
             # Position where to draw the density
-            at <- seq(min(tmp$y), max(tmp$y), length = 501)
+            at   <- seq(min(tmp$y), max(tmp$y), length = 501)
+
+            bk   <- seq(min(tmp$y), max(tmp$y), length = 50)
+            h1   <- hist(y[which(x$prob <  .5)], plot = FALSE, breaks = bk)
+            h2   <- hist(y[which(x$prob >= .5)], plot = FALSE, breaks = bk)
+            ylim <- c(0, max(h1$density, h2$density, na.rm = TRUE))
+            xlim <- range(bk)
 
             # Plotting conditional component 1 histogram
-            hist(y[which(x$prob <  .5)], xlim = range(tmp$y), breaks = 30, freq = FALSE,
+            plot(h1, freq = FALSE, xlim = xlim, ylim = ylim,
                  main = "Conditional Histogram\nComponent 1",
                  border = "gray50", xlab = expression(paste("y[",pi < 0.5,"]")))
-            lines(at, x$family$d(at, x$coef$mu1, exp(x$coef$logsd1)), col = 2, lwd = 2)
+            lines(at, x$control$family$d(at, x$coef$mu1, exp(x$coef$logsd1)), col = 2, lwd = 2)
 
             # Plotting conditional component 2 histogram
-            hist(y[which(x$prob >= .5)], xlim = range(tmp$y), breaks = 30, freq = FALSE,
+            plot(h2, freq = FALSE, xlim = xlim, ylim = ylim,
                  main = "Conditional Histogram\nComponent 2",
                  border = "gray50", xlab = expression(paste("y[",pi >= 0.5,"]")))
-            lines(at, x$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 2, lwd = 2)
+            lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 2, lwd = 2)
+
         }
     }
-
 
 }
 

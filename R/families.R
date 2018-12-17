@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 18:28 on marvin
+# - L@ST MODIFIED: 2018-12-17 19:53 on marvin
 # -------------------------------------------------------------------
 
 
@@ -29,6 +29,22 @@ print.foehnix.family <- function(x, ...) {
 }
 is.truncated <- function(x, ...) UseMethod("is.truncated")
 is.truncated.foehnix.family <- function(x, ...) "truncated" %in% names(x)
+
+has.left <- function(x, ...) UseMethod("has.left")
+has.left.foehnix.family <- function(x, ...) {
+    if ( "left" %in% names(x) ) {
+        if ( is.finite(x$left) ) return(TRUE) else return(FALSE)
+    }
+    return(FALSE)
+}
+has.right <- function(x, ...) UseMethod("has.right")
+has.right.foehnix.family <- function(x, ...) {
+    if ( "right" %in% names(x) ) {
+        if ( is.finite(x$right) ) return(TRUE) else return(FALSE)
+    }
+    return(FALSE)
+}
+    
 
 # -------------------------------------------------------------------
 # Logistic distribution family

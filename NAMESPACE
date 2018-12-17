@@ -5,6 +5,7 @@ useDynLib(foehnix, .registration = TRUE)
 export(iwls_logit)
 export(foehnix)
 export(windrose)
+export(windfilter_get_indizes)
 
 
 

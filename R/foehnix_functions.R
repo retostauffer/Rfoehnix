@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 18:00 on marvin
+# - L@ST MODIFIED: 2018-12-17 19:56 on marvin
 # -------------------------------------------------------------------
 
 
@@ -69,40 +69,6 @@ destandardize_coefficients <- function(beta, X) {
 }
 
 
-# TODO: DELETE ME
-### -------------------------------------------------------------------
-### Trying to estimate a reasonably high upper bound for lambda
-### if ridge penalization is needed.
-### -------------------------------------------------------------------
-##get_lambdas <- function(nlambda, logitX, post, maxit, tol) {
-##
-##    # If nlambda is not a positive integer: stop.
-##    stopifnot(inherits(nlambda, c("integer", "numeric")))
-##    stopifnot(nlambda >= 0)
-##
-##    # Fitting logistic regression models with different lambdas.
-##    csum_fun <- function(lambda, logitX, post, maxit, tol) {
-##        # As response a first guess y >= median(y) is used.
-##        # Force standardize = FALSE as logitX is already standardized if
-##        # standardize == TRUE for this function.
-##        m <- iwls_logit(logitX, post, standardize = FALSE,
-##                        lambda = lambda, maxit = maxit, tol = tol)
-##        sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
-##    }
-##
-##    # Find large lambda where all parameters are close to 0.
-##    # Trying lambdas between exp(6) and exp(12).
-##    lambdas <- exp(seq(5, 15, by = 1))
-##    x <- sapply(lambdas, csum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
-##
-##    # Pick the lambda where sum of parameters is smaller than a 
-##    # certain threshold OR take maximum of lambdas tested.
-##    lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
-##    cat(sprintf("Use penalization lambda within %.5f to %.5f\n", max(lambdas), min(lambdas)))
-##    return(lambdas)
-##}
-# TODO: DELETE ME
-
 # -------------------------------------------------------------------
 # Information criteria: logLik, AIC, BIC, and effective degrees of
 # freedom
@@ -116,28 +82,29 @@ edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
-# TODO: Print method for coef is missing.
 # -------------------------------------------------------------------
 coef.foehnix <- function(x, type = "parameter", ...) {
-    type <- match.arg(type, c("parameter", "coefficient"))
 
+    # One of the two types: parameter (destandardized if required),
+    # or coefficient (standardized coefficients if standardized was TRUE).
+    type <- match.arg(type, c("parameter", "coefficient"))
     if ( type == "parameter" ) {
         rval <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
-                              x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
-                            dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
-                     x$coef$concomitants)
+                               x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
+                             dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
+                      x$coef$concomitants)
     } else {
         rval <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
                               x$coef$mu2, x$coef$logsd2), ncol = 1,
-                            dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
-                     x$coef$concomitants)
+                             dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
+                      x$coef$concomitants)
     }
     rval <- setNames(as.vector(rval), rownames(rval))
     
     # Appending some attributes and a new class
     attr(rval, "concomitants") <- ! is.null(x$coef$concomitants)
     attr(rval, "formula")      <- x$formula
-    attr(rval, "family")       <- x$family
+    attr(rval, "family")       <- x$control$family
     class(rval) <- c("coef.foehnix", class(rval))
     rval
 }
