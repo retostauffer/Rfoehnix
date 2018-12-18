@@ -82,38 +82,38 @@
     either the AIC or BIC criteria will be used for the foehn classification
     model.
 }
-\seealso{
-    See \code{\link{windfilter_get_indizes}} for more information about the
-    \code{windfilter} option.
-
-    See also: \code{\link{tsplot}}, \code{\link{plot.foehnix}},
-    \code{\link{windrose}}.
-}
 \value{
     Returns an object of class \code{foehnix}. A set of 
     default and custom methods is available for these objects
     such as \code{print}, \code{summary}, \code{coef}, \code{plot}, \dots
 }
 \references{
-Plavcan D, Mayr GJ, Zeileis A (2014).
-    Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
-    \emph{Journal of Applied Meteorology and Climatology}.
-    \bold{53}(3), 652--659. \doi{10.1175/JAMC-D-13-0267.1}
+    Plavcan D, Mayr GJ, Zeileis A (2014).
+        Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
+        \emph{Journal of Applied Meteorology and Climatology}.
+        \bold{53}(3), 652--659. doi:10.1175/JAMC-D-13-0267.1
+    
+    Gr\\"un B, Leisch F (2007).
+        Fitting Finite Mixtures of Generalized Linear Regressions in \emph{R}.
+        \emph{Computational Statistics \& Data Analysis}. \bold{51}(11), 5247--5252.
+        doi:10.1016/j.csda.2006.08.014
+    
+    Gr\\"un B, Leisch F (2008).
+        FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
+        \emph{Journal of Statistical Software, Articles}.
+        \bold{28}(4), 1--35. doi:10.18637/jss.v028.i04
+    
+    Fraley C, Raftery AE (2002).
+        Model-Based Clustering, Discriminant Analysis, and Density Estimation.
+        \emph{Journal of the American Statistical Association}.
+        \bold{97}(458), 611--631. doi:10.1198/016214502760047131
+}
+\seealso{
+    See \code{\link{windfilter_get_indizes}} for more information about the
+    \code{windfilter} option.
 
-Gr\"un B, Leisch F (2007).
-    Fitting Finite Mixtures of Generalized Linear Regressions in \emph{R}.
-    \emph{Computational Statistics \& Data Analysis}. \bold{51}(11), 5247--5252.
-    \doi{10.1016/j.csda.2006.08.014}
-
-Gr\"un B, Leisch F (2008).
-    FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
-    \emph{Journal of Statistical Software, Articles}.
-    \bold{28}(4), 1--35. \doi{10.18637/jss.v028.i04}
-
-Fraley C, Raftery AE (2002).
-    Model-Based Clustering, Discriminant Analysis, and Density Estimation.
-    \emph{Journal of the American Statistical Association}.
-    \bold{97}(458), 611--631. \doi{10.1198/016214502760047131}
+    See also: \code{\link{tsplot}}, \code{\link{plot.foehnix}},
+    \code{\link{windrose}}.
 }
 
 

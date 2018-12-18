@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 20:10 on marvin
+# - L@ST MODIFIED: 2018-12-18 10:45 on marvin
 # -------------------------------------------------------------------
 
 
@@ -27,7 +27,7 @@
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.noconcomitant.fit <- function(y, family,
-                    maxit = 100L, tol = 1e-5, verbose = FALSE, ...) {
+                    maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -66,7 +66,8 @@ foehnix.noconcomitant.fit <- function(y, family,
         # iteration.
         llpath[[iter]] <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- as.data.frame(theta)
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
+        if ( verbose )
+            cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -83,7 +84,7 @@ foehnix.noconcomitant.fit <- function(y, family,
         }
 
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
-    }; cat("\n")
+    }; if ( verbose ) cat("\n")
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
@@ -126,7 +127,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.unreg.fit <- function(y, logitX, family,
-                    maxit = 100L, tol = 1e-5, verbose = FALSE,
+                    maxit = 100L, tol = 1e-5, verbose = TRUE,
                     alpha = NULL, ...) {
 
     # Lists to trace log-likelihood path and the development of
@@ -170,7 +171,8 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # iteration.
         llpath[[iter]]   <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- cbind(as.data.frame(theta), coef(ccmodel, which = "beta"))
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
+        if ( verbose )
+            cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -183,7 +185,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # converged: stop iteration.
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
 
-    }; cat("\n")
+    }; if ( verbose ) cat("\n")
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
@@ -228,7 +230,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 foehnix.reg.fit <- function(formula, data, windfilter = NULL, family = "gaussian",
                     maxit = 100L, tol = 1e-5, standardize = TRUE,
-                    alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
+                    alpha = NULL, nlambda = 100L, verbose = TRUE, ...) {
     print("hallo from foehix.reg")
 }
 
@@ -238,7 +240,7 @@ foehnix.reg.fit <- function(formula, data, windfilter = NULL, family = "gaussian
 # -------------------------------------------------------------------
 foehnix.control <- function(family, left = -Inf, right = Inf, truncated = FALSE, 
                             standardize = TRUE, maxit = 100L, tol = 1e-8,
-                            alpha = NULL, verbose = FALSE, ...) {
+                            alpha = NULL, verbose = TRUE, ...) {
 
     # "truncated" has to be logical
     stopifnot(inherits(truncated, "logical"))
@@ -320,7 +322,7 @@ foehnix <- function(formula, data, windfilter = NULL, family = "gaussian",
     # and the vector y used for the clustering (main covariate).
     # Keep missing values.
     mf <- model.frame(formula, data, na.action = na.pass)
-    y  <- model.response(mf)
+    y  <- as.numeric(model.response(mf))
 
     # If a truncated family is used: y has to lie within the
     # truncation points. Density is not defined outside the
@@ -352,12 +354,10 @@ foehnix <- function(formula, data, windfilter = NULL, family = "gaussian",
     idx_take <- if ( is.null(idx_wind) ) idx_notna else idx_notna[idx_notna %in% idx_wind]
     if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
 
-
     # Subset the model.frame (mf) and the response (y) and pick
     # all valid rows (without missing values on the mandatory columns
     # and, if a wind sector is given, with valid wind direction observations).
     mf <- matrix(unlist(mf[idx_take,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
-    y  <- y[idx_take]
 
     # Check whether regularization is preferred over unpenalized
 #  regression estimation (only if lambda.min is "auto")
@@ -366,22 +366,30 @@ foehnix <- function(formula, data, windfilter = NULL, family = "gaussian",
 #       if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
 #   }
 
+    # Helper function subsetting data. Avoids that the matrix
+    # is reduced to a single vector if x is a single-column matrix
+    # or zoo object.
+    subset_data <- function(x, idx)
+        as.data.frame(matrix(x[idx,], ncol = ncol(x), dimnames = list(NULL, names(x))))
     # Setting up the model matrix for the concomitant model (logit model).
-    logitX <- model.matrix(formula, data = data[idx_take,])
+    logitX <- model.matrix(formula, data = subset_data(data, idx_take))
     if ( control$standardize ) logitX <- standardize(logitX)
 
     # Non-concomitant model
     if ( length(labels(terms(formula))) == 0 ) {
+        if ( control$verbose ) cat("Calling foehnix.noconcomitant.fit\n")
         rval <- do.call("foehnix.noconcomitant.fit",
                         append(list(y = y), control))
     } else if ( is.null(control$alpha) ) {
+        if ( control$verbose ) cat("Calling foehnix.unreg.fit\n")
         rval <- do.call("foehnix.unreg.fit",
                         append(list(y = y, logitX = logitX), control))
     } else {
-        rval <- do.call("foehnix.unreg.fit",
+        if ( control$verbose ) cat("Calling foehnix.reg.fit\n")
+        rval <- do.call("foehnix.reg.fit",
                         append(list(y = y, logitX = logitX), control))
     }
-    cat("Model estimated, create return\n")
+    if ( control$verbose ) cat("Estimation finished, create final object\n")
 
 
     # Final coefficients of the concomitant model have to be destandardized
@@ -485,6 +493,7 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 # -------------------------------------------------------------------
 windfilter_get_indizes <- function(x, windfilter) {
 
+    if ( is.null(windfilter) ) return(NULL)
     if ( ! inherits(x, c("zoo", "data.frame")) )
         stop("Input \"x\" to windfilter_get_indizes has to be of class zoo or data.frame.")
 

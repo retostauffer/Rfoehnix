@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 19:53 on marvin
+# - L@ST MODIFIED: 2018-12-18 10:38 on marvin
 # -------------------------------------------------------------------
 
 
@@ -58,6 +58,11 @@ foehnix_logistic <- function() {
         # Distribution function 
         p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE)
             plogis(q, mu, sigma, lower.tail, log.p),
+        # Random sample function for two-component logistic distribution
+        r = function(n, mu, sigma, lower.tail = TRUE) {
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            c(rlogis(n[1L], mu[1L], sigma[1L]), rlogis(n[2L], mu[2L], sigma[2L]))
+        },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {
             # Calculate/trace loglik
@@ -127,6 +132,17 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
             .Call("cpclogis", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   package = "foehnix")
+        },
+        # Random sample function for two-component censored logistic distribution
+        r = function(n, mu, sigma) {
+            stopifnot(length(mu) == 2)
+            stopifnot(length(sigma) == 2)
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            lower <- if ( lower.tail ) left else right
+            upper <- if ( lower.tail ) right else left
+            p1 <- rlogis(n[1L], mu[1L], sigma[1L])
+            p2 <- rlogis(n[2L], mu[2L], sigma[2L])
+            pmax(left, pmin(right, c(p1, p2)))
         },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {
@@ -219,6 +235,21 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
             .Call("cptlogis", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   package = "foehnix")
+        },
+        # Random sample function for two-component truncated logistic distribution
+        r = function(n, mu, sigma, lower.tail = TRUE) {
+            stopifnot(length(mu) == 2)
+            stopifnot(length(sigma) == 2)
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            lower <- if ( lower.tail ) left else right
+            upper <- if ( lower.tail ) right else left
+            p1 <- runif(n[1L]); p2 <- runif(n[2L])
+            p1 <- (1 - p1) * plogis((lower - mu[1L]) / sigma[1L], lower.tail = lower.tail) +
+                  p1       * plogis((upper - mu[1L]) / sigma[1L], lower.tail = lower.tail)
+            p2 <- (1 - p2) * plogis((lower - mu[2L]) / sigma[2L], lower.tail = lower.tail) +
+                  p2       * plogis((upper - mu[2L]) / sigma[2L], lower.tail = lower.tail)
+            c(qlogis(p1, lower.tail = lower.tail) * sigma[1L] + mu[1L],
+              qlogis(p2, lower.tail = lower.tail) * sigma[2L] + mu[2L])
         },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {
@@ -321,6 +352,13 @@ foehnix_gaussian <- function() {
             ll$full <- sum(unlist(ll))
             return(ll)
         },
+        # Random sample function for two-component Gaussian distribution
+        r = function(n, mu, sigma, lower.tail = TRUE) {
+            stopifnot(length(mu) == 2)
+            stopifnot(length(sigma) == 2)
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            c(rnorm(n[1L], mu[1L], sigma[1L]), rnorm(n[2L], mu[2L], sigma[2L]))
+        },
         # Calculate posterior:
         # Ratio between weighted density of component 2 divided by the sum
         # of the weighted density of both components gives the posterior.
@@ -373,6 +411,17 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
             .Call("cpcnorm", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   package = "foehnix")
+        },
+        # Random sample function for two-component censored Gaussian distribution
+        r = function(n, mu, sigma, lower.tail = TRUE) {
+            stopifnot(length(mu) == 2)
+            stopifnot(length(sigma) == 2)
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            lower <- if ( lower.tail ) left else right
+            upper <- if ( lower.tail ) right else left
+            p1 <- rnorm(n[1L], mu[1L], sigma[1L])
+            p2 <- rnorm(n[2L], mu[2L], sigma[2L])
+            pmax(left, pmin(right, c(p1, p2)))
         },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {
@@ -465,6 +514,21 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
             .Call("cptnorm", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   package = "foehnix")
+        },
+        # Random sample function for two-component truncated Gaussian distribution
+        r = function(n, mu, sigma, lower.tail = TRUE) {
+            stopifnot(length(mu) == 2)
+            stopifnot(length(sigma) == 2)
+            if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
+            lower <- if ( lower.tail ) left else right
+            upper <- if ( lower.tail ) right else left
+            p1 <- runif(n[1L]); p2 <- runif(n[2L])
+            p1 <- (1 - p1) * pnorm((lower - mu[1L]) / sigma[1L], lower.tail = lower.tail) +
+                  p1       * pnorm((upper - mu[1L]) / sigma[1L], lower.tail = lower.tail)
+            p2 <- (1 - p2) * pnorm((lower - mu[2L]) / sigma[2L], lower.tail = lower.tail) +
+                  p2       * pnorm((upper - mu[2L]) / sigma[2L], lower.tail = lower.tail)
+            c(qnorm(p1, lower.tail = lower.tail) * sigma[1L] + mu[1L],
+              qnorm(p2, lower.tail = lower.tail) * sigma[2L] + mu[2L])
         },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {

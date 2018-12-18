@@ -7,5 +7,17 @@ export(foehnix)
 export(windrose)
 export(windfilter_get_indizes)
 
+# Register S3 methods
+S3method(plot,    foehnix)
+S3method(tsplot,  foehnix)
+S3method(print,   foehnix)
+S3method(coef,    foehnix)
+S3method(summary, foehnix)
+S3method(logLik,  foehnix)
+S3method(AIC,     foehnix)
+S3method(BIC,     foehnix)
+S3method(edf,     foehnix)
 
+S3method(print,   summary.foehnix)
+S3method(print,   coef.foehnix)
 

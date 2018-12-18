@@ -20,6 +20,7 @@
     \item{x}{object of class \code{zoo} or \code{data.frame} containing
         the observations.}
     \item{windfilter}{a list of filter rules (or \code{NULL}), see 'Details'.}
+}
 \details{
     Foehn winds often (not always) show a very specific wind direction
     due to the canalization of the air flow trough the local
@@ -90,7 +91,7 @@
     require("zoo")
     sattelberg <- zoo(subset(sattelberg, select = -timestamp),
                      as.POSIXct(sattelberg$timestamp, origin = "1970-01-01", tz = "UTC"))
-    names(sattelberg) <- sprintf("sat_%s", names(sattelberg)) # Renaming variables
+    names(sattelberg) <- sprintf("sat_\%s", names(sattelberg)) # Renaming variables
 
     # Combine Ellboegen observations with Sattelberg observations
     data <- merge(ellboegen, sattelberg)

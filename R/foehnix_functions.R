@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 19:56 on marvin
+# - L@ST MODIFIED: 2018-12-18 10:38 on marvin
 # -------------------------------------------------------------------
 
 
@@ -79,6 +79,11 @@ BIC.foehnix <- function(x, ...)     structure(x$optimizer$BIC, names = "BIC")
 edf <- function(x, ...) UseMethod("edf")
 edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
 
+# -------------------------------------------------------------------
+# Print foehnix model object.
+# TODO: better default print method required?
+# -------------------------------------------------------------------
+print.foehnix <- function(x, ...) summary(x)
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
