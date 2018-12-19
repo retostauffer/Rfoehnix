@@ -1,0 +1,147 @@
+
+## Simulation
+
+Simulation of two-component mixed distributions without
+concomitaunt information to test the algorithm.
+```{r, echo = FALSE, fig = FALSE}
+suppressPackageStartupMessages(library("zoo"))
+```
+
+### Left Censored Gaussian
+
+```{r, fig.width = 8, fig.height = 6}
+library("foehnix")
+# The true parameters of the distribution
+true <- list(mu = c(1, 5), sigma = c(1, 2))
+
+# Simulate data based on Gaussian distribution
+family <- foehnix:::foehnix_cgaussian(left = 0)
+set.seed(666)
+data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
+
+# Estimate foehnix model
+mod <- foehnix(y ~ 1, data = data, left = 0, verbose = FALSE)
+coef(mod)
+
+# Path of log-likelihood sum during optimization
+plot(mod, which = "loglik")
+
+# Plotting mixed distribution
+# Calculate density of the two components
+x <- seq(min(data$y), max(data$y), length = 501)
+density1 <- family$d(x, coef(mod)["mu1"], coef(mod)["sigma1"])
+density2 <- family$d(x, coef(mod)["mu2"], coef(mod)["sigma2"])
+hist(data$y, breaks = 100, freq = FALSE,
+     main = "Histogram of Simulated Data\nPlus Estimated Mixed Model Density")
+lines(x, density1 * (1 - mean(fitted(mod))), col = 2, lwd = 2)
+lines(x, density2 * mean(fitted(mod)),       col = 4, lwd = 2)
+lines(x, density1 * (1 - mean(fitted(mod))) + density2 * mean(fitted(mod)), col = 6, lty = 3, lwd = 3)
+legend("topright", col = c(2, 4, 6), lwd = 2, lty = c(1, 1, 3), bty = "n",
+       legend = c("Component 1", "Component 2", "Mixture Density"))
+```
+
+### Left Truncated Gaussian
+
+```{r, fig.width = 8, fig.height = 6}
+library("foehnix")
+# The true parameters of the distribution
+true <- list(mu = c(1, 5), sigma = c(1, 2))
+
+# Simulate data based on Gaussian distribution
+family <- foehnix:::foehnix_tgaussian(left = 0)
+set.seed(666)
+data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
+
+# Estimate foehnix model
+mod <- foehnix(y ~ 1, data = data, left = 0, verbose = FALSE, tol = -Inf)
+coef(mod)
+
+# Path of log-likelihood sum during optimization
+plot(mod, which = "loglik")
+
+# Plotting mixed distribution
+# Calculate density of the two components
+x <- seq(min(data$y), max(data$y), length = 501)
+density1 <- family$d(x, coef(mod)["mu1"], coef(mod)["sigma1"])
+density2 <- family$d(x, coef(mod)["mu2"], coef(mod)["sigma2"])
+hist(data$y, breaks = 100, freq = FALSE,
+     main = "Histogram of Simulated Data\nPlus Estimated Mixed Model Density")
+lines(x, density1 * (1 - mean(fitted(mod))), col = 2, lwd = 2)
+lines(x, density2 * mean(fitted(mod)),          col = 4, lwd = 2)
+lines(x, density1 * (1 - mean(fitted(mod))) + density2 * mean(fitted(mod)), col = 6, lty = 3, lwd = 3)
+legend("topright", col = c(2, 4, 6), lwd = 2, lty = c(1, 1, 3), bty = "n",
+       legend = c("Component 1", "Component 2", "Mixture Density"))
+```
+
+
+
+### Left Censored Logistic
+
+```{r, fig.width = 8, fig.height = 6}
+library("foehnix")
+# The true parameters of the distribution
+true <- list(mu = c(1, 5), sigma = c(1, 2))
+
+# Simulate data based on logistic distribution
+family <- foehnix:::foehnix_clogistic(left = 0)
+set.seed(666)
+data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
+
+# Estimate foehnix model
+mod <- foehnix(y ~ 1, data = data, left = 0, verbose = FALSE)
+coef(mod)
+
+# Path of log-likelihood sum during optimization
+plot(mod, which = "loglik")
+
+# Plotting mixed distribution
+# Calculate density of the two components
+x <- seq(min(data$y), max(data$y), length = 501)
+density1 <- family$d(x, coef(mod)["mu1"], coef(mod)["sigma1"])
+density2 <- family$d(x, coef(mod)["mu2"], coef(mod)["sigma2"])
+hist(data$y, breaks = 100, freq = FALSE,
+     main = "Histogram of Simulated Data\nPlus Estimated Mixed Model Density")
+lines(x, density1 * (1 - mean(fitted(mod))), col = 2, lwd = 2)
+lines(x, density2 * mean(fitted(mod)),       col = 4, lwd = 2)
+lines(x, density1 * (1 - mean(fitted(mod))) + density2 * mean(fitted(mod)), col = 6, lty = 3, lwd = 3)
+legend("topright", col = c(2, 4, 6), lwd = 2, lty = c(1, 1, 3), bty = "n",
+       legend = c("Component 1", "Component 2", "Mixture Density"))
+```
+
+### Left Truncated Logistic
+
+```{r, fig.width = 8, fig.height = 6}
+library("foehnix")
+# The true parameters of the distribution
+true <- list(mu = c(1, 5), sigma = c(1, 2))
+
+# Simulate data based on logistic distribution
+family <- foehnix:::foehnix_tlogistic(left = 0)
+set.seed(666)
+data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
+
+# Estimate foehnix model
+mod <- foehnix(y ~ 1, data = data, left = 0, verbose = FALSE, tol = -Inf)
+coef(mod)
+
+# Path of log-likelihood sum during optimization
+plot(mod, which = "loglik")
+
+# Plotting mixed distribution
+# Calculate density of the two components
+x <- seq(min(data$y), max(data$y), length = 501)
+density1 <- family$d(x, coef(mod)["mu1"], coef(mod)["sigma1"])
+density2 <- family$d(x, coef(mod)["mu2"], coef(mod)["sigma2"])
+hist(data$y, breaks = 100, freq = FALSE,
+     main = "Histogram of Simulated Data\nPlus Estimated Mixed Model Density")
+lines(x, density1 * (1 - mean(fitted(mod))), col = 2, lwd = 2)
+lines(x, density2 * mean(fitted(mod)),       col = 4, lwd = 2)
+lines(x, density1 * (1 - mean(fitted(mod))) + density2 * mean(fitted(mod)), col = 6, lty = 3, lwd = 3)
+legend("topright", col = c(2, 4, 6), lwd = 2, lty = c(1, 1, 3), bty = "n",
+       legend = c("Component 1", "Component 2", "Mixture Density"))
+```
+

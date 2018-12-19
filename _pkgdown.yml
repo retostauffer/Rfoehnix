@@ -1,0 +1,28 @@
+template:
+    params:
+        bootswatch: "flatly"
+
+navbar:
+    left:
+        - text: "Getting started"
+          href: articles/foehnix.html
+        - text: "Articles"
+          menu:
+            - text: "Foehnix Demo"
+              href: articles/foehnix.html
+            - text: "Simulation Examples"
+              href: articles/simulation.html
+        - text: "Advanced"
+          menu:
+            - text: "Censoring and Truncation"
+              href: articles/advanced_simulation.html
+        - text: "Reference"
+          href: reference/index.html
+        - text: "News"
+          href: news/index.html
+
+references:
+    - title: "foehnix"
+      contents:
+        - foehnix
+        - windfilter_get_indizes

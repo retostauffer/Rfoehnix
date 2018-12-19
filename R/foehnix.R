@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 01:37 on marvin
+# - L@ST MODIFIED: 2018-12-19 15:53 on marvin
 # -------------------------------------------------------------------
 
 
@@ -27,14 +27,13 @@
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.noconcomitant.fit <- function(y, family,
-                    maxit = 100L, tol = 1e-5, verbose = FALSE, ...) {
+                    maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
     llpath   <- list()
     coefpath <- list()
 
-    
     # Given the initial probabilities: calculate parameters
     # for the two components (mu1, logsd1, mu2, logsd2) given
     # the selected family and calculate the a-posteriori probabilities.
@@ -54,9 +53,10 @@ foehnix.noconcomitant.fit <- function(y, family,
         iter <- iter + 1;
 
         # M-step: update probabilites and theta
-        prob  <- as.numeric(post >= .5)
+        #prob  <- as.numeric(post >= .5)
         ##TODO: prob <- post
         #prob <- post
+        prob <- mean(post)
         theta <- family$theta(y, post, theta = theta)
 
         # E-step: calculate a-posteriori probability
@@ -66,7 +66,8 @@ foehnix.noconcomitant.fit <- function(y, family,
         # iteration.
         llpath[[iter]] <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- as.data.frame(theta)
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
+        if ( verbose )
+            cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -78,12 +79,12 @@ foehnix.noconcomitant.fit <- function(y, family,
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
         if( is.na(llpath[[iter]]$full)) {
-            print("kaputte likelihood")
+            print("Likelihood got NA! Start environment browser for debugging ...")
             browser()
         }
 
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
-    }; cat("\n")
+    }; if ( verbose ) cat("\n")
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
@@ -126,7 +127,8 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 foehnix.unreg.fit <- function(y, logitX, family,
-                    maxit = 100L, tol = 1e-5, verbose = FALSE, ...) {
+                    maxit = 100L, tol = 1e-5, verbose = TRUE,
+                    alpha = NULL, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -169,7 +171,8 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # iteration.
         llpath[[iter]]   <- family$loglik(y, post, prob, theta)
         coefpath[[iter]] <- cbind(as.data.frame(theta), coef(ccmodel, which = "beta"))
-        cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
+        if ( verbose )
+            cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
         # If the log-likelihood decreases: proceed!
         if ( iter == 1 ) next
@@ -182,7 +185,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
         # converged: stop iteration.
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
 
-    }; cat("\n")
+    }; if ( verbose ) cat("\n")
 
     # Check if algorithm converged before maxit was reached
     converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
@@ -225,33 +228,24 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
 # -------------------------------------------------------------------
-foehnix.reg.fit <- function(formula, data, windsector = NULL, family = "gaussian",
+foehnix.reg.fit <- function(formula, data, windfilter = NULL, family = "gaussian",
                     maxit = 100L, tol = 1e-5, standardize = TRUE,
-                    alpha = NULL, nlambda = 100L, verbose = FALSE, ...) {
+                    alpha = NULL, nlambda = 100L, verbose = TRUE, ...) {
     print("hallo from foehix.reg")
 }
 
 
 # -------------------------------------------------------------------
-# The simple version for the foehn diagnosis using empirical weighted
-# moments for the parameters of the two Gaussian clusters, and a
-# logistic regression model for the concomitant part.
-# TODO: check what's going on if no intercept is requested by the user
-#       for the concomitant model (e.g., ff ~ -1 + rh). The standardize/
-#       destandardize function should technically be ready to support
-#       this.
+# Handling control arguments
 # -------------------------------------------------------------------
-foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
-                    family = "gaussian", maxit = 100L, tol = 1e-5,
-                    standardize = TRUE, alpha = NULL, nlambda = 100L,
-                    verbose = FALSE, left = NULL, right = NULL, truncated = FALSE, ...) {
+foehnix.control <- function(family, left = -Inf, right = Inf, truncated = FALSE, 
+                            standardize = TRUE, maxit = 100L, tol = 1e-8,
+                            alpha = NULL, verbose = TRUE, ...) {
 
-    timing <- Sys.time() # Measure execution time
+    # "truncated" has to be logical
+    stopifnot(inherits(truncated, "logical"))
 
-    # Loading family object
-    family <- match.arg(family, c("gaussian", "logistic"))
-    
-    # If left or right are set
+    # Checking limits for censoring/truncation.
     if ( any(!is.null(c(left, right))) ) {
         left  <- max(-Inf, left); right <- min(Inf, right)
         # Left has to be smaller than right.
@@ -263,8 +257,9 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
         if ( all(is.infinite(c(left, right))) ) left <- right <- NULL
     }
 
-    # If not both, left and right, are infinite: use censored or
-    # truncated distribution for the mixture model
+    # After checking left/right truncation/censoring threshold:
+    # check family argument and initialize foehnix family object.
+    family <- match.arg(family, c("gaussian", "logistic"))
     if ( ! all(is.infinite(c(left, right))) ) {
         # Take censored version of "family" using the censoring
         # thresholds left and right.
@@ -287,6 +282,34 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     stopifnot(is.numeric(maxit) | length(maxit) > 2)
     stopifnot(is.numeric(tol)   | length(tol) > 2)
 
+    rval <- list(family = family, left = left, right = right, truncated = truncated,
+                 standardize = standardize, maxit = maxit, tol = tol,
+                 alpha = alpha, verbose = verbose)
+    class(rval) <- c("foehnix.control")
+    rval
+}
+print.foehnix.control <- function(x, ...) str(x)
+
+
+# -------------------------------------------------------------------
+# The simple version for the foehn diagnosis using empirical weighted
+# moments for the parameters of the two Gaussian clusters, and a
+# logistic regression model for the concomitant part.
+# TODO: check what's going on if no intercept is requested by the user
+#       for the concomitant model (e.g., ff ~ -1 + rh). The standardize/
+#       destandardize function should technically be ready to support
+#       this.
+# -------------------------------------------------------------------
+foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
+                    family = "gaussian",
+                    control = foehnix.control(family, ...), ...) { 
+
+    # Start timing (execution time of foehnix)
+    timing <- Sys.time() # Measure execution time
+
+    # Stop if input control is not of class foehnix.control
+    stopifnot(inherits(control, "foehnix.control"))
+
     # Create strictly regular time series object with POSIXct
     # time stamp.
     index(data) <- as.POSIXct(index(data))
@@ -300,17 +323,17 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
     # and the vector y used for the clustering (main covariate).
     # Keep missing values.
     mf <- model.frame(formula, data, na.action = na.pass)
-    y  <- model.response(mf)
+    y  <- as.numeric(model.response(mf))
 
     # If a truncated family is used: y has to lie within the
     # truncation points. Density is not defined outside the
     # range ]left, right[.
-    if ( is.truncated(family) ) {
-        if ( min(y, na.rm = TRUE) < left |
-             max(y, na.rm = TRUE) > right )
+    if ( is.truncated(control$family) ) {
+        if ( min(y, na.rm = TRUE) < control$family$left |
+             max(y, na.rm = TRUE) > control$family$right )
             stop(paste(sprintf("Data \"%s\"", as.character(as.list(formula)[[2]])),
                       "outside the specified range for truncation",
-                       sprintf("(left = %d, right = %d)", left, right)))
+                       sprintf("(left = %d, right = %d)", control$family$left, control$family$right)))
     }
 
     # Check if we have multiple columns with constant values.
@@ -320,18 +343,16 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
 
 
     # Identify rows with missing values
-    idx_na   <- which(is.na(y) | apply(mf, 1, function(x) sum(is.na(x))) != 0)
+    idx_notna <- which(!is.na(y) & apply(mf, 1, function(x) sum(is.na(x))) == 0)
+
     # If a wind sector is given: identify observations with a wind direction
     # outside the user defined sector. These will not be considered in the
     # statistical models.
-    if ( is.null(windsector) ) {
-        idx_wind <- NULL # No wind sector filter
-    } else {
-        idx_wind <- windsector_filter(data, windsector, winddirvar)
-    }
+    idx_wind <- foehnix_filter(data, windfilter)
 
-    # Indes of all values which should be considered in the model
-    idx_take <- which(! 1:nrow(data) %in% c(idx_na, idx_wind))
+    # Take all elements which are not NA and are within the
+    # defined wind sectors (if wind filter specified).
+    idx_take <- if ( is.null(idx_wind) ) idx_notna else idx_notna[idx_notna %in% idx_wind]
     if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
 
     # Subset the model.frame (mf) and the response (y) and pick
@@ -347,63 +368,107 @@ foehnix <- function(formula, data, windsector = NULL, winddirvar = "dd",
 #       if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
 #   }
 
+    # Helper function subsetting data. Avoids that the matrix
+    # is reduced to a single vector if x is a single-column matrix
+    # or zoo object.
+    subset_data <- function(x, idx)
+        as.data.frame(matrix(x[idx,], ncol = ncol(x), dimnames = list(NULL, names(x))))
     # Setting up the model matrix for the concomitant model (logit model).
-    logitX <- model.matrix(formula, data = data[idx_take,])
-    if ( standardize ) logitX <- standardize(logitX)
+    logitX <- model.matrix(formula, data = subset_data(data, idx_take))
+    if ( control$standardize ) logitX <- standardize(logitX)
 
     # Non-concomitant model
     if ( length(labels(terms(formula))) == 0 ) {
-        rval <- do.call("foehnix.noconcomitant.fit", list(
-                 y = y, family = family, maxit = maxit,
-                 tol = tol))
-    } else if ( is.null(alpha) ) {
-        rval <- do.call("foehnix.unreg.fit", list(
-                 y = y, logitX = logitX, family = family, maxit = maxit,
-                 tol = tol))
+        if ( control$verbose ) cat("Calling foehnix.noconcomitant.fit\n")
+        rval <- do.call("foehnix.noconcomitant.fit",
+                        append(list(y = y), control))
+    } else if ( is.null(control$alpha) ) {
+        if ( control$verbose ) cat("Calling foehnix.unreg.fit\n")
+        rval <- do.call("foehnix.unreg.fit",
+                        append(list(y = y, logitX = logitX), control))
     } else {
-        rval <- do.call("foehnix.unreg.fit", list(
-                 y = y, logitX = logitX, family = family, maxit = maxit,
-                 tol = tol))
+        if ( control$verbose ) cat("Calling foehnix.reg.fit\n")
+        rval <- do.call("foehnix.reg.fit",
+                        append(list(y = y, logitX = logitX), control))
     }
-    cat("Model estimated, create return\n")
+    if ( control$verbose ) cat("Estimation finished, create final object\n")
 
 
     # Final coefficients of the concomitant model have to be destandardized
     # if standardize == TRUE.
     if ( ! is.null(rval$ccmodel) ) {
-        print(rval$ccmodel$beta)
         if ( ! is.standardized(logitX) ) { coef <- rval$ccmodel$coef }
         else { coef <- destandardize_coefficients(rval$ccmodel$coef, logitX) }
-        print(coef)
     } else {
         coef <- NULL
     }
 
+    # If inversion has been requested: switch coefficients
+    if ( switch ) {
+        rval$ccmodel$coef <- -rval$ccmodel$coef
+        rval$ccmodel$beta <- -rval$ccmodel$beta
+        rval$coefpath     <- -rval$coefpath
+        rval$theta <- list(mu1    = rval$theta$mu2,
+                           logsd1 = rval$theta$logsd2,
+                           mu2    = rval$theta$mu1,
+                           logsd2 = rval$theta$logsd1)
+        rval$post <- 1 - rval$post
+        # Invert coefficients if switch = TRUE
+        coef <- -coef
+    }
+
     # Create the return list object (foehnix object)
-    res <- list(optimizer = rval, data = data,
-                windsector = windsector, winddirvar = winddirvar,
-                call = match.call(), formula = formula, family = family)
+    res <- list(optimizer = rval, data = data, windfilter = windfilter,
+                call = match.call(), formula = formula,
+                control = control, switch = switch)
 
     # Store coefficients
     res$coef <- rval$theta; res$coef$concomitants = coef
 
     # Indizes of the samples dropped/used/filtered
     res$samples <- list(total = nrow(data),
-                        na    = length(idx_na),
+                        na    = length(idx_notna),
                         wind  = length(idx_wind),
                         taken = length(idx_take))
 
-    # The fohen probability vector: create an object of the
-    # same length and class as input "data" and:
-    # - fill all with NA (default)
-    # - observations outside the requested wind sector get a 0 (no foehn)
-    # - those observations which entered the models get their modelled
-    #   foehn probability.
+    # The final result, the foehn probability. Creates an object
+    # of the same class as the input "data" (currently only zoo!)
+    # with two columns. the first contains the final foehn probability
+    # (column name prob), the second column contains a flag. The
+    # flag is as follows:
+    # - NA  if not modelled (data for the model not available).
+    # - 0   if foehn probability has been modelled, data not left out
+    #       due to the windfilter rules.
+    # - 1   if the windfilter removed the observations/sample, not
+    #       used for the foehn classification model, but no missing
+    #       observations.
+    # TODO: data.frame option?
+    # 
+    # The following procedure is used:
+    # - By default, use NA for both columns.
+    # - If probabilities modelled: set first column to the modelled
+    #   a-posteriory probability, set the second column to TRUE.
+    # - If observations removed due to the windfilter options: set
+    #   first column to 0 (probability for foehn is 0), set the
+    #   second column to FALSE.
     # Foehn probability (a-posteriori probability)
-    tmp <- rep(NA, ncol(data))
-    tmp[idx_take] <- rval$post
-    tmp[idx_wind] <- 0
-    res$prob <- zoo(tmp, index(data))
+    tmp <- zoo(matrix(NA, ncol = 2, nrow = nrow(data),
+                      dimnames = list(NULL, c("prob", "flag"))),
+               index(data))
+    # Store a-posteriory probability and flag = TRUE
+    tmp$prob[idx_take] <- rval$post
+    tmp$flag[idx_take] <- 1
+    # Store prob = 0 and flag = FALSE with removed due to windfilter rule
+    if ( is.null(idx_wind) ) {
+        idx <- which(! 1:nrow(tmp) %in% idx_notna)
+    } else {
+        idx <- 1:nrow(tmp)
+        idx <- which(! idx %in% idx_notna | ! idx %in% idx_wind)
+    }
+    if ( length(idx) > 0 ) tmp[idx,] <- 0
+
+    # Store on final object
+    res$prob     <- tmp
 
     # Store execution time
     res$time <- as.numeric(Sys.time() - timing, units = "secs")
@@ -426,7 +491,6 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
     # which the model has been estimated.
     if ( is.null(newdata) ) newdata <- x$data
 
-
     # Probability model
     if ( is.null(x$coef$concomitants) ) {
         prob <- mean(x$optimizer$prob)
@@ -437,48 +501,44 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 
     # Calculate density
     y    <- model.response(model.frame(x$formula, newdata))
-    d1   <- x$family$d(y, x$coef$mu1, exp(x$coef$logsd1))
-    d2   <- x$family$d(y, x$coef$mu2, exp(x$coef$logsd2))
-    post <- x$family$posterior(y, prob, x$coef)
+    d1   <- x$control$family$d(y, x$coef$mu1, exp(x$coef$logsd1))
+    d2   <- x$control$family$d(y, x$coef$mu2, exp(x$coef$logsd2))
+    post <- x$control$family$posterior(y, prob, x$coef)
 
-    # If wind filter is used:
-    if ( ! is.null(x$windsec) ) {
-        idx_wind <- windsector_filter(newdata, x$windsector, x$winddirvar)
-        if ( length(idx_wind) > 0 ) post[idx_wind] <- 0
-    }
+    # If wind filter is used, set posterior probability to
+    # 0 for all observations not inside the filter (they have not
+    # been used for modelling as they are not assumed to show
+    # any foehn).
+    idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
+    # Inverse wind filter
+    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, x$windfilter))
+
+    # Create return object of type zoo. By default:
+    # - prob is the a-posteriory probability, flag is 1.
+    # - For rows removed by the windfilter option: set prob = 0 and flag = 0
+    # - For rows where input contained NA: set prob = NA and flag = NA
+    res <- zoo(data.frame(prob = post, flag = rep(1, length(post))), index(newdata))
+    if ( length(idx_wind) > 0 ) res[idx_wind,] <- 0
+    if ( length(idx_isna) > 0 ) res[idx_isna,] <- NA
 
     # If type is response: return foehn probability
-    if ( type == "response" ) return(post)
+    if ( type == "response" ) return(res)
 
     # Else return everything we have
     # The "prob" is the probability of the concomitant model. Thus,
     # return as "ccmodel". "post" is the a-posteriori probability and
     # thus the probability of foehn. This is returned as "prob" for the
     # end-user. TODO: Confusing?
-    zoo(data.frame(density1 = d1, density2 = d2, ccmodel = prob, prob = post),
-        index(newdata))
-
-
-}
-
-
-# -------------------------------------------------------------------
-# Returns the indizes of all rows in x where the wind direction
-# lies within the wind sector. Used to filter for wind directions.
-# -------------------------------------------------------------------
-windsector_filter <- function(x, windsector, winddirvar) {
-
-        if ( ! winddirvar %in% names(x) )
-            stop(paste("Wind sector specified, but",
-                       sprintf("winddirvar = \"%s\"", winddirvar),
-                       "not in present. Rename your inputs or change \"winddirvar\"."))
-        # Filtering
-        if ( windsector[1L] < windsector[2L] ) {
-            which(x[,winddirvar] < windsector[1L] |
-                  x[,winddirvar] > windsector[2L])
-        } else {
-            which(x[,winddirvar] > windsector[1L] &
-                  x[,winddirvar] < windsector[2L])
-        }
+    res <- merge(res, zoo(data.frame(density1 = d1, density2 = d2, ccmodel = prob), index(newdata)))
+    return(res)
 
 }
+
+# -------------------------------------------------------------------
+# Returns fitted probabilities.
+# -------------------------------------------------------------------
+fitted.foehnix <- function(x) x$prob$prob
+
+
+
+

@@ -1,0 +1,85 @@
+
+### Toolbox for Automated Foehn Classification based on Mixture Models
+
+The **foehnix** package provides a toolbox for automated probabilistic foehn
+wind classification based on two-component mixture models (**foehn**
+m**ix**ture models).  This method has first been proposed by [Plavcan et al.
+(2015)](#plavcan2014) and compared to another semi-automatic classification,
+foehn experts, students, and weather enthusiasts in the "Community Foehn
+Classification Experiment" ([Mayr 2019](mayr2019)).
+
+Foehn mixture models are a special case of the general flexible mixture model
+class ([Fraley 2002](#fraley2000), [Leisch 2004](#leisch2004), [Gr&uuml;n
+2007](#gruen2007), [Gr&uuml;n 2008](#gruen2008)), an unsupervised statistical
+model to identify unobserveable clusters or components in data sets.
+**foehnix** allows to estimate two-component mixture
+models with additional concomitants.
+
+Some of the features:
+
+* Gaussian or logistic components with optional censoring or truncation.
+* Concomitant variables for the probability model.
+* Model assessment based on graphical output and information criteria.
+* Automatic handling of missing values in the data set.
+
+```{r, echo = FALSE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 8}
+suppressPackageStartupMessages(library("foehnix"))
+# Loading observations (data.frame), convert to zoo
+data("ellboegen", package = "foehnix")
+data("sattelberg", package = "foehnix")
+timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
+ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
+sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
+names(sattelberg) <- paste0("crest_", names(sattelberg))
+data <- merge(ellboegen, sattelberg)
+data$diff_t <- data$crest_t + 10.27 - data$t
+windfilter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod <- foehnix(diff_t ~ ff, data = data, windfilter = windfilter, switch = TRUE)
+# Plot
+tsplot(mod, start = "2010-02-10", end = "2010-02-20")
+```
+
+
+### References
+
+<p id="mayr2019">
+Mayr GJ, Plavcan D, Laurence A, Elvidge A, Grisogono B, Horvath K, Jackson P, Neururer A, Seibert P, Steenburgh JW, Stiperski I, Sturman A, Ve&#269;enaj &#381;, Vergeiner J, Vosper S, Z&auml;ngl G (2019).
+The Community Foehn Classification Experiment.
+_Bulletin of the American Meteorological Society_, **NA**, NA&mdash;NA,
+<a href="https://doi.org/10.1175/BAMS-D-17-0200.1" target="_blank">10.1175/BAMS-D-17-0200.1</a>
+</p>
+
+<p id="plavcan2014">
+Plavcan D, Mayr GJ, Zeileis A (2014).
+Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
+_Journal of Applied Meteorology and Climatology_, **53**(3), 652&mdash;659,
+<a href="https://dx.doi.org/10.1175/JAMC-D-13-0267.1" target="_blank">10.1175/JAMC-D-13-0267.1</a>
+</p>
+
+<p id="gruen2008">
+Gr&uuml;n B, Friedrich L (2008).
+FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
+_Journal of Statistical Software, Articles_, **28**(4), 1&mdash;35,
+doi:<a href="https://dx.doi.org/10.18637/jss.v028.i04" target="_blank">10.18637/jss.v028.i04</a>
+</p>
+
+<p id="gruen2007">
+Gr\"un B, Leisch F (2007).
+Fitting Finite Mixtures of Generalized Linear Regressions in _R_.
+_Computational Statistics \& Data Analysis_, **51**(11),
+doi:<a href="https://dx.doi.org/10.1016/j.csda.2006.08.014" target="_blank">10.1016/j.csda.2006.08.014</a>
+</p>
+
+<p id="leisch2004">
+Friedrich L (2004).
+FlexMix: A General Framework for Finite Mixture Models and Latent Class Regression in _R_.
+_Journal of Statistical Software, Articles_, **11**(8), 1&mdash;18,
+doi:<a href="https://dx.doi.org/10.18637/jss.v011.i08" target="_blank">10.18637/jss.v011.i08</a>
+</p>
+
+<p id="fraley2000">
+Fraley C, Raftery AE (2000).
+Model-Based Clustering, Discriminant Analysis, and Density Estimation.
+_Journal of the American Statistical Association_, **97**(458), 611&mdash;631,
+doi:<a href="https://dx.doi.org/10.1198/016214502760047131" target="_blank">10.1198/016214502760047131</a>
+</p>

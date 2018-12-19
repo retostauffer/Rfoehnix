@@ -7,12 +7,17 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 10:30 on marvin
+# - L@ST MODIFIED: 2018-12-17 19:59 on marvin
 # -------------------------------------------------------------------
+
+windrose <- function(x, ...) UseMethod("windrose")
+windrose.foehnix <- function(x, ...) {
+    print("oh, a windrose for a foehnix object .... #TODO code it!")
+}
 
 #TODO: Very specific function (just a copy of the Luzern analysis).
 # Usage needs to be changed drastically.
-windrose <- function( x, interval = 30, ff = NULL, circle = seq(0,1,by=0.02),
+windrose.default <- function(x, interval = 30, ff = NULL, circle = seq(0,1,by=0.02),
     windsextor = NULL, main = NULL, draw.gusts = FALSE ) {
     if ( ! floor(360/interval)*interval == 360 ) stop("interval wrong")
 

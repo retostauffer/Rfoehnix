@@ -1,0 +1,105 @@
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library("foehnix"))
+```
+
+## Foehnix Demo
+
+This page shows a _real world_ demo of the
+automated foehn classification method **foehnix** based
+on meteorological observations from two sites in Tyrol,
+Austria. One station is located in the Brenner valley
+south of Innsbruck on 1080 meters above mean sea level,
+the second station is located close to the main alpine
+ridge on 2107 meters above mean sea level
+(see `?ellboegen`/`?sattelberg` for details).
+
+```{r, echo = TRUE}
+data("ellboegen"); data("sattelberg")
+head(ellboegen);   head(sattelberg)
+```
+
+This example shows how to perform foehn classification
+for Ellboegen using the information of the Sattelberg
+station as additional source of information.
+The Sattelberg station is located south of Ellboegen
+close to the alpine crest and thus, during foehn events,
+measuring the upstream air mass decending down on the
+north side of the Alps.
+
+### South Foehn Classification for Ellboegen
+
+To perform the classification we first of all have to
+prepare our data sets. `foehnix(...)` expects the input
+to be of class `zoo` (zoo time series object; based on the
+\emph{R} `zoo` package). Thus, after loading our example
+data sets, we first have to convert the `data.frame`s into
+valid `zoo` objects:
+
+```{r}
+# Loading observations (data.frame), convert to zoo
+data("ellboegen", package = "foehnix")
+data("sattelberg", package = "foehnix")
+timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
+ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
+sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
+```
+
+As we want to use information from both stations: rename the
+variables of the `sattelberg` object and combine the two
+data sets into one `zoo` object called `data`.
+
+```{r}
+# Modify sattelberg variable names (crest_ identifies Sattelberg
+# observations, our crest station) and combine both data sets.
+names(sattelberg) <- paste0("crest_", names(sattelberg))
+data <- merge(ellboegen, sattelberg)
+```
+
+In addition we are calculating the potential temperature difference
+between the two sites using a dry adiabatic lapse rate of
+one 10 degrees Celsius per 1000 meters. The difference in altitude
+between the two stations is 1027 meters which yields:
+
+```{r}
+# Dry adiabatic temperature difference between 
+# Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by
+# 1027/10 degrees.
+data$diff_t <- data$crest_t + 10.27 - data$t
+```
+
+South foehn flow at the valley station in Ellboegen has a wind direction of
+about 133 degrees. We are using a (relatively weak) wind direction filter with
+a wind sector of +/-90 degrees around 133 degrees. For the classification only
+observations/times are used where the corresponding wind direction (`dd`) lies
+within the wind sector `>=43` and `<= 223` (180 degrees sector).
+In addition we can make use of the information provided
+by the crest station (Sattelberg) in several ways:
+
+1. We use the temperature difference between the two
+   stations as main variable for the classification (`diff_t`).
+2. define wind sector filter at the target station (Ellboegen).
+   Only use observations with a wind direction (`dd`) inside the
+   wind sector of `>=43` and `<=223` degrees for classification
+   (`dd = c(43, 223)`).
+2. specify a second filter such that only observations are
+   used for classification where the crest station shows
+   a sutherly flow (wind direction within `>= 90` and `<= 270`,
+   `sat_dd = c(90, 270)`).
+
+```{r, echo = TRUE, results = 'hide'}
+# Specify our wind filter rule(s)
+windfilter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+
+# Estimate the mixture model for automated foehn classification
+mod1 <- foehnix(diff_t ~ ff, data = data, windfilter = windfilter, switch = TRUE)
+```
+
+Let's check the estimated model:
+
+```{r}
+print(mod1)
+print(coef(mod1))
+```
+
+
+

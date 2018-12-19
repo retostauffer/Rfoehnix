@@ -6,8 +6,8 @@
     ## Basic usage
     foehnix(formula, data)
     ## Advanced usage
-    foehnix(formula, data, windsector = NULL, winddirvar = "dd", maxit = 100L, tol = 1e-8,
-            lambda.min = "auto", standardize = TRUE, family = "gaussian", ...) 
+    foehnix(formula, data, windfilter = NULL, family = "gaussian",
+            control = foehnix.control(family, ...), ...)
 }
 \arguments{
     \item{formula}{an object of class \code{formula} (or one that can be coerced to
@@ -16,29 +16,18 @@
           'Details'.}
     \item{data}{a time series object of class \code{zoo} containing the
         variables for the two-part mixture model.}
-    \item{windsector}{either \code{NULL} or a \code{numeric} vector of length \code{2}.
-        Defines the foehn wind sector used for filtering the data.
-        Details can be found in the 'Details' section.}
-    \item{winddirvar}{character, default is \code{dd}. Name of the variable
-        in input \code{data} used to filter the wind sector.}
-    \item{maxit}{control argument for the iterative solvers. Default is \code{100L},
-        the maximum number of iterations for the EM algorithm and the IWLS backfitting
-        algorithm for the concomitant model.
-        If a vector of length two is provided the first value is used for the
-        EM algorithm, the second for the IWLS backfitting.}
-    \item{tol}{similar as for \code{maxit}. Used to identify convergence of the
-        iterative solvers. Default is \code{1e-8}, if two values are given the
-        first will be used for the EM algorithm, the second one for the IWLS backfitting
-        procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
-        criteria.}
-    \item{lambda.min}{one of \code{"auto"} (default), \code{"loglik"}, \code{"BIC"}, or \code{"AIC"}.
-        See 'Details' for more information.}
-    \item{standardize}{logical flag, default is \code{TRUE}. Defines whether or not
-        the model matrix for the concomitant model should be standardized for 
-        model estimation. Recommended.}
-    \item{family}{string, distribution of the two components of the mixture model.
-        One of \code{"gaussian"} (default) or \code{"logistic"}.}
-    \item{...}{Currently unused additional arguments.}
+    \item{switch}{logical. If set to \code{TRUE} the two estimated components
+        will be switched. This is important if the covariate for the components
+        (left hand side of input \code{formula} is smaller for cases with foehn
+        than for cases without foehn, e.g., when using the temperature difference
+        as main covariate.}
+    \item{windfilter}{a named list can be provided to apply a custom (simple)
+        filter to the observations on \code{data}. Can be used to e.g., 
+        prespecify a specific wind sector for foehn winds. Please
+        read the manual of the \code{\link{windfilter}} method
+        for more details and examples.} 
+    \item{control}{additional control arguments, see \code{\link{foehnix.control}}.}
+    \item{...}{forwarded to \code{\link{foehnix.control}}.}
 }
 \details{
     The two-component mixture model can be specified via formula object where the
@@ -104,20 +93,32 @@
     such as \code{print}, \code{summary}, \code{coef}, \code{plot}, \dots
 }
 \references{
-Plavcan D, Mayr GJ, Zeileis A (2014).
-    Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
-    \emph{Journal of Applied Meteorology and Climatology}.
-    \bold{53}(3), 652--659. \doi{10.1175/JAMC-D-13-0267.1}
+    Plavcan D, Mayr GJ, Zeileis A (2014).
+        Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
+        \emph{Journal of Applied Meteorology and Climatology}.
+        \bold{53}(3), 652--659. doi:10.1175/JAMC-D-13-0267.1
+    
+    Gr\\"un B, Leisch F (2007).
+        Fitting Finite Mixtures of Generalized Linear Regressions in \emph{R}.
+        \emph{Computational Statistics \& Data Analysis}. \bold{51}(11), 5247--5252.
+        doi:10.1016/j.csda.2006.08.014
+    
+    Gr\\"un B, Leisch F (2008).
+        FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
+        \emph{Journal of Statistical Software, Articles}.
+        \bold{28}(4), 1--35. doi:10.18637/jss.v028.i04
+    
+    Fraley C, Raftery AE (2002).
+        Model-Based Clustering, Discriminant Analysis, and Density Estimation.
+        \emph{Journal of the American Statistical Association}.
+        \bold{97}(458), 611--631. doi:10.1198/016214502760047131
+}
+\seealso{
+    See \code{\link{windfilter}} for more information about the
+    \code{windfilter} option.
 
-Gr\"un B, Leisch F (2007).
-    Fitting Finite Mixtures of Generalized Linear Regressions in \emph{R}.
-    \emph{Computational Statistics \& Data Analysis}. \bold{51}(11), 5247--5252.
-    \doi{10.1016/j.csda.2006.08.014}
-
-Gr\"un B, Leisch F (2008).
-    FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
-    \emph{Journal of Statistical Software, Articles}
-    \bold{28}(4), 1--35. \doi{10.18637/jss.v028.i04}
+    See also: \code{\link{tsplot}}, \code{\link{plot.foehnix}},
+    \code{\link{windrose}}.
 }
 
 

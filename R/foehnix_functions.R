@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 18:00 on marvin
+# - L@ST MODIFIED: 2018-12-18 19:30 on marvin
 # -------------------------------------------------------------------
 
 
@@ -69,40 +69,6 @@ destandardize_coefficients <- function(beta, X) {
 }
 
 
-# TODO: DELETE ME
-### -------------------------------------------------------------------
-### Trying to estimate a reasonably high upper bound for lambda
-### if ridge penalization is needed.
-### -------------------------------------------------------------------
-##get_lambdas <- function(nlambda, logitX, post, maxit, tol) {
-##
-##    # If nlambda is not a positive integer: stop.
-##    stopifnot(inherits(nlambda, c("integer", "numeric")))
-##    stopifnot(nlambda >= 0)
-##
-##    # Fitting logistic regression models with different lambdas.
-##    csum_fun <- function(lambda, logitX, post, maxit, tol) {
-##        # As response a first guess y >= median(y) is used.
-##        # Force standardize = FALSE as logitX is already standardized if
-##        # standardize == TRUE for this function.
-##        m <- iwls_logit(logitX, post, standardize = FALSE,
-##                        lambda = lambda, maxit = maxit, tol = tol)
-##        sum(abs(m$beta[which(!grepl("^\\(Intercept\\)$", rownames(m$beta))),]))
-##    }
-##
-##    # Find large lambda where all parameters are close to 0.
-##    # Trying lambdas between exp(6) and exp(12).
-##    lambdas <- exp(seq(5, 15, by = 1))
-##    x <- sapply(lambdas, csum_fun, logitX = logitX, post = post, maxit = maxit, tol = tol)
-##
-##    # Pick the lambda where sum of parameters is smaller than a 
-##    # certain threshold OR take maximum of lambdas tested.
-##    lambdas <- exp(seq(min(which(x < 0.1), length(x)), -8, length = as.numeric(nlambda)))
-##    cat(sprintf("Use penalization lambda within %.5f to %.5f\n", max(lambdas), min(lambdas)))
-##    return(lambdas)
-##}
-# TODO: DELETE ME
-
 # -------------------------------------------------------------------
 # Information criteria: logLik, AIC, BIC, and effective degrees of
 # freedom
@@ -113,31 +79,37 @@ BIC.foehnix <- function(x, ...)     structure(x$optimizer$BIC, names = "BIC")
 edf <- function(x, ...) UseMethod("edf")
 edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
 
+# -------------------------------------------------------------------
+# Print foehnix model object.
+# TODO: better default print method required?
+# -------------------------------------------------------------------
+print.foehnix <- function(x, ...) print(summary(x))
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
-# TODO: Print method for coef is missing.
 # -------------------------------------------------------------------
 coef.foehnix <- function(x, type = "parameter", ...) {
-    type <- match.arg(type, c("parameter", "coefficient"))
 
+    # One of the two types: parameter (destandardized if required),
+    # or coefficient (standardized coefficients if standardized was TRUE).
+    type <- match.arg(type, c("parameter", "coefficient"))
     if ( type == "parameter" ) {
         rval <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
-                              x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
-                            dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
-                     x$coef$concomitants)
+                               x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
+                             dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
+                      x$coef$concomitants)
     } else {
         rval <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
                               x$coef$mu2, x$coef$logsd2), ncol = 1,
-                            dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
-                     x$coef$concomitants)
+                             dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
+                      x$coef$concomitants)
     }
     rval <- setNames(as.vector(rval), rownames(rval))
     
     # Appending some attributes and a new class
     attr(rval, "concomitants") <- ! is.null(x$coef$concomitants)
     attr(rval, "formula")      <- x$formula
-    attr(rval, "family")       <- x$family
+    attr(rval, "family")       <- x$control$family
     class(rval) <- c("coef.foehnix", class(rval))
     rval
 }
@@ -161,21 +133,18 @@ summary.foehnix <- function(x, ...) {
 
     rval <- list()
     rval$call    <- x$call
-    rval$samples <- x$samples
+    rval$prob    <- x$prob
     rval$coef    <- coef(x, type = "parameter")
 
     # Optimizer statistics
     rval$time      <- x$time
     rval$logLik    <- logLik(x)
+    rval$AIC       <- AIC(x)
+    rval$BIC       <- BIC(x)
     rval$edf       <- edf(x)
     rval$n.iter    <- x$optimizer$n.iter
     rval$maxit     <- x$optimizer$maxit
     rval$converged <- x$optimizer$converged
-
-    # Mean estimated probability of foehn (climatological probability
-    # of foehn based on the model estimate)
-    rval$meanprob  <- 100 * mean(x$prob, na.rm = TRUE)
-    rval$meanfoehn <- 100 * sum(x$prob >= .5, na.rm = TRUE) / sum(!is.na(x$prob))
 
     class(rval) <- "summary.foehnix"
     return(rval)
@@ -185,21 +154,27 @@ print.summary.foehnix <- function(x, ...) {
     # Model call
     cat("\nCall: "); print(x$call); cat("\n")
 
-    # Coefficient information
-    print(x$coef)
+    sum_na <- sum(is.na(x$prob$flag))
+    sum_0  <- sum(x$prob$flag == 0, na.rm = TRUE)
+    sum_1  <- sum(x$prob$flag == 1, na.rm = TRUE)
+
+    mean_occ  <- 100 * sum(x$prob$prob >= .5, na.rm = TRUE) / sum(!is.na(x$prob$flag))
+    mean_n    <- sum(!is.na(x$prob$flag))
+    mean_prob <- 100 * mean(x$prob$prob[!is.na(x$prob$flag)])
 
     # Additional information about the data/model
-    cat(sprintf("\nNumber of observations (total) %8d\n", x$samples$total)) 
+    cat(sprintf("\nNumber of observations (total) %8d\n", nrow(x$prob)))
     cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
-                x$samples$na,    100 * x$samples$na / x$samples$total)) 
+                sum_na, sum_na / nrow(x$prob) * 100))
     cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", 
-                x$samples$wind,  100 * x$samples$wind / x$samples$total)) 
+                sum_0, sum_0 / nrow(x$prob) * 100))
     cat(sprintf("Used for classification        %8d (%3.1f percent)\n",
-                x$samples$taken, 100 * x$samples$taken / x$samples$total)) 
-    cat(sprintf("\nClimatological foehn occurance %.2f percent\n", x$meanfoehn))
-    cat(sprintf("Mean foehn probability %.2f percent\n", x$meanprob))
+                sum_1, sum_1 / nrow(x$prob) * 100))
+    cat(sprintf("\nClimatological foehn occurance %.2f percent (on n = %d)\n", mean_occ, mean_n))
+    cat(sprintf("Mean foehn probability %.2f percent (on n = %d)\n", mean_prob, mean_n))
 
-    cat(sprintf("\nLog-likelihood: %.1f on %d Df\n",   x$ll, x$df))
+    cat(sprintf("\nLog-likelihood: %.1f, %d effective degrees of freedom\n",   x$logLik, x$edf))
+    cat(sprintf("Corresponding AIC = %.1f, BIC = %.1f\n", x$AIC, x$BIC))
     cat(sprintf("Number of EM iterations %d/%d (%s)\n", x$n.iter, x$maxit,
                 ifelse(x$converged, "converged", "not converged")))
     if ( x$time < 60 ) {
