@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-18 10:38 on marvin
+# - L@ST MODIFIED: 2018-12-19 08:30 on marvin
 # -------------------------------------------------------------------
 
 
@@ -134,7 +134,7 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
                   package = "foehnix")
         },
         # Random sample function for two-component censored logistic distribution
-        r = function(n, mu, sigma) {
+        r = function(n, mu, sigma, lower.tail = TRUE) {
             stopifnot(length(mu) == 2)
             stopifnot(length(sigma) == 2)
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))

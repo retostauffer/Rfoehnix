@@ -16,10 +16,15 @@
           'Details'.}
     \item{data}{a time series object of class \code{zoo} containing the
         variables for the two-part mixture model.}
+    \item{switch}{logical. If set to \code{TRUE} the two estimated components
+        will be switched. This is important if the covariate for the components
+        (left hand side of input \code{formula} is smaller for cases with foehn
+        than for cases without foehn, e.g., when using the temperature difference
+        as main covariate.}
     \item{windfilter}{a named list can be provided to apply a custom (simple)
         filter to the observations on \code{data}. Can be used to e.g., 
         prespecify a specific wind sector for foehn winds. Please
-        read the manual of the \code{\link{windfilter_get_indizes}} method
+        read the manual of the \code{\link{windfilter}} method
         for more details and examples.} 
     \item{control}{additional control arguments, see \code{\link{foehnix.control}}.}
     \item{...}{forwarded to \code{\link{foehnix.control}}.}
@@ -109,7 +114,7 @@
         \bold{97}(458), 611--631. doi:10.1198/016214502760047131
 }
 \seealso{
-    See \code{\link{windfilter_get_indizes}} for more information about the
+    See \code{\link{windfilter}} for more information about the
     \code{windfilter} option.
 
     See also: \code{\link{tsplot}}, \code{\link{plot.foehnix}},

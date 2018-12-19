@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-17 20:11 on marvin
+# - L@ST MODIFIED: 2018-12-19 10:03 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -31,7 +31,7 @@ plot.foehnix <- function(x, which = NULL, ...) {
 
     flagging <- function(x, log = FALSE) {
         at <- if ( log ) log(1L:length(x)) else 1L:length(x)
-        points(at, x, pch = 1, cex = 0.5,
+        points(at, x, pch = 1, cex = 1,
                col = c(1, as.integer(diff(x) > 0) + 2))
     }
 
@@ -40,13 +40,15 @@ plot.foehnix <- function(x, which = NULL, ...) {
         ll <- x$optimizer$loglikpath
         ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
         # Plot
+        lty <- c(2,3,1); col <- c("gray60", "gray60", 1); lwd = c(1,1,2)
         matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
+                lwd = lwd, lty = lty, col = col,
                 ylab = "log-likelihood sum",
                 xlab = "log(EM iteration)",
                 main = "foehnix log-likelihood path")
         for ( i in 1:ncol(ll) ) flagging(ll[,i], log = TRUE)
         tmp <- 1L:ncol(ll)
-        legend("top", ncol = max(tmp), lty = tmp, col = tmp,
+        legend("top", ncol = max(tmp), lty = lty, col = col,
                legend = colnames(ll))
     }
 
@@ -56,7 +58,9 @@ plot.foehnix <- function(x, which = NULL, ...) {
         for ( i in 1:ncol(ll) ) ll[,i] <- ll[,i] - ll[1,i]
         ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
         # plot
+        lty <- c(2,3,1); col <- c("gray60", "gray60", 1); lwd = c(1,1,2)
         matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
+                lwd = lwd, lty = lty, col = col,
                 ylab = "log-likelihood contribution",
                 xlab = "log(EM iteration)",
                 main = "foehnix log-likelihood contribution")
@@ -120,17 +124,12 @@ plot.foehnix <- function(x, which = NULL, ...) {
         y <- model.response(model.frame(x$formula, x$data))
 
         # Combine response vector with estimated probabilities
-        tmp <- data.frame(y = as.numeric(y), prob = as.numeric(x$prob))
-
-        # If wind filter is used, set posterior probability to
-        # 0 for all observations not inside the filter (they have not
-        # been used for modelling as they are not assumed to show
-        # any foehn).
-        idx_wind <- windfilter_get_indizes(x$data, x$windfilter)
-        if ( ! is.null(idx_wind) ) tmp <- tmp[idx_wind,]
+        tmp <- data.frame(y    = as.numeric(y),
+                          prob = as.numeric(x$prob$prob),
+                          flag = as.numeric(x$prob$flag))
 
         # Remove missing values
-        tmp <- na.omit(tmp)
+        tmp <- na.omit(subset(tmp, flag == 1 & !is.na(y)))
 
         # If left/right censoring/truncation has been specified:
         if ( has.left(x$control$family) )  tmp$y <- pmax(x$control$family$left,  tmp$y)
@@ -143,8 +142,8 @@ plot.foehnix <- function(x, which = NULL, ...) {
             at   <- seq(min(tmp$y), max(tmp$y), length = 501)
 
             bk   <- seq(min(tmp$y), max(tmp$y), length = 50)
-            h1   <- hist(y[which(x$prob <  .5)], plot = FALSE, breaks = bk)
-            h2   <- hist(y[which(x$prob >= .5)], plot = FALSE, breaks = bk)
+            h1   <- hist(tmp$y[which(tmp$prob <  .5)], plot = FALSE, breaks = bk, include.lowest = TRUE)
+            h2   <- hist(tmp$y[which(tmp$prob >= .5)], plot = FALSE, breaks = bk, include.lowest = TRUE)
             ylim <- c(0, max(h1$density, h2$density, na.rm = TRUE))
             xlim <- range(bk)
 
@@ -158,7 +157,7 @@ plot.foehnix <- function(x, which = NULL, ...) {
             plot(h2, freq = FALSE, xlim = xlim, ylim = ylim,
                  main = "Conditional Histogram\nComponent 2",
                  border = "gray50", xlab = expression(paste("y[",pi >= 0.5,"]")))
-            lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 2, lwd = 2)
+            lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 4, lwd = 2)
 
         }
     }
