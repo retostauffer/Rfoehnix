@@ -3,8 +3,8 @@
 ## Reporting bugs
 
 Bugs and feature requests can be sent to the package maintainer
-_&#114;&#101;&#116;&#111;&#46;&#115;&#116;&#97;&#117;&#102;&#102;&#101;&#114;&#64;&#117;&#105;&#98;&#107;&#46;&#97;&#99;&#46;&#97;&#116;_
-or by reporting an issue [on github](https://github.com/retostauffer/Rfoehnix).
+**reto.stauffer@uibk.ac.at** or by reporting an issue [on
+github](https://github.com/retostauffer/Rfoehnix).
 
 # Other resources
 
