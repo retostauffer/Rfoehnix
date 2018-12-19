@@ -16,6 +16,8 @@ navbar:
           menu:
             - text: "Censoring and Truncation"
               href: articles/advanced_simulation.html
+            - text: "foehnix Families"
+              href: articles/families.html
         - text: "Reference"
           href: reference/index.html
         - text: "News"

@@ -12,7 +12,10 @@
                     alpha = NULL, verbose = FALSE, ...)
 }
 \arguments{
-    \item{family}{character, one of \code{gaussian} or \code{logistic}.}
+    \item{family}{character specifying the distribution of the components
+        in the mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.
+        For experts: custom \code{foehnix.family} objects can
+        be provided as well.}
     \item{left}{default is \code{-Inf}, left censoring or truncation point.
         See also input \code{right} and input \code{truncated}. Can be set
         to any finite numeric value.}

@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 15:53 on marvin
+# - L@ST MODIFIED: 2018-12-19 18:44 on marvin
 # -------------------------------------------------------------------
 
 
@@ -259,19 +259,25 @@ foehnix.control <- function(family, left = -Inf, right = Inf, truncated = FALSE,
 
     # After checking left/right truncation/censoring threshold:
     # check family argument and initialize foehnix family object.
-    family <- match.arg(family, c("gaussian", "logistic"))
-    if ( ! all(is.infinite(c(left, right))) ) {
-        # Take censored version of "family" using the censoring
-        # thresholds left and right.
-        if ( ! truncated ) {
-            family <- get(sprintf("foehnix_c%s", family))(left = left, right = right)
-        # Else take the truncated version of the "family".
+    if ( inherits(family, "foehnix.family") ) {
+        if ( verbose ) cat("foehnix.family object probided: use custom family object.\n")
+    } else if ( inherits(family, "character") ) {
+        family <- match.arg(family, c("gaussian", "logistic"))
+        if ( ! all(is.infinite(c(left, right))) ) {
+            # Take censored version of "family" using the censoring
+            # thresholds left and right.
+            if ( ! truncated ) {
+                family <- get(sprintf("foehnix_c%s", family))(left = left, right = right)
+            # Else take the truncated version of the "family".
+            } else {
+                family <- get(sprintf("foehnix_t%s", family))(left = left, right = right)
+            }
+        # Else (left = -Inf, right = Inf): use non-truncated/non-censored version.
         } else {
-            family <- get(sprintf("foehnix_t%s", family))(left = left, right = right)
+            family <- get(sprintf("foehnix_%s", family))()
         }
-    # Else (left = -Inf, right = Inf): use non-truncated/non-censored version.
     } else {
-        family <- get(sprintf("foehnix_%s", family))()
+        stop("Input \"family\" has to be of class \"character\" or \"foehnix.family\".")
     }
 
     # Maxit and tol are the maximum number of iterations for the

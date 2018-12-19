@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 16:57 on marvin
+# - L@ST MODIFIED: 2018-12-19 18:36 on marvin
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
@@ -19,6 +19,10 @@
 # -------------------------------------------------------------------
 iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
                        maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
+
+    # NAns?
+    if ( any(is.na(X)) ) stop("Input \"X\" contains NA values. Stop.")
+    if ( any(is.na(y)) ) stop("Input \"y\" contains NA values. Stop.")
 
     # Checking inputs. Constant covariates (concomitant variables)
     # are not allowed except one column (intercept).

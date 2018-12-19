@@ -1,0 +1,59 @@
+
+
+## foehnix Families
+
+The foehnix mixture models are based on a set of families
+provided with this package. Currently, the package provides
+a two-component Gaussian and a two-component logistic mixture
+model and their truncated and censored versions.
+
+The method `foehnix` allows to specify a `family` argument
+which has to be either `"gaussian"` (the default) or
+`"logistic"` at the moment. If finite arguments for `left` and/or `right`
+are set as well a censored Gaussian/logistic mixture model will be
+estimated (or truncated, if `truncated = TRUE`).
+
+However, feel free to develop custom family objects if needed: if
+a `foehnix.family` object is provided on `family` when calling
+`foehnix` this custom object will be used. For example:
+
+```
+fam <- foehnix:::foehnix_cgaussian(left = 0)
+mod <- foehnix(dt ~ ff + dd + rh, data = data, family = fam)
+```
+
+For all others the two family classes provided with the package
+should typically be more than suitable for foehn classification.
+
+
+### foehn.family Objects
+
+Each `foehn.family` object consists of a set of functions:
+
+* optional arguments not listed here (stored inside the
+  object environment when specified on initialization,
+  `left` and `right` used for the censored and truncated
+  Gaussian/logistic families are such examples).
+* `name`: character, name of the family object.
+* `d`: density function of the mixture distribution.
+* `p`: distribution function of the mixture distribution.
+* `r`: not required for optimization but nice for testing:
+  returns random numbers from the mixed distribution to
+  simulate data.
+* `loglik`: function returning the log-likelihood sum,
+  used for model estimation (EM algorithm).
+* `posterior`: returns the (updated) posterior probabilities,
+  used for model estimation (EM algorithm).
+* `theta`: returns the parameters of the distributions of the
+  components of the mixture models. Used for model
+  estimation (EM algorithm).
+
+Examples are: `foehnix_gaussian`, `foehnix_cgaussian`, `foehnix_tgaussian`,
+`foehnix_logistic`, `foehnix_clogistic`, and `foehnix_tlogistic` in
+`R/families.R`.
+
+
+
+
+
+

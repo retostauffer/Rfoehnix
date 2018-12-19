@@ -97,6 +97,9 @@
     <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
+    <li>
+      <a href="../articles/families.html">foehnix Families</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -148,7 +151,10 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>family</th>
-      <td><p>character, one of <code>gaussian</code> or <code>logistic</code>.</p></td>
+      <td><p>character specifying the distribution of the components
+        in the mixture model. Allowed: <code>"gaussian"</code> and <code>"logistic"</code>.
+        For experts: custom <code>foehnix.family</code> objects can
+        be provided as well.</p></td>
     </tr>
     <tr>
       <th>left</th>
