@@ -60,9 +60,14 @@ maximization_ (EM) algorithm to optimize the log-likelihood for a set of
 observation $i = 1, \dots, N$ given by:
 
 * $\ell = \sum_{i=1}^N \big(
-    \log(1 - \pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_1)) +
-    \log(\pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_2))
+    (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) +
+    \hat{\mathit{p}} \cdot \log(f(\mathit{y}, \mathit{\theta}_2)) +
+    (1 - \hat{\mathit{p}} \cdot \log(1 - \mathit{\pi}(\mathbf{x}, \mathit{\alpha})) +
+    \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha}))
   \big)$.
+
+with $\hat{\mathit{p}}$ as specified above (a-posteriori probability).
+
 
 The EM algorithm is as follows:
 
@@ -123,35 +128,95 @@ mixture model without concomitants:
      * $\sigma_1^{(0)} = \sigma_2^{(0)} = \big(\frac{1}{N} \sum_{i=1}^{N} (y_i - \bar{y})^2\big)^\frac{1}{2}$
 3. Initialize $\mathit{\pi}^{(0)} = 0.5$
 4. Given $\mathit{\theta}^{(0)}$ and $\mathit{\pi}^{(0)}$: calculate a-posteriory probability:
-     * $\hat{p}^{(0)} = \frac{\mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}{
+     * $\hat{\mathit{p}}^{(0)} = \frac{\mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}{
                         (1 - \mathit{\pi}^{(0)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(0)})
                         + \mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}$
 
 Once the required elements have been initialized start
 the EM algorithm for $j = 1, ..., maxit$:
 
-1. Update $\pi^{(j)} = \text{mean}(\hat{\mathit{p}}^{(j-1)})$
-2. Update $\mathit{\theta}^{(j)}$ using $\hat{\mathit{p}}^{(j-1)}$:
+5. Update $\pi^{(j)} = \text{mean}(\hat{\mathit{p}}^{(j-1)})$
+6. Obtain new $\mathit{\theta}^{(j)}$ using $\hat{\mathit{p}}^{(j-1)}$:
      * $\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}})
        \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i$
      * $\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
        \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i$
-     * $\sigma_1^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}
-       \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}$
-     * $\sigma_2^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
-       \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}$
-3. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$:
+     * $\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}
+       \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
+     * $\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
+       \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
+7. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$:
      * $\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{
                         (1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)})
                         + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}$
 
-4. Calculate likelihood:
+8. Calculate likelihood: $\ell^{(j)}$. If $j = 1$ proceed with **step 5**.
+9. For $j > 1$: if $(\ell^{(j)} - \ell^{(j-1)}) < \text{tol}$ the likelihood
+   could not have been improved (converged or stuck): stop EM algorithm. 
+   If $j = \text{maxit}$: maximum number of iterations reached, stop EM algorithm.
+   Else proceed with **step 5** until one of the stopping criteria is reached.
 
-#TODO: Da kommt noch die lilekohood des CC models dazu.
+
+## Gaussian Mixture Model With Concomitants
+
+The optimizer for a two-component Gaussian mixture model with
+additional concomitants is very similar except that we also have
+to update the concomitant model (logistic regression model). 
+For mixed models with concomitants the probabilities $\mathit{\pi}$
+are a function of the concomitant covariates $\mathbf{x}$ and the
+regression coefficients $\mathit{\alpha}$.
+
+The following algorithm is used:
+
+1. Initialize class membership $\mathit{z}$
+   _as for the Gaussian mixture model without concomitants_.
+2. Initialize coefficients $\mathit{\theta}^{(0)}$
+   _as for the Gaussian mixture model without concomitants_.
+3. Given $\mathit{z}^{(0)}$ and $\mathbf{x}$: estimate logistic
+     regression model to obtain the parameters $\mathit{\alpha}^{(0)}$,
+     calculate $\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}}$
+   (see [iwls_logit](reference/iwls_logit.html)).
+4. Calculate a-posteriori probability $\hat{\mathit{p}}^{(0)}$
+   _as for the Gaussian mixture model without concomitants_.
+
+The EM algorithm for $j = 1, \dots, \text{maxit}$:
+
+5. Update $\pi^{(j)}$ by updating the concomitant model (logistic regression model)
+   using $\hat{\mathit{p}}^{(j-1)}$ as response for the concomitant model
+   (see [iwls_logit](reference/iwls_logit.html)).
+6. Obtain new $\mathit{\theta}^{(j)}$
+   _as for the Gaussian mixture model without concomitants_.
+7. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$ 
+   _as for the Gaussian mixture model without concomitants_.
+8. Calculate likelihood
+   _as for the Gaussian mixture model without concomitants_.
+9. _As for the Gaussian mixture model without concomitants_:
+   proceed with **step 5** until one of the stopping criteria
+   is reached.
 
 
+## Logistic Regression Model
 
+The logistic two-component mixture models can be estimated as the
+Gaussian ones except that component density is the density of
+the logistic distribution, and that the weighted empirical moments
+for $\sigma_1$ and $\sigma_2$, the scale of the logistic distribution,
+is now:
 
+* $\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}
+  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}
+  \cdot \frac{\sqrt{3}}{3.1415}$
+* $\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
+  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}
+  \cdot \frac{\sqrt{3}}{3.1415}$
+
+## Censored and Truncated Models
+
+In case of a censored or truncated mixed model the distributional
+parameters $\mathit{\theta}$ of the components of the mixture model
+cannot be calculated using weighted empirical moments.
+In these cases a numreical likelihood-based solver is used to estimate
+$\mu_1$, $\mu_2$, $\sigma_1$, and $\sigma_2$.
 
 
 

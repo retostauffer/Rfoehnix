@@ -101,7 +101,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/statmodel.Rmd"><code>../vignettes/statmodel.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/statmodel.Rmd"><code>vignettes/statmodel.Rmd</code></a></small>
       <div class="hidden name"><code>statmodel.Rmd</code></div>
 
     </div>
@@ -134,8 +134,9 @@
 <p>The maximum likelihood of a mixture model can usually not be maximized directly. One possibility to estimate model is an iterative <em>expectation maximization</em> (EM) algorithm to optimize the log-likelihood for a set of observation <span class="math inline">\(i = 1, \dots, N\)</span> given by:</p>
 <ul>
 <li>
-<span class="math inline">\(\ell = \sum_{i=1}^N \big( \log(1 - \pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_1)) + \log(\pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_2))  \big)\)</span>.</li>
+<span class="math inline">\(\ell = \sum_{i=1}^N \big( (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) + \hat{\mathit{p}} \cdot \log(f(\mathit{y}, \mathit{\theta}_2)) + (1 - \hat{\mathit{p}} \cdot \log(1 - \mathit{\pi}(\mathbf{x}, \mathit{\alpha})) + \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha}))  \big)\)</span>.</li>
 </ul>
+<p>with <span class="math inline">\(\hat{\mathit{p}}\)</span> as specified above (a-posteriori probability).</p>
 <p>The EM algorithm is as follows:</p>
 <ul>
 <li><p><strong>Initialization:</strong> initialize values for <span class="math inline">\(\mathbf{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span>.</p></li>
@@ -169,29 +170,66 @@
 </li>
 <li>Given <span class="math inline">\(\mathit{\theta}^{(0)}\)</span> and <span class="math inline">\(\mathit{\pi}^{(0)}\)</span>: calculate a-posteriory probability:
 <ul>
-<li><span class="math inline">\(\hat{p}^{(0)} = \frac{\mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}{  (1 - \mathit{\pi}^{(0)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(0)})  + \mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}\)</span></li>
+<li><span class="math inline">\(\hat{\mathit{p}}^{(0)} = \frac{\mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}{  (1 - \mathit{\pi}^{(0)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(0)})  + \mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}\)</span></li>
 </ul>
 </li>
 </ol>
 <p>Once the required elements have been initialized start the EM algorithm for <span class="math inline">\(j = 1, ..., maxit\)</span>:</p>
-<ol style="list-style-type: decimal">
+<ol start="5" style="list-style-type: decimal">
 <li>Update <span class="math inline">\(\pi^{(j)} = \text{mean}(\hat{\mathit{p}}^{(j-1)})\)</span>
 </li>
-<li>Update <span class="math inline">\(\mathit{\theta}^{(j)}\)</span> using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span>:
+<li>Obtain new <span class="math inline">\(\mathit{\theta}^{(j)}\)</span> using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span>:
 <ul>
 <li><span class="math inline">\(\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}})  \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i\)</span></li>
 <li><span class="math inline">\(\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i\)</span></li>
-<li><span class="math inline">\(\sigma_1^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}\)</span></li>
-<li><span class="math inline">\(\sigma_2^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}\)</span></li>
+<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
+<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
 </ul>
 </li>
-<li>Update posterior probabilities <span class="math inline">\(\hat{\mathit{p}^{(j)}\)</span>:
+<li>Update posterior probabilities <span class="math inline">\(\hat{\mathit{p}}^{(j)}\)</span>:
 <ul>
 <li><span class="math inline">\(\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{  (1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)})  + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}\)</span></li>
 </ul>
 </li>
+<li>Calculate likelihood: <span class="math inline">\(\ell^{(j)}\)</span>. If <span class="math inline">\(j = 1\)</span> proceed with <strong>step 5</strong>.</li>
+<li>For <span class="math inline">\(j &gt; 1\)</span>: if <span class="math inline">\((\ell^{(j)} - \ell^{(j-1)}) &lt; \text{tol}\)</span> the likelihood could not have been improved (converged or stuck): stop EM algorithm. If <span class="math inline">\(j = \text{maxit}\)</span>: maximum number of iterations reached, stop EM algorithm. Else proceed with <strong>step 5</strong> until one of the stopping criteria is reached.</li>
 </ol>
 </div>
+</div>
+<div id="gaussian-mixture-model-with-concomitants" class="section level2">
+<h2 class="hasAnchor">
+<a href="#gaussian-mixture-model-with-concomitants" class="anchor"></a>Gaussian Mixture Model With Concomitants</h2>
+<p>The optimizer for a two-component Gaussian mixture model with additional concomitants is very similar except that we also have to update the concomitant model (logistic regression model). For mixed models with concomitants the probabilities <span class="math inline">\(\mathit{\pi}\)</span> are a function of the concomitant covariates <span class="math inline">\(\mathbf{x}\)</span> and the regression coefficients <span class="math inline">\(\mathit{\alpha}\)</span>.</p>
+<p>The following algorithm is used:</p>
+<ol style="list-style-type: decimal">
+<li>Initialize class membership <span class="math inline">\(\mathit{z}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
+<li>Initialize coefficients <span class="math inline">\(\mathit{\theta}^{(0)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
+<li>Given <span class="math inline">\(\mathit{z}^{(0)}\)</span> and <span class="math inline">\(\mathbf{x}\)</span>: estimate logistic regression model to obtain the parameters <span class="math inline">\(\mathit{\alpha}^{(0)}\)</span>, calculate <span class="math inline">\(\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}}\)</span> (see <a href="reference/iwls_logit.html">iwls_logit</a>).</li>
+<li>Calculate a-posteriori probability <span class="math inline">\(\hat{\mathit{p}}^{(0)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
+</ol>
+<p>The EM algorithm for <span class="math inline">\(j = 1, \dots, \text{maxit}\)</span>:</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Update <span class="math inline">\(\pi^{(j)}\)</span> by updating the concomitant model (logistic regression model) using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span> as response for the concomitant model (see <a href="reference/iwls_logit.html">iwls_logit</a>).</li>
+<li>Obtain new <span class="math inline">\(\mathit{\theta}^{(j)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
+<li>Update posterior probabilities <span class="math inline">\(\hat{\mathit{p}}^{(j)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
+<li>Calculate likelihood <em>as for the Gaussian mixture model without concomitants</em>.</li>
+<li>
+<em>As for the Gaussian mixture model without concomitants</em>: proceed with <strong>step 5</strong> until one of the stopping criteria is reached.</li>
+</ol>
+</div>
+<div id="logistic-regression-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#logistic-regression-model" class="anchor"></a>Logistic Regression Model</h2>
+<p>The logistic two-component mixture models can be estimated as the Gaussian ones except that component density is the density of the logistic distribution, and that the weighted empirical moments for <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span>, the scale of the logistic distribution, is now:</p>
+<ul>
+<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}  \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
+<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}  \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
+</ul>
+</div>
+<div id="censored-and-truncated-models" class="section level2">
+<h2 class="hasAnchor">
+<a href="#censored-and-truncated-models" class="anchor"></a>Censored and Truncated Models</h2>
+<p>In case of a censored or truncated mixed model the distributional parameters <span class="math inline">\(\mathit{\theta}\)</span> of the components of the mixture model cannot be calculated using weighted empirical moments. In these cases a numreical likelihood-based solver is used to estimate <span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\sigma_1\)</span>, and <span class="math inline">\(\sigma_2\)</span>.</p>
 </div>
   </div>
 
@@ -203,6 +241,9 @@
 <li><a href="#statistical-models">Statistical Models</a></li>
       <li><a href="#parameter-estimation">Parameter Estimation</a></li>
       <li><a href="#gaussian-mixture-model-without-concomitants">Gaussian Mixture Model Without Concomitants</a></li>
+      <li><a href="#gaussian-mixture-model-with-concomitants">Gaussian Mixture Model With Concomitants</a></li>
+      <li><a href="#logistic-regression-model">Logistic Regression Model</a></li>
+      <li><a href="#censored-and-truncated-models">Censored and Truncated Models</a></li>
       </ul>
 </div>
       </div>

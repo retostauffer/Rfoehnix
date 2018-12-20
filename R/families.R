@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 09:53 on marvin
+# - L@ST MODIFIED: 2018-12-20 13:13 on marvin
 # -------------------------------------------------------------------
 
 
@@ -181,10 +181,10 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
                 theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
                 theta$mu2 <- sum(y * post) / sum(post)
                 if ( init ) {
-                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y) * sqrt(3) / pi)
                 } else {
-                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
-                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post))* sqrt(3) / pi)
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post))   / sum(post)) * sqrt(3) / pi)
                 }
             }
 
@@ -288,10 +288,10 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
                 theta$mu1 <- sum(y * (1 - post)) / sum(1 - post)
                 theta$mu2 <- sum(y * post) / sum(post)
                 if ( init ) {
-                    theta$logsd1 <- theta$logsd2 <- log(sd(y))
+                    theta$logsd1 <- theta$logsd2 <- log(sd(y) * sqrt(3) / pi)
                 } else {
-                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post)))
-                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post)) / sum(post)))
+                    theta$logsd1 <- log(sqrt(sum((y-mu1)^2 * (1-post)) / sum(1-post))* sqrt(3) / pi)
+                    theta$logsd2 <- log(sqrt(sum((y-mu2)^2 * (post))   / sum(post)) * sqrt(3) / pi)
                 }
             }
 
