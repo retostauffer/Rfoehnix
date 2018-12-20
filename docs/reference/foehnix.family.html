@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Destandardize Regression Coefficients — destandardize_coefficients • foehnix</title>
+<title>Families for the foehinx Two-Component Mixture Models — foehnix.family • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,14 @@
 
 
 
-<meta property="og:title" content="Destandardize Regression Coefficients — destandardize_coefficients" />
+<meta property="og:title" content="Families for the foehinx Two-Component Mixture Models — foehnix.family" />
+
+<meta property="og:description" content="foehnix uses a set of family objects of class
+    foehnix.family to estimate the mixture models.    
+A foehnix.family object consists of a set of functions
+    such as the probability density function, cumulative distribution
+    function, log-likelihood function, or the function to calculate the
+    posterior probabilities of the mixture model." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -130,61 +137,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Destandardize Regression Coefficients</h1>
+    <h1>Families for the foehinx Two-Component Mixture Models</h1>
     
-    <div class="hidden name"><code>destandardize_coefficients.Rd</code></div>
+    <div class="hidden name"><code>foehnix.family.Rd</code></div>
     </div>
 
     <div class="ref-description">
-
+    
+    <p><code><a href='foehnix.html'>foehnix</a></code> uses a set of family objects of class
+    <code>foehnix.family</code> to estimate the mixture models.</p>    
+<p>A <code>foehnix.family</code> object consists of a set of functions
+    such as the probability density function, cumulative distribution
+    function, log-likelihood function, or the function to calculate the
+    posterior probabilities of the mixture model.</p>
+    
     </div>
 
-    <pre class="usage"><span class='fu'>destandardize_coefficients</span>(<span class='no'>beta</span>, <span class='no'>X</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>beta</th>
-      <td><p>matrix of dimension <code>p x 1</code> containing the
-        regression coefficients on the standardized scale.</p></td>
-    </tr>
-    <tr>
-      <th>X</th>
-      <td><p>matrix of dimension <code>n x p</code>, the matrix used
-        to train the statistical model (see Details).</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <pre class="usage"><span class='co'># Two-component Gaussian (with censored and truncated version)</span>
+    <span class='fu'>foehnix_gaussian</span>()
+    <span class='fu'>foehnix_cgaussian</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
+    <span class='fu'>foehnix_tgaussian</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
 
-    <p>If the regression model (e.g., logistic regression) is estimated
-    on standardized covariates (see <code>standardize_model_matrix</code>)
-    the coefficients will be de-standardized to provide regression
-    coefficients on the same scale as the original input data.</p>
-<p><code>X</code> is the standardized model matrix as returned by
-    <code>standardize_model_matrix</code> which, alongside with the
-    standardized data, provides the scaling parameters as attributes.
-    The attributes <code>scaled:center</code> and <code>scaled:scale</code> contain
-    mean and standard deviation for all columns <code>p</code> of matrix <code>X</code>
-    used for standardization.</p>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns a matrix of size <code>p x 1</code> (modified matrix <code>beta</code>)
-    with de-standardized regression coefficients.</p>
-    
+    <span class='co'># Two-component logistic (with censored and truncated version)</span>
+    <span class='fu'>foehnix_logistic</span>()
+    <span class='fu'>foehnix_clogistic</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
+    <span class='fu'>foehnix_tlogistic</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</pre>
+        
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

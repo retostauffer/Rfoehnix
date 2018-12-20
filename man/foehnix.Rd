@@ -1,13 +1,42 @@
 \name{foehnix}
 \alias{foehnix}
+\alias{plot.foehnix}
+\alias{print.foehnix}
+\alias{coef.foehnix}
+\alias{summary.foehnix}
+\alias{predict.foehnix}
+\alias{fitted.foehnix}
+\alias{logLik.foehnix}
+\alias{AIC.foehnix}
+\alias{BIC.foehnix}
+\alias{edf.foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
     ## TODO: extend/adjust usage
     ## Basic usage
     foehnix(formula, data)
+
     ## Advanced usage
     foehnix(formula, data, windfilter = NULL, family = "gaussian",
             control = foehnix.control(family, ...), ...)
+
+    ## S3 methods for foehnix objects
+    plot(x, ...)
+    print(object, ...)
+    coef(object, type = "parameter", ...)
+    summary(object, ...)
+
+    predict(x, newdata = NULL, type = "response")
+    fitted(object, which = "probability", ...)
+
+    logLik(object, ...)
+    AIC(object, ...)
+    BIC(object, ...)
+    edf(object, ...)
+}
+\description{
+    This is the main method of the foehnix package to estimate
+    two-component mixture models for automated foehn classification.
 }
 \arguments{
     \item{formula}{an object of class \code{formula} (or one that can be coerced to
@@ -24,7 +53,7 @@
     \item{windfilter}{a named list can be provided to apply a custom (simple)
         filter to the observations on \code{data}. Can be used to e.g., 
         prespecify a specific wind sector for foehn winds. Please
-        read the manual of the \code{\link{windfilter}} method
+        read the manual of the \code{\link{foehnix_filter}} method
         for more details and examples.} 
     \item{control}{additional control arguments, see \code{\link{foehnix.control}}.}
     \item{...}{forwarded to \code{\link{foehnix.control}}.}

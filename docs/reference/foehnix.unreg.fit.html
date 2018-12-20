@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Destandardize Regression Coefficients — destandardize_coefficients • foehnix</title>
+<title>Fitting Unregularized foehnix Mixture Model With Concomitant Model. — foehnix.unreg.fit • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,11 @@
 
 
 
-<meta property="og:title" content="Destandardize Regression Coefficients — destandardize_coefficients" />
+<meta property="og:title" content="Fitting Unregularized foehnix Mixture Model With Concomitant Model. — foehnix.unreg.fit" />
+
+<meta property="og:description" content="Fitting method for two-component foehnix mixture model with
+    additional concomitants.
+    Typically not called directly, interfaced via foehnix." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -130,49 +134,74 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Destandardize Regression Coefficients</h1>
+    <h1>Fitting Unregularized foehnix Mixture Model With Concomitant Model.</h1>
     
-    <div class="hidden name"><code>destandardize_coefficients.Rd</code></div>
+    <div class="hidden name"><code>foehnix.unreg.fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-
+    
+    <p>Fitting method for two-component foehnix mixture model with
+    additional concomitants.
+    Typically not called directly, interfaced via <code><a href='foehnix.html'>foehnix</a></code>.</p>
+    
     </div>
 
-    <pre class="usage"><span class='fu'>destandardize_coefficients</span>(<span class='no'>beta</span>, <span class='no'>X</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix.unreg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
+                      <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-5</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>beta</th>
-      <td><p>matrix of dimension <code>p x 1</code> containing the
-        regression coefficients on the standardized scale.</p></td>
+      <th>y</th>
+      <td><p>numeric vector, covariate for the components of the
+        mixture model, dimension <code>N</code>.</p></td>
     </tr>
     <tr>
-      <th>X</th>
-      <td><p>matrix of dimension <code>n x p</code>, the matrix used
-        to train the statistical model (see Details).</p></td>
+      <th>logitX</th>
+      <td><p>numeric matrix of dimension <code>N x P</code>, covariates
+        for the concomitant model (logistic regression model matrix).</p></td>
+    </tr>
+    <tr>
+      <th>family</th>
+      <td><p>object of class <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>maxit</th>
+      <td><p>positive integer, or vector of length 2 with positive
+        integer values. Maximum number of iterations of the EM algorithm
+        and the concomitant model.
+        Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>numeric, or vector of length 2 containing numeric values.
+        Tolerance for the optimization (EM algorithm and concomitant model).
+        Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, default <code>TRUE</code>. If set to <code>FALSE</code>
+        verbose output will be suppressed.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>#TODO: currently unused.</p></td>
+    </tr>
+    <tr>
+      <th>&#8230;</th>
+      <td><p>additional arguments, unused.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>If the regression model (e.g., logistic regression) is estimated
-    on standardized covariates (see <code>standardize_model_matrix</code>)
-    the coefficients will be de-standardized to provide regression
-    coefficients on the same scale as the original input data.</p>
-<p><code>X</code> is the standardized model matrix as returned by
-    <code>standardize_model_matrix</code> which, alongside with the
-    standardized data, provides the scaling parameters as attributes.
-    The attributes <code>scaled:center</code> and <code>scaled:scale</code> contain
-    mean and standard deviation for all columns <code>p</code> of matrix <code>X</code>
-    used for standardization.</p>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns a matrix of size <code>p x 1</code> (modified matrix <code>beta</code>)
-    with de-standardized regression coefficients.</p>
+    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>,
+    <code><a href='foehnix.control.html'>foehnix.control</a></code>,
+    <code><a href='foehnix.noconcomitant.fit.html'>foehnix.noconcomitant.fit</a></code>,
+    <code><a href='foehnix.reg.fit.html'>foehnix.reg.fit</a></code>,
+    <code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
     
 
   </div>
@@ -181,9 +210,7 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#value">Value</a></li>
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

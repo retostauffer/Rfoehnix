@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 08:30 on marvin
+# - L@ST MODIFIED: 2018-12-20 09:53 on marvin
 # -------------------------------------------------------------------
 
 
@@ -68,14 +68,11 @@ foehnix_logistic <- function() {
             # Calculate/trace loglik
             eps  <- sqrt(.Machine$double.eps)
             prob <- pmax(eps, pmin(1-eps, prob))
-            # plog function and eps are used to void log(0)
-            plog <- function(x, eps) ifelse(x < eps, log(eps), log(x))
-            eps <- sqrt(.Machine$double.eps)
             # Calculate log-likelihood
             ll <- data.frame(
                     component = sum(post       * dlogis(y, theta$mu2, exp(theta$logsd2), log = TRUE))
                               + sum((1 - post) * dlogis(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                    concomitant = sum((1 - post) * plog(1 - prob, eps) + post * plog(prob, eps))
+                    concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
                   )
             ll$full <- sum(unlist(ll))
             return(ll)
@@ -340,14 +337,11 @@ foehnix_gaussian <- function() {
             # Calculate/trace loglik
             eps  <- sqrt(.Machine$double.eps)
             prob <- pmax(eps, pmin(1-eps, prob))
-            # plog function and eps are used to void log(0)
-            plog <- function(x, eps) ifelse(x < eps, log(eps), log(x))
-            eps <- sqrt(.Machine$double.eps)
             # Calculate log-likelihood
             ll <- data.frame(
                     component = sum(post       * dnorm(y, theta$mu2, exp(theta$logsd2), log = TRUE))
                               + sum((1 - post) * dnorm(y, theta$mu1, exp(theta$logsd1), log = TRUE)),
-                    concomitant = sum((1 - post) * plog(1 - prob, eps) + post * plog(prob, eps))
+                    concomitant = sum((1 - post) * log(1 - prob) + post * log(prob))
                   )
             ll$full <- sum(unlist(ll))
             return(ll)

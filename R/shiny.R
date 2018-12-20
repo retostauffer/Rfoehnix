@@ -127,7 +127,7 @@ shiny_check <- function(x, ...) {
         closest <- index(x$prob)[which.min(abs(as.numeric(index(x$prob)) - e$x))]
         showNotification(sprintf("Closest is %s", as.character(closest)))
     }
-    library("shiny")
+    requireNamespace("shiny")
     # User interface
     ui <- basicPage(
         tags$head(

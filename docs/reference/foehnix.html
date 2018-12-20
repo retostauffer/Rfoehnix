@@ -31,6 +31,9 @@
 
 
 <meta property="og:title" content="Foehn Classification Based on a Two-Component Mixture Model — foehnix" />
+
+<meta property="og:description" content="This is the main method of the foehnix package to estimate
+    two-component mixture models for automated foehn classification." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,6 +96,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/statmodel.html">Statistical Model</a>
+    </li>
+    <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
@@ -133,15 +139,33 @@
     </div>
 
     <div class="ref-description">
-
+    
+    <p>This is the main method of the foehnix package to estimate
+    two-component mixture models for automated foehn classification.</p>
+    
     </div>
 
     <pre class="usage"><span class='co'>## TODO: extend/adjust usage</span>
     <span class='co'>## Basic usage</span>
     <span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>)
+
     <span class='co'>## Advanced usage</span>
     <span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>windfilter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
-            <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>...</span>), <span class='no'>...</span>)</pre>
+            <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>...</span>), <span class='no'>...</span>)
+
+    <span class='co'>## S3 methods for foehnix objects</span>
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"parameter"</span>, <span class='no'>...</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>x</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"response"</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/fitted.values'>fitted</a></span>(<span class='no'>object</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"probability"</span>, <span class='no'>...</span>)
+
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/logLik'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>AIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>BIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <span class='fu'>edf</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +195,7 @@
       <td><p>a named list can be provided to apply a custom (simple)
         filter to the observations on <code>data</code>. Can be used to e.g., 
         prespecify a specific wind sector for foehn winds. Please
-        read the manual of the <code>windfilter</code> method
+        read the manual of the <code><a href='foehnix_filter.html'>foehnix_filter</a></code> method
         for more details and examples.</p></td>
     </tr>
     <tr>
@@ -263,7 +287,7 @@
 
     <div class='dont-index'><p>See <code>windfilter</code> for more information about the
     <code>windfilter</code> option.</p>
-<p>See also: <code><a href='tsplot.foehnix.html'>tsplot</a></code>, <code><a href='plot.foehnix.html'>plot.foehnix</a></code>,
+<p>See also: <code><a href='tsplot.foehnix.html'>tsplot</a></code>, <code>plot.foehnix</code>,
     <code><a href='windrose.html'>windrose</a></code>.</p></div>
     
 

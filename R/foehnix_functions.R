@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-18 19:30 on marvin
+# - L@ST MODIFIED: 2018-12-20 11:37 on marvin
 # -------------------------------------------------------------------
 
 
@@ -73,43 +73,43 @@ destandardize_coefficients <- function(beta, X) {
 # Information criteria: logLik, AIC, BIC, and effective degrees of
 # freedom
 # -------------------------------------------------------------------
-logLik.foehnix <- function(x, ...)  structure(x$optimizer$loglik, names = "loglik")
-AIC.foehnix <- function(x, ...)     structure(x$optimizer$AIC, names = "AIC")
-BIC.foehnix <- function(x, ...)     structure(x$optimizer$BIC, names = "BIC")
-edf <- function(x, ...) UseMethod("edf")
-edf.foehnix <- function(x, ...)     structure(x$optimizer$edf, names = "edf")
+logLik.foehnix <- function(object, ...) structure(object$optimizer$loglik, names = "loglik")
+AIC.foehnix <- function(object, ...)    structure(object$optimizer$AIC, names = "AIC")
+BIC.foehnix <- function(object, ...)    structure(object$optimizer$BIC, names = "BIC")
+edf <- function(object, ...) UseMethod("edf")
+edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names = "edf")
 
 # -------------------------------------------------------------------
 # Print foehnix model object.
 # TODO: better default print method required?
 # -------------------------------------------------------------------
-print.foehnix <- function(x, ...) print(summary(x))
+print.foehnix <- function(object, ...) print(summary(object, ...))
 
 # -------------------------------------------------------------------
 # Estimated regression coefficients
 # -------------------------------------------------------------------
-coef.foehnix <- function(x, type = "parameter", ...) {
+coef.foehnix <- function(object, type = "parameter", ...) {
 
     # One of the two types: parameter (destandardized if required),
     # or coefficient (standardized coefficients if standardized was TRUE).
     type <- match.arg(type, c("parameter", "coefficient"))
     if ( type == "parameter" ) {
-        rval <- rbind(matrix(c(x$coef$mu1, exp(x$coef$logsd1),
-                               x$coef$mu2, exp(x$coef$logsd2)), ncol = 1,
+        rval <- rbind(matrix(c(object$coef$mu1, exp(object$coef$logsd1),
+                               object$coef$mu2, exp(object$coef$logsd2)), ncol = 1,
                              dimnames = list(c("mu1", "sigma1", "mu2", "sigma2"), NULL)),
-                      x$coef$concomitants)
+                      object$coef$concomitants)
     } else {
-        rval <- rbind(matrix(c(x$coef$mu1, x$coef$logsd1,
-                              x$coef$mu2, x$coef$logsd2), ncol = 1,
+        rval <- rbind(matrix(c(object$coef$mu1, object$coef$logsd1,
+                               object$coef$mu2, object$coef$logsd2), ncol = 1,
                              dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
-                      x$coef$concomitants)
+                      object$coef$concomitants)
     }
     rval <- setNames(as.vector(rval), rownames(rval))
     
     # Appending some attributes and a new class
-    attr(rval, "concomitants") <- ! is.null(x$coef$concomitants)
-    attr(rval, "formula")      <- x$formula
-    attr(rval, "family")       <- x$control$family
+    attr(rval, "concomitants") <- ! is.null(object$coef$concomitants)
+    attr(rval, "formula")      <- object$formula
+    attr(rval, "family")       <- object$control$family
     class(rval) <- c("coef.foehnix", class(rval))
     rval
 }
@@ -129,26 +129,27 @@ print.coef.foehnix <- function(x, ...) {
 # -------------------------------------------------------------------
 # Model/classification summary
 # -------------------------------------------------------------------
-summary.foehnix <- function(x, ...) {
+summary.foehnix <- function(object, ...) {
 
     rval <- list()
-    rval$call    <- x$call
-    rval$prob    <- x$prob
-    rval$coef    <- coef(x, type = "parameter")
+    rval$call    <- object$call
+    rval$prob    <- object$prob
+    rval$coef    <- coef(object, type = "parameter")
 
     # Optimizer statistics
-    rval$time      <- x$time
-    rval$logLik    <- logLik(x)
-    rval$AIC       <- AIC(x)
-    rval$BIC       <- BIC(x)
-    rval$edf       <- edf(x)
-    rval$n.iter    <- x$optimizer$n.iter
-    rval$maxit     <- x$optimizer$maxit
-    rval$converged <- x$optimizer$converged
+    rval$time      <- object$time
+    rval$logLik    <- logLik(object)
+    rval$AIC       <- AIC(object)
+    rval$BIC       <- BIC(object)
+    rval$edf       <- edf(object)
+    rval$n.iter    <- object$optimizer$n.iter
+    rval$maxit     <- object$optimizer$maxit
+    rval$converged <- object$optimizer$converged
 
     class(rval) <- "summary.foehnix"
     return(rval)
 }
+
 print.summary.foehnix <- function(x, ...) {
 
     # Model call

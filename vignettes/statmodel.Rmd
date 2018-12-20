@@ -1,0 +1,161 @@
+
+
+## Statistical Models
+
+
+The automated foehn classification `foehnix` is based on a two-component
+mixture model. The basic idea is that two unobservable components (or cluster)
+exist, one for situations without foehn, one for foehn situations.
+`foehnix` uses an unsupervised statistical model to identify these two components
+based on a set of observed values (e.g., wind speed, gust speed,
+potential temperature differences) to model the probability whether or not a 
+specific observation is related to a foehn event or not.
+
+The statistical model consists of two parts: one part identify the two
+components, and one part modelling the probability whether or not a specific
+observation belongs to component one or component two. The latter is known as
+the _concomitant model_.
+
+The density of a two-component mixed distribution $h(\dots)$ in its general form is
+specified as follows:
+
+* $h(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =
+  \underbrace{(1 - \pi(\mathbf{x}, \alpha)) \cdot f(y, \mathit{\theta}_1)}_{\text{component 1}} +
+  \underbrace{\pi(\mathbf{x}, \alpha) \cdot f(\mathit{y}_i, \mathit{\theta}_2)}_{\text{component 2}}$
+
+... where $\mathit{y}$ is the covariate for the first part identifying the two
+components, $\mathbf{x}$ are the covariates for the concomitant model.  The
+density of the mixed distribution $h$ is the sum or superposition of the
+densities of the two components ($f$; i.e., Gaussian distribution) times the
+probability $\pi$ whether or not a specific observation belongs to the second
+component. $\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)$ are the
+distribution parameters for the components, $\mathit{\alpha}$ the parameters for
+the concomitant model.
+
+The concomitant model can be any model which fulfills $\pi \in~]0,1[$,
+e.g., an constant value or intercept only model (mixture model _without concomitants_),
+or any kind of probability model. `foehnix` uses a logistic regression model of
+the following form:
+
+* $\Big(\frac{\pi}{1 - \pi}\Big) = \mathbf{x}^\top \mathit{\alpha};~~
+  \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}$
+
+The final probability, also known as the a-posteriori probability, is then:
+
+* $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = 
+  \frac{\pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{
+    (1 - \pi(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) +
+    \pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)
+  }$
+
+... where $\hat{\mathit{p}}$ in our case represents the probability of foehn.
+All one has to know are the parameters $\mathit{\theta}$ and $\mathit{\alpha}$
+which can be estimated using an appropriate M-estimator such as maximum likelihood.
+
+## Parameter Estimation
+
+The maximum likelihood of a mixture model can usually not be maximized
+directly. One possibility to estimate model is an iterative _expectation
+maximization_ (EM) algorithm to optimize the log-likelihood for a set of
+observation $i = 1, \dots, N$ given by:
+
+* $\ell = \sum_{i=1}^N \big(
+    \log(1 - \pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_1)) +
+    \log(\pi(\mathbf{x}, \mathit{\alpha})) \log(f(\mathit{y}, \mathit{\theta}_2))
+  \big)$.
+
+The EM algorithm is as follows:
+
+* **Initialization:** initialize values for $\mathbf{\theta}$ and $\mathit{\alpha}$.
+
+* **Estimation:** compute the posterior class probability
+  $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha})$ 
+
+* **Maximize:** estimate $\mathit{\theta}$ and $\mathit{\alpha}$ which maximize
+  the likelihood using the posterior class probability $\hat{\mathit{p}}$
+  from the estimation step as weights:
+  
+  * $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = 
+    \frac{\hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{
+      (1 - \hat{p}(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) +
+      \hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)
+    }$
+
+The EM steps are repeated until the likelihood improvement falls below a
+certain limit or the maximum number of iterations is reached.
+
+## Gaussian Mixture Model Without Concomitants
+
+The simplest case is a Gaussian two-component mixture model without
+concomitants. In this case the density of the two components is the
+density $\phi$ of the Gaussian distribution with its parameters
+$\mathit{\theta}_1 = (\mu_1, \sigma_1)$ and $\mathit{\theta}_2 = (\mu_2, \sigma_2)$
+where $\mu$ and $\sigma$ are the _location_ and _scale parameter_ of the Gaussian
+distribution, or _mean_ and _standard deviation_.
+
+#### Initialization step
+
+First, initial values for the parameters ($\mathit{\theta}$) and the posterior
+weights ($\hat{\mathit{p}}$) have to be specified.  $\mathit{\alpha}$ does not
+have to be initialized as no concomitant model is used in this case!  To be
+able to do so we have to attribute each observation $\mathit{y}_i \forall i =
+1, \dots, N$ to one of the two components.  This initial membership will be
+denoted as $\mathit{z}$ and takes 1 if observation $y_i$ belongs to _component
+2_ and 0 else.  This initial attribution defines that observations with high
+values of $\mathit{y}$ belong to component 2, observations with low values of
+$\mathit{y}$ to component 1.
+
+**Note:** Depending on the model specification this can lead to models where
+the probability for _no foehn_ will be returned by `foehnix` rather than
+posteriori probability of _foehn_. However, the `switch` argument of the
+`foehnix(...)` function allows you to control this behavior (see [`foehnix`
+manual page](reference/foehnix.html)).
+
+`foehnix` uses the following initialization for the two-component Gaussian
+mixture model without concomitants:
+
+1. Initialize class membership: $z_i = \begin{cases}1 & \text{if}~y_i \ge \bar{y} \\ 0 & \text{else}\end{cases}$
+2. Initial parameters for $\mathbf{\theta}^{(0)}$ using weighted empirical moments
+   for $\mu_1$, $\mu_2$ and the standard deviation of $y$ as initial guess for
+   $\sigma_1$ and $\sigma_2$:
+     * $\mu_1^{(0)} = \frac{1}{\sum_{i=1}^{N} (1-z_i)} \sum_{i=1}^{N} (1-z_i) \cdot y_i$
+     * $\mu_2^{(0)} = \frac{1}{\sum_{i=1}^{N} z_i} \sum_{i=1}^{N} z_i \cdot y_i$
+     * $\sigma_1^{(0)} = \sigma_2^{(0)} = \big(\frac{1}{N} \sum_{i=1}^{N} (y_i - \bar{y})^2\big)^\frac{1}{2}$
+3. Initialize $\mathit{\pi}^{(0)} = 0.5$
+4. Given $\mathit{\theta}^{(0)}$ and $\mathit{\pi}^{(0)}$: calculate a-posteriory probability:
+     * $\hat{p}^{(0)} = \frac{\mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}{
+                        (1 - \mathit{\pi}^{(0)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(0)})
+                        + \mathit{\pi}^{(0)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(0)})}$
+
+Once the required elements have been initialized start
+the EM algorithm for $j = 1, ..., maxit$:
+
+1. Update $\pi^{(j)} = \text{mean}(\hat{\mathit{p}}^{(j-1)})$
+2. Update $\mathit{\theta}^{(j)}$ using $\hat{\mathit{p}}^{(j-1)}$:
+     * $\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}})
+       \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i$
+     * $\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
+       \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i$
+     * $\sigma_1^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}
+       \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}$
+     * $\sigma_2^{(j)} = \big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
+       \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\big)^\frac{1}{2}$
+3. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$:
+     * $\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{
+                        (1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)})
+                        + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}$
+
+4. Calculate likelihood:
+
+#TODO: Da kommt noch die lilekohood des CC models dazu.
+
+
+
+
+
+
+
+
+
+
+

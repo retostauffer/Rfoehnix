@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 15:15 on marvin
+# - L@ST MODIFIED: 2018-12-19 19:55 on marvin
 # -------------------------------------------------------------------
 
 apply_foehnix_filter <- function(x, filter, name) {
@@ -91,8 +91,6 @@ foehnix_filter <- function(x, filter) {
     # the wind filter rule(s).
     fun <- function(name, filter, x) {
         # Picking data and wind filter rule
-        print(name)
-        print(filter[[name]])
         if ( is.function(filter[[name]]) ) {
             apply_foehnix_filter(x, filter[[name]], name)
         } else {

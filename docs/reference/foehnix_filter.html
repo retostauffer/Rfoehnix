@@ -107,6 +107,9 @@ However, the filter option allows to even implement complex
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/statmodel.html">Statistical Model</a>
+    </li>
+    <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
@@ -265,13 +268,13 @@ However, the filter option allows to even implement complex
     <span class='co'># -----------------</span>
     <span class='co'># Filter for observations where the wind direction is</span>
     <span class='co'># within 100 - 260 (southerly flow):</span>
-    <span class='no'>idx_south</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>260</span>)))</div><div class='output co'>#&gt; [1] "dd"
-#&gt; [1] 100 260</div><div class='input'>
+    <span class='no'>idx_south</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>260</span>)))
+
     <span class='co'># Same filter but for northerly flows, taking rows with</span>
     <span class='co'># wind direction observations (dd) smaller than 45 or</span>
     <span class='co'># larger than 315 degrees:</span>
-    <span class='no'>idx_north</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>315</span>, <span class='fl'>45</span>)))</div><div class='output co'>#&gt; [1] "dd"
-#&gt; [1] 315  45</div><div class='input'>
+    <span class='no'>idx_north</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>315</span>, <span class='fl'>45</span>)))
+
     <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
     <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>,            <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"all observations"</span>)
     <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_south</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"southerly winds"</span>)
@@ -304,10 +307,8 @@ However, the filter option allows to even implement complex
 #&gt; 2010-01-18 14:00:00 316 1.6 898.6 70  0.3    352    7.6 786.8     80  -7.2</div><div class='input'>
     <span class='co'># Now apply a wind filter</span>
     <span class='no'>foehnix_filter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>sat_dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
-    <span class='no'>idx</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>data</span>, <span class='no'>foehnix_filter</span>)</div><div class='output co'>#&gt; [1] "dd"
-#&gt; [1]  43 223
-#&gt; [1] "sat_dd"
-#&gt; [1]  90 270</div><div class='input'>    <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>idx</span>,]
+    <span class='no'>idx</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>data</span>, <span class='no'>foehnix_filter</span>)
+    <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>idx</span>,]
 
     <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>data</span>, <span class='kw'>select</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>dd</span>, <span class='no'>sat_dd</span>)))</div><div class='output co'>#&gt;      Index                           dd            sat_dd     
 #&gt;  Min.   :2010-01-19 22:00:00   Min.   : 43.0   Min.   : 90.0  

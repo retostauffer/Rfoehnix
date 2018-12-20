@@ -1,5 +1,4 @@
 \name{plot.foehnix}
-\alias{plot.foehnix}
 \title{foehnix Model Assessment Plots}
 \description{
 Visual representation \code{\link{foehnix}} model optimization.
@@ -12,7 +11,7 @@ Visual representation \code{\link{foehnix}} model optimization.
     plot(x, which = 1:2)
 }
 \arguments{
-    \item{x}{object of type \code{\link{phoenix}}.}
+    \item{x}{object of type \code{\link{foehnix}}.}
     \item{which}{\code{NULL} (default), character, character string,
         integer, or numeric. Allowed characters: \code{loglik},
         \code{loglikcontribution}, and \code{coef}. If \code{which}

@@ -1,5 +1,6 @@
 \name{tsplot}
 \alias{tsplot}
+\alias{tsplot.foehnix}
 \title{Time Series Plot of foehnix Models}
 \description{
     Development time series plots of estimated \code{\link{foehnix}}
@@ -28,7 +29,7 @@
         two classification algorithms.}
     \item{ask}{logical, default is \code{TRUE}.}
 }
-\description{
+\details{
     Development method to access plausability of the estimated foehn proabilities.
     For software release this method should either be removed or made much
     more general. At the moment the method heavily depends on the names of the

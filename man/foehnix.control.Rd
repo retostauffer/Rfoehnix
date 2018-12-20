@@ -10,6 +10,9 @@
     foehnix.control(family, left = -Inf, right = Inf, truncated = FALSE,
                     standardize = TRUE, maxit = 100L, tol = 1e-8,
                     alpha = NULL, verbose = FALSE, ...)
+
+    # S3 methods for foehnix.control
+    print(x, ...)
 }
 \arguments{
     \item{family}{character specifying the distribution of the components

@@ -9,6 +9,11 @@
     iwls_solver(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
                 maxit = 100L, tol = 1e-8, ...)
 }
+\description{
+    Iterative weighted least squares solver for a logistic regression
+    model. Used by \code{\link{foehnix.unreg.fit}} to estimate the
+    concomitant model of the two-component foehnix mixture models.
+}
 \arguments{
     \item{X}{model matrix including intercept (if required).}
     \item{y}{response, can be binary or probabilities (values in \code{]0,1[}).}

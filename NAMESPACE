@@ -1,11 +1,15 @@
 # Include C library
 useDynLib(foehnix, .registration = TRUE)
 
+import(zoo)
+import(graphics)
+
 # Export functions
 export(iwls_logit)
 export(foehnix)
 export(foehnix_filter)
 export(tsplot)
+export(windrose)
 
 # Register S3 methods
 S3method(plot,    foehnix)

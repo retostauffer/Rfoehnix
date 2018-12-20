@@ -14,6 +14,8 @@ navbar:
               href: articles/simulation.html
         - text: "Advanced"
           menu:
+            - text: "Statistical Model"
+              href: articles/statmodel.html
             - text: "Censoring and Truncation"
               href: articles/advanced_simulation.html
             - text: "foehnix Families"
@@ -23,8 +25,17 @@ navbar:
         - text: "News"
           href: news/index.html
 
-references:
-    - title: "foehnix"
+reference:
+    - title: "Main foehnix functions"
       contents:
         - foehnix
-        - windfilter_get_indizes
+        - foehnix.control
+        - foehnix.noconcomitant.fit
+        - foehnix.unreg.fit
+        - foehnix.reg.fit
+        - foehnix_filter
+    - title: "Support functions"
+      contents:
+        - iwls_logit
+        - tsplot
+        - windrose

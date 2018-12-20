@@ -1,0 +1,33 @@
+\name{foehnix.noconcomitant.fit}
+\alias{foehnix.noconcomitant.fit}
+\title{Fitting foehnix Mixture Model Without Concomitant Model.}
+\usage{
+    foehnix.noconcomitant.fit(y, family, maxit = 100L,
+                      tol = 1e-5, verbose = TRUE, ...)
+}
+\description{
+    Fitting method for two-component foehnix mixture model without
+    concomitants.
+    Typically not called directly, interfaced via \code{\link{foehnix}}.
+}
+\arguments{
+    \item{y}{numeric vector, covariate for the components of the
+        mixture model, dimension \code{N}.}
+    \item{family}{object of class \code{\link{foehnix.family}}.}
+    \item{maxit}{positive integer, or vector of length 2 with positive
+        integer values. Maximum number of iterations of the EM algorithm.
+        Check manual of \code{\link{foehnix.control}} for more details.} 
+    \item{tol}{numeric, or vector of length 2 containing numeric values.
+        Tolerance for the EM algorithm.
+        Check manual of \code{\link{foehnix.control}} for more details.} 
+    \item{verbose}{logical, default \code{TRUE}. If set to \code{FALSE}
+        verbose output will be suppressed.}
+    \item{\dots}{additional arguments, unused.}
+}
+\seealso{
+    \code{\link{foehnix}},
+    \code{\link{foehnix.control}},
+    \code{\link{foehnix.noconcomitant.fit}},
+    \code{\link{foehnix.reg.fit}},
+    \code{\link{iwls_logit}}.
+}

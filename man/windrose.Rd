@@ -6,7 +6,11 @@
     # of an existing method I've written some time ago and is not
     # ment to enter the release as it is.
     windrose(x, interval = 30, ff = NULL, circle = seq(0,1,by=0.02),
-             windsextor = NULL, main = NULL, draw.gusts = FALSE )
+             windsector = NULL, main = NULL, draw.gusts = FALSE )
+}
+\description{
+    Wind rose plotting function.
+    #TODO extend manual page as soon as the function is implemented.
 }
 \arguments{
     \item{x}{zoo or data.frame object containing at least the two

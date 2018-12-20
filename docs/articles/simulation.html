@@ -62,6 +62,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/statmodel.html">Statistical Model</a>
+    </li>
+    <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
@@ -98,7 +101,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/simulation.Rmd"><code>vignettes/simulation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/simulation.Rmd"><code>../vignettes/simulation.Rmd</code></a></small>
       <div class="hidden name"><code>simulation.Rmd</code></div>
 
     </div>
@@ -117,7 +120,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">true &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">5</span>), <span class="dt">sigma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>))</code></pre></div>
 <p>The first component has a mean (mu) of <code>1.0</code> and a standard deviation (sigma) of <code>1.0</code>, the second component a mean of <code>5.0</code> and a corresponding standard deviation of <code>2.0</code>. Given these parameters we can draw a set of random numbers from a two-component Gaussian mixture distribution:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Drawing 15000 random numbers from Gaussian mixed distribution</span>
-family &lt;-<span class="st"> </span>foehnix<span class="op">:::</span><span class="kw">foehnix_gaussian</span>();   <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">666</span>)
+family &lt;-<span class="st"> </span>foehnix<span class="op">:::</span><span class="kw"><a href="../reference/foehnix.family.html">foehnix_gaussian</a></span>();   <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">666</span>)
 data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y =</span> family<span class="op">$</span><span class="kw">r</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10000</span>, <span class="dv">5000</span>), <span class="dt">mu =</span> true<span class="op">$</span>mu, <span class="dt">sigma =</span> true<span class="op">$</span>sigma))
 <span class="co"># Convert data to zoo (time series object) as foehnix expects</span>
 <span class="co"># time series input data</span>
@@ -179,7 +182,7 @@ density2 &lt;-<span class="st"> </span>family<span class="op">$</span><span clas
 true &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">5</span>), <span class="dt">sigma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>))
 
 <span class="co"># Simulate data based on logistic distribution and create time series</span>
-family &lt;-<span class="st"> </span>foehnix<span class="op">:::</span><span class="kw">foehnix_logistic</span>();    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">666</span>)
+family &lt;-<span class="st"> </span>foehnix<span class="op">:::</span><span class="kw"><a href="../reference/foehnix.family.html">foehnix_logistic</a></span>();    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">666</span>)
 data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">y =</span> family<span class="op">$</span><span class="kw">r</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10000</span>, <span class="dv">5000</span>), <span class="dt">mu =</span> true<span class="op">$</span>mu, <span class="dt">sigma =</span> true<span class="op">$</span>sigma))
 data &lt;-<span class="st"> </span><span class="kw">zoo</span>(data, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.Date">as.Date</a></span>(<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(data), <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>))</code></pre></div>
 <p>All we have to do is to specify <code>family = "logistic"</code> when calling the <code><a href="../reference/foehnix.html">foehnix(...)</a></code> method:</p>

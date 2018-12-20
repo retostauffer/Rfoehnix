@@ -31,6 +31,9 @@
 
 
 <meta property="og:title" content="Draw Windrose — windrose" />
+
+<meta property="og:description" content="Wind rose plotting function.
+    #TODO extend manual page as soon as the function is implemented." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -93,6 +96,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/statmodel.html">Statistical Model</a>
+    </li>
+    <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
@@ -133,14 +139,17 @@
     </div>
 
     <div class="ref-description">
-
+    
+    <p>Wind rose plotting function.
+    #TODO extend manual page as soon as the function is implemented.</p>
+    
     </div>
 
     <pre class="usage"><span class='co'>#TODO: Note that this is, at the moment, just a copy</span>
     <span class='co'># of an existing method I've written some time ago and is not</span>
     <span class='co'># ment to enter the release as it is.</span>
     <span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>circle</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='kw'>by</span><span class='kw'>=</span><span class='fl'>0.02</span>),
-             <span class='kw'>windsextor</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>draw.gusts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span> )</pre>
+             <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>draw.gusts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span> )</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

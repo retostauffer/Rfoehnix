@@ -6,7 +6,7 @@ wind classification based on two-component mixture models (**foehn**
 m**ix**ture models).  This method has first been proposed by [Plavcan et al.
 (2015)](#plavcan2014) and compared to another semi-automatic classification,
 foehn experts, students, and weather enthusiasts in the "Community Foehn
-Classification Experiment" ([Mayr 2019](mayr2019)).
+Classification Experiment" ([Mayr 2019](mayr2018)).
 
 Foehn mixture models are a special case of the general flexible mixture model
 class ([Fraley 2002](#fraley2000), [Leisch 2004](#leisch2004), [Gr&uuml;n
@@ -42,10 +42,10 @@ tsplot(mod, start = "2010-02-10", end = "2010-02-20")
 
 ### References
 
-<p id="mayr2019">
-Mayr GJ, Plavcan D, Laurence A, Elvidge A, Grisogono B, Horvath K, Jackson P, Neururer A, Seibert P, Steenburgh JW, Stiperski I, Sturman A, Ve&#269;enaj &#381;, Vergeiner J, Vosper S, Z&auml;ngl G (2019).
+<p id="mayr2018">
+Mayr GJ, Plavcan D, Laurence A, Elvidge A, Grisogono B, Horvath K, Jackson P, Neururer A, Seibert P, Steenburgh JW, Stiperski I, Sturman A, Ve&#269;enaj &#381;, Vergeiner J, Vosper S, Z&auml;ngl G (2018).
 The Community Foehn Classification Experiment.
-_Bulletin of the American Meteorological Society_, **NA**, NA&mdash;NA,
+_Bulletin of the American Meteorological Society_, **99**(11), 2229&mdash;2235,
 <a href="https://doi.org/10.1175/BAMS-D-17-0200.1" target="_blank">10.1175/BAMS-D-17-0200.1</a>
 </p>
 

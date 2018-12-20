@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 18:44 on marvin
+# - L@ST MODIFIED: 2018-12-20 11:32 on marvin
 # -------------------------------------------------------------------
 
 
@@ -411,6 +411,7 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
 
     # If inversion has been requested: switch coefficients
     if ( switch ) {
+        print(rval$theta)
         rval$ccmodel$coef <- -rval$ccmodel$coef
         rval$ccmodel$beta <- -rval$ccmodel$beta
         rval$coefpath     <- -rval$coefpath
@@ -421,6 +422,7 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
         rval$post <- 1 - rval$post
         # Invert coefficients if switch = TRUE
         coef <- -coef
+        print(rval$theta)
     }
 
     # Create the return list object (foehnix object)
@@ -484,7 +486,7 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     return(res)
 }
 
-predict.foehnix <- function(x, newdata = NULL, type = "response") {
+predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
 
     # Allowed input types
     type <- match.arg(type, c("response", "all"))
@@ -495,21 +497,21 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 
     # If no newdata is provided: take the data set on
     # which the model has been estimated.
-    if ( is.null(newdata) ) newdata <- x$data
+    if ( is.null(newdata) ) newdata <- object$data
 
     # Probability model
-    if ( is.null(x$coef$concomitants) ) {
-        prob <- mean(x$optimizer$prob)
+    if ( is.null(object$coef$concomitants) ) {
+        prob <- mean(object$optimizer$prob)
     } else {
-        logitX <- model.matrix(x$formula, newdata)
-        prob   <- plogis(drop(logitX %*% x$coef$concomitants))
+        logitX <- model.matrix(object$formula, newdata)
+        prob   <- plogis(drop(logitX %*% object$coef$concomitants))
     }
 
     # Calculate density
-    y    <- model.response(model.frame(x$formula, newdata))
-    d1   <- x$control$family$d(y, x$coef$mu1, exp(x$coef$logsd1))
-    d2   <- x$control$family$d(y, x$coef$mu2, exp(x$coef$logsd2))
-    post <- x$control$family$posterior(y, prob, x$coef)
+    y    <- model.response(model.frame(object$formula, newdata))
+    d1   <- object$control$family$d(y, object$coef$mu1, exp(object$coef$logsd1))
+    d2   <- object$control$family$d(y, object$coef$mu2, exp(object$coef$logsd2))
+    post <- object$control$family$posterior(y, prob, object$coef)
 
     # If wind filter is used, set posterior probability to
     # 0 for all observations not inside the filter (they have not
@@ -517,7 +519,7 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
     # any foehn).
     idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
     # Inverse wind filter
-    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, x$windfilter))
+    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, object$windfilter))
 
     # Create return object of type zoo. By default:
     # - prob is the a-posteriory probability, flag is 1.
@@ -543,7 +545,22 @@ predict.foehnix <- function(x, newdata = NULL, type = "response") {
 # -------------------------------------------------------------------
 # Returns fitted probabilities.
 # -------------------------------------------------------------------
-fitted.foehnix <- function(x) x$prob$prob
+fitted.foehnix <- function(object, which = "probability", ...) {
+
+    allowed <- c("probability", "flag")
+    if ( is.numeric(which) ) { which <- allowed[as.integer(which)] }
+    else { which <- match.arg(which, allowed, several.ok = TRUE) }
+
+    if ( length(which) == 1 ) {
+        # Only probabilities
+        if ( which == "probability" ) return(object$prob$prob)
+        # Else only flags
+        return(object$prob$flag)
+    }
+    # Else both
+    return(object$prob)
+}
+
 
 
 
