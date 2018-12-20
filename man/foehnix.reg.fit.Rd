@@ -4,8 +4,8 @@
 \alias{foehnix.reg.fit}
 \title{Fitting Regularized foehnix Mixture Model With Concomitant Model.}
 \usage{
-foehnix.reg.fit(y, logitX, family, maxit = 100L, tol = 1e-05,
-  verbose = TRUE, alpha = NULL, ...)
+foehnix.reg.fit(y, logitX, family, switch = FALSE, maxit = 100L,
+  tol = 1e-05, verbose = TRUE, alpha = NULL, ...)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the
@@ -31,6 +31,12 @@ verbose output will be suppressed.}
 \item{alpha}{#TODO: currently unused.}
 
 \item{...}{additional arguments, unused.}
+
+\item{logical}{wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Fitting method for two-component foehnix mixture model with regularization.

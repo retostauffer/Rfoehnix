@@ -138,6 +138,7 @@
 <a href="#foehnix-0-0-3" class="anchor"></a>foehnix 0.0-3</h1>
 <ul>
 <li>Manual pages/documentation now based on roxygen2.</li>
+<li>Nicer implementation of the <code>switch = TRUE</code> option. Simply use <code>z = f(y &lt;= mean(y))</code> instead of <code>z = f(y &gt;= mean(y))</code> when initializing the component membership to flip the components.</li>
 <li>Removed some smaller uncritical bugs.</li>
 <li>Dependencies/Suggestions corretly resolved.</li>
 <li>R CMD check does not shout on me anymore.</li>

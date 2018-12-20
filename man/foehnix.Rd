@@ -12,7 +12,8 @@
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
 foehnix(formula, data, switch = FALSE, windfilter = NULL,
-  family = "gaussian", control = foehnix.control(family, ...), ...)
+  family = "gaussian", control = foehnix.control(family, switch, ...),
+  ...)
 
 \method{logLik}{foehnix}(object, ...)
 

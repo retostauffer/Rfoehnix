@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:33 on marvin
+# - L@ST MODIFIED: 2018-12-20 18:44 on marvin
 # -------------------------------------------------------------------
 
 
@@ -24,6 +24,11 @@
 #' @param y numeric vector, covariate for the components of the
 #'        mixture model, dimension \code{N}.
 #' @param family object of class \code{\link{foehnix.family}}.
+#' @param logical wether or not the two components should be switched.
+#'        By default (\code{switch = FALSE}) the component which shows
+#'        higher values of \code{y} is assumed to be the foehn cluster!
+#'        Depending on what your covariate is you might need to switch
+#'        the clusters (by setting \code{switch = TRUE}).
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm.
 #'        Check manual of \code{\link{foehnix.control}} for more details.
@@ -45,7 +50,7 @@
 #' @author Reto Stauffer
 #' @import stats
 #' @import utils
-foehnix.noconcomitant.fit <- function(y, family,
+foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
     # Lists to trace log-likelihood path and the development of
@@ -56,7 +61,7 @@ foehnix.noconcomitant.fit <- function(y, family,
     # Given the initial probabilities: calculate parameters
     # for the two components (mu1, logsd1, mu2, logsd2) given
     # the selected family and calculate the a-posteriori probabilities.
-    z     <- as.numeric(y >= mean(y))
+    z     <- if ( ! switch ) as.numeric(y >= mean(y)) else as.numeric(y <= mean(y))
     theta <- family$theta(y, z, init = TRUE) # M-step
 
     # Initial probability (fifty fifty) and inital prior
@@ -147,6 +152,11 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
 #' @param family object of class \code{\link{foehnix.family}}.
+#' @param logical wether or not the two components should be switched.
+#'        By default (\code{switch = FALSE}) the component which shows
+#'        higher values of \code{y} is assumed to be the foehn cluster!
+#'        Depending on what your covariate is you might need to switch
+#'        the clusters (by setting \code{switch = TRUE}).
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm
 #'        and the concomitant model.
@@ -170,7 +180,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' @author Reto Stauffer
 #' @import stats
 #' @import utils
-foehnix.unreg.fit <- function(y, logitX, family,
+foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE,
                     alpha = NULL, ...) {
 
@@ -182,7 +192,7 @@ foehnix.unreg.fit <- function(y, logitX, family,
     # Given the initial probabilities: calculate parameters
     # for the two components (mu1, logsd1, mu2, logsd2) given
     # the selected family and calculate the a-posteriori probabilities.
-    z     <- as.numeric(y >= mean(y))
+    z     <- if ( ! switch ) as.numeric(y >= mean(y)) else as.numeric(y <= mean(y))
     theta <- family$theta(y, z, init = TRUE) # M-step
 
     # Initial probability: fifty/fifty!
@@ -276,6 +286,11 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
 #' @param family object of class \code{\link{foehnix.family}}.
+#' @param logical wether or not the two components should be switched.
+#'        By default (\code{switch = FALSE}) the component which shows
+#'        higher values of \code{y} is assumed to be the foehn cluster!
+#'        Depending on what your covariate is you might need to switch
+#'        the clusters (by setting \code{switch = TRUE}).
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm
 #'        and the concomitant model.
@@ -296,7 +311,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #####foehnix.reg.fit <- function(formula, data, windfilter = NULL, family = "gaussian",
 #####                    maxit = 100L, tol = 1e-5, standardize = TRUE,
 #####                    alpha = NULL, nlambda = 100L, verbose = TRUE, ...) {
-foehnix.reg.fit <- function(y, logitX, family,
+foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE,
                     alpha = NULL, ...) {
 
@@ -310,6 +325,11 @@ foehnix.reg.fit <- function(y, logitX, family,
 #' @param family character specifying the distribution of the components in the
 #'        mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.  For
 #'        experts: custom \code{foehnix.family} objects can be provided as well.
+#' @param logical wether or not the two components should be switched.
+#'        By default (\code{switch = FALSE}) the component which shows
+#'        higher values of \code{y} is assumed to be the foehn cluster!
+#'        Depending on what your covariate is you might need to switch
+#'        the clusters (by setting \code{switch = TRUE}).
 #' @param left default is \code{-Inf}, left censoring or truncation point.  See
 #'        also input \code{right} and input \code{truncated}. Can be set to any finite
 #'        numeric value.
@@ -341,7 +361,7 @@ foehnix.reg.fit <- function(y, logitX, family,
 #' @author Reto Stauffer
 #' @import utils
 #' @export
-foehnix.control <- function(family, left = -Inf, right = Inf, truncated = FALSE, 
+foehnix.control <- function(family, switch, left = -Inf, right = Inf, truncated = FALSE, 
                             standardize = TRUE, maxit = 100L, tol = 1e-8,
                             alpha = NULL, verbose = TRUE, ...) {
 
@@ -391,7 +411,8 @@ foehnix.control <- function(family, left = -Inf, right = Inf, truncated = FALSE,
     stopifnot(is.numeric(maxit) | length(maxit) > 2)
     stopifnot(is.numeric(tol)   | length(tol) > 2)
 
-    rval <- list(family = family, left = left, right = right, truncated = truncated,
+    rval <- list(family = family, switch = switch,
+                 left = left, right = right, truncated = truncated,
                  standardize = standardize, maxit = maxit, tol = tol,
                  alpha = alpha, verbose = verbose)
     class(rval) <- c("foehnix.control")
@@ -530,7 +551,7 @@ print.foehnix.control <- function(x, ...) str(x)
 #       this.
 foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
                     family = "gaussian",
-                    control = foehnix.control(family, ...), ...) { 
+                    control = foehnix.control(family, switch, ...), ...) { 
 
     # Start timing (execution time of foehnix)
     timing <- Sys.time() # Measure execution time
@@ -629,22 +650,6 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
         else { coef <- destandardize_coefficients(rval$ccmodel$coef, logitX) }
     } else {
         coef <- NULL
-    }
-
-    # If inversion has been requested: switch coefficients
-    if ( switch ) {
-        print(rval$theta)
-        rval$ccmodel$coef <- -rval$ccmodel$coef
-        rval$ccmodel$beta <- -rval$ccmodel$beta
-        rval$coefpath     <- -rval$coefpath
-        rval$theta <- list(mu1    = rval$theta$mu2,
-                           logsd1 = rval$theta$logsd2,
-                           mu2    = rval$theta$mu1,
-                           logsd2 = rval$theta$logsd1)
-        rval$post <- 1 - rval$post
-        # Invert coefficients if switch = TRUE
-        coef <- -coef
-        print(rval$theta)
     }
 
     # Create the return list object (foehnix object)

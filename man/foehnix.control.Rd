@@ -4,9 +4,9 @@
 \alias{foehnix.control}
 \title{foehnix Two-Component Mixture-Model Control Object}
 \usage{
-foehnix.control(family, left = -Inf, right = Inf, truncated = FALSE,
-  standardize = TRUE, maxit = 100L, tol = 1e-08, alpha = NULL,
-  verbose = TRUE, ...)
+foehnix.control(family, switch, left = -Inf, right = Inf,
+  truncated = FALSE, standardize = TRUE, maxit = 100L, tol = 1e-08,
+  alpha = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{family}{character specifying the distribution of the components in the
@@ -46,6 +46,12 @@ criteria.}
 \item{verbose}{logical, if set to \code{FALSE} output is suppressed.}
 
 \item{...}{currently set to hell.}
+
+\item{logical}{wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Used to control the \code{\link{foehnix}} mixture models.

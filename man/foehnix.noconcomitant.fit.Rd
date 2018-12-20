@@ -4,8 +4,8 @@
 \alias{foehnix.noconcomitant.fit}
 \title{Fitting foehnix Mixture Model Without Concomitant Model.}
 \usage{
-foehnix.noconcomitant.fit(y, family, maxit = 100L, tol = 1e-05,
-  verbose = TRUE, ...)
+foehnix.noconcomitant.fit(y, family, switch = FALSE, maxit = 100L,
+  tol = 1e-05, verbose = TRUE, ...)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the
@@ -25,6 +25,12 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 verbose output will be suppressed.}
 
 \item{\dots}{additional arguments, unused.}
+
+\item{logical}{wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Fitting method for two-component foehnix mixture model without

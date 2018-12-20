@@ -145,8 +145,8 @@ Typically not called directly, interfaced via <code><a href='foehnix.html'>foehn
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,6 +190,14 @@ verbose output will be suppressed.</p></td>
     <tr>
       <th>...</th>
       <td><p>additional arguments, unused.</p></td>
+    </tr>
+    <tr>
+      <th>logical</th>
+      <td><p>wether or not the two components should be switched.
+By default (<code>switch = FALSE</code>) the component which shows
+higher values of <code>y</code> is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting <code>switch = TRUE</code>).</p></td>
     </tr>
     </table>
     
