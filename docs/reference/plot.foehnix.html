@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>foehnix Model Assessment Plots</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/plot.foehnix.R'><code>R/plot.foehnix.R</code></a></small>
     <div class="hidden name"><code>plot.foehnix.Rd</code></div>
     </div>
 
@@ -143,27 +143,28 @@
     
     </div>
 
-    <pre class="usage"><span class='co'>## Basic</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>)
-    <span class='co'>## Specific plot type</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"loglik"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>2</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>object of type <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
+      <td><p>a <code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p></td>
     </tr>
     <tr>
       <th>which</th>
       <td><p><code>NULL</code> (default), character, character string,
-        integer, or numeric. Allowed characters: <code>loglik</code>,
-        <code>loglikcontribution</code>, and <code>coef</code>. If <code>which</code>
-        is numeric/integer or a vector of numerics/integers the numbers
-        correspond to <code>loglik</code> (<code>1</code>), <code>loglikpath</code> (<code>2</code>),
-        or <code>coef</code> (<code>3</code>).</p></td>
+integer, or numeric. Allowed characters: <code>loglik</code>,
+<code>loglikcontribution</code>, and <code>coef</code>. If <code>which</code>
+is numeric/integer or a vector of numerics/integers the numbers
+correspond to <code>loglik</code> (<code>1</code>), <code>loglikpath</code> (<code>2</code>),
+or <code>coef</code> (<code>3</code>).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments, unused.</p></td>
     </tr>
     </table>
     
@@ -171,15 +172,15 @@
 
     <p>There are currently three different plot types.</p><ul>
 <li><p><code>"loglik"</code> shows the log-likelihood sum path trough
-            the iterations of the EM algorithm for parameter estimation.</p></li>
+        the iterations of the EM algorithm for parameter estimation.</p></li>
 <li><p><code>"loglikcontribution"</code> shows the log-likelihood
-            contribution (initial value subtracted; all paths start
-            with <code>0</code>).</p></li>
+        contribution (initial value subtracted; all paths start
+        with <code>0</code>).</p></li>
 <li><p><code>coef</code> shows the development of the (standardized)
-            coefficients during EM optimization. Parameters of the
-            components are shown on the real scale, the coefficients
-            of the concomitant model (if used) are shown on the
-            standardized scale.</p></li>
+        coefficients during EM optimization. Parameters of the
+        components are shown on the real scale, the coefficients
+        of the concomitant model (if used) are shown on the
+        standardized scale.</p></li>
 </ul>
     
 
@@ -192,6 +193,8 @@
       <li><a href="#details">Details</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

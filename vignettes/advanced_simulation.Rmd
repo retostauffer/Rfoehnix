@@ -17,7 +17,7 @@ true <- list(mu = c(1, 5), sigma = c(1, 2))
 # Simulate data based on Gaussian distribution
 family <- foehnix:::foehnix_cgaussian(left = 0)
 set.seed(666)
-data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- data.frame(y = family$r(c(10000, 5000), mu = true$mu, sigma = true$sigma))
 data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
 
 # Estimate foehnix model
@@ -51,7 +51,7 @@ true <- list(mu = c(1, 5), sigma = c(1, 2))
 # Simulate data based on Gaussian distribution
 family <- foehnix:::foehnix_tgaussian(left = 0)
 set.seed(666)
-data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- data.frame(y = family$r(c(10000, 5000), mu = true$mu, sigma = true$sigma))
 data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
 
 # Estimate foehnix model
@@ -87,7 +87,7 @@ true <- list(mu = c(1, 5), sigma = c(1, 2))
 # Simulate data based on logistic distribution
 family <- foehnix:::foehnix_clogistic(left = 0)
 set.seed(666)
-data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- data.frame(y = family$r(c(10000, 5000), mu = true$mu, sigma = true$sigma))
 data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
 
 # Estimate foehnix model
@@ -121,7 +121,7 @@ true <- list(mu = c(1, 5), sigma = c(1, 2))
 # Simulate data based on logistic distribution
 family <- foehnix:::foehnix_tlogistic(left = 0)
 set.seed(666)
-data <- data.frame(y = family$r(c(20000, 10000), mu = true$mu, sigma = true$sigma))
+data <- data.frame(y = family$r(c(10000, 5000), mu = true$mu, sigma = true$sigma))
 data <- zoo(data, as.Date(1:nrow(data), origin = "1970-01-01"))
 
 # Estimate foehnix model

@@ -1,7 +1,10 @@
 
 
+# TODO: Neither well coded, nor tested, nor documented.
+#' @import zoo
 shiny_tsplot <- function(output, x, start, end) {
 
+    requireNamespace("shiny")
     tmp <- merge(window(x$prob, start = start, end = end),
                  window(x$data, start = start, end = end))
     names(tmp)[1L] <- "prob"
@@ -77,7 +80,7 @@ shiny_tsplot <- function(output, x, start, end) {
         axis(side = 4, at = seq(20, 100, by = 20))
         mtext(side = 4, line = 3, "rel humidity")
     }
-    output$ts_trh <- renderPlot(ts_trh_plot(tmp), height = 300, width = 1400)
+    output$ts_trh <- shiny::renderPlot(ts_trh_plot(tmp), height = 300, width = 1400)
 
     # -----------------------------------------------------------
     ts_dd_plot <- function(x, ...) {
@@ -98,7 +101,7 @@ shiny_tsplot <- function(output, x, start, end) {
         axis(side = 4, at = seq(60, 300, by = 60)) 
         mtext(side = 4, line = 3, "wind dir")
     }
-    output$ts_dd <- renderPlot(ts_dd_plot(tmp), height = 300, width = 1400)
+    output$ts_dd <- shiny::renderPlot(ts_dd_plot(tmp), height = 300, width = 1400)
 
     # -----------------------------------------------------------
     ts_prob_plot <- function(x, ...) {
@@ -111,11 +114,22 @@ shiny_tsplot <- function(output, x, start, end) {
         abline(h = seq(25, 75, by = 25), lty = 5, col = "#CC3300")
         add_midnight_lines(x)
     }
-    output$ts_prob <- renderPlot(ts_prob_plot(tmp), height = 300, width = 1400)
+    output$ts_prob <- shiny::renderPlot(ts_prob_plot(tmp), height = 300, width = 1400)
 }
 
 
+#' Shiny Application to Check foehnix Classification (Time Series Plots)
+#'
+#' TODO: Neither well coded, nor tested, nor documented.
+#'
+#' @param x a \code{\link{foehnix}} mixture model object.
+#' @param ... additional arguments, not in use.
+#'
+#' @import zoo
+#' @author Reto Stauffer
 shiny_check <- function(x, ...) {
+
+    requireNamespace("shiny")
 
     # Click string
     xy_str <- function(e) {
@@ -125,44 +139,46 @@ shiny_check <- function(x, ...) {
     tsplot_click_event <- function(x, e) {
         # Find closest index
         closest <- index(x$prob)[which.min(abs(as.numeric(index(x$prob)) - e$x))]
-        showNotification(sprintf("Closest is %s", as.character(closest)))
+        shiny::showNotification(sprintf("Closest is %s", as.character(closest)))
     }
-    requireNamespace("shiny")
     # User interface
-    ui <- basicPage(
-        tags$head(
-            tags$style(HTML("
+    ui <- shiny::basicPage(
+        shiny::tags$head(
+            shiny::tags$style(shiny::HTML("
             div.shiny-plot-output {
                 height: auto !important;
             }
             "))
         ),
-        titlePanel("foehnix time series check"),
-        plotOutput("ts_trh",   click = "tsplot_click", brush = "tsplot_brush"),
-        plotOutput("ts_dd",    click = "tsplot_click", brush = "tsplot_brush"),
-        plotOutput("ts_prob",  click = "tsplot_click", brush = "tsplot_brush"),
-        verbatimTextOutput("info"),
-        plotOutput("plot2")
+        shiny::titlePanel("foehnix time series check"),
+        shiny::plotOutput("ts_trh",   click = "tsplot_click", brush = "tsplot_brush"),
+        shiny::plotOutput("ts_dd",    click = "tsplot_click", brush = "tsplot_brush"),
+        shiny::plotOutput("ts_prob",  click = "tsplot_click", brush = "tsplot_brush"),
+        shiny::verbatimTextOutput("info"),
+        shiny::plotOutput("plot2")
     )
 
     
     # Shiny server function
     server <- function(input, output) {
-        #output$tsplot <- renderPlot({
+        #output$tsplot <- shiny::renderPlot({
         #    shiny_tsplot(x, start = "2010-02-01", end = "2010-02-04")
         #}, height = 800, width = 1200)
         shiny_tsplot(output, x, start = index(x$prob)[1L], end = index(x$prob)[500L])
     
-        output$info <- renderText({
+        output$info <- shiny::renderText({
             paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
         })
 
-        observeEvent(input$tsplot_click, {
+        shiny::observeEvent(input$tsplot_click, {
             tsplot_click_event(x, input$tsplot_click)
         })
-        observeEvent(input$tsplot_brush, {
-            showNotification("brush event")
+        shiny::observeEvent(input$tsplot_brush, {
+            shiny::showNotification("brush event")
         })
     }
-    shinyApp(ui, server)
+    shiny::shinyApp(ui, server)
 }
+
+
+

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get Observations Within Wind Sector (Wind Filter) — foehnix_filter • foehnix</title>
+<title>Evaluates Data Filter Rules for foehnix Mixture Moel Calls. — foehnix_filter • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,21 +30,12 @@
 
 
 
-<meta property="og:title" content="Get Observations Within Wind Sector (Wind Filter) — foehnix_filter" />
+<meta property="og:title" content="Evaluates Data Filter Rules for foehnix Mixture Moel Calls. — foehnix_filter" />
 
 <meta property="og:description" content="foehnix models allow to specify an optional
-    foehnix_filter. If a filter is given only a subset
-    of the data set provided to foehnix is used
-    for the foehn classification.    
-A typical example is a wind direction filter such that
-    only observations (times) are used where the observed
-    wind direction was within a user defined wind sector
-    corresponding to the wind direction during foehn events
-    for a specific location.
-However, the filter option allows to even implement complex
-    filter rules if required. The 'Details' section contains
-    further information and examples how this filter rules can
-    be used." />
+foehnix_filter. If a filter is given only a subset
+of the data set provided to foehnix is used
+for the foehn classification." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -75,7 +66,7 @@ However, the filter option allows to even implement complex
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -144,190 +135,190 @@ However, the filter option allows to even implement complex
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get Observations Within Wind Sector (Wind Filter)</h1>
-    
+    <h1>Evaluates Data Filter Rules for foehnix Mixture Moel Calls.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_filter.R'><code>R/foehnix_filter.R</code></a></small>
     <div class="hidden name"><code>foehnix_filter.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p><code><a href='foehnix.html'>foehnix</a></code> models allow to specify an optional
-    <code>foehnix_filter</code>. If a filter is given only a subset
-    of the data set provided to <code><a href='foehnix.html'>foehnix</a></code> is used
-    for the foehn classification.</p>    
-<p>A typical example is a wind direction filter such that
-    only observations (times) are used where the observed
-    wind direction was within a user defined wind sector
-    corresponding to the wind direction during foehn events
-    for a specific location.</p>
-<p>However, the filter option allows to even implement complex
-    filter rules if required. The 'Details' section contains
-    further information and examples how this filter rules can
-    be used.</p>
+<code>foehnix_filter</code>. If a filter is given only a subset
+of the data set provided to <code><a href='foehnix.html'>foehnix</a></code> is used
+for the foehn classification.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix_filter</span>(<span class='no'>x</span>, <span class='no'>foehnix_filter</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix_filter</span>(<span class='no'>x</span>, <span class='no'>filter</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>object of class <code>zoo</code> or <code>data.frame</code> containing
-        the observations.</p></td>
+      <td><p>object of class <code>zoo</code> or <code>data.frame</code> containing the
+observations.</p></td>
     </tr>
     <tr>
       <th>filter</th>
       <td><p>can be <code>NULL</code> (no filter applied), a 
-        function operating on <code>x</code>, or a named list with a simple
-        filter rule (<code>numeric</code> of length two) or custom filter
-        functions. Details provided in the 'Details' section.</p></td>
+function operating on <code>x</code>, or a named list with a simple
+filter rule (<code>numeric</code> of length two) or custom filter
+functions. Details provided in the 'Details' section.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a vector of integers corresponding to those rows in
+the data set <code>x</code> which fulfill all filte criteria.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Foehn winds often (not always) show a very specific wind direction
-    due to the canalization of the air flow trough the local
-    topography. The <code>foehnix_filter</code> option allows to subset the
-    data according to a user defined set of filters from simple filters
-    to complex filters.</p>
+    <p>A typical example is a wind direction filter such that
+only observations (times) are used where the observed
+wind direction was within a user defined wind sector
+corresponding to the wind direction during foehn events
+for a specific location.</p>
+<p>However, the filter option allows to even implement complex
+filter rules if required. The 'Details' section contains
+further information and examples how this filter rules can
+be used.</p>
+<p>Foehn winds often (not always) show a very specific wind direction
+due to the canalization of the air flow trough the local topography. The
+<code>foehnix_filter</code> option allows to subset the data according to a
+user defined set of filters from simple filters to complex filters.</p>
 <p>No filter: If <code>filter = NULL</code> no filter will be applied and the whole
-    data set provided is used to do the foehn classification (see <code><a href='foehnix.html'>foehnix</a></code>).</p>
+data set provided is used to do the foehn classification (see
+<code><a href='foehnix.html'>foehnix</a></code>).</p>
 <p>Simple filter rules: The filter is a named list containing one or several
-    numeric vectors of length 2 with finite numeric values.
-    The name of the list element defines the column of the data set (input
-    <code>x</code>), the numeric vector of length 2 the range which should be used
-    to filter the data. This is the simplest option to apply the mentioned
-    wind direction filter. Examples:</p>
-<p></p><ul>
+numeric vectors of length 2 with finite numeric values.  The name of the
+list element defines the column of the data set (input <code>x</code>), the
+numeric vector of length 2 the range which should be used to filter the
+data. This is the simplest option to apply the mentioned wind direction
+filter. Examples:</p>
+<ul>
 <li><p><code>filter = list(dd = c(43, 223))</code>: applies the filter to
-            column <code>x$dd</code>. Only rows of <code>x</code> will be used where
-            <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code>.</p></li>
+        column <code>x$dd</code>. Only rows of <code>x</code> will be used where
+        <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code>.</p></li>
 <li><p><code>filter = list(dd = c(330, 30)</code>: similar to the filter
-            rule above, allows to specify a wind sector going trough 0
-            (if dd is wind direction in degrees between <code>[0, 360[</code>).
-            Only rows of <code>x</code> will be used where
-            <code>x$dd &gt;= 330 | x$dd &lt;= 30</code>.</p></li>
+        rule above, allows to specify a wind sector going trough 0
+        (if dd is wind direction in degrees between <code>[0, 360[</code>).
+        Only rows of <code>x</code> will be used where
+        <code>x$dd &gt;= 330 | x$dd &lt;= 30</code>.</p></li>
 <li><p><code>filter = list(dd = c(43, 223), crest_dd = c(90, 270)</code>:
-            two filter rules, one for <code>x$dd</code>, one for <code>x$crest_dd</code>.
-            Only rows of <code>x</code> will be used where
-            <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> AND <code>x$crest_dd &gt;= 330 | x$crest_dd &lt;= 30</code>.</p></li>
+        two filter rules, one for <code>x$dd</code>, one for <code>x$crest_dd</code>.
+        Only rows of <code>x</code> will be used where
+        <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> AND <code>x$crest_dd &gt;= 330 | x$crest_dd &lt;= 30</code>.</p></li>
 <li><p>Filters are not restricted to wind direction (as shown in the
-            examples above)!</p></li>
+        examples above)!</p></li>
 </ul>
-    <p>Custom filter functions: Instead of only providing a segment/sector
-    defined by two finite numeric values (see 'Simple filter' above) 
-    a named list of functions can be provided. These functions DO HAVE TO
-    return a vector of logical values (<code>TRUE</code> and <code>FALSE</code>) of
-    length <code>nrow{x}</code>. If not, an error will be thrown.
-    The function will be applied to the column specified by the name of the
-    list element. Some examples:</p>
-<p></p><ul>
+    <p>Custom filter functions: Instead of only providing a segment/sector defined
+by two finite numeric values (see 'Simple filter' above) a named list of
+functions can be provided. These functions DO HAVE TO return a vector of
+logical values (<code>TRUE</code> and <code>FALSE</code>) of length <code>nrow{x}</code>. If
+not, an error will be thrown.  The function will be applied to the column
+specified by the name of the list element. Some examples:</p>
+<ul>
 <li><p><code>filter = list(dd = function(x) x &gt;= 43 &amp; x &lt;= 223)</code>:
-            The function will be applied to <code>x$dd</code>.
-            A vector with <code>TRUE</code> or <code>FALSE</code> is returned for each for
-            each <code>1:nrow{x}</code> which takes <code>TRUE</code> if
-            <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> and <code>FALSE</code> else.
-            Thus, this filter is the very same as the first example in the
-            'Simple filter' section above.</p></li>
+        The function will be applied to <code>x$dd</code>.
+        A vector with <code>TRUE</code> or <code>FALSE</code> is returned for each for
+        each <code>1:nrow{x}</code> which takes <code>TRUE</code> if
+        <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> and <code>FALSE</code> else.
+        Thus, this filter is the very same as the first example in the
+        'Simple filter' section above.</p></li>
 <li><p><code>filter = list(ff = function(x) x &gt; 2.0)</code>:
-            Custom filter applied to column <code>x$ff</code>.
-            A vector with <code>TRUE</code> or <code>FALSE</code> is returned for each for
-            each <code>1:nrow{x}</code> which takes <code>TRUE</code> if
-            <code>x$ff &gt; 2.0</code> and <code>FALSE</code> else.</p></li>
+        Custom filter applied to column <code>x$ff</code>.
+        A vector with <code>TRUE</code> or <code>FALSE</code> is returned for each for
+        each <code>1:nrow{x}</code> which takes <code>TRUE</code> if
+        <code>x$ff &gt; 2.0</code> and <code>FALSE</code> else.</p></li>
 <li><p><code>filter = list(ff = function(x) &#8230;, dd = function(x) &#8230;)</code>:
-            two filter functions, one applied to <code>x$ff</code>, one to <code>x$dd</code>.
-            Note that only rows of <code>x</code> will be used for the foehn classification
-            where both (all) filters returned <code>TRUE</code>.</p></li>
+        two filter functions, one applied to <code>x$ff</code>, one to <code>x$dd</code>.
+        Note that only rows of <code>x</code> will be used for the foehn classification
+        where both (all) filters returned <code>TRUE</code>.</p></li>
 </ul>
-    <p>Complex filters: If <code>filter</code> is a function this filter function
-    will be applied to the full input object <code>x</code>. This allows to write
-    functions of any complexity. As an example:</p>
-<p></p><ul>
+    <p>Complex filters: If <code>filter</code> is a function this filter function will be
+applied to the full input object <code>x</code>. This allows to write functions of
+any complexity. As an example:</p>
+<ul>
 <li><p><code>filter = function(x) (x$dd &gt;= 43 &amp; x$dd &lt;= 223) &amp; x$ff &gt;= 2.0</code>:
-            Input <code>x</code> to the filter function is the object as provided
-            to the <code>foehnix_filter</code> function (<code>x</code>). Thus,
-            the different columns of the object can be accessed directly
-            trough their names (e.g., <code>x$dd</code>, <code>x$ff</code>).
-            A vector of length <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow(x)</a></code> with <code>TRUE</code> and <code>FALSE</code>
-            is returned.</p></li>
+        Input <code>x</code> to the filter function is the object as provided
+        to the <code>foehnix_filter</code> function (<code>x</code>). Thus,
+        the different columns of the object can be accessed directly
+        trough their names (e.g., <code>x$dd</code>, <code>x$ff</code>).
+        A vector of length <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow(x)</a></code> with <code>TRUE</code> and <code>FALSE</code>
+        is returned.</p></li>
 </ul>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>    <span class='co'># Loading example data set and conver to zoo time series</span>
-    <span class='co'># time series object.</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"ellboegen"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"zoo"</span>)
-    <span class='no'>ellboegen</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/zoo/topics/zoo'>zoo</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>ellboegen</span>, <span class='kw'>select</span> <span class='kw'>=</span> -<span class='no'>timestamp</span>),
-                     <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>ellboegen</span>$<span class='no'>timestamp</span>, <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>, <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>))
+    <pre class="examples"><div class='input'># Loading example data set and conver to zoo time series
+# time series object.
+data("ellboegen", package = "foehnix")
+library("zoo")
+ellboegen <- zoo(subset(ellboegen, select = -timestamp),
+                 as.POSIXct(ellboegen$timestamp, origin = "1970-01-01", tz = "UTC"))
 
-    <span class='co'># Case 1:</span>
-    <span class='co'># -----------------</span>
-    <span class='co'># Filter for observations where the wind direction is</span>
-    <span class='co'># within 100 - 260 (southerly flow):</span>
-    <span class='no'>idx_south</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>260</span>)))
+# Case 1:
+# -----------------
+# Filter for observations where the wind direction is
+# within 100 - 260 (southerly flow):
+idx_south <- foehnix_filter(ellboegen, list(dd = c(100, 260)))
 
-    <span class='co'># Same filter but for northerly flows, taking rows with</span>
-    <span class='co'># wind direction observations (dd) smaller than 45 or</span>
-    <span class='co'># larger than 315 degrees:</span>
-    <span class='no'>idx_north</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>315</span>, <span class='fl'>45</span>)))
+# Same filter but for northerly flows, taking rows with
+# wind direction observations (dd) smaller than 45 or
+# larger than 315 degrees:
+idx_north <- foehnix_filter(ellboegen, list(dd = c(315, 45)))
 
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>,            <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"all observations"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_south</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"southerly winds"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_north</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"northerly winds"</span>)</div><div class='img'><img src='foehnix_filter-1.png' alt='' width='700' height='433' /></div><div class='input'>
-    <span class='co'># Case 2:</span>
-    <span class='co'># -----------------</span>
-    <span class='co'># A second useful option is to add two filters:</span>
-    <span class='co'># the wind direction at the target station (here Ellboegen)</span>
-    <span class='co'># has to be within c(43, 223), the wind direction at the</span>
-    <span class='co'># corresponding crest station (upstream, crest of the European Alps)</span>
-    <span class='co'># has to show southerly flows with a wind direction from</span>
-    <span class='co'># 90 degrees (East) to 270 degrees (West).</span>
+par(mfrow = c(1,3))
+hist(ellboegen$dd,            xlab = "dd", main = "all observations")
+hist(ellboegen$dd[idx_south], xlab = "dd", main = "southerly winds")
+hist(ellboegen$dd[idx_north], xlab = "dd", main = "northerly winds")
 
-    <span class='co'># Loading Sattelberg station data and convert to zoo</span>
-    <span class='co'># time series object.</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>require</a></span>(<span class='st'>"zoo"</span>)
-    <span class='no'>sattelberg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/zoo/topics/zoo'>zoo</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>sattelberg</span>, <span class='kw'>select</span> <span class='kw'>=</span> -<span class='no'>timestamp</span>),
-                     <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>sattelberg</span>$<span class='no'>timestamp</span>, <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>, <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>))
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sprintf'>sprintf</a></span>(<span class='st'>"sat_%s"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>)) <span class='co'># Renaming variables</span>
+# Case 2:
+# -----------------
+# A second useful option is to add two filters:
+# the wind direction at the target station (here Ellboegen)
+# has to be within c(43, 223), the wind direction at the
+# corresponding crest station (upstream, crest of the European Alps)
+# has to show southerly flows with a wind direction from
+# 90 degrees (East) to 270 degrees (West).
 
-    <span class='co'># Combine Ellboegen observations with Sattelberg observations</span>
-    <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/merge'>merge</a></span>(<span class='no'>ellboegen</span>, <span class='no'>sattelberg</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>data</span>))</div><div class='output co'>#&gt;                      dd  ff     p rh    t sat_dd sat_ff sat_p sat_rh sat_t
-#&gt; 2010-01-18 09:00:00 338 1.2 899.8 75 -0.9      3    5.6 787.7     93  -8.7
-#&gt; 2010-01-18 10:00:00  18 0.1 899.9 66  0.2    344    5.3 787.9     90  -8.0
-#&gt; 2010-01-18 11:00:00 344 0.8 899.1 63  0.7    360    6.0 787.3     80  -7.7
-#&gt; 2010-01-18 12:00:00 303 2.4 898.8 60  0.7    357    6.5 786.8     77  -7.3
-#&gt; 2010-01-18 13:00:00 292 2.8 898.5 57  1.9    358    8.7 786.6     78  -7.2
-#&gt; 2010-01-18 14:00:00 316 1.6 898.6 70  0.3    352    7.6 786.8     80  -7.2</div><div class='input'>
-    <span class='co'># Now apply a wind filter</span>
-    <span class='no'>foehnix_filter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>sat_dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
-    <span class='no'>idx</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>data</span>, <span class='no'>foehnix_filter</span>)
-    <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>idx</span>,]
+# Loading Sattelberg station data and convert to zoo
+# time series object.
+data("sattelberg", package = "foehnix")
+require("zoo")
+sattelberg <- zoo(subset(sattelberg, select = -timestamp),
+                 as.POSIXct(sattelberg$timestamp, origin = "1970-01-01", tz = "UTC"))
+names(sattelberg) <- sprintf("sat_\%s", names(sattelberg)) # Renaming variables
 
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>data</span>, <span class='kw'>select</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>dd</span>, <span class='no'>sat_dd</span>)))</div><div class='output co'>#&gt;      Index                           dd            sat_dd     
-#&gt;  Min.   :2010-01-19 22:00:00   Min.   : 43.0   Min.   : 90.0  
-#&gt;  1st Qu.:2011-11-02 04:00:00   1st Qu.:122.0   1st Qu.:164.0  
-#&gt;  Median :2013-12-13 20:00:00   Median :132.0   Median :177.0  
-#&gt;  Mean   :2013-12-05 08:45:06   Mean   :130.1   Mean   :179.7  
-#&gt;  3rd Qu.:2015-12-17 01:00:00   3rd Qu.:139.0   3rd Qu.:190.0  
-#&gt;  Max.   :2018-03-10 12:00:00   Max.   :223.0   Max.   :270.0  </div></pre>
+# Combine Ellboegen observations with Sattelberg observations
+data <- merge(ellboegen, sattelberg)
+print(head(data))
+
+# Now apply a wind filter
+foehnix_filter <- list(dd = c(43, 223), sat_dd = c(90, 270))
+idx <- foehnix_filter(data, foehnix_filter)
+data <- data[idx,]
+
+summary(subset(data, select = c(dd, sat_dd)))
+
+</div><div class='output co'>#&gt; <span class='error'>Error: '\%' is an unrecognized escape in character string starting ""sat_\%"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

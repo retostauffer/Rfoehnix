@@ -32,10 +32,8 @@
 
 <meta property="og:title" content="Fitting Regularized foehnix Mixture Model With Concomitant Model. — foehnix.reg.fit" />
 
-<meta property="og:description" content="Fitting method for two-component foehnix mixture model with
-    regularization. Typically not called directly, interfaced via foehnix.
-TODO: Method not yet implemented, as soon as the method itself
-    has been written: update manual page!" />
+<meta property="og:description" content="Fitting method for two-component foehnix mixture model with regularization.
+Typically not called directly, interfaced via foehnix." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -66,7 +64,7 @@ TODO: Method not yet implemented, as soon as the method itself
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -136,37 +134,75 @@ TODO: Method not yet implemented, as soon as the method itself
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Fitting Regularized foehnix Mixture Model With Concomitant Model.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a></small>
     <div class="hidden name"><code>foehnix.reg.fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Fitting method for two-component foehnix mixture model with
-    regularization. Typically not called directly, interfaced via <code><a href='foehnix.html'>foehnix</a></code>.</p>
-<p>TODO: Method not yet implemented, as soon as the method itself
-    has been written: update manual page!</p>
+    <p>Fitting method for two-component foehnix mixture model with regularization.
+Typically not called directly, interfaced via <code><a href='foehnix.html'>foehnix</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>&#8230;</th>
+      <th>y</th>
+      <td><p>numeric vector, covariate for the components of the
+mixture model, dimension <code>N</code>.</p></td>
+    </tr>
+    <tr>
+      <th>logitX</th>
+      <td><p>numeric matrix of dimension <code>N x P</code>, covariates
+for the concomitant model (logistic regression model matrix).</p></td>
+    </tr>
+    <tr>
+      <th>family</th>
+      <td><p>object of class <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>maxit</th>
+      <td><p>positive integer, or vector of length 2 with positive
+integer values. Maximum number of iterations of the EM algorithm
+and the concomitant model.
+Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>numeric, or vector of length 2 containing numeric values.
+Tolerance for the optimization (EM algorithm and concomitant model).
+Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, default <code>TRUE</code>. If set to <code>FALSE</code>
+verbose output will be suppressed.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>#TODO: currently unused.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
       <td><p>additional arguments, unused.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>TODO: Method not yet implemented, as soon as the method itself
+has been written: update manual page!</p>
+    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>,
-    <code><a href='foehnix.control.html'>foehnix.control</a></code>,
-    <code><a href='foehnix.noconcomitant.fit.html'>foehnix.noconcomitant.fit</a></code>,
-    <code>foehnix.reg.fit</code>,
-    <code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
+    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>, <code><a href='foehnix.control.html'>foehnix.control</a></code>,
+<code><a href='foehnix.noconcomitant.fit.html'>foehnix.noconcomitant.fit</a></code>, <code>foehnix.reg.fit</code>,
+<code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
     
 
   </div>
@@ -175,9 +211,13 @@ TODO: Method not yet implemented, as soon as the method itself
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

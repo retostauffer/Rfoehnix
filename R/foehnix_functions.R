@@ -9,24 +9,49 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 11:37 on marvin
+# - L@ST MODIFIED: 2018-12-20 18:34 on marvin
 # -------------------------------------------------------------------
 
 
-# -------------------------------------------------------------------
-# Small helper function to check whether or not the matrix is
-# standardized or not. Considered to be standardized if the matrix
-# contains the two additional attributes "scaled:center" and
-# "scaled:scale".
-# -------------------------------------------------------------------
-is.standardized <- function(x, ...) UseMethod("is.standardized")
-is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
-
-
-# -------------------------------------------------------------------
-# Standardize (model) matrix
-# -------------------------------------------------------------------
+#' Standardize (Model) Matrix
+#'
+#' Function to standardize the columns of a matrix, used to
+#' standardize the model matrix before estimating the regression
+#' coefficients of a generalized linear model (\code{\link{iwls_logit}}).
+#'
+#' @param x matrix of dimension \code{N x p}.
+#' @param ... additional arguments, ignored.
+#' @return Returns a matrix of the same dimension as input \code{x}
+#' but with standardized data. The return object is of class
+#' \code{c("standardized", "matrix")} which comes with some handy
+#' S3 methods.
+#'
+#' @examples
+#' # Example data set
+#' data("airquality")
+#' airquality <- na.omit(airquality)
+#'
+#' # Create model matrix
+#' X <- model.matrix(Ozone ~ ., data = airquality)
+#' print(head(X))
+#'
+#' # Standardize
+#' S <- standardize(X)
+#' print(head(S))
+#'
+#' is.standardized(X)
+#' is.standardized(X)
+#'
+#' # Get parameters used for standardization
+#' center(S)
+#' scale(S)
+#'
+#' @author Reto Stauffer
+#' @export
 standardize <- function(x, ...) UseMethod("standardize")
+
+#' @rdname standardize
+#' @export
 standardize.matrix <- function(x, ...) {
     # Scale covariates
     scaled_center <- structure(rep(0, ncol(x)), names = colnames(x))
@@ -42,16 +67,53 @@ standardize.matrix <- function(x, ...) {
     class(x) <- c("standardized", class(x))
     return(x)
 }
-scale.standardized <- function(x) return(attr(x, "scaled:scale"))
+
+
+#' @rdname standardize
+#' @export
+scale.standardized <- function(x, ...) return(attr(x, "scaled:scale"))
+
+
+#' @rdname standardize
+#' @export
 center <- function(x, ...) UseMethod("center")
-center.standardized <- function(x) return(attr(x, "scaled:center"))
+#' @export
+center.standardized <- function(x, ...) return(attr(x, "scaled:center"))
 
 
-# -------------------------------------------------------------------
-# Destandardize coefficients. Brings coefficients back to
-# the "real" scale if standardized coefficients are used when
-# estimating the logistic regression model (concomitant model).
-# -------------------------------------------------------------------
+#' Check if Matrix is Standardized
+#'
+#' Helper function for \code{foehnix}. Returns \code{TRUE}
+#' if input \code{x} is a standardized matrix, else \code{FALSE}.
+#'
+#' @param x a matrix or standardized matrix.
+#' @param ... ignored.
+#'
+#' @seealso \code{\link{standardize}}.
+#' @export
+is.standardized <- function(x, ...) UseMethod("is.standardized")
+
+#' @export
+is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
+
+
+
+#' Destandardize Regression Coefficients
+#'
+#' Destandardize coefficients. Brings coefficients back to
+#' the "real" scale if standardized coefficients are used when
+#' estimating the logistic regression model (concomitant model).
+#'
+#' @param beta regression coefficients estimated on standardized data.
+#' @param X object of class \code{\link{standardize}}.
+#' @return Returns destandardized regression coefficients, same object
+#' as input \code{beta}.
+#'
+#' @seealso \code{\link{standardize}}. Used in \code{\link{foehnix}}
+#' and \code{\link{iwls_logit}}.
+#'
+#' @rdname standardize
+#' @export
 destandardize_coefficients <- function(beta, X) {
     scaled_center = attr(X, "scaled:center")
     scaled_scale  = attr(X, "scaled:scale")
@@ -69,25 +131,68 @@ destandardize_coefficients <- function(beta, X) {
 }
 
 
-# -------------------------------------------------------------------
-# Information criteria: logLik, AIC, BIC, and effective degrees of
-# freedom
-# -------------------------------------------------------------------
+#' @rdname foehnix
+#' @export
 logLik.foehnix <- function(object, ...) structure(object$optimizer$loglik, names = "loglik")
+
+
+#' @rdname foehnix
+#' @export
 AIC.foehnix <- function(object, ...)    structure(object$optimizer$AIC, names = "AIC")
+
+
+#' @rdname foehnix
+#' @export
 BIC.foehnix <- function(object, ...)    structure(object$optimizer$BIC, names = "BIC")
+
+
+#' Returns Effective Degrees of Freedom
+#'
+#' Function which returns the effective degrees of freedom.
+#' @param object the object from which the effective degrees
+#'        of freedom should be returned.
+#' @param ... forwarded to class specific edf methods.
+#' @export
 edf <- function(object, ...) UseMethod("edf")
+
+#' @rdname foehnix
+#' @export
 edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names = "edf")
 
-# -------------------------------------------------------------------
-# Print foehnix model object.
-# TODO: better default print method required?
-# -------------------------------------------------------------------
+
+#' @rdname foehnix
+#' @export
 print.foehnix <- function(object, ...) print(summary(object, ...))
 
-# -------------------------------------------------------------------
-# Estimated regression coefficients
-# -------------------------------------------------------------------
+
+#' Get Estimated Mixture Model Coefficients
+#'
+#' Returns the estimated coefficients of a \code{\link{foehnix}} mixture model
+#' for both, the components and the concomitant model (if in use).
+#'
+#' @param object \code{\link{foehnix}} mixture model object.
+#' @param type character, either \code{"parameter"} \code{"coefficients"}, see
+#'        'Details' section.
+#' @param ... additional arguments, ignored.
+#' @return Returns a \code{coef.foehnix} object with the estimated
+#'         coefficients.
+#' @details Returns the coeffficients of the mixture model.
+#' If \code{type = "parameter"} the parameters are returned of the
+#' components are returned on the 'true' scale, namely:
+#' \code{mu1} and \code{sigma1} (location and scale of component 1),
+#' \code{mu2} and \code{sigma2} (location and scale of component 2),
+#' and a set of coefficients from the concomitant model if one has been
+#' specified. These coefficients are the coefficients from a (possibly
+#' regularized) logistic regression model (see \code{\link{iwls_logit}}).
+#'
+#' If \code{type = "coefficients"} the scale parameters are returned
+#' on the log-scale (\code{logsd1}, \code{logsd2}) as used during
+#' optimization.
+#'
+#' @seealso \code{\link{foehnix}}, \code{\link{iwls_logit}}.
+#'
+#' @author Reto Stauffer
+#' @export
 coef.foehnix <- function(object, type = "parameter", ...) {
 
     # One of the two types: parameter (destandardized if required),
@@ -104,7 +209,7 @@ coef.foehnix <- function(object, type = "parameter", ...) {
                              dimnames = list(c("mu1", "logsd1", "mu2", "logsd2"), NULL)),
                       object$coef$concomitants)
     }
-    rval <- setNames(as.vector(rval), rownames(rval))
+    rval <- stats::setNames(as.vector(rval), rownames(rval))
     
     # Appending some attributes and a new class
     attr(rval, "concomitants") <- ! is.null(object$coef$concomitants)
@@ -113,6 +218,8 @@ coef.foehnix <- function(object, type = "parameter", ...) {
     class(rval) <- c("coef.foehnix", class(rval))
     rval
 }
+
+#' @export
 print.coef.foehnix <- function(x, ...) {
     cat("Coefficients of foehnix model\n")
     cat(sprintf("Model formula:           %s\n",
@@ -126,9 +233,13 @@ print.coef.foehnix <- function(x, ...) {
 }
 
 
-# -------------------------------------------------------------------
-# Model/classification summary
-# -------------------------------------------------------------------
+#' @rdname foehnix
+#' @export
+formula.foehnix <- function(object, ...) object$formula
+
+
+#' @rdname foehnix
+#' @export
 summary.foehnix <- function(object, ...) {
 
     rval <- list()
@@ -150,6 +261,7 @@ summary.foehnix <- function(object, ...) {
     return(rval)
 }
 
+#' @export
 print.summary.foehnix <- function(x, ...) {
 
     # Model call

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Draw Windrose — windrose • foehnix</title>
+<title>Windrose Plot — windrose • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Draw Windrose — windrose" />
+<meta property="og:title" content="Windrose Plot — windrose" />
 
-<meta property="og:description" content="Wind rose plotting function.
-    #TODO extend manual page as soon as the function is implemented." />
+<meta property="og:description" content="Plotting a windrose using meteorological wind direction and
+wind speed (or gust speed)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -133,69 +133,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Draw Windrose</h1>
-    
+    <h1>Windrose Plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/windrose.R'><code>R/windrose.R</code></a></small>
     <div class="hidden name"><code>windrose.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Wind rose plotting function.
-    #TODO extend manual page as soon as the function is implemented.</p>
+    <p>Plotting a windrose using meteorological wind direction and
+wind speed (or gust speed).</p>
     
     </div>
 
-    <pre class="usage"><span class='co'>#TODO: Note that this is, at the moment, just a copy</span>
-    <span class='co'># of an existing method I've written some time ago and is not</span>
-    <span class='co'># ment to enter the release as it is.</span>
-    <span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>circle</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='kw'>by</span><span class='kw'>=</span><span class='fl'>0.02</span>),
-             <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>draw.gusts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span> )</pre>
+    <pre class="usage"><span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>,
+  <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>zoo or data.frame object containing at least the two
-        columns <code>dd</code> and <code>ff</code>.</p></td>
+      <td><p><code>zoo</code> object or <code>data.frame</code> or <code><a href='foehnix.html'>foehnix</a></code>
+mixture model object.</p></td>
     </tr>
     <tr>
-      <th>interval</th>
-      <td><p>numeric or integer, interval in degrees for
-        the binning of the data.</p></td>
+      <th>which</th>
+      <td><p>character, one of <code>"unconditional"</code>, <code>"nofoehn"</code>, 
+<code>"foehn"</code>, or <code>"combined"</code>.</p></td>
     </tr>
     <tr>
-      <th>ff</th>
-      <td><p>default <code>NULL</code> &#8230; maybe name of the wind speed
-        column in <code>x</code>? TODO: no idea.</p></td>
+      <th>ddvar</th>
+      <td><p>character, name of the wind direction varaible in <code>x</code> or as used
+for training the <code><a href='foehnix.html'>foehnix</a></code> mixture model.</p></td>
     </tr>
     <tr>
-      <th>circle</th>
-      <td><p>sequence where the circles should be drawn.</p></td>
+      <th>ffvar</th>
+      <td><p>character, name of the wind speed varaible in <code>x</code> or as used
+for training the <code><a href='foehnix.html'>foehnix</a></code> mixture model.</p></td>
     </tr>
     <tr>
-      <th>windsector</th>
-      <td><p><code>NULL</code> by default, a wind sector
-        can be provided (as for <code><a href='foehnix.html'>foehnix</a></code>) to 
-        highlight the sector from which foehn winds are observed.</p></td>
-    </tr>
-    <tr>
-      <th>main</th>
-      <td><p><code>NULL</code> by default or a character containing
-        the title for the windrose.</p></td>
-    </tr>
-    <tr>
-      <th>draw.gusts</th>
-      <td><p>logical. If <code>TRUE</code> the function expects
-        to find <code>ffx</code> in the input data set <code>x</code>.</p></td>
+      <th>...</th>
+      <td><p>additional arguments, currently unused.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function requires quite some work! As it is right now
-    it is simply a copy of an existing method I've written a
-    while ago.</p>
+    <p>TODO: not yet finished and/or tested!</p>
     
 
   </div>

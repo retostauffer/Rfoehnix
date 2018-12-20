@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>foehnix Two-Component Mixture-Model Control Object</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a></small>
     <div class="hidden name"><code>foehnix.control.Rd</code></div>
     </div>
 
@@ -143,68 +143,66 @@
     
     </div>
 
-    <pre class="usage"><span class='co'># Typically not used directly, can be used to specify the control</span>
-    <span class='co'># arguments for the foehnix model estimates.</span>
-    <span class='fu'>foehnix.control</span>(<span class='no'>family</span>, <span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>truncated</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                    <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-8</span>,
-                    <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-    <span class='co'># S3 methods for foehnix.control</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix.control</span>(<span class='no'>family</span>, <span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>truncated</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>family</th>
-      <td><p>character specifying the distribution of the components
-        in the mixture model. Allowed: <code>"gaussian"</code> and <code>"logistic"</code>.
-        For experts: custom <code>foehnix.family</code> objects can
-        be provided as well.</p></td>
+      <td><p>character specifying the distribution of the components in the
+mixture model. Allowed: <code>"gaussian"</code> and <code>"logistic"</code>.  For
+experts: custom <code>foehnix.family</code> objects can be provided as well.</p></td>
     </tr>
     <tr>
       <th>left</th>
-      <td><p>default is <code>-Inf</code>, left censoring or truncation point.
-        See also input <code>right</code> and input <code>truncated</code>. Can be set
-        to any finite numeric value.</p></td>
+      <td><p>default is <code>-Inf</code>, left censoring or truncation point.  See
+also input <code>right</code> and input <code>truncated</code>. Can be set to any finite
+numeric value.</p></td>
     </tr>
     <tr>
       <th>right</th>
-      <td><p>default is <code>Inf</code>, right censoring or truncation point.
-        See also input <code>left</code> and input <code>truncated</code>. Can be set
-        to any finite numeric value.</p></td>
+      <td><p>default is <code>Inf</code>, right censoring or truncation point.  See
+also input <code>left</code> and input <code>truncated</code>. Can be set to any finite
+numeric value.</p></td>
     </tr>
     <tr>
       <th>truncated</th>
       <td><p>logical. If set to <code>TRUE</code> truncation is used instead of
-        <code>censored</code>. This only affects the <code><a href='foehnix.html'>foehnix</a></code> model estimate
-        if input <code>left</code> and/or input <code>right</code> are specified.</p></td>
+<code>censored</code>. This only affects the <code><a href='foehnix.html'>foehnix</a></code> model estimate
+if input <code>left</code> and/or input <code>right</code> are specified.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>logical flag, default is <code>TRUE</code>. Defines whether or not
-        the model matrix for the concomitant model should be standardized for 
-        model estimation. Recommended.</p></td>
+      <td><p>logical flag, default is <code>TRUE</code>. Defines whether or
+not the model matrix for the concomitant model should be standardized for
+model estimation. Recommended.</p></td>
     </tr>
     <tr>
       <th>maxit</th>
-      <td><p>control argument for the iterative solvers. Default is <code>100L</code>,
-        the maximum number of iterations for the EM algorithm and the IWLS backfitting
-        algorithm for the concomitant model.
-        If a vector of length two is provided the first value is used for the
-        EM algorithm, the second for the IWLS backfitting.</p></td>
+      <td><p>control argument for the iterative solvers. Default is
+<code>100L</code>, the maximum number of iterations for the EM algorithm and the
+IWLS backfitting algorithm for the concomitant model.  If a vector of length
+two is provided the first value is used for the EM algorithm, the second for
+the IWLS backfitting.</p></td>
     </tr>
     <tr>
       <th>tol</th>
       <td><p>similar as for <code>maxit</code>. Used to identify convergence of the
-        iterative solvers. Default is <code>1e-8</code>, if two values are given the
-        first will be used for the EM algorithm, the second one for the IWLS backfitting
-        procedure. If set to <code>-Inf</code> <code>maxit</code> will be used as stopping
-        criteria.</p></td>
+iterative solvers. Default is <code>1e-8</code>, if two values are given the first
+will be used for the EM algorithm, the second one for the IWLS backfitting
+procedure. If set to <code>-Inf</code> <code>maxit</code> will be used as stopping
+criteria.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
       <td><p>TODO alpha parameter for the penalization of the concomitant model.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, if set to <code>FALSE</code> output is suppressed.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -214,7 +212,7 @@
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>.</p></div>
+    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>, <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></div>
     
 
   </div>
@@ -226,6 +224,8 @@
       <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

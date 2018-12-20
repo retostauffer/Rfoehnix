@@ -33,8 +33,8 @@
 <meta property="og:title" content="IWLS Solver for Binary Logistic Regression Model — iwls_logit" />
 
 <meta property="og:description" content="Iterative weighted least squares solver for a logistic regression
-    model. Used by foehnix.unreg.fit to estimate the
-    concomitant model of the two-component foehnix mixture models." />
+model. Used by foehnix.unreg.fit to estimate the
+concomitant model of the two-component foehnix mixture models." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -135,24 +135,23 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>IWLS Solver for Binary Logistic Regression Model</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/iwls_logit.R'><code>R/iwls_logit.R</code></a></small>
     <div class="hidden name"><code>iwls_logit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>Iterative weighted least squares solver for a logistic regression
-    model. Used by <code><a href='foehnix.unreg.fit.html'>foehnix.unreg.fit</a></code> to estimate the
-    concomitant model of the two-component foehnix mixture models.</p>
+model. Used by <code><a href='foehnix.unreg.fit.html'>foehnix.unreg.fit</a></code> to estimate the
+concomitant model of the two-component foehnix mixture models.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'>## Basic usage</span>
-    <span class='fu'>iwls_solver</span>(<span class='no'>X</span>, <span class='no'>y</span>)
+    <pre class="usage"><span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>beta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
-    <span class='co'>## Available options</span>
-    <span class='fu'>iwls_solver</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>beta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-8</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for ccmodel</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"coef"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,12 +167,17 @@
     <tr>
       <th>beta</th>
       <td><p>initial regression coefficients. If not set (<code>beta = NULL</code>, default),
-        all coefficients will be initialized with <code>0</code>.</p></td>
+all coefficients will be initialized with <code>0</code>.</p></td>
     </tr>
     <tr>
       <th>lambda</th>
       <td><p>if set to <code>NULL</code> (default) no penalty is used during optimization.
-        A <code>float</code> can be provided for regularization (ridge/L2 penalty).</p></td>
+A <code>float</code> can be provided for regularization (ridge/L2 penalty).</p></td>
+    </tr>
+    <tr>
+      <th>standardize</th>
+      <td><p>logical. If set to <code>TRUE</code> (default) the model matrix
+containing the concomitant variables will be standardized.</p></td>
     </tr>
     <tr>
       <th>maxit</th>
@@ -184,71 +188,73 @@
       <td><p>float, tolerance for the improvement to check for convergence.</p></td>
     </tr>
     <tr>
-      <th>standardize</th>
-      <td><p>logical. If set to <code>TRUE</code> (default) the model matrix
-        containing the concomitant variables will be standardized.</p></td>
+      <th>verbose</th>
+      <td><p>logical, if set to <code>FALSE</code> output is suppressed.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>currently unused.</p></td>
     </tr>
+    <tr>
+      <th>object, which</th>
+      <td><p>control the <code>coef</code> method.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a matrix size <code>p x 1</code> where <code>p</code> is the
-    number of coefficients (equal to the number of columns in
-    the model matrix <code>X</code>.</p>
-<p>Returns a list with a set of values and information about optimization.</p><ul>
+    <p>Returns an object of class <code>ccmodel</code> (concomitant model).
+The object contains the following information:</p>
+<ul>
 <li><p><code>lambda</code> value used (or <code>NULL</code>).</p></li>
 <li><p><code>edf</code> effective degrees of freedom. Equal to <code>P</code>
-            (<code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(X)</a></code>) if no regularization is used.</p></li>
+        (<code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol(X)</a></code>) if no regularization is used.</p></li>
 <li><p><code>loglik</code> final log-likelihood sum of the model.</p></li>
-<li><p><code>AIC</code> Akaike information criterium.</p></li>
-<li><p><code>BIC</code> Bayesian information criterium.</p></li>
+<li><p><code>AIC</code> Akaike information criteria.</p></li>
+<li><p><code>BIC</code> Bayesian information criteria.</p></li>
 <li><p><code>converged</code> logical flag whether or not the algorithm
-            converged (see <code>maxit</code>, <code>tol</code>).</p></li>
+        converged (see <code>maxit</code>, <code>tol</code>).</p></li>
 <li><p><code>beta</code> matrix of dimension <code>P x 1</code> containing the
-            estimated and possibly standardized regression coefficients
-            (see input <code>standardize</code>). If input <code>standardize = FALSE</code>
-            <code>beta == coef</code>.</p></li>
+        estimated and possibly standardized regression coefficients
+        (see input <code>standardize</code>). If input <code>standardize = FALSE</code>
+        <code>beta == coef</code>.</p></li>
 <li><p><code>coef</code> matrix of dimension <code>P x 1</code> containing the
-            destandardized regression coefficients.</p></li>
+        destandardized regression coefficients.</p></li>
 </ul>
 
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Iterative (re-)weighted least squares solver for logistic regression model.
-    The basic call (<code>iwls_solver(X, y)</code>) solves the unregularized problem.
-    Input matrix <code>X</code> is the design matrix containing the concomitant
-    variables for the logistic regression model. Matrix is of dimension
-    <code>N x P</code> where <code>N</code> is the number of of observations, <code>P</code> the
-    number of concomitant variables (including the intercept, if required). If
-    more than one column contains constant values the script will throw an
-    error (solution no more identifiable).  <code>y</code> is the binary response
-    vector of length <code>N</code> containing <code>0</code>s and <code>1</code>s.</p>
+The basic call (<code>iwls_solver(X, y)</code>) solves the unregularized problem.
+Input matrix <code>X</code> is the design matrix containing the concomitant
+variables for the logistic regression model. Matrix is of dimension
+<code>N x P</code> where <code>N</code> is the number of of observations, <code>P</code> the
+number of concomitant variables (including the intercept, if required). If
+more than one column contains constant values the script will throw an
+error (solution no more identifiable).  <code>y</code> is the binary response
+vector of length <code>N</code> containing <code>0</code>s and <code>1</code>s.</p>
 <p><code>beta</code> can be used to specify the initial regression parameters.  If
-    not set (<code>beta = NULL</code>; default) all parameters will be initialized
-    with <code>0</code>s.</p>
+not set (<code>beta = NULL</code>; default) all parameters will be initialized
+with <code>0</code>s.</p>
 <p>If <code>lambda</code> is set (<code>float</code>) a ridge penalty will be added to
-    shrink the regression parameters.</p>
+shrink the regression parameters.</p>
 <p>The logical option <code>standardize</code> controls whether or not the model
-    matrix (covariates) should be standardized using Gaussian standartization
-    (<code>(x - mean(x)) / sd(x)</code>) for all columns with non-constant data. It
-    is recommended to use standardization (<code>standardize = TRUE</code>) to avoid
-    numerical problems.</p>
+matrix (covariates) should be standardized using Gaussian standardization
+(<code>(x - mean(x)) / sd(x)</code>) for all columns with non-constant data. It
+is recommended to use standardization (<code>standardize = TRUE</code>) to avoid
+numerical problems.</p>
 <p><code>maxit</code> and <code>tol</code> allow to control the iterations of the IWLS
-    solver. <code>maxit</code> is the maximum number of iterations allowed.
-    <code>tol</code> is used to check the log-likelihood improvements. If the
-    imrovements compared with the previous iteration falls below this tolerance
-    the optimizer converged. If <code>maxit</code> is reached the solver will stop,
-    even if not converged.</p>
+solver. <code>maxit</code> is the maximum number of iterations allowed.
+<code>tol</code> is used to check the log-likelihood improvements. If the
+improvements compared with the previous iteration falls below this tolerance
+the optimizer converged. If <code>maxit</code> is reached the solver will stop,
+even if not converged.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='destandardize_coefficients.html'>destandardize_coefficients</a></code>,
-    <code>standardize_model_matrix</code>.</p></div>
+    <div class='dont-index'><p><code><a href='standardize.html'>destandardize_coefficients</a></code>,
+<code><a href='standardize.html'>standardize</a></code>, <code><a href='is.standardized.html'>is.standardized</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -278,7 +284,8 @@
 #&gt; Wind         -0.548395741  -0.548395741  -0.548395741  -0.548395741
 #&gt; Temp          0.558254605   0.558254605   0.558254605   0.558254605
 #&gt; Month        -0.404780348  -0.404780348  -0.404780348  -0.404780348
-#&gt; Day           0.114412677   0.114412677   0.114412677   0.114412677</div></pre>
+#&gt; Day           0.114412677   0.114412677   0.114412677   0.114412677</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -294,6 +301,8 @@
       <li><a href="#examples">Examples</a></li>
     </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

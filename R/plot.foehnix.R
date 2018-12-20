@@ -7,12 +7,41 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 10:03 on marvin
+# - L@ST MODIFIED: 2018-12-20 18:07 on marvin
 # -------------------------------------------------------------------
 
-# -------------------------------------------------------------------
-# Plot routine for foehnix classes.
-# -------------------------------------------------------------------
+
+#' foehnix Model Assessment Plots
+#' 
+#' Visual representation \code{\link{foehnix}} model optimization.
+#' 
+#' @param x a \code{\link{foehnix}} mixture model object.
+#' @param which \code{NULL} (default), character, character string,
+#'         integer, or numeric. Allowed characters: \code{loglik},
+#'         \code{loglikcontribution}, and \code{coef}. If \code{which}
+#'         is numeric/integer or a vector of numerics/integers the numbers
+#'         correspond to \code{loglik} (\code{1}), \code{loglikpath} (\code{2}),
+#'         or \code{coef} (\code{3}).
+#' @param ... additional arguments, unused.
+#' 
+#' @details
+#' There are currently three different plot types.
+#' \itemize{
+#'     \item \code{"loglik"} shows the log-likelihood sum path trough
+#'         the iterations of the EM algorithm for parameter estimation.
+#'     \item \code{"loglikcontribution"} shows the log-likelihood
+#'         contribution (initial value subtracted; all paths start
+#'         with \code{0}).
+#'     \item \code{coef} shows the development of the (standardized)
+#'         coefficients during EM optimization. Parameters of the
+#'         components are shown on the real scale, the coefficients
+#'         of the concomitant model (if used) are shown on the
+#'         standardized scale.
+#' }
+#'
+#' @import graphics
+#' @author Reto Stauffer
+#' @export
 plot.foehnix <- function(x, which = NULL, ...) {
 
     # Define plot type
@@ -129,7 +158,7 @@ plot.foehnix <- function(x, which = NULL, ...) {
                           flag = as.numeric(x$prob$flag))
 
         # Remove missing values
-        tmp <- na.omit(subset(tmp, flag == 1 & !is.na(y)))
+        tmp <- na.omit(subset(tmp, tmp$flag == 1 & !is.na(y)))
 
         # If left/right censoring/truncation has been specified:
         if ( has.left(x$control$family) )  tmp$y <- pmax(x$control$family$left,  tmp$y)
@@ -163,4 +192,5 @@ plot.foehnix <- function(x, which = NULL, ...) {
     }
 
 }
+
 

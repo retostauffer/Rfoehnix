@@ -33,7 +33,7 @@
 <meta property="og:title" content="Foehn Classification Based on a Two-Component Mixture Model — foehnix" />
 
 <meta property="og:description" content="This is the main method of the foehnix package to estimate
-    two-component mixture models for automated foehn classification." />
+two-component mixture models for automated foehn classification." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -134,69 +134,74 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Foehn Classification Based on a Two-Component Mixture Model</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a>, <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
     <div class="hidden name"><code>foehnix.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>This is the main method of the foehnix package to estimate
-    two-component mixture models for automated foehn classification.</p>
+two-component mixture models for automated foehn classification.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'>## TODO: extend/adjust usage</span>
-    <span class='co'>## Basic usage</span>
-    <span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>)
+    <pre class="usage"><span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>windfilter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>...</span>), <span class='no'>...</span>)
 
-    <span class='co'>## Advanced usage</span>
-    <span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>windfilter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>,
-            <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>...</span>), <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/logLik'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-    <span class='co'>## S3 methods for foehnix objects</span>
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"parameter"</span>, <span class='no'>...</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>AIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/predict'>predict</a></span>(<span class='no'>x</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"response"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/fitted.values'>fitted</a></span>(<span class='no'>object</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"probability"</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>BIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/logLik'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>AIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>BIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
-    <span class='fu'>edf</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='edf.html'>edf</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/formula'>formula</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>an object of class <code>formula</code> (or one that can be coerced to
-          that class): a symbolic description of the model to be
-          fitted.  The details of model specification are given under
-          'Details'.</p></td>
+      <td><p>an object of class <code>formula</code> (or one that can be coerced
+to that class): a symbolic description of the model to be fitted.  The
+details of model specification are given under 'Details'.</p></td>
     </tr>
     <tr>
       <th>data</th>
       <td><p>a time series object of class <code>zoo</code> containing the
-        variables for the two-part mixture model.</p></td>
+variables for the two-part mixture model.</p></td>
     </tr>
     <tr>
       <th>switch</th>
       <td><p>logical. If set to <code>TRUE</code> the two estimated components
-        will be switched. This is important if the covariate for the components
-        (left hand side of input <code>formula</code> is smaller for cases with foehn
-        than for cases without foehn, e.g., when using the temperature difference
-        as main covariate.</p></td>
+will be switched. This is important if the covariate for the components
+(left hand side of input <code>formula</code> is smaller for cases with foehn than
+for cases without foehn, e.g., when using the temperature difference as main
+covariate.</p></td>
     </tr>
     <tr>
       <th>windfilter</th>
-      <td><p>a named list can be provided to apply a custom (simple)
-        filter to the observations on <code>data</code>. Can be used to e.g., 
-        prespecify a specific wind sector for foehn winds. Please
-        read the manual of the <code><a href='foehnix_filter.html'>foehnix_filter</a></code> method
-        for more details and examples.</p></td>
+      <td><p>a named list can be provided to apply a custom (simple) filter
+to the observations on <code>data</code>. Can be used to e.g., prespecify a
+specific wind sector for foehn winds. Please read the manual of the
+<code><a href='foehnix_filter.html'>foehnix_filter</a></code> method for more details and examples.</p></td>
+    </tr>
+    <tr>
+      <th>family</th>
+      <td><p>character (at the moment <code>"gaussian"</code> or <code>"logistic"</code>)
+or an object of class <code>foehnix.family</code>.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -204,91 +209,94 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>forwarded to <code><a href='foehnix.control.html'>foehnix.control</a></code>.</p></td>
+      <td><p>forwarded to <code><a href='foehnix.control.html'>foehnix.control</a></code></p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The two-component mixture model can be specified via formula object where the
-    left hand side of the formula contains the variable explaining the two
-    components (only one variable), the right hand side of the formula specifies
-    the concomitant variables (multiple variables allowed).
-    As an example: let's assume that our zoo object '<code>data</code>' contains the
-    following columns:</p><ul>
-<li><p><code>ff</code>: observed wind speed at target site</p></li>
-<li><p><code>rh</code>: observed relative humidity at target site</p></li>
-<li><p><code>diff_t</code>: temperature difference between target site and
-            a station upstream of the foehn wind direction</p></li>
-</ul><p>The specification for <code>formula</code> could e.g. look as follows:</p><ul>
-<li><p><code>ff ~ 1</code>: the two components of the mixture model will be
-            based on the observed wind speed (<code>ff</code>), no concomitant
-            variables are given (intercept only).</p></li>
-<li><p><code>ff ~ rh</code>: similar to the specification above, but using
-            observed relative humidity (<code>rh</code>) as concomitant.</p></li>
-<li><p><code>ff ~ rh + diff_t</code>: as above but with an additional second
-            concomitant variable (observed temperature difference, <code>diff_t</code>).</p></li>
-<li><p><code>diff_t ~ ff + rh</code>: using temperature difference as the main
-            variable for the two components while <code>ff</code> and <code>rh</code> are
-            used as concomitants.</p></li>
-</ul><p>Note that these are just examples and have to be adjusted given data
-    availability, location, structure/names of the variables in the
-    <code>data</code> object.</p>
-    <p>An optional numeric vector of length <code>2</code> can be provided to filter
-    the data. If set, only times (rows in <code>data</code>) where the observed wind
-    direction <code>dd</code> lies within the wind sector specified.
-    For the examples the wind direction <code>dd</code> is assumed to be in degrees,
-    meteorological definition (<code>90</code> = from east, <code>180</code> = from south, &#8230;).
-    The following condition is used:</p><ul>
-<li><p>If <code>windsector[1L] &lt; windsector[2L]</code>: use <code>data</code> where
-            <code>data$dd &gt;= windsector[1L] &amp; data$dd &lt;= windsector[2L]</code>
-            (e.g., <code>windsector = c(90, 270)</code> for south wind sector).</p></li>
-<li><p>If <code>windsector[1L] &gt; windsector[2L]</code>: use <code>data</code> where
-            <code>data$dd &gt;= windsector[1L] | data$dd &lt;= windsector[2L]</code>
-            (e.g., <code>windsector = c(270, 90)</code> for north wind sector).</p></li>
-</ul>
-    <p>Details for lambda. If <code>"auto"</code> the default is <code>"loglik"</code> except
-    that the correlation between two or more covariates used in <code>formula</code>
-    exceeds <code>0.75</code> (both positive or negative). In this case
-    <code>lambda.min = "AIC"</code> will be used automatically with
-    additional regularization.
-    If <code>lambda.min = "loglik"</code> an unpenalized estimate will be returned.
-    If <code>lambda.min</code> is either AIC or BIC a ridge penalty (L2 penalty)
-    is used. A fixed set of penalties will be tested. The one minimising
-    either the AIC or BIC criteria will be used for the foehn classification
-    model.</p>
-    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns an object of class <code>foehnix</code>. A set of 
-    default and custom methods is available for these objects
-    such as <code>print</code>, <code>summary</code>, <code>coef</code>, <code>plot</code>, &#8230;</p>
+    <p>Returns an object of class <code>foehnix</code>.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The two-component mixture model can be specified via formula object where
+the left hand side of the formula contains the variable explaining the two
+components (only one variable), the right hand side of the formula specifies
+the concomitant variables (multiple variables allowed).  As an example:
+let's assume that our zoo object '<code>data</code>' contains the following
+columns:</p><ul>
+<li><p><code>ff</code>: observed wind speed at target site</p></li>
+<li><p><code>rh</code>: observed relative humidity at target site</p></li>
+<li><p><code>diff_t</code>: temperature difference between target site and a station
+          upstream of the foehn wind direction</p></li>
+</ul>
+    <p>The specification for <code>formula</code> could e.g. look as follows:</p><ul>
+<li><p><code>ff ~ 1</code>: the two components of the mixture model will be
+          based on the observed wind speed (<code>ff</code>), no concomitant
+          variables are given (intercept only).</p></li>
+<li><p><code>ff ~ rh</code>: similar to the specification above, but using
+           observed relative humidity (<code>rh</code>) as concomitant.</p></li>
+<li><p><code>ff ~ rh + diff_t</code>: as above but with an additional second
+          concomitant variable (observed temperature difference, <code>diff_t</code>).</p></li>
+<li><p><code>diff_t ~ ff + rh</code>: using temperature difference as the main
+          variable for the two components while <code>ff</code> and <code>rh</code> are
+          used as concomitants.</p></li>
+</ul>
+    <p>Note that these are just examples and have to be adjusted given data
+availability, location, structure/names of the variables in the <code>data</code>
+object.</p>
+<p>An optional numeric vector of length <code>2</code> can be provided to filter the
+data. If set, only times (rows in <code>data</code>) where the observed wind
+direction <code>dd</code> lies within the wind sector specified.  For the examples
+the wind direction <code>dd</code> is assumed to be in degrees, meteorological
+definition (<code>90</code> = from east, <code>180</code> = from south, &#8230;).  The
+following condition is used:</p><ul>
+<li><p>If <code>windsector[1L] &lt; windsector[2L]</code>: use <code>data</code> where
+          <code>data$dd &gt;= windsector[1L] &amp; data$dd &lt;= windsector[2L]</code>
+          (e.g., <code>windsector = c(90, 270)</code> for south wind sector).</p></li>
+<li><p>If <code>windsector[1L] &gt; windsector[2L]</code>: use <code>data</code> where
+          <code>data$dd &gt;= windsector[1L] | data$dd &lt;= windsector[2L]</code>
+          (e.g., <code>windsector = c(270, 90)</code> for north wind sector).</p></li>
+</ul>
+    <p>TODO: Details for lambda. If <code>"auto"</code> the default is <code>"loglik"</code>
+except that the correlation between two or more covariates used in
+<code>formula</code> exceeds <code>0.75</code> (both positive or negative). In this case
+<code>lambda.min = "AIC"</code> will be used automatically with additional
+regularization.  If <code>lambda.min = "loglik"</code> an unpenalized estimate
+will be returned.  If <code>lambda.min</code> is either AIC or BIC a ridge penalty
+(L2 penalty) is used. A fixed set of penalties will be tested. The one
+minimising either the AIC or BIC criteria will be used for the foehn
+classification model.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Plavcan D, Mayr GJ, Zeileis A (2014).
-        Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
-        <em>Journal of Applied Meteorology and Climatology</em>.
-        <b>53</b>(3), 652--659. doi:10.1175/JAMC-D-13-0267.1</p>    
+Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
+<em>Journal of Applied Meteorology and Climatology</em>.
+<b>53</b>(3), 652--659. doi: <a href='http://doi.org/10.1175/JAMC-D-13-0267.1'>10.1175/JAMC-D-13-0267.1</a></p>
 <p>Gr\"un B, Leisch F (2007).
-        Fitting Finite Mixtures of Generalized Linear Regressions in <em>R</em>.
-        <em>Computational Statistics \&amp; Data Analysis</em>. <b>51</b>(11), 5247--5252.
-        doi:10.1016/j.csda.2006.08.014</p>    
+Fitting Finite Mixtures of Generalized Linear Regressions in <em>R</em>.
+<em>Computational Statistics \&amp; Data Analysis</em>. <b>51</b>(11), 5247--5252.
+doi: <a href='http://doi.org/10.1016/j.csda.2006.08.014'>10.1016/j.csda.2006.08.014</a></p>
 <p>Gr\"un B, Leisch F (2008).
-        FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
-        <em>Journal of Statistical Software, Articles</em>.
-        <b>28</b>(4), 1--35. doi:10.18637/jss.v028.i04</p>    
+FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
+<em>Journal of Statistical Software, Articles</em>.
+<b>28</b>(4), 1--35. doi: <a href='http://doi.org/10.18637/jss.v028.i04'>10.18637/jss.v028.i04</a></p>
 <p>Fraley C, Raftery AE (2002).
-        Model-Based Clustering, Discriminant Analysis, and Density Estimation.
-        <em>Journal of the American Statistical Association</em>.
-        <b>97</b>(458), 611--631. doi:10.1198/016214502760047131</p>
+Model-Based Clustering, Discriminant Analysis, and Density Estimation.
+<em>Journal of the American Statistical Association</em>.
+<b>97</b>(458), 611--631. doi: <a href='http://doi.org/10.1198/016214502760047131'>10.1198/016214502760047131</a></p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>See <code>windfilter</code> for more information about the
-    <code>windfilter</code> option.</p>
-<p>See also: <code><a href='tsplot.foehnix.html'>tsplot</a></code>, <code>plot.foehnix</code>,
-    <code><a href='windrose.html'>windrose</a></code>.</p></div>
+    <div class='dont-index'><p>See <code><a href='foehnix_filter.html'>foehnix_filter</a></code> for more information about the
+<code>windfilter</code> option.  See also: <code><a href='tsplot.html'>tsplot</a></code>, <code><a href='windrose.html'>windrose</a></code>.
+TODO: windfilter should be renamed to filter.</p>
+<p>Foehnix family objects: <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p>
+<p>S3 methods for <code>foehnix</code> objects:
+<code><a href='plot.foehnix.html'>plot.foehnix</a></code>, <code><a href='predict.foehnix.html'>predict.foehnix</a></code>, <code><a href='fitted.foehnix.html'>fitted.foehnix</a></code>,
+<code>print.foehnix</code>, <code><a href='windrose.html'>windrose.foehnix</a></code>, <code><a href='coef.foehnix.html'>coef.foehnix</a></code>,
+...</p></div>
     
 
   </div>
@@ -297,15 +305,17 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
 
       <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

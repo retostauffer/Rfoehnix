@@ -1,22 +1,117 @@
 # -------------------------------------------------------------------
-# - NAME:        foehnix.R
+# - NAME:        iwls_logit.R
 # - AUTHOR:      Reto Stauffer
 # - DATE:        2018-11-28
 # -------------------------------------------------------------------
-# - DESCRIPTION: Scripts to estimate Gaussian and logistic
-#                two-component mixture models with IWLS and
-#                weighted empirical moments.
-#                "simple" here referrs to non-gradient non-optimizer
-#                based model estimates.
+# - DESCRIPTION: Iterative weighted least squares solver for logistic
+#                regression models. Used to estimate the concomitant
+#                models in 'foehnix'.
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-19 18:36 on marvin
+# - L@ST MODIFIED: 2018-12-20 17:46 on marvin
 # -------------------------------------------------------------------
 
-# -------------------------------------------------------------------
-# IWLS optimizer for logistic regression model (concomitant model)
-# -------------------------------------------------------------------
+#' IWLS Solver for Binary Logistic Regression Model
+#' 
+#' Iterative weighted least squares solver for a logistic regression
+#' model. Used by \code{\link{foehnix.unreg.fit}} to estimate the
+#' concomitant model of the two-component foehnix mixture models.
+#' 
+#' @param X model matrix including intercept (if required).
+#' @param y response, can be binary or probabilities (values in \code{]0,1[}).
+#' @param beta initial regression coefficients. If not set (\code{beta = NULL}, default),
+#'        all coefficients will be initialized with \code{0}.
+#' @param lambda if set to \code{NULL} (default) no penalty is used during optimization.
+#'        A \code{float} can be provided for regularization (ridge/L2 penalty).
+#' @param maxit integer, maximum number of iterations, default \code{100}.
+#' @param tol float, tolerance for the improvement to check for convergence.
+#' @param standardize logical. If set to \code{TRUE} (default) the model matrix
+#'        containing the concomitant variables will be standardized.
+#' @param verbose logical, if set to \code{FALSE} output is suppressed.
+#' @param ... currently unused.
+#' @param object,which control the \code{coef} method.
+#' @return Returns an object of class \code{ccmodel} (concomitant model).
+#' The object contains the following information:
+#' 
+#' \itemize{
+#'     \item \code{lambda} value used (or \code{NULL}).
+#'     \item \code{edf} effective degrees of freedom. Equal to \code{P}
+#'         (\code{ncol(X)}) if no regularization is used.
+#'     \item \code{loglik} final log-likelihood sum of the model.
+#'     \item \code{AIC} Akaike information criteria.
+#'     \item \code{BIC} Bayesian information criteria.
+#'     \item \code{converged} logical flag whether or not the algorithm
+#'         converged (see \code{maxit}, \code{tol}).
+#'     \item \code{beta} matrix of dimension \code{P x 1} containing the
+#'         estimated and possibly standardized regression coefficients
+#'         (see input \code{standardize}). If input \code{standardize = FALSE}
+#'         \code{beta == coef}.
+#'     \item \code{coef} matrix of dimension \code{P x 1} containing the
+#'         destandardized regression coefficients. 
+#' }
+#' 
+#' @details
+#' Iterative (re-)weighted least squares solver for logistic regression model.
+#' The basic call (\code{iwls_solver(X, y)}) solves the unregularized problem.
+#' Input matrix \code{X} is the design matrix containing the concomitant
+#' variables for the logistic regression model. Matrix is of dimension
+#' \code{N x P} where \code{N} is the number of of observations, \code{P} the
+#' number of concomitant variables (including the intercept, if required). If
+#' more than one column contains constant values the script will throw an
+#' error (solution no more identifiable).  \code{y} is the binary response
+#' vector of length \code{N} containing \code{0}s and \code{1}s.
+#' 
+#' \code{beta} can be used to specify the initial regression parameters.  If
+#' not set (\code{beta = NULL}; default) all parameters will be initialized
+#' with \code{0}s.
+#' 
+#' If \code{lambda} is set (\code{float}) a ridge penalty will be added to
+#' shrink the regression parameters.
+#' 
+#' The logical option \code{standardize} controls whether or not the model
+#' matrix (covariates) should be standardized using Gaussian standardization
+#' (\code{(x - mean(x)) / sd(x)}) for all columns with non-constant data. It
+#' is recommended to use standardization (\code{standardize = TRUE}) to avoid
+#' numerical problems.
+#' 
+#' \code{maxit} and \code{tol} allow to control the iterations of the IWLS
+#' solver. \code{maxit} is the maximum number of iterations allowed.
+#' \code{tol} is used to check the log-likelihood improvements. If the
+#' improvements compared with the previous iteration falls below this tolerance
+#' the optimizer converged. If \code{maxit} is reached the solver will stop,
+#' even if not converged.
+#' 
+#' @seealso
+#' \code{\link{destandardize_coefficients}},
+#' \code{\link{standardize}}, \code{\link{is.standardized}}
+#' 
+#' @examples
+#' # Example data set
+#' data("airquality")
+#' airquality <- na.omit(airquality)
+#' airquality$Ozone <- as.numeric(airquality$Ozone > 50)
+#' 
+#' # glm model
+#' m1 <- glm(Ozone ~ ., data = airquality, family = binomial(link = "logit"))
+#' 
+#' # Setting up model.frame, response, and model matrix
+#' mf <- model.frame(Ozone ~ ., data = airquality)
+#' X  <- model.matrix(Ozone ~ ., data = airquality)
+#' y  <- model.response(mf)
+#' 
+#' # Default call
+#' m2 <- iwls_logit(X, y)
+#' # With standardized coefficients
+#' m3 <- iwls_logit(X, y, standardize = TRUE)
+#' # No early stop, stop when maxit = 100 is reached. Will through
+#' m4 <- iwls_logit(X, y, standardize = TRUE, tol = -Inf, maxit = 100)
+#' 
+#' # Comparing coefficients
+#' print(cbind(coef(m1), m2$coef, m3$coef, m4$coef))
+#'
+#' @author Reto Stauffer
+#' @export
 iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
                        maxit = 100L, tol = 1e-8, verbose = FALSE, ...) {
 
@@ -105,14 +200,13 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     return(rval)
 }
 
-coef.ccmodel <- function(x, which = "coef", ...) {
+#' @rdname iwls_logit
+#' @export
+coef.ccmodel <- function(object, which = "coef", ...) {
     which <- match.arg(which, c("coef", "beta"))
-    c <- as.data.frame(t(x[[which]][,1]))
+    c <- as.data.frame(t(object[[which]][,1]))
     names(c) <- sprintf("cc.%s", names(c))
     c
 }
-
-
-
 
 

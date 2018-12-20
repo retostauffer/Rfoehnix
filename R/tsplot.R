@@ -3,23 +3,44 @@
 # - AUTHOR:      Reto Stauffer
 # - DATE:        2018-12-16
 # -------------------------------------------------------------------
-# - DESCRIPTION:
+# - DESCRIPTION: Time series plot of observations plus classification
+#                based on a foehnix mixture model.
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-16 17:30 on marvin
+# - L@ST MODIFIED: 2018-12-20 18:09 on marvin
 # -------------------------------------------------------------------
 
+#' Time Series Plot of foehnix Models
+#' 
+#' Development time series plots of estimated \code{\link{foehnix}}
+#' models. TODO: they are very specific at the moment!
+#' 
+#' @param x object of type \code{foehnix}.
+#' @param start POSIXt object or an object which can be converted to POSIXt.
+#' @param end POSIXt object or an object which can be converted to POSIXt.
+#' @param ndays integer, number of days used when looping trough the time series.
+#' @param ... additional arguments, ignored.
+#' @param xtra optional zoo object with probabilities in \code{]0,1[} to compare
+#'         two classification algorithms.
+#' @param ask logical, default is \code{TRUE}.
+#' 
+#' @details Development method to access plausability of the estimated foehn
+#' proabilities.  For software release this method should either be removed or
+#' made much more general. At the moment the method heavily depends on the
+#' names of the data used as input for \code{\link{foehnix}}.
+#'
+#' TODO: this is very specific to our data and our variable names.
+#'       either provide something like this and force the users to
+#'       follow our naming conventions, or make it much more
+#'       flexible/generig.
+#'
+#' @author Reto Stauffer
+#' @export
+tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
 
-# -------------------------------------------------------------------
-# Development time series plot routine.
-# TODO: this is very specific to our data and our variable names.
-#       either provide something like this and force the users to
-#       follow our naming conventions, or make it much more
-#       flexible/generig.
-# -------------------------------------------------------------------
-tsplot <- function(x, ...) UseMethod("tsplot")
-tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
+    if ( ! inherits(x, "foehnix") )
+        stop("tsplot is only for objects of class \"foehnix\".")
 
     add_boxes <- function(x, col = "gray90") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
@@ -197,9 +218,60 @@ tsplot.foehnix <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = 
 
 }
 
-# --------------------------------------------------------------------
-# Helper function to draw nice filled polygons with NA's.
-# --------------------------------------------------------------------
+
+#' Add Polygon to Plot
+#'
+#' Helper function to plot a filled polygon based on a \code{zoo}
+#' time series object with nice missing data handling.
+#'
+#' @param x an univariate \code{zoo} time series object.
+#' @param col character, a hex color. Default is \code{"#ff0000"} (red).
+#' @param lower.limit numeric, the lower limit used to plot the polygon.
+#'        default is \code{0}.
+#' @param lwd line width argument.
+#'
+#' @examples
+#' library("zoo")
+#' # Create a time series object
+#' set.seed(3)
+#' a <- zoo(sin(1:100/80*pi) + 3 + rnorm(100, 0, 0.3), 201:300)
+#' 
+#' # Plot
+#' par(mfrow = c(1,3))
+#' plot(a, type = "n", main = "Demo Plot 1",
+#'      ylim = c(-1, max(a)+1), xaxs = "i", yaxs = "i")
+#' add_polygon(a)
+#' 
+#' # Specify lower.limit to -1 (lower limit of our ylim),
+#' # add different color, change line style.
+#' plot(a, type = "n", main = "Demo Plot 2",
+#'      ylim = c(-1, max(a)+.2), xaxs = "i", yaxs = "i")
+#' add_polygon(a, col = "#00CCBB", lower.limit = -1, lwd = 3)
+#' 
+#' # Using an "upper limit".
+#' plot(a, type = "n", main = "Demo Plot 3",
+#'      ylim = c(-1, max(a)+.2), xaxs = "i", yaxs = "i")
+#' add_polygon(a, col = "#00BBFF", lower.limit = par()$usr[4L])
+#' 
+#' # Make a copy and add some missing values
+#' b <- a
+#' b[2:10]  <- NA
+#' b[50:55] <- NA
+#' b[70]    <- NA
+#' 
+#' # Plot
+#' par(mfrow = c(1,1))
+#' 
+#' # Same as "Demo Plot 2" with the time series which
+#' # contains missing values (b).
+#' plot(b, type = "n", main = "Demo Plot 2 With Missing Values",
+#'      ylim = c(-1, max(b, na.rm = TRUE)+.2), xaxs = "i", yaxs = "i")
+#' add_polygon(b, col = "#00CCBB", lower.limit = -1, lwd = 3)
+#' 
+#' @import zoo
+#' @import graphics
+#' @author Reto Stauffer
+#' @export
 add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
     # Need hex color
     if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
@@ -213,10 +285,12 @@ add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
         if ( i1 > 1 ) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
         # Else check first NA
         if ( ! any(is.na(x)) ) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
-        p_x <- as.numeric(index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
+        # Create x/y coordinate vectors for the polygon function
+        p_x <- as.numeric(zoo::index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
         p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
-        polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
-        lines( x[i1:i2],   col = col, lwd = lwd )
+        # Plotting
+        graphics::polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
+        graphics::lines( x[i1:i2],   col = col, lwd = lwd )
         # Remove plotted data from time series and continue
         x <- x[-c(i1:i2)]
     }
