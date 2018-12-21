@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -133,6 +133,24 @@
       <small>Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="foehnix-0-0-4" class="section level1">
+<h1 class="page-header">
+<a href="#foehnix-0-0-4" class="anchor"></a>foehnix 0.0-4</h1>
+<ul>
+<li>Initialization of <code>prob</code> ($\pi$) for the non-commitant mixture model is now <code><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean(z)</a></code> rather than <code>0.5</code>.</li>
+<li>EM/IWLS: if the log-likelihood improvement for a specific iteration falls below the threshold: ignore this iteration and return the information/coefficients/iteration count from the previous iteration (`iter - 1).</li>
+<li>
+<code>windfilter</code> renamed to <code>filter</code> when calling <code>foehnix</code>!</li>
+<li>
+<code>foehnix_filter</code> has been extended. So far an integer vector has been returned with the observations within filter (the ‘good’ ones). This made it hard to find out which ones have to be set to <code>0</code> (where both, <code>y</code> was ont <code>NA</code> and all variables for the filter(s) were not <code>NA</code>). I made the return of the <code>foehnix_filter</code> slightly more complex. <code>foehnix_filter</code> now returns an object of class <code>foehnix.filter</code>, a list with three elements containing integer vectors which correspond to the row indizes of the data (input <code>x</code>, see <a href="reference/foehnix_filter.html"><code>foehnix_filter</code> manual</a>). Returns:</li>
+<li>
+<code>good</code>: observations/rows within filter</li>
+<li>
+<code>bad</code>: observations outside filter, but all values required for the filter have been available (not <code>NA</code>).</li>
+<li>
+<code>ugly</code>: if at least one of the variables used for the filter was missing.</li>
+</ul>
+</div>
     <div id="foehnix-0-0-3" class="section level1">
 <h1 class="page-header">
 <a href="#foehnix-0-0-3" class="anchor"></a>foehnix 0.0-3</h1>
@@ -157,6 +175,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#foehnix-0-0-4">0.0-4</a></li>
         <li><a href="#foehnix-0-0-3">0.0-3</a></li>
         <li><a href="#foehnix-0-0-2">0.0-2</a></li>
       </ul>

@@ -2,9 +2,12 @@
 % Please edit documentation in R/foehnix_filter.R
 \name{foehnix_filter}
 \alias{foehnix_filter}
+\alias{print.foehnix.filter}
 \title{Evaluates Data Filter Rules for foehnix Mixture Moel Calls.}
 \usage{
 foehnix_filter(x, filter)
+
+\method{print}{foehnix.filter}(x)
 }
 \arguments{
 \item{x}{object of class \code{zoo} or \code{data.frame} containing the
@@ -17,7 +20,8 @@ functions. Details provided in the 'Details' section.}
 }
 \value{
 Returns a vector of integers corresponding to those rows in
-the data set \code{x} which fulfill all filte criteria.
+the data set \code{x} which fulfill all filte criteria. If input
+\code{filter = NULL} an integer vector \code{1:nrow(x)} is returned.
 }
 \description{
 \code{\link{foehnix}} models allow to specify an optional
@@ -42,9 +46,13 @@ due to the canalization of the air flow trough the local topography. The
 \code{\link{foehnix_filter}} option allows to subset the data according to a
 user defined set of filters from simple filters to complex filters.
 
+These filters classify each observation (each row in \code{x}) as
+good (within filter), bad (outside filter), and ugly (at least one
+variable required to apply the filter was \code{NA}).
+
 No filter: If \code{filter = NULL} no filter will be applied and the whole
-data set provided is used to do the foehn classification (see
-\code{\link{foehnix}}).
+data set provided is used to do the foehn classification (all observations
+will be treated as 'good').
 
 Simple filter rules: The filter is a named list containing one or several
 numeric vectors of length 2 with finite numeric values.  The name of the
@@ -55,46 +63,53 @@ filter. Examples:
 
 \itemize{
     \item \code{filter = list(dd = c(43, 223))}: applies the filter to
-        column \code{x$dd}. Only rows of \code{x} will be used where
-        \code{x$dd >= 43 & x$dd <= 223}.
+        column \code{x$dd}. The filter classifies observations/rows
+        as 'good' (within filter) if \code{x$dd >= 43 & x$dd <= 223}.
     \item \code{filter = list(dd = c(330, 30)}: similar to the filter
         rule above, allows to specify a wind sector going trough 0
         (if dd is wind direction in degrees between \code{[0, 360[}).
-        Only rows of \code{x} will be used where
-        \code{x$dd >= 330 | x$dd <= 30}.
+        The filter classifies observations/rows as 'good' (within filter)
+        if \code{x$dd >= 330 | x$dd <= 30}.
     \item \code{filter = list(dd = c(43, 223), crest_dd = c(90, 270)}:
         two filter rules, one for \code{x$dd}, one for \code{x$crest_dd}.
-        Only rows of \code{x} will be used where
-        \code{x$dd >= 43 & x$dd <= 223} AND \code{x$crest_dd >= 330 | x$crest_dd <= 30}.
+        The filter classifies observations/rows as 'good' (within filter)
+        if \code{x$dd >= 43 & x$dd <= 223} AND \code{x$crest_dd >= 330 | x$crest_dd <= 30}.
+        If an observation/row does not fulfill one or the other rule
+        the observation/row is classified as 'bad' (outside filter), if
+        one of \code{x$dd} or \code{x$crest_dd} is \code{NA} the
+        corresponding observation/row will be classified as 'ugly'.
     \item Filters are not restricted to wind direction (as shown in the
         examples above)!
 }
 
 
 Custom filter functions: Instead of only providing a segment/sector defined
-by two finite numeric values (see 'Simple filter' above) a named list of
-functions can be provided. These functions DO HAVE TO return a vector of
-logical values (\code{TRUE} and \code{FALSE}) of length \code{nrow{x}}. If
-not, an error will be thrown.  The function will be applied to the column
-specified by the name of the list element. Some examples:
+by two finite numeric values (see 'Simple filter' above) a named list of #'
+functions can be provided. These functions DO HAVE TO return a vector of #'
+logical values (\code{TRUE} (good),\code{FALSE} (bad), or \code{NA} (ugly)) #'
+of length \code{nrow{x}}. If not, an error will be thrown.  The function will
+be applied to the column #' specified by the name of the list element. Some
+examples:
 
 \itemize{
     \item \code{filter = list(dd = function(x) x >= 43 & x <= 223)}:
         The function will be applied to \code{x$dd}.
-        A vector with \code{TRUE} or \code{FALSE} is returned for each for
-        each \code{1:nrow{x}} which takes \code{TRUE} if
-        \code{x$dd >= 43 & x$dd <= 223} and \code{FALSE} else.
+        A vector with \code{TRUE}, \code{FALSE}, or \code{NA} is returned for each for
+        each \code{1:nrow{x}} which takes \code{NA} if \code{is.na(x$dd)},
+        \code{TRUE} if \code{x$dd >= 43 & x$dd <= 223} and \code{FALSE} else.
         Thus, this filter is the very same as the first example in the
         'Simple filter' section above.
     \item \code{filter = list(ff = function(x) x > 2.0)}:
         Custom filter applied to column \code{x$ff}.
-        A vector with \code{TRUE} or \code{FALSE} is returned for each for
-        each \code{1:nrow{x}} which takes \code{TRUE} if
-        \code{x$ff > 2.0} and \code{FALSE} else.
+        A vector with \code{TRUE}, \code{FALSE}, and \code{NA} is returned for each for
+        each \code{1:nrow{x}} which takes \code{NA} if \code{is.na(x$ff)}, \code{TRUE} if
+        \code{x$ff > 2.0}, and \code{FALSE} else.
     \item \code{filter = list(ff = function(x) \dots, dd = function(x) \dots)}:
         two filter functions, one applied to \code{x$ff}, one to \code{x$dd}.
-        Note that only rows of \code{x} will be used for the foehn classification
-        where both (all) filters returned \code{TRUE}.
+        Note that observations/rows will be classified as 'ugly' if one of the
+        two filters returns \code{NA}. If no \code{NA} is returned the
+        observation is classified as 'good' if both return \code{TRUE}, and
+        as 'bad' (outside filter) if at least one returns \code{FALSE}.
 }
 
 Complex filters: If \code{filter} is a function this filter function will be
@@ -107,8 +122,9 @@ any complexity. As an example:
         to the \code{\link{foehnix_filter}} function (\code{x}). Thus,
         the different columns of the object can be accessed directly
         trough their names (e.g., \code{x$dd}, \code{x$ff}).
-        A vector of length \code{nrow(x)} with \code{TRUE} and \code{FALSE}
-        is returned.
+        A vector of length \code{nrow(x)} with \code{TRUE}, \code{FALSE},
+        and \code{NA} has to be returned. Only those classified as 'good' (\code{TRUE})
+        will be used for classification.
 }
 }
 \examples{
@@ -124,16 +140,18 @@ ellboegen <- zoo(subset(ellboegen, select = -timestamp),
 # Filter for observations where the wind direction is
 # within 100 - 260 (southerly flow):
 idx_south <- foehnix_filter(ellboegen, list(dd = c(100, 260)))
+print(idx_south)
 
 # Same filter but for northerly flows, taking rows with
 # wind direction observations (dd) smaller than 45 or
 # larger than 315 degrees:
 idx_north <- foehnix_filter(ellboegen, list(dd = c(315, 45)))
+print(idx_north)
 
 par(mfrow = c(1,3))
-hist(ellboegen$dd,            xlab = "dd", main = "all observations")
-hist(ellboegen$dd[idx_south], xlab = "dd", main = "southerly winds")
-hist(ellboegen$dd[idx_north], xlab = "dd", main = "northerly winds")
+hist(ellboegen$dd,                 xlab = "dd", main = "all observations")
+hist(ellboegen$dd[idx_south$good], xlab = "dd", main = "southerly winds")
+hist(ellboegen$dd[idx_north$good], xlab = "dd", main = "northerly winds")
 
 # Case 2:
 # -----------------
@@ -150,18 +168,21 @@ data("sattelberg", package = "foehnix")
 require("zoo")
 sattelberg <- zoo(subset(sattelberg, select = -timestamp),
                  as.POSIXct(sattelberg$timestamp, origin = "1970-01-01", tz = "UTC"))
-names(sattelberg) <- sprintf("sat_\\\%s", names(sattelberg)) # Renaming variables
+names(sattelberg) <- paste0("crest_", names(sattelberg)) # Renaming variables
 
 # Combine Ellboegen observations with Sattelberg observations
 data <- merge(ellboegen, sattelberg)
 print(head(data))
 
 # Now apply a wind filter
-foehnix_filter <- list(dd = c(43, 223), sat_dd = c(90, 270))
-idx <- foehnix_filter(data, foehnix_filter)
-data <- data[idx,]
+my_filter  <- list(dd = c(43, 223), crest_dd = c(90, 270))
+filter_obj <- foehnix_filter(data, my_filter)
+print(filter_obj)
 
-summary(subset(data, select = c(dd, sat_dd)))
+# Subsetting the 'good' rows
+data <- data[idx$good,]
+
+summary(subset(data, select = c(dd, crest_dd)))
 
 }
 \author{

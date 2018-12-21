@@ -64,7 +64,7 @@ two-component mixture models for automated foehn classification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -145,7 +145,7 @@ two-component mixture models for automated foehn classification.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>windfilter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+    <pre class="usage"><span class='fu'>foehnix</span>(<span class='no'>formula</span>, <span class='no'>data</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>switch</span>, <span class='no'>...</span>),
   <span class='no'>...</span>)
 
@@ -193,7 +193,7 @@ for cases without foehn, e.g., when using the temperature difference as main
 covariate.</p></td>
     </tr>
     <tr>
-      <th>windfilter</th>
+      <th>filter</th>
       <td><p>a named list can be provided to apply a custom (simple) filter
 to the observations on <code>data</code>. Can be used to e.g., prespecify a
 specific wind sector for foehn winds. Please read the manual of the
@@ -291,8 +291,8 @@ Model-Based Clustering, Discriminant Analysis, and Density Estimation.
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>See <code><a href='foehnix_filter.html'>foehnix_filter</a></code> for more information about the
-<code>windfilter</code> option.  See also: <code><a href='tsplot.html'>tsplot</a></code>, <code><a href='windrose.html'>windrose</a></code>.
-TODO: windfilter should be renamed to filter.</p>
+<code>filter</code> option.  See also: <code><a href='tsplot.html'>tsplot</a></code>, <code><a href='windrose.html'>windrose</a></code>.
+TODO: filter should be renamed to filter.</p>
 <p>Foehnix family objects: <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p>
 <p>S3 methods for <code>foehnix</code> objects:
 <code><a href='plot.foehnix.html'>plot.foehnix</a></code>, <code><a href='predict.foehnix.html'>predict.foehnix</a></code>, <code><a href='fitted.foehnix.html'>fitted.foehnix</a></code>,

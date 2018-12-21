@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 17:46 on marvin
+# - L@ST MODIFIED: 2018-12-21 15:24 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -125,6 +125,7 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     if ( min(y) < 0 | max(y) > 1 ) stop("y values out of range. Have to be within ]0,1[.")
 
     # Standardize design matrix?
+    holdX <- X
     if ( standardize ) X <- standardize(X)
 
     # initialize regression coefficients if needed
@@ -139,8 +140,9 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # Apply link function on linear predictor to get response mu (probabilities)
     mu  <- plogis(eta) 
 
-    iter   <- 0L
-    llpath <- list()
+    iter     <- 0L
+    llpath   <- list()
+    coefpath <- list()
     while( iter < maxit ) {
         # Increase iteration counter
         iter <- iter + 1L
@@ -159,6 +161,7 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
 
         # Update log-likelihood sum
         llpath[[iter]]   <- sum(y * eta - log(1 + exp(eta)))
+        coefpath[[iter]] <- beta
 
         # Continue if iter == 1 and/or is.null(tol)
         if ( iter == 1 | is.null(tol) ) next
@@ -166,8 +169,14 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
         if ( verbose) cat(sprintf("Iteration %d, ll = %15.4f, %s\r", iter, ll,
             ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
 
-        # Check if improvement falls below tolerance
-        if ( (llpath[[iter]] - llpath[[iter - 1]]) < tol ) break
+        # Check if improvement falls below tolerance: early stopping,
+        # remove latest likelihood/coefficients and stop iteration.
+        if ( (llpath[[iter]] - llpath[[iter - 1]]) < tol ) {
+            # Falling below tolerance, return last step
+            llpath[[iter]] <- NULL       # Remove latest likelihood
+            coefpath[[iter]] <- NULL     # Remove latest set of coefficients
+            iter <- iter - 1; break      # Stop iteration
+        }
 
     }
     llpath <- structure(do.call(rbind, llpath), dimnames = list(NULL, "loglik"))
@@ -175,8 +184,12 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # Not converged? Drop warning.
     if ( ! is.null(tol) & iter == maxit ) warning("IWLS solver for logistic model did not converge.")
 
+    if ( is.standardized(X) ) X <- destandardize(X)
+    beta_vcov <- as.matrix(sqrt(diag(solve(t(X*w) %*% (X*w)))))
+
     # Just naming the column containing the coefficients.
-    colnames(beta) <- c("concomitant")
+    beta <- coefpath[[length(coefpath)]]  # Last set of coefficients
+    colnames(beta) <- c("concomitant")    # Add column name to coefficient matrix
 
     # Calculate effective degrees of freedom
     if ( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
@@ -187,8 +200,9 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
                  BIC = -2 * ll + log(nrow(X)) * edf,
                  converged = ifelse(iter < maxit, TRUE, FALSE))
-    rval$beta <- beta
-    rval$coef <- if ( standardize ) destandardize_coefficients(beta, X) else beta
+    rval$beta      <- beta
+    rval$beta_vcov <- vcov
+    rval$coef      <- if ( standardize ) destandardize_coefficients(beta, X) else beta
 
     # Return list object containing
     # - edf (numeric): effective degrees of freedom

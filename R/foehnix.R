@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:44 on marvin
+# - L@ST MODIFIED: 2018-12-21 17:28 on marvin
 # -------------------------------------------------------------------
 
 
@@ -66,8 +66,8 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 
     # Initial probability (fifty fifty) and inital prior
     # probabilites for the component membership.
-    prob  <- rep(.5, length(y))
-    post  <- family$posterior(y, mean(prob), theta)
+    prob  <- mean(z)
+    post  <- family$posterior(y, prob, theta)
 
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
@@ -77,10 +77,7 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
         iter <- iter + 1;
 
         # M-step: update probabilites and theta
-        #prob  <- as.numeric(post >= .5)
-        ##TODO: prob <- post
-        #prob <- post
-        prob <- mean(post)
+        prob  <- mean(post)
         theta <- family$theta(y, post, theta = theta)
 
         # E-step: calculate a-posteriori probability
@@ -93,12 +90,6 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
         if ( verbose )
             cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 
-        # If the log-likelihood decreases: proceed!
-        if ( iter == 1 ) next
-
-        # Improvement < 0 (model got worse): continue
-        ##if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < 0 ) next
-
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
@@ -107,7 +98,17 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
             browser()
         }
 
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
+        # If the log-likelihood decreases: proceed!
+        if ( iter == 1 ) next
+
+        # Likelihood improvement felt below the threshold:
+        # remove last iteration and return.
+        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) {
+            llpath[[iter]]   <- NULL  # Removes last likelihood entry
+            coefpath[[iter]] <- NULL  # Removes last coefficient entry
+            iter <- iter - 1; break   # Stop EM iterations.
+        }
+
     }; if ( verbose ) cat("\n")
 
     # Check if algorithm converged before maxit was reached
@@ -211,7 +212,6 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
     while ( iter < maxit[1L] ) {
         iter <- iter + 1;
 
-
         # M-step: update probabilites and theta
         ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE,
                               maxit = tail(maxit, 1L), tol = tail(tol, 1L))
@@ -237,7 +237,11 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
         # If the log-likelihood improvement falls below the
         # specified tolerance we assume that the algorithm
         # converged: stop iteration.
-        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) break
+        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) {
+            llpath[[iter]]   <- NULL  # Removes last likelihood entry
+            coefpath[[iter]] <- NULL  # Removes last coefficient entry
+            iter <- iter - 1; break   # Stop EM iterations.
+        }
 
     }; if ( verbose ) cat("\n")
 
@@ -308,7 +312,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' \code{\link{iwls_logit}}.
 #'
 #' @author Reto Stauffer
-#####foehnix.reg.fit <- function(formula, data, windfilter = NULL, family = "gaussian",
+#####foehnix.reg.fit <- function(formula, data, filter = NULL, family = "gaussian",
 #####                    maxit = 100L, tol = 1e-5, standardize = TRUE,
 #####                    alpha = NULL, nlambda = 100L, verbose = TRUE, ...) {
 foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
@@ -439,7 +443,7 @@ print.foehnix.control <- function(x, ...) str(x)
 #'        (left hand side of input \code{formula} is smaller for cases with foehn than
 #'        for cases without foehn, e.g., when using the temperature difference as main
 #'        covariate.
-#' @param windfilter a named list can be provided to apply a custom (simple) filter
+#' @param filter a named list can be provided to apply a custom (simple) filter
 #'        to the observations on \code{data}. Can be used to e.g., prespecify a
 #'        specific wind sector for foehn winds. Please read the manual of the
 #'        \code{\link{foehnix_filter}} method for more details and examples.
@@ -529,8 +533,8 @@ print.foehnix.control <- function(x, ...) str(x)
 #'
 #' @seealso
 #' See \code{\link{foehnix_filter}} for more information about the
-#' \code{windfilter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
-#' TODO: windfilter should be renamed to filter.
+#' \code{filter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
+#' TODO: filter should be renamed to filter.
 #' 
 #' Foehnix family objects: \code{\link{foehnix.family}}.
 #'
@@ -549,7 +553,7 @@ print.foehnix.control <- function(x, ...) str(x)
 #       for the concomitant model (e.g., ff ~ -1 + rh). The standardize/
 #       destandardize function should technically be ready to support
 #       this.
-foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
+foehnix <- function(formula, data, switch = FALSE, filter = NULL,
                     family = "gaussian",
                     control = foehnix.control(family, switch, ...), ...) { 
 
@@ -597,11 +601,13 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     # If a wind sector is given: identify observations with a wind direction
     # outside the user defined sector. These will not be considered in the
     # statistical models.
-    idx_wind <- foehnix_filter(data, windfilter)
+    filter_obj <- foehnix_filter(data, filter)
 
-    # Take all elements which are not NA and are within the
-    # defined wind sectors (if wind filter specified).
-    idx_take <- if ( is.null(idx_wind) ) idx_notna else idx_notna[idx_notna %in% idx_wind]
+
+    # Take all elements which are not NA and where the
+    # foehnix_filter routine returned an index on "good" (not
+    # removed due to filter rules OR due to missing values).
+    idx_take <- idx_notna[idx_notna %in% filter_obj$good]
     if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
 
     # Subset the model.frame (mf) and the response (y) and pick
@@ -653,18 +659,13 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     }
 
     # Create the return list object (foehnix object)
-    res <- list(optimizer = rval, data = data, windfilter = windfilter,
+    res <- list(optimizer = rval, data = data, filter = filter,
+                filter_obj = filter_obj,
                 call = match.call(), formula = formula,
                 control = control, switch = switch)
 
     # Store coefficients
     res$coef <- rval$theta; res$coef$concomitants = coef
-
-    # Indizes of the samples dropped/used/filtered
-    res$samples <- list(total = nrow(data),
-                        na    = length(idx_notna),
-                        wind  = length(idx_wind),
-                        taken = length(idx_take))
 
     # The final result, the foehn probability. Creates an object
     # of the same class as the input "data" (currently only zoo!)
@@ -673,8 +674,8 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     # flag is as follows:
     # - NA  if not modelled (data for the model not available).
     # - 0   if foehn probability has been modelled, data not left out
-    #       due to the windfilter rules.
-    # - 1   if the windfilter removed the observations/sample, not
+    #       due to the filter rules.
+    # - 1   if the filter removed the observations/sample, not
     #       used for the foehn classification model, but no missing
     #       observations.
     # TODO: data.frame option?
@@ -683,7 +684,7 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     # - By default, use NA for both columns.
     # - If probabilities modelled: set first column to the modelled
     #   a-posteriory probability, set the second column to TRUE.
-    # - If observations removed due to the windfilter options: set
+    # - If observations removed due to the filter options: set
     #   first column to 0 (probability for foehn is 0), set the
     #   second column to FALSE.
     # Foehn probability (a-posteriori probability)
@@ -692,14 +693,8 @@ foehnix <- function(formula, data, switch = FALSE, windfilter = NULL,
     # Store a-posteriory probability and flag = TRUE
     tmp$prob[idx_take] <- rval$post
     tmp$flag[idx_take] <- 1
-    # Store prob = 0 and flag = FALSE with removed due to windfilter rule
-    if ( is.null(idx_wind) ) {
-        idx <- which(! 1:nrow(tmp) %in% idx_notna)
-    } else {
-        idx <- 1:nrow(tmp)
-        idx <- which(! idx %in% idx_notna | ! idx %in% idx_wind)
-    }
-    if ( length(idx) > 0 ) tmp[idx,] <- 0
+    # Store prob = 0 and flag = FALSE with removed due to filter rule
+    if ( length(filter_obj$bad) > 0 ) tmp[filter_obj$bad,] = 0
 
     # Store on final object
     res$prob     <- tmp
@@ -797,11 +792,11 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
     # any foehn).
     idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
     # Inverse wind filter
-    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, object$windfilter))
+    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, object$filter))
 
     # Create return object of type zoo. By default:
     # - prob is the a-posteriory probability, flag is 1.
-    # - For rows removed by the windfilter option: set prob = 0 and flag = 0
+    # - For rows removed by the filter option: set prob = 0 and flag = 0
     # - For rows where input contained NA: set prob = NA and flag = NA
     res <- zoo(data.frame(prob = post, flag = rep(1, length(post))), index(newdata))
     if ( length(idx_wind) > 0 ) res[idx_wind,] <- 0

@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:34 on marvin
+# - L@ST MODIFIED: 2018-12-21 16:30 on marvin
 # -------------------------------------------------------------------
 
 
@@ -79,6 +79,15 @@ scale.standardized <- function(x, ...) return(attr(x, "scaled:scale"))
 center <- function(x, ...) UseMethod("center")
 #' @export
 center.standardized <- function(x, ...) return(attr(x, "scaled:center"))
+
+destandardize <- function(x, ...) UseMethod("destandardize")
+destandardize.standardized <- function(x, ...) {
+    center <- center(x)
+    scale  <- scale(x)
+    for ( i in seq_along(center) ) x[,i] <- x[,i] * scale[i] + center[i]
+    matrix(x, ncol = ncol(x), nrow = nrow(x), dimnames = dimnames(x))
+}
+
 
 
 #' Check if Matrix is Standardized
@@ -248,14 +257,15 @@ summary.foehnix <- function(object, ...) {
     rval$coef    <- coef(object, type = "parameter")
 
     # Optimizer statistics
-    rval$time      <- object$time
-    rval$logLik    <- logLik(object)
-    rval$AIC       <- AIC(object)
-    rval$BIC       <- BIC(object)
-    rval$edf       <- edf(object)
-    rval$n.iter    <- object$optimizer$n.iter
-    rval$maxit     <- object$optimizer$maxit
-    rval$converged <- object$optimizer$converged
+    rval$filter_obj <- object$filter_obj
+    rval$time       <- object$time
+    rval$logLik     <- logLik(object)
+    rval$AIC        <- AIC(object)
+    rval$BIC        <- BIC(object)
+    rval$edf        <- edf(object)
+    rval$n.iter     <- object$optimizer$n.iter
+    rval$maxit      <- object$optimizer$maxit
+    rval$converged  <- object$optimizer$converged
 
     class(rval) <- "summary.foehnix"
     return(rval)
@@ -265,7 +275,7 @@ summary.foehnix <- function(object, ...) {
 print.summary.foehnix <- function(x, ...) {
 
     # Model call
-    cat("\nCall: "); print(x$call); cat("\n")
+    cat("\nCall: "); print(x$call)
 
     sum_na <- sum(is.na(x$prob$flag))
     sum_0  <- sum(x$prob$flag == 0, na.rm = TRUE)
@@ -285,6 +295,8 @@ print.summary.foehnix <- function(x, ...) {
                 sum_1, sum_1 / nrow(x$prob) * 100))
     cat(sprintf("\nClimatological foehn occurance %.2f percent (on n = %d)\n", mean_occ, mean_n))
     cat(sprintf("Mean foehn probability %.2f percent (on n = %d)\n", mean_prob, mean_n))
+
+    print(x$filter_obj)
 
     cat(sprintf("\nLog-likelihood: %.1f, %d effective degrees of freedom\n",   x$logLik, x$edf))
     cat(sprintf("Corresponding AIC = %.1f, BIC = %.1f\n", x$AIC, x$BIC))

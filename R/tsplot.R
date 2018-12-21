@@ -8,7 +8,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:09 on marvin
+# - L@ST MODIFIED: 2018-12-21 17:27 on marvin
 # -------------------------------------------------------------------
 
 #' Time Series Plot of foehnix Models
@@ -52,7 +52,9 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, as
             y <- par()$usr[3:4]
             for ( i in seq(1, length(up))) {
                 if ( length(isna) > 0 ) {
-                    to <- min(min(isna[isna > up[i]]), down[i])
+                    if ( any(isna > up[i]) ) {
+                        to <- min(min(isna[isna > up[i]]), down[i])
+                    } else { to <- down[i]; }
                 } else {
                     to <- down[i]
                 }

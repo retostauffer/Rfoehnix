@@ -33,11 +33,12 @@ sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
 names(sattelberg) <- paste0("crest_", names(sattelberg))
 data <- merge(ellboegen, sattelberg)
 data$diff_t <- data$crest_t + 10.27 - data$t
-windfilter <- list(dd = c(43, 223), crest_dd = c(90, 270))
-mod <- foehnix(diff_t ~ ff, data = data, windfilter = windfilter, switch = TRUE)
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod <- foehnix(diff_t ~ ff, data = data, filter = filter, switch = TRUE)
 # Plot
 tsplot(mod, start = "2010-02-10", end = "2010-02-20")
 ```
+
 
 
 ### References

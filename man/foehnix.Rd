@@ -11,7 +11,7 @@
 \alias{summary.foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
-foehnix(formula, data, switch = FALSE, windfilter = NULL,
+foehnix(formula, data, switch = FALSE, filter = NULL,
   family = "gaussian", control = foehnix.control(family, switch, ...),
   ...)
 
@@ -43,7 +43,7 @@ will be switched. This is important if the covariate for the components
 for cases without foehn, e.g., when using the temperature difference as main
 covariate.}
 
-\item{windfilter}{a named list can be provided to apply a custom (simple) filter
+\item{filter}{a named list can be provided to apply a custom (simple) filter
 to the observations on \code{data}. Can be used to e.g., prespecify a
 specific wind sector for foehn winds. Please read the manual of the
 \code{\link{foehnix_filter}} method for more details and examples.}
@@ -142,8 +142,8 @@ Model-Based Clustering, Discriminant Analysis, and Density Estimation.
 }
 \seealso{
 See \code{\link{foehnix_filter}} for more information about the
-\code{windfilter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
-TODO: windfilter should be renamed to filter.
+\code{filter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
+TODO: filter should be renamed to filter.
 
 Foehnix family objects: \code{\link{foehnix.family}}.
 

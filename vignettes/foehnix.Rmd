@@ -88,10 +88,10 @@ by the crest station (Sattelberg) in several ways:
 
 ```{r, echo = TRUE, results = 'hide'}
 # Specify our wind filter rule(s)
-windfilter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 
 # Estimate the mixture model for automated foehn classification
-mod1 <- foehnix(diff_t ~ ff, data = data, windfilter = windfilter, switch = TRUE)
+mod1 <- foehnix(diff_t ~ ff, data = data, filter = filter, switch = TRUE)
 ```
 
 Let's check the estimated model:
