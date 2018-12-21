@@ -64,7 +64,7 @@ wind speed (or gust speed)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@ wind speed (or gust speed).</p>
 
 <span class='co'># S3 method for foehnix</span>
 <span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>,
-  <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>maxpp</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,6 +177,11 @@ for training the <code><a href='foehnix.html'>foehnix</a></code> mixture model.<
     <tr>
       <th>...</th>
       <td><p>additional arguments, currently unused.</p></td>
+    </tr>
+    <tr>
+      <th>maxpp</th>
+      <td><p>maximum number of plot per page. If not all plots fit
+on one page multiple pages will be shown as a sequence of plots.</p></td>
     </tr>
     </table>
     

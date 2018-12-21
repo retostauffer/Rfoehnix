@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>foehnix Model Assessment Plots — plot.foehnix • foehnix</title>
+<title>Convert U and V Wind Components to Wind Speed and Direction — uv2ddff • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="foehnix Model Assessment Plots — plot.foehnix" />
+<meta property="og:title" content="Convert U and V Wind Components to Wind Speed and Direction — uv2ddff" />
 
-<meta property="og:description" content="Visual representation foehnix model optimization." />
+<meta property="og:description" content="Takes U/V wind components as input and returns wind speed
+and meteorological wind direction." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,74 +133,92 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>foehnix Model Assessment Plots</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/plot.foehnix.R'><code>R/plot.foehnix.R</code></a></small>
-    <div class="hidden name"><code>plot.foehnix.Rd</code></div>
+    <h1>Convert U and V Wind Components to Wind Speed and Direction</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/wind_functions.R'><code>R/wind_functions.R</code></a></small>
+    <div class="hidden name"><code>uv2ddff.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Visual representation <code><a href='foehnix.html'>foehnix</a></code> model optimization.</p>
+    <p>Takes U/V wind components as input and returns wind speed
+and meteorological wind direction.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for foehnix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>uv2ddff</span>(<span class='no'>u</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rad</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>a <code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p></td>
+      <th>u</th>
+      <td><p><code>numeric</code> vector with U components or a 
+<code>data.frame</code> or <code>zoo</code> object containing
+a column named <code>u</code> and a column named <code>v</code>.</p></td>
     </tr>
     <tr>
-      <th>which</th>
-      <td><p><code>NULL</code> (default), character, character string,
-integer, or numeric. Allowed characters: <code>loglik</code>,
-<code>loglikcontribution</code>, <code>coef</code>, and <code>hist</code>. If <code>which</code>
-is numeric/integer or a vector of numerics/integers the numbers
-correspond to <code>loglik</code> (<code>1</code>), <code>loglikpath</code> (<code>2</code>),
-or <code>coef</code> (<code>3</code>).</p></td>
+      <th>v</th>
+      <td><p><code>NULL</code> (default) or <code>numeric</code> vector.
+Iv input <code>u</code> is a single vector <code>v</code> has to be given.</p></td>
     </tr>
     <tr>
-      <th>log</th>
-      <td><p>logical, if <code>TRUE</code> the x-axis is shown on the log scale,
-else on the iteration scale.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments, unused.</p></td>
+      <th>rad</th>
+      <td><p><code>logical</code>, default is <code>FALSE</code>. Returns wind
+direction in radiant rather than in degrees.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>There are currently three different plot types.</p><ul>
-<li><p><code>"loglik"</code> shows the log-likelihood sum path trough
-        the iterations of the EM algorithm for parameter estimation.</p></li>
-<li><p><code>"loglikcontribution"</code> shows the log-likelihood
-        contribution (initial value subtracted; all paths start
-        with <code>0</code>).</p></li>
-<li><p><code>coef</code> shows the development of the (standardized)
-        coefficients during EM optimization. Parameters of the
-        components are shown on the real scale, the coefficients
-        of the concomitant model (if used) are shown on the
-        standardized scale.</p></li>
-</ul>
+    <p>Returns a data.frame with two columns named <code>ff</code>
+   and <code>dd</code> containing wind speed (same physical unit as
+   input <code>u</code>/<code>v</code>) and wind direction. Wind direction
+   is either in meteorological degrees (0 from North, from 90 East,
+   180 from South, and 270 from West) or in mathematical radiant
+   if input <code>rad = TRUE</code>.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>ddff2uv</p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## Generate data.frame with u/v components for all 4 main wind directions</span>
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>( <span class='kw'>name</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"N"</span>,<span class='st'>"E"</span>,<span class='st'>"S"</span>,<span class='st'>"W"</span>),
+                    <span class='kw'>u</span>    <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>( <span class='fl'>0</span>, -<span class='fl'>1</span> , <span class='fl'>0</span>,  <span class='fl'>1</span> ),
+                    <span class='kw'>v</span>    <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>1</span>,  <span class='fl'>0</span>,  <span class='fl'>1</span>,  <span class='fl'>0</span> ) )
+<span class='co'>## Use data.frame input</span>
+<span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span> )
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff  dd
+#&gt; 1    N  0 -1  1 360
+#&gt; 2    E -1  0  1  90
+#&gt; 3    S  0  1  1 180
+#&gt; 4    W  1  0  1 270</div><div class='input'><span class='co'>## Use u/v components as two separate vector inputs</span>
+<span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span>$<span class='no'>u</span>, <span class='no'>data</span>$<span class='no'>v</span> )
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff  dd
+#&gt; 1    N  0 -1  1 360
+#&gt; 2    E -1  0  1  90
+#&gt; 3    S  0  1  1 180
+#&gt; 4    W  1  0  1 270</div><div class='input'><span class='co'>## Radiant</span>
+<span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span>, <span class='kw'>rad</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff       dd
+#&gt; 1    N  0 -1  1 6.283185
+#&gt; 2    E -1  0  1 1.570796
+#&gt; 3    S  0  1  1 3.141593
+#&gt; 4    W  1  0  1 4.712389</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-          </ul>
+      <li><a href="#value">Value</a></li>
 
-    <h2>Author</h2>
-    <p>Reto Stauffer</p>
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 

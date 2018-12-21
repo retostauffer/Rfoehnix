@@ -10,9 +10,8 @@
 \item{object}{a \code{\link{foehnix}} model object.}
 
 \item{which}{what to get as return. Can a character string, one of
-\code{"probability"} or \code{"flag"}, or a vector with both
-(\code{c("probability", "flag")}) to get both values. Alternatively
-integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).}
+\code{"probability"} or \code{"flag"}, or \code{"both"}.
+Alternatively integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).}
 
 \item{...}{additional arguments, ignored.}
 }

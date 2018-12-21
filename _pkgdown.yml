@@ -34,8 +34,19 @@ reference:
         - foehnix.unreg.fit
         - foehnix.reg.fit
         - foehnix_filter
+    - title: "Demo Data Sets"
+      contents:
+        - ellboegen
+        - sattelberg
     - title: "Support functions"
       contents:
         - iwls_logit
         - tsplot
+        - add_polygon
         - windrose
+        - ddff2uv
+        - uv2ddff
+        - center
+        - standardize
+        - destandardize_coefficients
+

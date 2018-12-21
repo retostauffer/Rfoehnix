@@ -4,36 +4,32 @@ suppressPackageStartupMessages(library("foehnix"))
 
 ## Foehnix Demo
 
-This page shows a _real world_ demo of the
-automated foehn classification method **foehnix** based
-on meteorological observations from two sites in Tyrol,
-Austria. One station is located in the Brenner valley
-south of Innsbruck on 1080 meters above mean sea level,
-the second station is located close to the main alpine
-ridge on 2107 meters above mean sea level
-(see `?ellboegen`/`?sattelberg` for details).
+This page shows a _real world_ demo of the automated foehn classification
+method **foehnix** based on meteorological observations from two sites in
+Tyrol, Austria. [One station](reference/ellboegen.html) is located in the
+Brenner valley south of Innsbruck on 1080 meters above mean sea level, the
+[second station](reference/sattelberg.html) is located close to the main alpine
+ridge on 2107 meters above mean sea level.
 
 ```{r, echo = TRUE}
 data("ellboegen"); data("sattelberg")
 head(ellboegen);   head(sattelberg)
 ```
 
-This example shows how to perform foehn classification
-for Ellboegen using the information of the Sattelberg
-station as additional source of information.
-The Sattelberg station is located south of Ellboegen
-close to the alpine crest and thus, during foehn events,
-measuring the upstream air mass decending down on the
-north side of the Alps.
+This example shows how to perform foehn classification for
+[Ellboegen](reference/ellboegen.html) using the information of the
+[Sattelberg](reference/sattelberg.html) station as additional source of
+information.  The [Sattelberg](reference/sattelberg.html) station is located
+south of [Ellboegen](reference/ellboegen.html) close to the alpine crest and
+thus, during foehn events, measuring the upstream air mass descending down on
+the north side of the Alps.
 
 ### South Foehn Classification for Ellboegen
 
-To perform the classification we first of all have to
-prepare our data sets. `foehnix(...)` expects the input
-to be of class `zoo` (zoo time series object; based on the
-\emph{R} `zoo` package). Thus, after loading our example
-data sets, we first have to convert the `data.frame`s into
-valid `zoo` objects:
+To perform the classification we first of all have to prepare our data sets.
+`foehnix(...)` expects the input to be of class `zoo` (zoo time series object;
+based on the \emph{R} `zoo` package). Thus, after loading our example data
+sets, we first have to convert the `data.frame`s into valid `zoo` objects:
 
 ```{r}
 # Loading observations (data.frame), convert to zoo
@@ -44,15 +40,24 @@ ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
 sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
 ```
 
-As we want to use information from both stations: rename the
-variables of the `sattelberg` object and combine the two
-data sets into one `zoo` object called `data`.
+As we want to use information from both stations: rename the variables of the
+`sattelberg` object and combine the two data sets into one `zoo` object called
+`data`.
 
 ```{r}
 # Modify sattelberg variable names (crest_ identifies Sattelberg
 # observations, our crest station) and combine both data sets.
 names(sattelberg) <- paste0("crest_", names(sattelberg))
 data <- merge(ellboegen, sattelberg)
+
+# NOTE: for demonstration purpose we split the data set into
+# two pieces: a training and a test data set. 
+# The training data set is used to estimate the mixture model, the
+# test data set will be used for "predictions" (see "Predictions"
+# section of this file).
+train <- head(data, nrow(data) - 10)
+test  <- tail(data, 10)
+rm(data) # Delete 'data'
 ```
 
 In addition we are calculating the potential temperature difference
@@ -64,26 +69,26 @@ between the two stations is 1027 meters which yields:
 # Dry adiabatic temperature difference between 
 # Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by
 # 1027/10 degrees.
-data$diff_t <- data$crest_t + 10.27 - data$t
+train$diff_t <- train$crest_t + 10.27 - train$t
 ```
 
-South foehn flow at the valley station in Ellboegen has a wind direction of
-about 133 degrees. We are using a (relatively weak) wind direction filter with
-a wind sector of +/-90 degrees around 133 degrees. For the classification only
-observations/times are used where the corresponding wind direction (`dd`) lies
-within the wind sector `>=43` and `<= 223` (180 degrees sector).
-In addition we can make use of the information provided
-by the crest station (Sattelberg) in several ways:
+South foehn flow at the valley station in [Ellboegen](reference/ellboegen.html)
+has a wind direction of about 133 degrees. We are using a (relatively weak)
+wind direction filter with a wind sector of +/-90 degrees around 133 degrees.
+For the classification only observations/times are used where the corresponding
+wind direction (`dd`) lies within the wind sector `>=43` and `<= 223` (180
+degrees sector).  In addition we can make use of the information provided by
+the crest station ([Sattelberg](reference/sattelberg.html)) in several ways:
 
 1. We use the temperature difference between the two
    stations as main variable for the classification (`diff_t`).
-2. define wind sector filter at the target station (Ellboegen).
+2. define wind sector filter at the target station ([Ellboegen](reference/ellboegen.html)).
    Only use observations with a wind direction (`dd`) inside the
    wind sector of `>=43` and `<=223` degrees for classification
    (`dd = c(43, 223)`).
 2. specify a second filter such that only observations are
    used for classification where the crest station shows
-   a sutherly flow (wind direction within `>= 90` and `<= 270`,
+   a southerly flow (wind direction within `>= 90` and `<= 270`,
    `sat_dd = c(90, 270)`).
 
 ```{r, echo = TRUE, results = 'hide'}
@@ -91,15 +96,182 @@ by the crest station (Sattelberg) in several ways:
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 
 # Estimate the mixture model for automated foehn classification
-mod1 <- foehnix(diff_t ~ ff, data = data, filter = filter, switch = TRUE)
+mod <- foehnix(diff_t ~ ff, data = train, filter = filter, switch = TRUE)
 ```
 
-Let's check the estimated model:
+## Check the Model
+
+A set of S3 methods for object of class `foehnix` are available, This includes
+methods to access information criteria, methods to check the estimated model
+(model settings), methods to return the estimated coefficients and
+probabilities, and some default plots for model assessment.
+
+Let's check our demo model `mod` estimated above:
 
 ```{r}
-print(mod1)
-print(coef(mod1))
+# Information criteria
+# logLik: final log-likelihood sum of the model
+# edf: effective degrees of freedom
+# AIC: Akaike information criterion
+# BIC: Bayesian information criterion
+c(logLik(mod), edf(mod), AIC(mod), BIC(mod))
 ```
+
+The `print` and `summary` methods show some information about the model such as
+number of observations used for the classification, the filter and its effect,
+and the corresponding information criteria.
+
+```{r}
+print(mod)
+```
+
+The `coef` or `coefficients` method returns the estimated
+coefficients.
+
+```{r}
+coef(mod)
+c <- coef(mod)
+print(c["mu1"])
+print(c["mu2"])
+```
+
+The method `plot` provides a set of model assessment plots.  Different types
+are available, if no `which` argument is set all will be shown one after
+another.
+
+`which = "loglik"` shows the log-likelihood path of the two components of the
+model (the part for the two components of the mixture model plus the one of the
+concomitant model) plus the full likelihood path.  The x-axis shows the
+log-iterations of the EM algorithm (see [statistical
+models](articles/statmodel.html) for more details).  Increasing values indicate
+positive log-likelihood contributions (improvement of the model).
+
+
+```{r, fig = TRUE, fig.width = 10, fig.height = 6}
+plot(mod, which = "loglik", log = F)
+```
+
+`which = "loglikcontribution"` shows the same information as `which = "loglik"`
+but with respect to the log-likelihood of the initial parameters. Increasing
+values indicate positive log-likelihood contributions (improvement of the
+model).
+
+```{r, fig = TRUE, fig.width = 10, fig.height = 6}
+plot(mod, which = "loglikcontribution")
+```
+
+Similar to the plots above we can also check the paths of the coefficients
+trough the iterations of the EM algorithm with `which = "coef"`:
+
+```{r, fig = TRUE, fig.width = 10, fig.height = 6}
+plot(mod, which = "coef")
+```
+
+Last but not least the `which = "hist"` plot shows the conditional histograms
+of the two clusters. Two histograms are shown given the main covariate of the
+`foehnix` mixture model, in this case (model `mod`) it is `delta_t`, the
+potential temperature difference between the valley station
+[Ellboegen](reference/ellboegen.html) and the crest station
+[Sattelberg](reference/sattelberg.html).  The left panel corresponds to the "no
+foehn" component or cluster, the right one to the "foehn" component. If a
+`filter` rule is used: only the data which have been used for classification
+will be shown.  Observations with a higher probability to be in the left
+component are sown left, observations with a higher probability to be a member
+of the second component are shown right.  On top (line) the estimated density
+of the two components is shown.
+
+```{r, fig = TRUE, fig.width = 10, fig.height = 6}
+plot(mod, which = "hist")
+```
+
+Fitted probabilities (the probabilities obtained by the model based on
+the training data set) can be accessed by calling `fitted`:
+
+```{r}
+# Class of fitted probabilities is a zoo object
+class(fitted(mod))
+summary(fitted(mod))
+```
+
+The method let's you access the fitted probabilities (`which = "probability"`),
+a flag which comes with the fitted values (`which = "flag"`), or both
+(`which = "both"`).
+
+```{r}
+# Probabilities only
+tail(fitted(mod, which = "probability"))
+# Flag only
+tail(fitted(mod, which = "flag"))
+# Both
+tail(fitted(mod, which = "both"))
+```
+
+Explanation of the flag:
+* `NA` if we have had missing data (missing covariates, or missing data
+  to apply the `filter` rules provided when calling `foehnix`).
+* `0` if observations have been outside the defined `filter`, not used
+  for classification and thus the probability has been set to `0`.
+* `1` if observations have been used for classification with the
+  corresponding estimated probability.
+
+
+## Predictions
+
+A last important method is `predict`. The term predict refers to
+statistical prediction, applying a statistical model to a data set
+which has never been seen by the model (not included in the training data set).
+
+As `foehnix` is a statistical classification method a prediction in this context
+is not a forecast (like a weather forecast), but a classification to new data.
+This can, for example, be used to retrieve foehn probabilities for new observation
+in an operational context.
+
+Assume we have estimated a `foehnix` mixture model and a set of new observations
+from our two stations ([Ellboegen](reference/ellboegen.html) and [Sattelberg](reference/sattelberg.htlm))
+have become available. We would like to get foehn probabilities this new data set.
+Luckily we put aside 10 observations earlier (the `test` data set):
+
+
+```{r}
+# Calculate potential temperature difference (as we did above)
+test$diff_t <- test$crest_t + 10.27 - test$t
+print(test)
+```
+
+Given our model we can not perform the classification on this new data
+set which has not been used for training the `foehnix` mixture model by calling:
+
+```{r}
+predict(mod, newdata = test)
+```
+
+For demonstration: we would have become the same (roughly the same, as
+a slightly different training data set is used) if we would re-estimate
+the model based on the whole data set (`train` and `test` combined)
+and check the estimated probabilities of the last 10 entries, the very
+same times we have put aside as our `test` data set:
+
+```{r}
+mod2 <- foehnix(diff_t ~ ff, data = rbind(train,test),
+                filter = filter, switch = TRUE, verbose = FALSE)
+print(tail(fitted(mod2, 1:2), 10))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

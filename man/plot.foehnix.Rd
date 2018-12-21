@@ -4,17 +4,20 @@
 \alias{plot.foehnix}
 \title{foehnix Model Assessment Plots}
 \usage{
-\method{plot}{foehnix}(x, which = NULL, ...)
+\method{plot}{foehnix}(x, which = NULL, log = TRUE, ...)
 }
 \arguments{
 \item{x}{a \code{\link{foehnix}} mixture model object.}
 
 \item{which}{\code{NULL} (default), character, character string,
 integer, or numeric. Allowed characters: \code{loglik},
-\code{loglikcontribution}, and \code{coef}. If \code{which}
+\code{loglikcontribution}, \code{coef}, and \code{hist}. If \code{which}
 is numeric/integer or a vector of numerics/integers the numbers
 correspond to \code{loglik} (\code{1}), \code{loglikpath} (\code{2}),
 or \code{coef} (\code{3}).}
+
+\item{log}{logical, if \code{TRUE} the x-axis is shown on the log scale,
+else on the iteration scale.}
 
 \item{...}{additional arguments, unused.}
 }

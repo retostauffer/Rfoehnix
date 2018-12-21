@@ -65,7 +65,7 @@ concomitant model of the two-component foehnix mixture models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
       </span>
     </div>
 
@@ -272,11 +272,19 @@ even if not converged.</p>
 <span class='no'>y</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/model.extract'>model.response</a></span>(<span class='no'>mf</span>)
 
 <span class='co'># Default call</span>
-<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>)</div><div class='output co'>#&gt; <span class='error'>Error in beta[-ic, ] &lt;- beta[-ic, ]/scaled_scale[-ic]: replacement has length zero</span></div><div class='input'><span class='co'># With standardized coefficients</span>
-<span class='no'>m3</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in beta[-ic, ] &lt;- beta[-ic, ]/scaled_scale[-ic]: replacement has length zero</span></div><div class='input'><span class='co'># No early stop, stop when maxit = 100 is reached. Will through</span>
-<span class='no'>m4</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tol</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: IWLS solver for logistic model did not converge.</span></div><div class='output co'>#&gt; <span class='error'>Error in beta[-ic, ] &lt;- beta[-ic, ]/scaled_scale[-ic]: replacement has length zero</span></div><div class='input'>
+<span class='no'>m2</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>)
+<span class='co'># With standardized coefficients</span>
+<span class='no'>m3</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># No early stop, stop when maxit = 100 is reached. Will through</span>
+<span class='no'>m4</span> <span class='kw'>&lt;-</span> <span class='fu'>iwls_logit</span>(<span class='no'>X</span>, <span class='no'>y</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>tol</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: IWLS solver for logistic model did not converge.</span></div><div class='input'>
 <span class='co'># Comparing coefficients</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>m1</span>), <span class='no'>m2</span>$<span class='no'>coef</span>, <span class='no'>m3</span>$<span class='no'>coef</span>, <span class='no'>m4</span>$<span class='no'>coef</span>))</div><div class='output co'>#&gt; <span class='error'>Error in cbind(coef(m1), m2$coef, m3$coef, m4$coef): object 'm2' not found</span></div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>m1</span>), <span class='no'>m2</span>$<span class='no'>coef</span>, <span class='no'>m3</span>$<span class='no'>coef</span>, <span class='no'>m4</span>$<span class='no'>coef</span>))</div><div class='output co'>#&gt;                             concomitant   concomitant   concomitant
+#&gt; (Intercept) -40.385881646 -40.385278262 -40.385278262 -40.385881646
+#&gt; Solar.R      -0.002619993  -0.002619963  -0.002619963  -0.002619993
+#&gt; Wind         -0.548395741  -0.548387911  -0.548387911  -0.548395741
+#&gt; Temp          0.558254605   0.558246332   0.558246332   0.558254605
+#&gt; Month        -0.404780348  -0.404774967  -0.404774967  -0.404780348
+#&gt; Day           0.114412677   0.114411311   0.114411311   0.114412677</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

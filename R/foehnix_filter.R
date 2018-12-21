@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 17:15 on marvin
+# - L@ST MODIFIED: 2018-12-21 21:27 on marvin
 # -------------------------------------------------------------------
 
 
@@ -178,7 +178,7 @@
 #' print(filter_obj)
 #' 
 #' # Subsetting the 'good' rows
-#' data <- data[idx$good,]
+#' data <- data[filter_obj$good,]
 #' 
 #' summary(subset(data, select = c(dd, crest_dd)))
 #' 

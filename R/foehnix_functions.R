@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 16:30 on marvin
+# - L@ST MODIFIED: 2018-12-21 18:39 on marvin
 # -------------------------------------------------------------------
 
 
@@ -229,6 +229,10 @@ coef.foehnix <- function(object, type = "parameter", ...) {
 }
 
 #' @export
+coefficients.foehnix <- function(object, type = "parameter", ...)
+    coef.foehnix(object, type = type, ...)
+
+#' @export
 print.coef.foehnix <- function(x, ...) {
     cat("Coefficients of foehnix model\n")
     cat(sprintf("Model formula:           %s\n",
@@ -295,8 +299,6 @@ print.summary.foehnix <- function(x, ...) {
                 sum_1, sum_1 / nrow(x$prob) * 100))
     cat(sprintf("\nClimatological foehn occurance %.2f percent (on n = %d)\n", mean_occ, mean_n))
     cat(sprintf("Mean foehn probability %.2f percent (on n = %d)\n", mean_prob, mean_n))
-
-    print(x$filter_obj)
 
     cat(sprintf("\nLog-likelihood: %.1f, %d effective degrees of freedom\n",   x$logLik, x$edf))
     cat(sprintf("Corresponding AIC = %.1f, BIC = %.1f\n", x$AIC, x$BIC))

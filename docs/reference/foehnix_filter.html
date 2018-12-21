@@ -66,7 +66,7 @@ for the foehn classification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
       </span>
     </div>
 
@@ -345,15 +345,15 @@ any complexity. As an example:</p>
 #&gt; The bad (outside filter):          49066 (69.0 percent)
 #&gt; The ugly (NA; missing values):      4312 ( 6.1 percent)</div><div class='input'>
 <span class='co'># Subsetting the 'good' rows</span>
-<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>idx</span>$<span class='no'>good</span>,]</div><div class='output co'>#&gt; <span class='error'>Error in `[.zoo`(data, idx$good, ): object 'idx' not found</span></div><div class='input'>
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>filter_obj</span>$<span class='no'>good</span>,]
+
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>data</span>, <span class='kw'>select</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>dd</span>, <span class='no'>crest_dd</span>)))</div><div class='output co'>#&gt;      Index                           dd           crest_dd    
-#&gt;  Min.   :2010-01-18 09:00:00   Min.   :  0.0   Min.   :  0.0  
-#&gt;  1st Qu.:2012-01-29 21:30:00   1st Qu.:129.0   1st Qu.:156.0  
-#&gt;  Median :2014-02-14 02:00:00   Median :154.0   Median :196.0  
-#&gt;  Mean   :2014-02-12 13:53:42   Mean   :208.9   Mean   :218.4  
-#&gt;  3rd Qu.:2016-02-27 02:30:00   3rd Qu.:302.0   3rd Qu.:335.0  
-#&gt;  Max.   :2018-03-10 12:00:00   Max.   :360.0   Max.   :360.0  
-#&gt;                                NA's   :111     NA's   :9734   </div><div class='input'>
+#&gt;  Min.   :2010-01-19 22:00:00   Min.   : 43.0   Min.   : 90.0  
+#&gt;  1st Qu.:2011-11-02 04:00:00   1st Qu.:122.0   1st Qu.:164.0  
+#&gt;  Median :2013-12-13 20:00:00   Median :132.0   Median :177.0  
+#&gt;  Mean   :2013-12-05 08:45:06   Mean   :130.1   Mean   :179.7  
+#&gt;  3rd Qu.:2015-12-17 01:00:00   3rd Qu.:139.0   3rd Qu.:190.0  
+#&gt;  Max.   :2018-03-10 12:00:00   Max.   :223.0   Max.   :270.0  </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

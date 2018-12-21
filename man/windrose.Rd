@@ -8,7 +8,7 @@
 windrose(x, which = NULL, ddvar = "dd", ffvar = "ff", ...)
 
 \method{windrose}{foehnix}(x, which = NULL, ddvar = "dd",
-  ffvar = "ff", ...)
+  ffvar = "ff", maxpp = Inf, ...)
 }
 \arguments{
 \item{x}{\code{zoo} object or \code{data.frame} or \code{\link{foehnix}}
@@ -24,6 +24,9 @@ for training the \code{\link{foehnix}} mixture model.}
 for training the \code{\link{foehnix}} mixture model.}
 
 \item{...}{additional arguments, currently unused.}
+
+\item{maxpp}{maximum number of plot per page. If not all plots fit
+on one page multiple pages will be shown as a sequence of plots.}
 }
 \description{
 Plotting a windrose using meteorological wind direction and

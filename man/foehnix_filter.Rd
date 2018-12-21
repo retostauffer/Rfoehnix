@@ -180,7 +180,7 @@ filter_obj <- foehnix_filter(data, my_filter)
 print(filter_obj)
 
 # Subsetting the 'good' rows
-data <- data[idx$good,]
+data <- data[filter_obj$good,]
 
 summary(subset(data, select = c(dd, crest_dd)))
 

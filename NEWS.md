@@ -1,4 +1,19 @@
 
+# foehnix 0.0-5
+
+* Extended manual pages for `Getting Started`, `Statistical Model`,
+  and `References`.
+* Updated `predict.foehnix`, new `phoenix_filter` was not yet implemented.
+* Updated/fixed some smaller issues inside the `plot.foehnix` method
+  (colors/line types/labeling), added `log = FALSE` option to plot the
+  paths on the EM iteration scale rather than the log iteration scale.
+* If `windfilter` is used as an argument to the method `foehnix` the
+  script will now shout at you! Depricated option (this check should
+  be removed before release).
+* Added functions to convert `ddff2uv` and `uv2ddff` (plotting).
+* Was working on the `windrose` and `probwindrose` plotting functions,
+  however, not yet production ready. TODO!
+
 # foehnix 0.0-4
 
 * Initialization of `prob` ($\pi$) for the non-commitant mixture model

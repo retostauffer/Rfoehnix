@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:21 on marvin
+# - L@ST MODIFIED: 2018-12-21 21:05 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -23,13 +23,16 @@
 #'        for training the \code{\link{foehnix}} mixture model.
 #' @param ffvar character, name of the wind speed varaible in \code{x} or as used
 #'        for training the \code{\link{foehnix}} mixture model.
+#' @param maxpp maximum number of plot per page. If not all plots fit
+#'        on one page multiple pages will be shown as a sequence of plots.
 #' @param ... additional arguments, currently unused.
 #'
 #' @details TODO: not yet finished and/or tested!
 windrose <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) UseMethod("windrose")
 
 #' @rdname windrose
-windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) {
+windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff",
+                             maxpp = Inf, ...) {
 
     # First: checking argument "which"
     allowed <- c("unconditional", "nofoehn", "foehn", "combined")
@@ -43,14 +46,10 @@ windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) {
                                paste(seq_along(allowed), collapse = ", "))))
         which <- allowed[which]
     }
-    if ( ! all(which %in% allowed) ) {
-        stop(paste("Nonsuitable input \"which\". Out of range. Allowed:",
-                   sprintf("%s (or %s) or combinations of them.",
-                           paste(sprintf("\"%s\"", allowed), collapse = ", "),
-                           paste(seq_along(allowed), collapse = ", "))))
-    }
+    which <- match.arg(which, allowed, several.ok = TRUE)
 
-    # Checking dd
+    # -------------------
+    # Check if the 'ddvar' (wind direction variable) is in the data set.
     if ( inherits(ddvar, "character") ) {
         if ( ! ddvar %in% names(x$data) ) {
             stop(paste(sprintf("Cannot find ddvar = \"%s\" in model data.", ddvar),
@@ -65,7 +64,8 @@ windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) {
         stop("Input ddvar has to be of class 'zoo' or 'character'.")
     }
 
-    # Checking ff
+    # -------------------
+    # Check if the 'ffvar' (wind speed variable) is in the data set.
     if ( inherits(ffvar, "character") ) {
         if ( ! ffvar %in% names(x$data) ) {
             stop(paste(sprintf("Cannot find ffvar = \"%s\" in model data.", ffvar),
@@ -92,21 +92,100 @@ windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) {
 
     # Else start plotting
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
-    mfrow = ceiling(length(which) / 2)
-    mfcol = ceiling(length(which) / mfrow)
+
+    maxpp <- min(maxpp, length(which))
+    mfcol = ceiling(maxpp / 2)
+    mfrow = ceiling(maxpp / mfcol)
+
     par(mfrow = c(mfrow, mfcol))
+    if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
 
     # Unconditional wind rose
     if ( "unconditional" %in% which )
         windrose(data$dd, data$ff, main = "Unconditional", hue = c(10,130))
     # No foehn windrose
     if ( "nofoehn" %in% which )
-        with(subset(data, prob < 0.5),  windrose(dd, ff, hue = c(100, 180), main = "No Foehn"))
+        with(subset(data, prob < 0.5),  windrose(dd, ff, hue = c(100, 180),
+                                                 main = "No Foehn"))
+    # Foehn wind rose
     if ( "foehn" %in% which )
-        with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30), main = "Foehn"))
+        with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30),
+                                                 main = "Foehn"))
+    # Combined wind rose
+    if ( "combined" %in% which )
+        with(data, probwindrose(dd, ff, prob))
 
-    # 
-    print("oh, a windrose for a foehnix object .... #TODO code it!")
+
+}
+
+probwindrose <- function(dd, ff, prob, n = 3, ncol = 10, main = "Combined Wind Rose") {
+
+
+    browser("super experimental!")
+
+    data <- na.omit(cbind(dd, ff, prob))
+    if ( nrow(data) == 0 )
+        stop("No data left after omitting NAs!")
+
+    print(head(data))
+
+    # Create table
+    ff.breaks <- pretty(data$ff, 5)
+    dd.breaks <- seq(0, 360, by = 30)
+
+    tab1 <- as.matrix(with(subset(data, prob < .5),
+                           xtabs(~ cut(dd, dd.breaks) + cut(ff, ff.breaks))))
+    tab2 <- as.matrix(with(subset(data, prob >= .5),
+                           xtabs(~ cut(dd, dd.breaks) + cut(ff, ff.breaks))))
+
+    tab1 <- tab1 / max(tab1)
+    tab2 <- tab2 / max(tab2)
+    # Calculate probability of having foehn in each cell
+    prob <- tab2 / tab1
+    prob[which(is.na(prob), arr.ind = TRUE)] <- 0
+    prob <- prob / max(prob)
+
+    # Apply a color (create hex color matrix)
+    hex <- matrix(rev(colorspace::diverging_hcl(ncol)[round(prob * (ncol - 1) + 1)]),
+                  ncol = ncol(prob), dimnames = dimnames(prob))
+    cid <- matrix(round(prob * (ncol - 1) + 1),
+                  ncol = ncol(prob), dimnames = dimnames(prob))
+    print(cid)
+    print(hex)
+
+    # Calculate alpha value
+    alpha <- round((tab1 + tab2) / max(tab1 + tab2) * 49) + 50
+    hex   <- matrix(sprintf("%s%02d", hex, alpha),
+                    ncol = ncol(hex), dimnames = dimnames(hex))
+    print(max(alpha))
+
+    # Start plotting
+    plot(NA, xlim = max(ff.breaks) * c(-1,1), ylim = max(ff.breaks) * c(-1,1),
+         asp = 1, bty = "n", xaxt = "n", yaxt = "n", xlab = NA, ylab = NA,
+         main = main)
+    for ( f in ff.breaks ) {
+        tmp <- ddff2uv(seq(0, 360), f)
+        lines(tmp$u, tmp$v, col = "gray50", lty = 3)
+    }
+    lines(c(0,0), max(ff.breaks) * c(-1,1))
+    lines(max(ff.breaks) * c(-1,1), c(0,0))
+
+    print(dd.breaks)
+    # Drawing segments
+    for ( d in 2:length(dd.breaks) ) {
+        for ( f in 2:length(ff.breaks) ) {
+            tmp <- rbind(ddff2uv(seq(dd.breaks[d-1], dd.breaks[d], length = n),
+                                 rep(ff.breaks[f-1], n)),
+                         ddff2uv(seq(dd.breaks[d], dd.breaks[d-1], length = n),
+                                 rep(ff.breaks[f], n)))
+            tmp <- rbind(tmp, head(tmp,1)) *  -1
+            polygon(tmp$u, tmp$v, col = hex[d-1,f-1], border = NA)
+        }
+    }
+
+
+
+
 
 }
 

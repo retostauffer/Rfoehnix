@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 17:28 on marvin
+# - L@ST MODIFIED: 2018-12-21 21:14 on marvin
 # -------------------------------------------------------------------
 
 
@@ -557,6 +557,10 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
                     family = "gaussian",
                     control = foehnix.control(family, switch, ...), ...) { 
 
+    if ( "windfilter" %in% names(list(...)) )
+        stop("STOP! The \"windfilter\" option has been replaced by the \"filter\" option!",
+             "Please adjust your calls (replace \"windfilter\" with \"filter\"!")
+
     # Start timing (execution time of foehnix)
     timing <- Sys.time() # Measure execution time
 
@@ -792,15 +796,17 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
     # any foehn).
     idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
     # Inverse wind filter
-    idx_wind <- which(! 1:nrow(newdata) %in% foehnix_filter(newdata, object$filter))
+    filter_obj <- foehnix_filter(newdata, object$filter)
+    print(filter_obj)
 
     # Create return object of type zoo. By default:
     # - prob is the a-posteriory probability, flag is 1.
     # - For rows removed by the filter option: set prob = 0 and flag = 0
     # - For rows where input contained NA: set prob = NA and flag = NA
     res <- zoo(data.frame(prob = post, flag = rep(1, length(post))), index(newdata))
-    if ( length(idx_wind) > 0 ) res[idx_wind,] <- 0
-    if ( length(idx_isna) > 0 ) res[idx_isna,] <- NA
+    if ( length(filter_obj$ugly) > 0 ) res[filter_obj$ugly,] <- NA
+    if ( length(filter_obj$bad)  > 0 ) res[filter_obj$bad,]  <- 0
+
 
     # If type is response: return foehn probability
     if ( type == "response" ) return(res)
@@ -824,9 +830,8 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
 #'
 #' @param object a \code{\link{foehnix}} model object.
 #' @param which what to get as return. Can a character string, one of
-#'        \code{"probability"} or \code{"flag"}, or a vector with both
-#'        (\code{c("probability", "flag")}) to get both values. Alternatively
-#'        integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).
+#'        \code{"probability"} or \code{"flag"}, or \code{"both"}.
+#'        Alternatively integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).
 #' @param ... additional arguments, ignored.
 #' @return Returns a univariate or multivariate \code{zoo} object.
 #'
@@ -834,15 +839,15 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
 #' @export
 fitted.foehnix <- function(object, which = "probability", ...) {
 
-    allowed <- c("probability", "flag")
+    allowed <- c("probability", "flag", "both")
     if ( is.numeric(which) ) { which <- allowed[as.integer(which)] }
     else { which <- match.arg(which, allowed, several.ok = TRUE) }
 
     if ( length(which) == 1 ) {
         # Only probabilities
         if ( which == "probability" ) return(object$prob$prob)
+        if ( which == "flag" ) return(object$prob$flag)
         # Else only flags
-        return(object$prob$flag)
     }
     # Else both
     return(object$prob)

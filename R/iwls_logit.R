@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 15:24 on marvin
+# - L@ST MODIFIED: 2018-12-21 21:36 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -125,7 +125,6 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     if ( min(y) < 0 | max(y) > 1 ) stop("y values out of range. Have to be within ]0,1[.")
 
     # Standardize design matrix?
-    holdX <- X
     if ( standardize ) X <- standardize(X)
 
     # initialize regression coefficients if needed
@@ -184,11 +183,12 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # Not converged? Drop warning.
     if ( ! is.null(tol) & iter == maxit ) warning("IWLS solver for logistic model did not converge.")
 
-    if ( is.standardized(X) ) X <- destandardize(X)
-    beta_vcov <- as.matrix(sqrt(diag(solve(t(X*w) %*% (X*w)))))
+    if ( is.standardized(X) ) XDS <- destandardize(X)
+    beta_vcov <- as.matrix(sqrt(diag(solve(t(XDS*w) %*% (XDS*w)))))
+    rm(XDS)
 
     # Just naming the column containing the coefficients.
-    beta <- coefpath[[length(coefpath)]]  # Last set of coefficients
+    beta <- coefpath[[iter]]  # Last set of coefficients
     colnames(beta) <- c("concomitant")    # Add column name to coefficient matrix
 
     # Calculate effective degrees of freedom

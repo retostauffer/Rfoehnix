@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:07 on marvin
+# - L@ST MODIFIED: 2018-12-21 19:05 on marvin
 # -------------------------------------------------------------------
 
 
@@ -18,10 +18,12 @@
 #' @param x a \code{\link{foehnix}} mixture model object.
 #' @param which \code{NULL} (default), character, character string,
 #'         integer, or numeric. Allowed characters: \code{loglik},
-#'         \code{loglikcontribution}, and \code{coef}. If \code{which}
+#'         \code{loglikcontribution}, \code{coef}, and \code{hist}. If \code{which}
 #'         is numeric/integer or a vector of numerics/integers the numbers
 #'         correspond to \code{loglik} (\code{1}), \code{loglikpath} (\code{2}),
 #'         or \code{coef} (\code{3}).
+#' @param log logical, if \code{TRUE} the x-axis is shown on the log scale,
+#'        else on the iteration scale.
 #' @param ... additional arguments, unused.
 #' 
 #' @details
@@ -42,7 +44,7 @@
 #' @import graphics
 #' @author Reto Stauffer
 #' @export
-plot.foehnix <- function(x, which = NULL, ...) {
+plot.foehnix <- function(x, which = NULL, log = TRUE, ...) {
 
     # Define plot type
     allowed <- c("loglik","loglikcontribution", "coef", "hist")
@@ -51,7 +53,7 @@ plot.foehnix <- function(x, which = NULL, ...) {
     } else if ( inherits(which, c("integer", "numeric")) ) {
         which <- allowed[as.integer(which)]
     } else {
-        which <- match.arg(which, allowed, several.ok = TRUE)
+        which <- match.arg(tolower(which), allowed, several.ok = TRUE)
     }
 
     # Keep user params
@@ -67,49 +69,50 @@ plot.foehnix <- function(x, which = NULL, ...) {
     # Plotting likelihood path if requested
     if ( "loglik" %in% which ) {
         ll <- x$optimizer$loglikpath
-        ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
+        ylim <- range(ll) + c(0, 0.2) * diff(range(ll))
         # Plot
         lty <- c(2,3,1); col <- c("gray60", "gray60", 1); lwd = c(1,1,2)
-        matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
+        at <- if ( log ) log(1:nrow(ll)) else 1:nrow(ll)
+        matplot(at, ll, ylim = ylim, type = "l",
                 lwd = lwd, lty = lty, col = col,
-                ylab = "log-likelihood sum",
+                ylab = "log-likelihood",
                 xlab = "log(EM iteration)",
                 main = "foehnix log-likelihood path")
-        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = TRUE)
-        tmp <- 1L:ncol(ll)
-        legend("top", ncol = max(tmp), lty = lty, col = col,
-               legend = colnames(ll))
+        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = log)
+        legend("top", ncol = length(lty), lty = lty, col = col,
+               lwd = lwd, legend = colnames(ll))
     }
 
     # Plotting likelihood path if requested
     if ( "loglikcontribution" %in% which ) {
         ll <- x$optimizer$loglikpath
         for ( i in 1:ncol(ll) ) ll[,i] <- ll[,i] - ll[1,i]
-        ylim <- range(ll) + c(0, 0.1) * diff(range(ll))
+        ylim <- range(ll) + c(0, 0.2) * diff(range(ll))
         # plot
         lty <- c(2,3,1); col <- c("gray60", "gray60", 1); lwd = c(1,1,2)
-        matplot(log(1L:nrow(ll)), ll, ylim = ylim, type = "l",
+        at <- if ( log ) log(1:nrow(ll)) else 1:nrow(ll)
+        matplot(at, ll, ylim = ylim, type = "l",
                 lwd = lwd, lty = lty, col = col,
                 ylab = "log-likelihood contribution",
-                xlab = "log(EM iteration)",
+                xlab = ifelse(log, "log(EM iteration)", "EM iteration"),
                 main = "foehnix log-likelihood contribution")
-        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = TRUE)
-        tmp <- 1L:ncol(ll)
-        legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-               legend = colnames(ll))
+        for ( i in 1:ncol(ll) ) flagging(ll[,i], log = log)
+        legend("top", ncol = length(lty), lty = lty, col = col,
+               lwd = lwd, legend = colnames(ll))
     }
 
     # Path of estimated coefficients
     if ( "coef" %in% which ) {
         # Extract path
         path <- x$optimizer$coefpath
+        at   <- if ( log ) log(1:nrow(path)) else 1:nrow(path)
 
         # Model without concomitant variables
         if ( is.null(x$optimizer$ccmodel) ) {
             ylim <- range(path) + c(0, 0.1) * diff(range(path))
             matplot(log(1L:nrow(path)), path, ylim = ylim, type = "l",
                     ylab = "coefficient (components)",
-                    xlab = "log(EM iteration)",
+                    xlab = ifelse(log, "log(EM iteration)", "EM iteration"),
                     main = "coefficient path (components)")
             tmp <- 1L:ncol(path)
             legend("top", ncol = max(tmp), lty = tmp, col = tmp,
@@ -121,25 +124,29 @@ plot.foehnix <- function(x, which = NULL, ...) {
             par(mfrow = c(1,2))
             # Components
             idx_comp <- which(! grepl("^cc\\..*$", names(path)))
+            lwd  <- rep(c(2,1), 2); lty = rep(c(1,2), 2); col = rep(c(2, 4), each = 2)
             ylim <- range(path[,idx_comp]) + c(0, 0.1) * diff(range(path[,idx_comp]))
-            matplot(log(1L:nrow(path)), path[,idx_comp], ylim = ylim, type = "l",
+            matplot(at, path[,idx_comp], ylim = ylim, type = "l",
+                    lty  = lty, lwd = lwd, col = col,
                     ylab = "coefficient (components)",
-                    xlab = "log(EM iteration)",
+                    xlab = ifelse(log, "log(EM iteration)", "EM iteration"),
                     main = "coefficient path (components)")
-            tmp <- 1L:length(idx_comp)
-            legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-                   legend = colnames(path)[idx_comp])
+            legend("top", ncol = length(lty), lty = lty, col = col,
+                   lwd = lwd, legend = colnames(path)[idx_comp])
 
             # Concomitant model
             idx_cc <- which(grepl("^cc\\..*$", names(path)))
+            lwd <- c(2, rep(1, length(idx_cc)))
+            col <- lty <- 1:length(idx_cc)
             ylim <- range(path[,idx_cc]) + c(0, 0.1) * diff(range(path[,idx_cc]))
-            matplot(log(1L:nrow(path)), path[,idx_cc], ylim = ylim, type = "l",
+            matplot(at, path[,idx_cc], ylim = ylim, type = "l",
+                    lwd  = lwd, lty = lty, col = col,
                     ylab = "concomitant coefficients (standardized)",
-                    xlab = "log(EM iteration)",
+                    xlab = ifelse(log, "log(EM iteration)", "EM iteration"),
                     main = "coefficient path (concomitants)")
             tmp <- 1L:length(idx_cc)
-            legend("top", ncol = max(tmp), lty = tmp, col = tmp,
-                   legend = colnames(path)[idx_cc])
+            legend("top", ncol = length(lty), lty = lty, col = col,
+                   lwd = lwd, legend = gsub("^cc\\.", "", colnames(path)[idx_cc]))
             par(holdx)
         }
 
@@ -178,13 +185,13 @@ plot.foehnix <- function(x, which = NULL, ...) {
 
             # Plotting conditional component 1 histogram
             plot(h1, freq = FALSE, xlim = xlim, ylim = ylim,
-                 main = "Conditional Histogram\nComponent 1",
+                 main = "Conditional Histogram\nComponent 1 (no foehn)",
                  border = "gray50", xlab = expression(paste("y[",pi < 0.5,"]")))
             lines(at, x$control$family$d(at, x$coef$mu1, exp(x$coef$logsd1)), col = 2, lwd = 2)
 
             # Plotting conditional component 2 histogram
             plot(h2, freq = FALSE, xlim = xlim, ylim = ylim,
-                 main = "Conditional Histogram\nComponent 2",
+                 main = "Conditional Histogram\nComponent 2 (foehn)",
                  border = "gray50", xlab = expression(paste("y[",pi >= 0.5,"]")))
             lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 4, lwd = 2)
 
