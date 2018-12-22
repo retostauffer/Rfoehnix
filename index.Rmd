@@ -39,6 +39,9 @@ mod <- foehnix(diff_t ~ ff, data = data, filter = filter, switch = TRUE)
 tsplot(mod, start = "2010-02-10", end = "2010-02-20")
 ```
 
+```{r, echo = FALSE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 4}
+windrose(mod, type = "histogram", mfcol = 3)
+```
 
 
 ### References

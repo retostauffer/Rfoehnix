@@ -41,6 +41,8 @@ reference:
     - title: "Support functions"
       contents:
         - iwls_logit
+        - windrose
+        - windrose.foehnix
         - tsplot
         - add_polygon
         - windrose

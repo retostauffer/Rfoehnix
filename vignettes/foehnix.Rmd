@@ -215,6 +215,29 @@ Explanation of the flag:
   corresponding estimated probability.
 
 
+## Conditional and Unconditional Wind Rose Plots
+
+In addition, [windrose](reference/windrose.foehnix.html) proides a convenient
+function to plot wind roses.
+
+```{r, fig = TRUE, fig.width = 12, fig.height = 8}
+windrose(mod, mfcol = 3)
+```
+
+The individual plots can also be plotted separately: 
+
+```{r, fig = TRUE, fig.width = 12, fig.height = 5}
+windrose(mod, which = "foehn", mfcol = 2)
+```
+
+One type shows the density function (`type = "density"`), the other one a 2-D histogram
+(`type = "histogram"`). The argument `which` allows to plot the unconditional
+windrose (`which = "unconditional"`), the 'no foehn event' windrose
+(`which = "nofoehn"`) which shows only observations where the classification gives
+a probability of foehn below `0.5`, and a wind rose for 'foehn' events where the
+classification returned a probability of `>= 0.5`.
+
+
 ## Predictions
 
 A last important method is `predict`. The term predict refers to

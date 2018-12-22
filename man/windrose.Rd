@@ -3,35 +3,84 @@
 \name{windrose}
 \alias{windrose}
 \alias{windrose.foehnix}
+\alias{windrose.default}
 \title{Windrose Plot}
 \usage{
-windrose(x, which = NULL, ddvar = "dd", ffvar = "ff", ...)
+windrose(x, ...)
 
-\method{windrose}{foehnix}(x, which = NULL, ddvar = "dd",
-  ffvar = "ff", maxpp = Inf, ...)
+\method{windrose}{foehnix}(x, type = NULL, which = NULL,
+  ddvar = "dd", ffvar = "ff", mfcol = 2, maxpp = Inf, ...)
+
+\method{windrose}{default}(dd, ff, interval = 10, type = "density",
+  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5)
 }
 \arguments{
-\item{x}{\code{zoo} object or \code{data.frame} or \code{\link{foehnix}}
-mixture model object.}
+\item{x}{forwarded to windrose S3 methods.}
 
-\item{which}{character, one of \code{"unconditional"}, \code{"nofoehn"}, 
-\code{"foehn"}, or \code{"combined"}.}
+\item{...}{forwarded as well.}
 
-\item{ddvar}{character, name of the wind direction varaible in \code{x} or as used
-for training the \code{\link{foehnix}} mixture model.}
+\item{type}{\code{NULL} or character, one of \code{density} or \code{histogram}.
+If \code{NULL} both types will be plotted.}
 
-\item{ffvar}{character, name of the wind speed varaible in \code{x} or as used
-for training the \code{\link{foehnix}} mixture model.}
+\item{which}{\code{NULL} or character, one of \code{unconditional}, \code{nofoehn},
+or \code{foehn}. If \code{NULL} all three will be plotted.}
 
-\item{...}{additional arguments, currently unused.}
+\item{ddvar}{character, name of the column in the training data set which contains
+the wind direction information.}
 
-\item{maxpp}{maximum number of plot per page. If not all plots fit
-on one page multiple pages will be shown as a sequence of plots.}
+\item{ffvar}{character, name of the column in the training data set which contains
+the wind speed (or gust speed) data.}
+
+\item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
+page the script loops trough.}
+
+\item{dd}{zoo object with meteorological wind directions (\code{]0, 360[},
+0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
+and 270 'wind from west'.}
+
+\item{ff}{zoo object with sind speed data (\code{>= 0}).}
+
+\item{interval}{numeric, a fraction of 360. If 360 cannot be devided by
+\code{interval} without a rest the script will stop. Interval
+for the segments along the wind direction \code{dd}. Default \code{10}.}
+
+\item{windsector}{TODO: currently unused.}
+
+\item{main}{character, title. If no title is set a default one will be shown.}
+
+\item{hue}{numeric vector of length 1 or two (for \code{type = "density"}
+two are used, for \code{type = "histogram"} only the first one will be
+used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
+
+\item{power}{numeric \code{>0}, power parameter for the alpha channel if 
+\code{type = "histogram"}. If \code{1} the alpha channel is linear
+for the whole range of \code{ff}, values \code{!= 1} change the
+alpha behaviour.}
+
+\item{x}{object of class \code{\link{foehnix}}.}
+
+\item{mfcolinteger, }{number of columns of subplots.}
+
+\item{type}{character, one of \code{density} or \code{histogram}, controls
+the plot type.}
 }
 \description{
 Plotting a windrose using meteorological wind direction and
 wind speed (or gust speed).
+
+Windrose plot based on a \code{\link{foehnix}} mixture model object.
+
+Windrose plot, can handle two type of plots (see \code{type}) using
+the same information.
 }
 \details{
 TODO: not yet finished and/or tested!
+}
+\seealso{
+windrose.default windrose.foehnix
+}
+\author{
+Reto Stauffer
+
+Reto Stauffer
 }

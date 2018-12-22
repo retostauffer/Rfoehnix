@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/foehnix.Rmd"><code>vignettes/foehnix.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/foehnix.Rmd"><code>../vignettes/foehnix.Rmd</code></a></small>
       <div class="hidden name"><code>foehnix.Rmd</code></div>
 
     </div>
@@ -199,7 +199,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.4 seconds</code></pre>
+## Time required for model estimation: 1.3 seconds</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
@@ -265,6 +265,17 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 2018-03-10 01:00:00 0.9997484    1
 ## 2018-03-10 02:00:00 0.9984492    1</code></pre>
 <p>Explanation of the flag: * <code>NA</code> if we have had missing data (missing covariates, or missing data to apply the <code>filter</code> rules provided when calling <code>foehnix</code>). * <code>0</code> if observations have been outside the defined <code>filter</code>, not used for classification and thus the probability has been set to <code>0</code>. * <code>1</code> if observations have been used for classification with the corresponding estimated probability.</p>
+</div>
+<div id="conditional-and-unconditional-wind-rose-plots" class="section level2">
+<h2 class="hasAnchor">
+<a href="#conditional-and-unconditional-wind-rose-plots" class="anchor"></a>Conditional and Unconditional Wind Rose Plots</h2>
+<p>In addition, <a href="reference/windrose.foehnix.html">windrose</a> proides a convenient function to plot wind roses.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">mfcol =</span> <span class="dv">3</span>)</code></pre></div>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
+<p>The individual plots can also be plotted separately:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">which =</span> <span class="st">"foehn"</span>, <span class="dt">mfcol =</span> <span class="dv">2</span>)</code></pre></div>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+<p>One type shows the density function (<code>type = "density"</code>), the other one a 2-D histogram (<code>type = "histogram"</code>). The argument <code>which</code> allows to plot the unconditional windrose (<code>which = "unconditional"</code>), the ‘no foehn event’ windrose (<code>which = "nofoehn"</code>) which shows only observations where the classification gives a probability of foehn below <code>0.5</code>, and a wind rose for ‘foehn’ events where the classification returned a probability of <code>&gt;= 0.5</code>.</p>
 </div>
 <div id="predictions" class="section level2">
 <h2 class="hasAnchor">
@@ -342,6 +353,7 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#foehnix-demo">Foehnix Demo</a></li>
       <li><a href="#check-the-model">Check the Model</a></li>
+      <li><a href="#conditional-and-unconditional-wind-rose-plots">Conditional and Unconditional Wind Rose Plots</a></li>
       <li><a href="#predictions">Predictions</a></li>
       </ul>
 </div>

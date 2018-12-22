@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 21:05 on marvin
+# - L@ST MODIFIED: 2018-12-22 15:30 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -15,38 +15,54 @@
 #' Plotting a windrose using meteorological wind direction and
 #' wind speed (or gust speed).
 #'
-#' @param x \code{zoo} object or \code{data.frame} or \code{\link{foehnix}}
-#'        mixture model object.
-#' @param which character, one of \code{"unconditional"}, \code{"nofoehn"}, 
-#'        \code{"foehn"}, or \code{"combined"}.
-#' @param ddvar character, name of the wind direction varaible in \code{x} or as used
-#'        for training the \code{\link{foehnix}} mixture model.
-#' @param ffvar character, name of the wind speed varaible in \code{x} or as used
-#'        for training the \code{\link{foehnix}} mixture model.
-#' @param maxpp maximum number of plot per page. If not all plots fit
-#'        on one page multiple pages will be shown as a sequence of plots.
-#' @param ... additional arguments, currently unused.
+#' @param x forwarded to windrose S3 methods.
+#' @param ... forwarded as well.
+#'
+#' @seealso windrose.default windrose.foehnix
 #'
 #' @details TODO: not yet finished and/or tested!
-windrose <- function(x, which = NULL, ddvar = "dd", ffvar = "ff", ...) UseMethod("windrose")
+#' @export
+windrose <- function(x, ...) UseMethod("windrose")
 
+
+#' foehnix Mixture Model Windrose Plot
+#'
+#' Windrose plot based on a \code{\link{foehnix}} mixture model object.
+#'
+#' @param x object of class \code{\link{foehnix}}.
+#' @param type \code{NULL} or character, one of \code{density} or \code{histogram}.
+#'        If \code{NULL} both types will be plotted.
+#' @param which \code{NULL} or character, one of \code{unconditional}, \code{nofoehn},
+#'        or \code{foehn}. If \code{NULL} all three will be plotted.
+#' @param ddvar character, name of the column in the training data set which contains
+#'        the wind direction information.
+#' @param ffvar character, name of the column in the training data set which contains
+#'        the wind speed (or gust speed) data.
+#' @param mfcolinteger, number of columns of subplots.
+#' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
+#'        page the script loops trough.
+#'
 #' @rdname windrose
-windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff",
-                             maxpp = Inf, ...) {
+#' @author Reto Stauffer
+#' @export
+windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
+                             mfcol = 2, maxpp = Inf, ...) {
 
-    # First: checking argument "which"
-    allowed <- c("unconditional", "nofoehn", "foehn", "combined")
+    # -------------------
+    # Checking argument which
+    allowed <- c("unconditional", "nofoehn", "foehn")
     if ( is.null(which) ) which <- allowed
-    if ( is.numeric(which) ) {
-        which <- as.integer(which)
-        if ( any(! which %in% seq_along(allowed)) )
-            stop(paste("Nonsuitable input \"which\". Out of range. Allowed:",
-                       sprintf("%s (or %s) or combinations of them.",
-                               paste(sprintf("\"%s\"", allowed), collapse = ", "),
-                               paste(seq_along(allowed), collapse = ", "))))
-        which <- allowed[which]
-    }
     which <- match.arg(which, allowed, several.ok = TRUE)
+
+    # Checking input type
+    allowed <- c("density", "histogram")
+    if ( is.null(type) ) type <- allowed
+    type <- match.arg(type, allowed, several.ok = TRUE)
+
+    # Extend inputs which/type, create list of windrose plots to show.
+    tmp <- expand.grid(type = type, which = which)
+    which <- sprintf("%s_%s", tmp$type, tmp$which)
+    rm(type)
 
     # -------------------
     # Check if the 'ddvar' (wind direction variable) is in the data set.
@@ -80,12 +96,7 @@ windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff",
         stop("Input ddvar has to be of class 'zoo' or 'character'.")
     }
 
-    # Combine probabilities, ff, and dd
-    data <- na.omit(merge(x$prob, dd, ff))
-    if ( nrow(data) == 0 )
-        stop("Data sets do not match, no overlapping data found for probabilities of foehn, dd, and ff.")
-
-    # Final step: combine dd, ff, probabilities, and start plotting.
+    # Combine dd, ff, probabilities, and start plotting.
     data <- na.omit(merge(dd, ff, x$prob)); names(data)[ncol(data)] <- "prob"
     if ( nrow(data) == 0 )
         stop("No data left after combining \"dd\", \"ff\", and \"foehn probabilities\".")
@@ -94,201 +105,302 @@ windrose.foehnix <- function(x, which = NULL, ddvar = "dd", ffvar = "ff",
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
     maxpp <- min(maxpp, length(which))
-    mfcol = ceiling(maxpp / 2)
+    mfcol = max(ceiling(maxpp / 2), mfcol)
     mfrow = ceiling(maxpp / mfcol)
+    if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
 
     par(mfrow = c(mfrow, mfcol))
     if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
 
-    # Unconditional wind rose
-    if ( "unconditional" %in% which )
-        windrose(data$dd, data$ff, main = "Unconditional", hue = c(10,130))
-    # No foehn windrose
-    if ( "nofoehn" %in% which )
+    # Plot type = "density"
+    if ( "density_unconditional" %in% which )
+        with(data,                      windrose(dd, ff, hue = c(10, 130),
+                       main = expression("Unconditional")))
+    if ( "density_nofoehn" %in% which )
         with(subset(data, prob < 0.5),  windrose(dd, ff, hue = c(100, 180),
-                                                 main = "No Foehn"))
-    # Foehn wind rose
-    if ( "foehn" %in% which )
+                       main = expression(paste("No Foehn [",pi < 0.5,"]"))))
+    if ( "density_foehn" %in% which )
         with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30),
-                                                 main = "Foehn"))
-    # Combined wind rose
-    if ( "combined" %in% which )
-        with(data, probwindrose(dd, ff, prob))
+                       main = expression(paste("Foehn [",pi >= 0.5,"]"))))
+    # Plot type = "histogram"
+    if ( "histogram_unconditional" %in% which )
+        with(data,                      windrose(dd, ff, hue = c(10, 130), type = "histogram",
+                       main = expression("Unconditional")))
+    if ( "histogram_nofoehn" %in% which )
+        with(subset(data, prob <  0.5), windrose(dd, ff, hue = c(100, 180), type = "histogram",
+                       main = expression(paste("No Foehn [",pi < 0.5,"]"))))
+    if ( "histogram_foehn" %in% which )
+        with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30), type = "histogram",
+                       main = expression(paste("Foehn [",pi >= 0.5,"]"))))
 
 
 }
 
-probwindrose <- function(dd, ff, prob, n = 3, ncol = 10, main = "Combined Wind Rose") {
 
 
-    browser("super experimental!")
-
-    data <- na.omit(cbind(dd, ff, prob))
-    if ( nrow(data) == 0 )
-        stop("No data left after omitting NAs!")
-
-    print(head(data))
-
-    # Create table
-    ff.breaks <- pretty(data$ff, 5)
-    dd.breaks <- seq(0, 360, by = 30)
-
-    tab1 <- as.matrix(with(subset(data, prob < .5),
-                           xtabs(~ cut(dd, dd.breaks) + cut(ff, ff.breaks))))
-    tab2 <- as.matrix(with(subset(data, prob >= .5),
-                           xtabs(~ cut(dd, dd.breaks) + cut(ff, ff.breaks))))
-
-    tab1 <- tab1 / max(tab1)
-    tab2 <- tab2 / max(tab2)
-    # Calculate probability of having foehn in each cell
-    prob <- tab2 / tab1
-    prob[which(is.na(prob), arr.ind = TRUE)] <- 0
-    prob <- prob / max(prob)
-
-    # Apply a color (create hex color matrix)
-    hex <- matrix(rev(colorspace::diverging_hcl(ncol)[round(prob * (ncol - 1) + 1)]),
-                  ncol = ncol(prob), dimnames = dimnames(prob))
-    cid <- matrix(round(prob * (ncol - 1) + 1),
-                  ncol = ncol(prob), dimnames = dimnames(prob))
-    print(cid)
-    print(hex)
-
-    # Calculate alpha value
-    alpha <- round((tab1 + tab2) / max(tab1 + tab2) * 49) + 50
-    hex   <- matrix(sprintf("%s%02d", hex, alpha),
-                    ncol = ncol(hex), dimnames = dimnames(hex))
-    print(max(alpha))
-
-    # Start plotting
-    plot(NA, xlim = max(ff.breaks) * c(-1,1), ylim = max(ff.breaks) * c(-1,1),
-         asp = 1, bty = "n", xaxt = "n", yaxt = "n", xlab = NA, ylab = NA,
-         main = main)
-    for ( f in ff.breaks ) {
-        tmp <- ddff2uv(seq(0, 360), f)
-        lines(tmp$u, tmp$v, col = "gray50", lty = 3)
-    }
-    lines(c(0,0), max(ff.breaks) * c(-1,1))
-    lines(max(ff.breaks) * c(-1,1), c(0,0))
-
-    print(dd.breaks)
-    # Drawing segments
-    for ( d in 2:length(dd.breaks) ) {
-        for ( f in 2:length(ff.breaks) ) {
-            tmp <- rbind(ddff2uv(seq(dd.breaks[d-1], dd.breaks[d], length = n),
-                                 rep(ff.breaks[f-1], n)),
-                         ddff2uv(seq(dd.breaks[d], dd.breaks[d-1], length = n),
-                                 rep(ff.breaks[f], n)))
-            tmp <- rbind(tmp, head(tmp,1)) *  -1
-            polygon(tmp$u, tmp$v, col = hex[d-1,f-1], border = NA)
-        }
-    }
-
-
-
-
-
+#' Get Count Matrix for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one windrose/wind count
+#' plot type. This function returns a matrix with counts for different
+#' multivariate bins (binning along wind direction dd and wind speed ff).
+#'
+#' @param x data object of type zoo or data.frame. Needs to contain
+#'        at least the two columns \code{dd} (meteorological wid direction
+#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
+#'        (range >= 0).
+#' @param dd.breaks numeric vector with breaks along wind direction.
+#'        Default is \code{seq(0, 360, by = 30)}.
+#' @param ff.breaks numeric vector with breaks along wind speed.
+#'        default is \code{pretty(x$ff)}.
+#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
+#'         with counts \code{>= 0}.
+windrose_get_counts <- function(x, dd.breaks = seq(0, 360, by = 30),
+                                   ff.breaks = pretty(x$ff)) {
+    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
+                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
+    x[which(is.na(x), arr.ind = TRUE)] <- 0
+    x
 }
 
-#TODO: Very specific function (just a copy of the Luzern analysis).
-# Usage needs to be changed drastically.
-windrose.default <- function(dd, ff, interval = 10, circle = seq(0, 2, by = .05),
-    windsector = NULL, main = NULL, hue = c(10,100)) {
+
+#' Get Density Matrix for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one 'density wind rose'
+#' method (the classical wind rose plot).
+#' This function returns a matrix with densities for different
+#' multivariate bins (binning along wind direction dd and wind speed ff).
+#'
+#' @param x data object of type zoo or data.frame. Needs to contain
+#'        at least the two columns \code{dd} (meteorological wid direction
+#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
+#'        (range >= 0).
+#' @param dd.breaks numeric vector with breaks along wind direction.
+#'        Default is \code{seq(0, 360, by = 30)}.
+#' @param ff.breaks numeric vector with breaks along wind speed.
+#'        default is \code{pretty(x$ff)}.
+#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
+#'         with densities \code{>= 0}.
+windrose_get_density <- function(x, dd.breaks = seq(0, 360, by = 30),
+                                    ff.breaks = pretty(x$ff)) {
+    N <- nrow(x)
+    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
+                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
+    x[which(is.na(x), arr.ind = TRUE)] <- 0
+    t(apply(x, 1, cumsum)) / N
+}
+
+
+#' Get Color Matrix and Legend for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one windrose/wind count
+#' plot type. Based on the count matrix (\code{\link{windrose_get_counts})
+#' this function returns a matrix with hex colors (with alpha channel)
+#' and a data.frame used for the legend.
+#'
+#' @param x 2-D matrix with counts (see \code{\link{windrose_get_counts}}).
+#' @param col single hex color, or a vector of hex colors. Alpha channel
+#'        will be removed.
+#' @param p numeric value, power parameter for non-linear color transformation.
+#' @param ncol integer, if \code{col} is a single value the color will be repeated
+#'        \code{ncol} times. Default is \code{50L}.
+#' @return Returns a list with two elements: \code{colormatrix} of the same
+#' dimension as \code{x} with colors for the different bins based on the
+#' counts, and \code{legend} with levels and colors for the color legend of the
+#' plot.
+windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
+    # Extend colors if needed
+    if ( length(col) == 1 ) col <- rep(col, ncol)
+    # Remove alpha
+    col <- substr(col, 0, 7)
+    # Calculate new colors. 
+    fun <- function(x, col, p) {
+        alpha <- as.integer(round((x / max(x))^p * 99 + 1))
+        alpha <- substr(rgb(1, 1, 1, 1:100 / 100), 8, 10)[alpha]
+        x <- round((x / max(x)) / max(x / max(x)) * (length(col) - 1) + 1)
+        x <- sprintf("%s%s", col[x], alpha)
+    }
+    colormatrix <- matrix(fun(x, col, p), ncol = ncol(x), dimnames = dimnames(x))
+
+    # Create legend element
+    leg <- data.frame(level = pretty(range(x), 5))
+    leg$color <- fun(leg$level, col, p)
+
+    list(colormatrix = colormatrix, legend = leg)
+}
+
+
+
+#' Default Wind Rose Plot
+#'
+#' Windrose plot, can handle two type of plots (see \code{type}) using
+#' the same information.
+#'
+#' @param dd zoo object with meteorological wind directions (\code{]0, 360[},
+#'        0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
+#'        and 270 'wind from west'.
+#' @param ff zoo object with sind speed data (\code{>= 0}).
+#' @param interval numeric, a fraction of 360. If 360 cannot be devided by
+#'        \code{interval} without a rest the script will stop. Interval
+#'        for the segments along the wind direction \code{dd}. Default \code{10}.
+#' @param type character, one of \code{density} or \code{histogram}, controls
+#'        the plot type.
+#' @param windsector TODO: currently unused.
+#' @param main character, title. If no title is set a default one will be shown.
+#' @param hue numeric vector of length 1 or two (for \code{type = "density"}
+#'        two are used, for \code{type = "histogram"} only the first one will be
+#'        used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.
+#' @param power numeric \code{>0}, power parameter for the alpha channel if 
+#'        \code{type = "histogram"}. If \code{1} the alpha channel is linear
+#'        for the whole range of \code{ff}, values \code{!= 1} change the
+#'        alpha behaviour.
+#'
+#' @rdname windrose
+#' @author Reto Stauffer
+#' @export
+windrose.default <- function(dd, ff, interval = 10, type = "density", 
+    windsector = NULL, main = NULL, hue = c(10,100), power = .5) {
+
+    # Plot type
+    type = match.arg(type, c("density", "histogram"))
+
+    # Stop if alpha is strange
+    if ( length(power) != 1 ) stop("\"power\" has to be of length 1.")
+    if ( power[1L] < 0 ) stop("\"power\" has to be > 0")
 
     # Interval check
     if ( ! floor(360/interval)*interval == 360 ) stop("interval wrong")
 
-    # Both, dd and ff, have to be univariate.
-    if ( ! is.null(dim(dd)) | ! is.null(dim(ff)) )
-        stop("Both, \"dd\" and \"ff\" have to be univariate.")
+    # Both, dd and ff, have to be zoo objects.
+    stopifnot(inherits(dd, "zoo"))
+    stopifnot(inherits(ff, "zoo"))
 
-    if ( inherits(dd, "zoo") & inherits(ff, "zoo") ) {
-        tmp <- na.omit(merge(dd, ff))
-        if ( nrow(tmp) == 0 )
-            stop("No data left after merging \"dd\" and \"ff\": no matching time indizes!")
-        # Else split again
-        dd <- tmp$dd; ff <- tmp$ff; rm(tmp)
-    }
-
-    # Convert to numeric
-    dd <- try(as.numeric(dd)); if ( inherits(dd, "try-error") ) stop("Wrong input \"dd\".")
-    ff <- try(as.numeric(ff)); if ( inherits(ff, "try-error") ) stop("Wrong input \"ff\".")
-
-    # Combine dd and ff. If length does not match: stop.
-    if ( ! length(dd) == length(ff) )
-        stop("Length of \"dd\" values does not match length of \"ff\" values. Stop.")
+    # Combine dd, ff, probabilities, and start plotting.
+    data <- na.omit(merge(dd, ff))
+    if ( nrow(data) == 0 ) stop("No data left after combining \"dd\" and \"ff\".")
 
     # Breaks for classification
-    dd <- ifelse(dd > (360 - interval/2), dd - 360, dd)
     dd.breaks <- seq(-interval / 2, 360, by=interval)
     ff.breaks <- pretty(ff)
 
-    tab <- xtabs( ~ cut(dd, dd.breaks, include.lowest = TRUE) +
-                    cut(ff, ff.breaks, include.lowest = TRUE) )
-    tab <- t(apply(tab, 1, cumsum)) / length(dd)
+    # ----------------
+    # Prepare data for the plots
 
-    rotate <- function(ff,dd) {
-        x   <- (90 + dd) / 180 * pi
-        mat <- matrix( c(sin(x),-cos(x),cos(x),sin(x)), ncol = 2)
-        data <- matrix(c(0,ff), ncol = 2) %*% mat
-        return(data)
+
+    # Picking some colors
+    cols <- rev(colorspace::heat_hcl(length(ff.breaks) - 1, h= hue, c. = c(60, 10),
+                                     l = c(25, 95), power = c(0.7,2)))
+    # Type "density"
+    if ( type == "density") {
+
+        tab <- windrose_get_density(data, dd.breaks, ff.breaks)
+        # Breaks of densities
+        density.breaks <- pretty(tab)
+
+        # X and Y limits
+        xlim <- ylim <- max(density.breaks) * c(-1, 1)
+        xlim <- xlim * c(1, 1.5)
+        # Title
+        if ( is.null(main) ) main <- "Windrose"
+
+    # Type "histogram"
+    } else {
+
+        # Create matrizes with counts
+        counts <- windrose_get_counts(data, dd.breaks, ff.breaks)
+        # Convert counts into colors
+        # Picking some colors
+        if ( is.null(hue) ) hue <- c(-100,80)
+
+        # X and Y limits
+        xlim <- ylim <- max(ff.breaks) * c(-1, 1)
+        xlim <- xlim * c(1, 1.5)
+        
+        # Picking some colors
+        tab  <- windrose_get_cols(counts, tail(cols,1L), p = power)
+
+        # Title
+        if ( is.null(main) ) main <- "Windrose Histogram"
     }
 
-    # Drawing a circle
-    drawCircle <- function(x) {
-        tmp <- matrix(c(rep(x,361), seq(0,360)), ncol = 2, byrow = FALSE)
-        tmp <- t(apply(tmp, 1, function(x) rotate(x[1L], x[2L])))
-        lines(tmp[,1], tmp[,2], col = "gray", lty = 2)
-    }
-
-    # Title
-    if ( is.null(main) ) main <- "Windrose"
-
-    # Start plotting down here
-    lim <- max(abs(tab), na.rm = TRUE)
-    plot(0, type = "n", xlim = c(-1,1)*lim*1.05, ylim = c(-1,1)*lim*1.05,
-         xaxs = "i", yaxs = "i", xaxt = "n", yaxt = "n",
-         xlab = NA, ylab = NA, main = NA, asp = 1)
-    mtext(side = 3, line = 2, main, font = 2, cex = 1.2)
+    # ----------------
+    # Base plot
+    #lim <- max(abs(tab), na.rm = TRUE) * c(-1.05, 1.05)
+    plot(0, type = "n", asp = 1, bty = "n", main = NA,
+         xlim = xlim, xaxt = "n", xlab = NA,
+         ylim = ylim, yaxt = "n", ylab = NA)
+    mtext(side = 3, at = 0, cex = 1.2, font = 2, line = .1, main)
 
     # If secotr is set: colorize
+    # TODO: not yet implemented
     if ( ! is.null(windsector) ) {
         polygon( c(0,windsector[1,1], windsector[2,1], 0),
                  c(0,windsector[1,2], windsector[2,2], 0), col = "gray90", border = NA)
     }
 
-    # Adding wind direction labels
-    lines(c(0,0), c(-lim,lim))
-    lines(c(-lim,lim), c(0,0))
-    axis(side = 1, at = 0, labels = "S", las = 1)
-    axis(side = 2, at = 0, labels = "W", las = 1)
-    axis(side = 3, at = 0, labels = "N", las = 1)
-    axis(side = 4, at = 0, labels = "E", las = 1)
-
-    if ( is.null(hue) ) hue <- c(-100,80)
-    cols <- rev(colorspace::heat_hcl(ncol(tab), h= hue, c. = c(60, 10),
-                                     l = c(25, 95), power = c(0.7,2)))
-
-    dd <- dd.breaks[-1] - diff(dd.breaks[1:2])/2
-    for ( i in ncol(tab):1 ) { 
-        tmp <- t(apply(cbind(tab[,i], dd), 1, function(x) rotate(x[1L], x[2L])))
-        tmp <- rbind(tmp,tmp[1,])
-        polygon(tmp[,1], tmp[,2], col = cols[i], border = NA)
+    # Adding polygons (density)
+    if ( type == "density" ) {
+        for ( i in ncol(tab):1 ) { 
+            tmp <- (-1) * ddff2uv(dd.breaks + interval / 2, c(tab[,i], tab[1,i]))
+            polygon(tmp$u, tmp$v, col = cols[i], border = NA)
+        }
+    # Plot type "histogram"
+    } else {
+        # ----------------
+        n <- round(diff(dd.breaks[1L:2L]))
+        # Drawing segments
+        for ( d in 2:length(dd.breaks) ) {
+            for ( f in 2:length(ff.breaks) ) {
+                tmp <- rbind(ddff2uv(seq(dd.breaks[d-1], dd.breaks[d], length = n),
+                                     rep(ff.breaks[f-1], n)),
+                             ddff2uv(seq(dd.breaks[d], dd.breaks[d-1], length = n),
+                                     rep(ff.breaks[f], n)))
+                tmp <- rbind(tmp, head(tmp,1)) *  -1
+                polygon(tmp$u, tmp$v, col = tab$colormatrix[d-1,f-1], border = NA)
+            }
+        }
     }
 
-    # Draw circles
-    if ( is.null(circle) ) circle <- pretty(ff)
-    for ( i in circle ) { if ( i == 0 ) next else drawCircle(i) }
+    # Circles/axis
+    for ( d in if ( type == "density" ) density.breaks else ff.breaks ) {
+        # Add circle
+        tmp <- ddff2uv(seq(0, 360), d)
+        lines(tmp$u, tmp$v, col = "gray50", lty = 3)
+        # Else add label
+        if ( d <= 0 ) next
+        tmp <- ddff2uv(45, d)
+        text(tmp$u, tmp$v, sprintf("%.2f", d), cex = .5)
+    }
+    lines(c(0,0), c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)))
+    lines(c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)), c(0,0))
 
     # If windsector is set: draw windsector
+    # TODO: Not yte implemented
     if ( ! is.null(windsector) ) {
         lines(c(0, windsector[1,1]), c(0, windsector[1,2]))
         lines(c(0, windsector[2,1]), c(0, windsector[2,2]))
     }
-    legend("bottomleft", bty = "n", legend = sprintf("N = %d", length(dd)))
 
+    # ----------------
     # Adding legend
-    legend("topleft", fill = cols, legend = colnames(tab), bg = "white",
-          title = "Wind speed [m/s]")
-    box()
+    at <- if ( type == "density" ) max(density.breaks) else max(ff.breaks)
+    at <- seq(0, at, length = ifelse(type == "density", ncol(tab), nrow(tab$legend)) * 2)
+    x0 <- max(at, na.rm = TRUE) * 1.05
+    x1 <- max(at, na.rm = TRUE) * 1.05 + diff(at[1:2])
+
+    if ( type == "density" ) {
+        for ( i in 1:ncol(tab) ) {
+            y0 <- at[(i-1)*2 + 1]; y1 <- at[i*2]
+            rect(x0, y0, x1, y1, col = cols[i])
+            text(x1, (y0+y1)/2, colnames(tab)[i], pos = 4)
+        }
+    } else {
+        for ( i in 1:nrow(tab$legend) ) {
+            y0 <- at[(i-1)*2 + 1]; y1 <- at[i*2]
+            rect(x0, y0, x1, y1,
+                 col = tab$legend$color[i], border = "gray50")
+            text(x1, (y0+y1)/2, sprintf("%d", tab$legend$level[i]), pos = 4)
+        }
+    }
+    text(x0, -mean(tail(at, 2)), pos = 4, sprintf("N = %d", nrow(data)))
 
 }

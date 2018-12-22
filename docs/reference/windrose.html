@@ -33,7 +33,10 @@
 <meta property="og:title" content="Windrose Plot — windrose" />
 
 <meta property="og:description" content="Plotting a windrose using meteorological wind direction and
-wind speed (or gust speed)." />
+wind speed (or gust speed).
+Windrose plot based on a foehnix mixture model object.
+Windrose plot, can handle two type of plots (see type) using
+the same information." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +67,7 @@ wind speed (or gust speed)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6</span>
       </span>
     </div>
 
@@ -142,52 +145,117 @@ wind speed (or gust speed)." />
     
     <p>Plotting a windrose using meteorological wind direction and
 wind speed (or gust speed).</p>
+<p>Windrose plot based on a <code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p>
+<p>Windrose plot, can handle two type of plots (see <code>type</code>) using
+the same information.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for foehnix</span>
-<span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>,
-  <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>maxpp</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>mfcol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>maxpp</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>windrose</span>(<span class='no'>dd</span>, <span class='no'>ff</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>,
+  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p><code>zoo</code> object or <code>data.frame</code> or <code><a href='foehnix.html'>foehnix</a></code>
-mixture model object.</p></td>
-    </tr>
-    <tr>
-      <th>which</th>
-      <td><p>character, one of <code>"unconditional"</code>, <code>"nofoehn"</code>, 
-<code>"foehn"</code>, or <code>"combined"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>ddvar</th>
-      <td><p>character, name of the wind direction varaible in <code>x</code> or as used
-for training the <code><a href='foehnix.html'>foehnix</a></code> mixture model.</p></td>
-    </tr>
-    <tr>
-      <th>ffvar</th>
-      <td><p>character, name of the wind speed varaible in <code>x</code> or as used
-for training the <code><a href='foehnix.html'>foehnix</a></code> mixture model.</p></td>
+      <td><p>forwarded to windrose S3 methods.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments, currently unused.</p></td>
+      <td><p>forwarded as well.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p><code>NULL</code> or character, one of <code>density</code> or <code>histogram</code>.
+If <code>NULL</code> both types will be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>which</th>
+      <td><p><code>NULL</code> or character, one of <code>unconditional</code>, <code>nofoehn</code>,
+or <code>foehn</code>. If <code>NULL</code> all three will be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>ddvar</th>
+      <td><p>character, name of the column in the training data set which contains
+the wind direction information.</p></td>
+    </tr>
+    <tr>
+      <th>ffvar</th>
+      <td><p>character, name of the column in the training data set which contains
+the wind speed (or gust speed) data.</p></td>
     </tr>
     <tr>
       <th>maxpp</th>
-      <td><p>maximum number of plot per page. If not all plots fit
-on one page multiple pages will be shown as a sequence of plots.</p></td>
+      <td><p>integer (<code>&gt;0</code>), maximum plots per page. Not all plots fit on one
+page the script loops trough.</p></td>
+    </tr>
+    <tr>
+      <th>dd</th>
+      <td><p>zoo object with meteorological wind directions (<code>]0, 360[</code>,
+0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
+and 270 'wind from west'.</p></td>
+    </tr>
+    <tr>
+      <th>ff</th>
+      <td><p>zoo object with sind speed data (<code>&gt;= 0</code>).</p></td>
+    </tr>
+    <tr>
+      <th>interval</th>
+      <td><p>numeric, a fraction of 360. If 360 cannot be devided by
+<code>interval</code> without a rest the script will stop. Interval
+for the segments along the wind direction <code>dd</code>. Default <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>windsector</th>
+      <td><p>TODO: currently unused.</p></td>
+    </tr>
+    <tr>
+      <th>main</th>
+      <td><p>character, title. If no title is set a default one will be shown.</p></td>
+    </tr>
+    <tr>
+      <th>hue</th>
+      <td><p>numeric vector of length 1 or two (for <code>type = "density"</code>
+two are used, for <code>type = "histogram"</code> only the first one will be
+used at the moment). Hue(s) for <code><a href='https://www.rdocumentation.org/packages/colorspace/topics/rainbow_hcl'>colorspace::heat_hcl(...)</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>power</th>
+      <td><p>numeric <code>&gt;0</code>, power parameter for the alpha channel if 
+<code>type = "histogram"</code>. If <code>1</code> the alpha channel is linear
+for the whole range of <code>ff</code>, values <code>!= 1</code> change the
+alpha behaviour.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>mfcolinteger, </th>
+      <td><p>number of columns of subplots.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>character, one of <code>density</code> or <code>histogram</code>, controls
+the plot type.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>TODO: not yet finished and/or tested!</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>windrose.default windrose.foehnix</p></div>
     
 
   </div>
@@ -197,8 +265,13 @@ on one page multiple pages will be shown as a sequence of plots.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
+<p>Reto Stauffer</p>
   </div>
 </div>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • foehnix</title>
+<title>Get Color Matrix and Legend for Windrose Plot — windrose_get_cols • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -25,12 +25,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Get Color Matrix and Legend for Windrose Plot — windrose_get_cols" />
+
+<meta property="og:description" content="Get Color Matrix and Legend for Windrose Plot" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -59,7 +62,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">foehnix</a>
+        <a class="navbar-link" href="../index.html">foehnix</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6</span>
       </span>
     </div>
@@ -67,7 +70,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="articles/foehnix.html">Getting started</a>
+  <a href="../articles/foehnix.html">Getting started</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -77,10 +80,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="articles/simulation.html">Simulation Examples</a>
+      <a href="../articles/simulation.html">Simulation Examples</a>
     </li>
   </ul>
 </li>
@@ -92,21 +95,21 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/statmodel.html">Statistical Model</a>
+      <a href="../articles/statmodel.html">Statistical Model</a>
     </li>
     <li>
-      <a href="articles/advanced_simulation.html">Censoring and Truncation</a>
+      <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
-      <a href="articles/families.html">foehnix Families</a>
+      <a href="../articles/families.html">foehnix Families</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="news/index.html">News</a>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -127,34 +130,63 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+    <h1>Get Color Matrix and Legend for Windrose Plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/windrose.R'><code>R/windrose.R</code></a></small>
+    <div class="hidden name"><code>windrose_get_cols.Rd</code></div>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Reto Stauffer</strong>. Author, maintainer. <a href='https://orcid.org/0000-0002-3798-5507' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID' height='16'></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Matthias Dusch</strong>. Contributor. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Georg J. Mayr</strong>. Contributor. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Fabien Maussion</strong>. Contributor. 
-        <br /><small>0000-0002-3211-506X</small></p>
-      </li>
-    </ul>
+    <div class="ref-description">
+    
+    <p>Get Color Matrix and Legend for Windrose Plot</p>
+    
+    </div>
+
+    <pre class="usage"><span class='fu'>windrose_get_cols</span>(<span class='no'>x</span>, <span class='no'>col</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>50L</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>2-D matrix with counts (see <code><a href='windrose_get_counts.html'>windrose_get_counts</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>single hex color, or a vector of hex colors. Alpha channel
+will be removed.</p></td>
+    </tr>
+    <tr>
+      <th>p</th>
+      <td><p>numeric value, power parameter for non-linear color transformation.</p></td>
+    </tr>
+    <tr>
+      <th>ncol</th>
+      <td><p>integer, if <code>col</code> is a single value the color will be repeated
+<code>ncol</code> times. Default is <code>50L</code>.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a list with two elements: <code>colormatrix</code> of the same
+dimension as <code>x</code> with colors for the different bins based on the
+counts, and <code>legend</code> with levels and colors for the color legend of the
+plot.</p>
+    
 
   </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
+  </div>
 </div>
-
 
       <footer>
       <div class="copyright">
