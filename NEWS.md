@@ -13,6 +13,8 @@
 * Added functions to convert `ddff2uv` and `uv2ddff` (plotting).
 * Was working on the `windrose` and `probwindrose` plotting functions,
   however, not yet production ready. TODO!
+* Added windrose function(s), most interesting is the windrose function
+  for the foehnix objects.
 
 # foehnix 0.0-4
 
