@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-02 15:35 on marvin
+# - L@ST MODIFIED: 2019-01-02 19:35 on marvin
 # -------------------------------------------------------------------
 
 
@@ -324,6 +324,9 @@ print.summary.foehnix <- function(x, ...) {
 #' @param deltat integer, interval in seconds for the time of day axis. Has to be
 #'        a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
 #'        interval of the time series object will be used.
+#' @param col vector of colors forwarded to \code{image.default}. By default
+#'        a gray scale color map is used.
+#' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
 #' @param ... additional arguments, currently unused.
 #'
 #' @details Plotting a Hoevmoeller diagram based on the \code{\link{zoo}} time
@@ -342,7 +345,8 @@ print.summary.foehnix <- function(x, ...) {
 #' (see \code{\link{aggregate.zoo}}).
 #' 
 #' @export
-image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, ...) {
+image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, deltad = 7L,
+                          col = rev(gray.colors(20)), contour.col = "black", ...) {
 
     x <- x$prob
     stopifnot(is.regular(x, strict = TRUE))
@@ -351,6 +355,11 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, ...)
         deltat <- as.numeric(diff(index(x)[1:2]), unit = "secs")
     if ( ! round(86400 / deltat) * deltat == 86400 )
         stop(sprintf("deltat = %d is not a fraction of 86400 (one day in seconds).", deltat))
+
+    # Checking deltad
+    if ( ! inherits(deltad, c("integer", "numeric")) ) stop("\"deltad\" has to be numeric/integer")
+    deltad <- as.integer(deltad)
+    if ( deltad < 1 ) stop("\"deltad\" has to be a positive integer.")
 
     # Aggregation function
     if ( is.character(FUN) ) {
@@ -365,75 +374,120 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, ...)
         }
     }
 
-    # Create a long form of the matrix. A data.frame with three columns
-    # containing "time" (HHMM as integer, e.g., 01:00 gets 100, 00:00 is set to 2400),
-    # "yday" containing the day of the year (January 1 is 0), and "prob", the
-    # foehn probability from the classification.
-    longform <- function(x, secs) {
-        lt   <- as.POSIXlt(ceiling(as.numeric(index(x)) / secs) * secs, origin = "1970-01-01")
-        time <- lt$hour
-        yday <- ifelse(lt$hour == 0, lt$yday + 1, lt$yday)
+
+    # Add information about time and day of the year
+    longform <- function(x, breaks.time, breaks.date) {
+        # Convert zoo index to POSIXlt once
+        lt   <- as.POSIXlt(index(x))
+
+        # Seconds of this day
+        time <- as.numeric(index(x)) - as.numeric(as.Date(index(x))) * 86400
+        time <- ifelse(time == 0, 86400, time)
+
+        # Zero-based Julian day
+        yday <- ifelse(time == 86400, lt$yday - 1, lt$yday)
         yday <- ifelse(yday < 365, yday, 0)
-        data.frame(time = time, yday = yday, prob = x$prob)
+        yday <- ifelse(yday < 0, yday + 365, yday)
+
+        # Labels with full integers (required to extract the data again)
+        labels.time <- sprintf("(%d,%d]", breaks.time[-length(breaks.time)], breaks.time[-1])
+
+        res <- data.frame(hash_time = cut(time, breaks.time, labels = labels.time),
+                          hash_date = cut(yday, breaks.date, include.lowest = TRUE))
+        res$hash <- sprintf("%s_%s", res$hash_date, res$hash_time)
+        return(res)
     }
-    data <- longform(x, deltat)
 
-    # Aggregate the data given "time" and "yday" from "data"
-    by <- sprintf("%d_%03d", data$time, data$yday)
-    data <- aggregate(data$prob, by = list(by), FUN = FUN)
-    names(data) <- c("hash", "prob")
 
-    # Deparsing the information again
-    data$time <- as.integer(regmatches(data$hash, regexpr("^[0-9]+",   data$hash)))
-    data$yday <- as.integer(regmatches(data$hash, regexpr("[0-9]{3}$", data$hash)))
+    breaks.time <- seq(0, 86400, by = deltat)
+    breaks.date <- pmax(0, c(seq(-1, 365, by = 10), 365))
+    data <- cbind(as.data.frame(x), longform(x, breaks.time, breaks.date))
 
-    # Create a matrix to take up the aggregated values
-    dim_time <- sort(unique(data$time))
-    dim_yday <- sort(unique(data$yday))
-    mat <- matrix(NA, nrow = length(dim_yday), ncol = length(dim_time), dimnames = list(dim_yday, dim_time))
+    # Aggregate information
+    agg <- aggregate(data$prob, by = list(data$hash), FUN = FUN)
+    names(agg) <- c("hash", "value")
 
-    # Fill in the data
-    mat[cbind(sprintf("%d", data$yday), sprintf("%d", data$time))] <- data$prob
 
-    # Format "time" to "HH:MM"
-    tmp <- as.integer(colnames(mat))
-    tmp <- list(hour = floor(tmp / 100), min = tmp - 100 * floor(tmp / 100))
-    colnames(mat) <- sprintf("%02d:%02d", ifelse(tmp$hour == 24, 0, tmp$hour), tmp$min) 
-    # Note: origin _has to be_ a Monday!
-    rownames(mat) <- strftime(as.Date(as.integer(rownames(mat)), origin = "2018-01-01"), "%b %d")
+    # Helper function to extract time/date information. We have reduced
+    # the date and time information to a string which looks somehow as follows:
+    # (0,5]_(0,3600] where the first pair contain the "day of the year" range
+    # (in this example yday 0 to yday 5 (including both, 0 and 5), the second
+    # pair contains the time of the day in seconds since 00:00 UTC (in this
+    # example from 0 seconds = 00:00 UTC to 3600 = 01:00 UTC. The lower one
+    # is not included, the upper one is in this case.
+    # This function extracts these values and returns a data.frame with the
+    # 'coordinates' (yday_from, yday_to, time_from, time_to) used later to
+    # draw the rectangles.
+    extract_info <- function(x) {
 
-    # Format yday as "Mon d". Must be a shift year
-    data$date <- strftime(as.Date(data$yday, origin = "2016-01-01"), "%b %d")
-    
-    # Plotting method
-    plotmat <- function(mat, contours = FALSE, ...) {
-        # Step one: we have to extend the matrix to be able to plot
-        # nice contours. We do it as well even if concour is set to FALSE.
-        orig_dim <- dim(mat)
-        mat <- rbind(tail(mat,2), mat, head(mat,2))
-        mat <- cbind(mat[,c(-1,0)+ncol(mat)], mat, mat[,1:2])
+        # Helper function to remove the brackets
+        kill_first <- function(x) as.integer(substr(x, 2, nchar(x)))
+        kill_last  <- function(x) as.integer(substr(x, 1, nchar(x) - 1))
 
-        # Calculate x and y limits
-        ylim <- c(1 / (2 * (ncol(mat) - 1))) * 3; ylim <- c(ylim,1 - ylim)
-        xlim <- c(1 / (2 * (nrow(mat) - 1))) * 3; xlim <- c(xlim,1 - xlim)
-        print(xlim)
+        # Extracting date information
+        date      <- regmatches(x, regexpr("^\\S[0-9]+,[0-9]+\\S", x))
+        yday_from <- sapply(regmatches(date, regexpr("^\\S[0-9]+", date)), kill_first)
+        yday_to   <- sapply(regmatches(date, regexpr("[0-9]+\\S$", date)), kill_last)
 
-        image(mat, ..., xaxt = "n", xaxs = "i", xlim = xlim,
-                        yaxt = "n", yaxs = "i", ylim = ylim)
-        if ( contours ) contour(mat, add = TRUE)
+        # Extracting time information
+        time      <- regmatches(x, regexpr("\\S[0-9]+,[0-9]+\\S$", x))
+        time_from <- sapply(regmatches(time, regexpr("^\\S[0-9]+", time)), kill_first)
+        time_to   <- sapply(regmatches(time, regexpr("[0-9]+\\S$", time)), kill_last)
 
-        xat  <- seq(par()$usr[1L], par()$usr[2L], length = nrow(mat) - 4L)
-        xidx <- seq.int(3L, nrow(mat) - 2L, length = 12)
-        axis(side = 1, at = xat[xidx], labels = rownames(mat)[xidx])
-        browser()
-
-        yat <- seq(par()$usr[3L], par()$usr[4L], length = ncol(mat) - 4 + 1)
-        yidx <- c(ncol(mat)-2, seq.int(3L, ncol(mat) - 2L))
-        axis(side = 2, at = yat, labels = colnames(mat)[yidx])
+        data.frame(hash = x,
+                   yday_from = yday_from, yday_mid = (yday_from + yday_to) / 2, yday_to = yday_to,
+                   time_from = time_from, time_mid = (time_from + time_to) / 2, time_to = time_to)
 
     }
-    plotmat(mat, contours = contours, col = rev(gray.colors(20))) 
 
-    return(data)
+    # Aggregate the data for the plot
+    agg <- cbind(agg, extract_info(agg[,1]))
+
+    # Some arguments for the plot
+    arg <- list(...)
+    xlab = if(! "xlab" %in% names(arg)) arg$xlab  = "time of the year"
+    ylab = if(! "ylab" %in% names(arg)) arg$ylab  = "time of the day"
+    main = if(! "main" %in% names(arg)) arg$main  = "foehnix Hoevmoeller Diagram"
+
+    # Convert values to colors for the plot.
+    get_color <- function(x, col, zlim = NULL) {
+        # Calculate color ID
+        if ( is.null(zlim) ) {
+            cID <- (x - min(x, na.rm = TRUE)) / max(x - min(x, na.rm = TRUE))
+        } else {
+            cID <- (x - min(zlim)) / max(zlim)
+        }
+        cID <- as.integer(round(cID * (length(col) - 1)) + 1)
+        cID[which(cID < 1 | cID > length(col))] <- NA
+        # Return a vector of colors
+        col[cID]
+    }
+    agg$color <- get_color(agg$value, col, zlim = arg$zlim)
+
+    # Draw plot
+    hold <- par(no.readonly = TRUE); on.exit(par(hold))
+    par(mar = c(4.1, 4.1, 2, 0.5))
+    plot(NA, bty = "n",
+         xlim = c(-0.5, 365.5), xaxt = "n", xaxs = "i",
+         ylim = c(0, 86400),    yaxt = "n", yaxs = "i",
+         xlab = arg$xlab, ylab = arg$ylab, main = arg$main)
+
+    # Adding the data (rectangles)
+    rect(agg$yday_from, agg$time_from, agg$yday_to, agg$time_to,
+         border = NA, col = agg$color)
+
+    # Adding y-axis (time)
+    yat <- seq(0, 86400, by = 3600)
+    ylab <- strftime(as.POSIXct(yat, origin = "1970-01-01"), "%H:%M")
+    axis(side = 2, at = yat, labels = ylab, las = 1)
+
+    # Adding x-axis (date)
+    xat <- as.POSIXlt(sprintf("2016-%02d-01", 2:12))
+    axis(side = 1, at = xat$yday - 0.5, labels = NA)
+    xat <- as.POSIXlt(sprintf("2016-%02d-15", 1:12))
+    axis(side = 1, at = xat$yday, labels = strftime(xat, "%b"), tick = FALSE, las = 2)
+
+    # Draw outline (box)
+    box()
 
 }

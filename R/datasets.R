@@ -1,5 +1,5 @@
 
-#' Meteorological Observation Data Station Ellboegen
+#' Meteorological Observation Data, Station Ellboegen
 #'
 #' The \code{\link{foehnix}} package comes with two data sets of meteorological
 #' observations for two sites in Tyrol, Austria.  One station is located nearby
@@ -42,7 +42,7 @@
 #' @author Reto Stauffer
 NULL
 
-#' Meteorological Observation Data Station Sattelberg
+#' Meteorological Observation Data, Station Sattelberg
 #'
 #' The \code{\link{foehnix}} package comes with two data sets of meteorological
 #' observations for two sites in Tyrol, Austria.  One station is located nearby
