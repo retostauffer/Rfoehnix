@@ -7,7 +7,7 @@
 \usage{
 foehnix_filter(x, filter)
 
-\method{print}{foehnix.filter}(x)
+\method{print}{foehnix.filter}(x, ...)
 }
 \arguments{
 \item{x}{object of class \code{zoo} or \code{data.frame} containing the

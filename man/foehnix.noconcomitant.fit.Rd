@@ -13,6 +13,12 @@ mixture model, dimension \code{N}.}
 
 \item{family}{object of class \code{\link{foehnix.family}}.}
 
+\item{switch}{logical wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
+
 \item{maxit}{positive integer, or vector of length 2 with positive
 integer values. Maximum number of iterations of the EM algorithm.
 Check manual of \code{\link{foehnix.control}} for more details.}
@@ -25,12 +31,6 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 verbose output will be suppressed.}
 
 \item{\dots}{additional arguments, unused.}
-
-\item{logical}{wether or not the two components should be switched.
-By default (\code{switch = FALSE}) the component which shows
-higher values of \code{y} is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Fitting method for two-component foehnix mixture model without

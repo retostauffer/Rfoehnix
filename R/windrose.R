@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-22 15:30 on marvin
+# - L@ST MODIFIED: 2019-01-02 15:34 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -15,12 +15,11 @@
 #' Plotting a windrose using meteorological wind direction and
 #' wind speed (or gust speed).
 #'
-#' @param x forwarded to windrose S3 methods.
+#' @param x forwarded to windrose methods.
 #' @param ... forwarded as well.
 #'
 #' @seealso windrose.default windrose.foehnix
 #'
-#' @details TODO: not yet finished and/or tested!
 #' @export
 windrose <- function(x, ...) UseMethod("windrose")
 
@@ -38,9 +37,29 @@ windrose <- function(x, ...) UseMethod("windrose")
 #'        the wind direction information.
 #' @param ffvar character, name of the column in the training data set which contains
 #'        the wind speed (or gust speed) data.
-#' @param mfcolinteger, number of columns of subplots.
+#' @param mfcol integer, number of columns of subplots.
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
+#'
+#' @details Allows to draw windrose plots from a \code{\link{foehnix}} mixture model
+#' object. Two \code{type}s are available: circular density plots and circular
+#' histograms, both for \code{which = "unconditional"}, \code{which = "nofoehn"},
+#' and \code{which = "foehn"}, details below.
+#' By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+#'
+#' \itemize{
+#'    \item \code{which = "unconditional"}: unconditional windrose (all observations
+#'          of the data set used to estimate the \code{\link{foehnix}} model).
+#'    \item \code{which = "nofoehn"}: windrose of all observations which have not been
+#'          classified as foehn (probability \code{< 0.5}).
+#'    \item \code{which = "foehn"}: windrose of all observations classified as foehn events
+#'          (probability \code{>= 0.5}).
+#' }
+#'
+#' Specific combinations can be selected by calling the windrose function with e.g.,
+#' \code{type = "histogram"} and \code{which = c("foehn", "nofoehn")} (will show
+#' histograms for foehn and no foehn events), or \code{type = NULL} and \code{which = "foehn"}
+#' (will show density and histogram plot for foehn events).
 #'
 #' @rdname windrose
 #' @author Reto Stauffer
@@ -361,14 +380,21 @@ windrose.default <- function(dd, ff, interval = 10, type = "density",
     }
 
     # Circles/axis
-    for ( d in if ( type == "density" ) density.breaks else ff.breaks ) {
+    if ( type == "density" ) {
+        at  <- density.breaks
+        fmt <- "%.2f"
+    } else {
+        at <- ff.breaks
+        fmt <- ifelse(all(round(at) == at), "%.0f", "%.1f")
+    }
+    for ( d in at ) {
         # Add circle
         tmp <- ddff2uv(seq(0, 360), d)
         lines(tmp$u, tmp$v, col = "gray50", lty = 3)
         # Else add label
         if ( d <= 0 ) next
         tmp <- ddff2uv(45, d)
-        text(tmp$u, tmp$v, sprintf("%.2f", d), cex = .5)
+        text(tmp$u, tmp$v, sprintf(fmt, d), cex = .5)
     }
     lines(c(0,0), c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)))
     lines(c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)), c(0,0))

@@ -23,9 +23,9 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 
 \method{edf}{foehnix}(object, ...)
 
-\method{print}{foehnix}(object, ...)
+\method{print}{foehnix}(x, ...)
 
-\method{formula}{foehnix}(object, ...)
+\method{formula}{foehnix}(x, ...)
 
 \method{summary}{foehnix}(object, ...)
 }

@@ -13,6 +13,12 @@ foehnix.control(family, switch, left = -Inf, right = Inf,
 mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.  For
 experts: custom \code{foehnix.family} objects can be provided as well.}
 
+\item{switch}{logical wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
+
 \item{left}{default is \code{-Inf}, left censoring or truncation point.  See
 also input \code{right} and input \code{truncated}. Can be set to any finite
 numeric value.}
@@ -46,12 +52,6 @@ criteria.}
 \item{verbose}{logical, if set to \code{FALSE} output is suppressed.}
 
 \item{...}{currently set to hell.}
-
-\item{logical}{wether or not the two components should be switched.
-By default (\code{switch = FALSE}) the component which shows
-higher values of \code{y} is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Used to control the \code{\link{foehnix}} mixture models.

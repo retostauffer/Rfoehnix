@@ -16,6 +16,12 @@ for the concomitant model (logistic regression model matrix).}
 
 \item{family}{object of class \code{\link{foehnix.family}}.}
 
+\item{switch}{logical wether or not the two components should be switched.
+By default (\code{switch = FALSE}) the component which shows
+higher values of \code{y} is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting \code{switch = TRUE}).}
+
 \item{maxit}{positive integer, or vector of length 2 with positive
 integer values. Maximum number of iterations of the EM algorithm
 and the concomitant model.
@@ -31,12 +37,6 @@ verbose output will be suppressed.}
 \item{alpha}{#TODO: currently unused.}
 
 \item{...}{additional arguments, unused.}
-
-\item{logical}{wether or not the two components should be switched.
-By default (\code{switch = FALSE}) the component which shows
-higher values of \code{y} is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting \code{switch = TRUE}).}
 }
 \description{
 Fitting method for two-component foehnix mixture model with regularization.

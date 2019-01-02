@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 21:36 on marvin
+# - L@ST MODIFIED: 2019-01-02 13:48 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -136,8 +136,8 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # probabilities.
     # Calculate linear predictor eta
     eta <- drop(X %*% beta)
-    # Apply link function on linear predictor to get response mu (probabilities)
-    mu  <- plogis(eta) 
+    # Apply link function on linear predictor to get response prob (probabilities)
+    prob  <- plogis(eta) 
 
     iter     <- 0L
     llpath   <- list()
@@ -147,16 +147,16 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
         iter <- iter + 1L
 
         # New weights
-        w <- sqrt(mu * (1 - mu)) + 1e-10
+        w <- sqrt(prob * (1 - prob)) + 1e-10
         if( is.null(lambda) ) { reg <- 0 } else { reg <- diag(ncol(X)) * lambda; reg[1,1] <- 0 }
-        beta <- solve(t(X*w) %*% (X*w) + reg) %*% t(X*w) %*% (eta * w + (y - mu) / w)
-        #beta <- matrix(lm.fit(X * w, eta * w + (y - mu)/w)$coefficients, ncol = 1)
+        beta <- solve(t(X*w) %*% (X*w) + reg) %*% t(X*w) %*% (eta * w + (y - prob) / w)
+        #beta <- matrix(lm.fit(X * w, eta * w + (y - prob)/w)$coefficients, ncol = 1)
 
         # Update latent response eta (X^\top \beta)
         eta  <- drop(X %*% beta)
 
         # Update response (probabilities)
-        mu   <- plogis(eta)
+        prob <- plogis(eta)
 
         # Update log-likelihood sum
         llpath[[iter]]   <- sum(y * eta - log(1 + exp(eta)))

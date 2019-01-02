@@ -62,10 +62,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/iwls_logit.html">Logistic Regression (IWLS)</a>
+      <a href="../articles/mixedmodel.html">Statistical Model</a>
     </li>
     <li>
-      <a href="../articles/statmodel.html">Statistical Mixture Model</a>
+      <a href="../articles/logisticregression.html">Logistic Regression (IWLS)</a>
     </li>
     <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
@@ -104,50 +104,49 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/statmodel.Rmd"><code>../vignettes/statmodel.Rmd</code></a></small>
-      <div class="hidden name"><code>statmodel.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/mixedmodel.Rmd"><code>../vignettes/mixedmodel.Rmd</code></a></small>
+      <div class="hidden name"><code>mixedmodel.Rmd</code></div>
 
     </div>
 
     
     
-<div id="statistical-models" class="section level2">
+<div id="statistical-model" class="section level2">
 <h2 class="hasAnchor">
-<a href="#statistical-models" class="anchor"></a>Statistical Models</h2>
-<p>The automated foehn classification <code>foehnix</code> is based on a two-component mixture model. The basic idea is that two unobservable components (or cluster) exist, one for situations without foehn, one for foehn situations. <code>foehnix</code> uses an unsupervised statistical model to identify these two components based on a set of observed values (e.g., wind speed, gust speed, potential temperature differences) to model the probability whether or not a specific observation is related to a foehn event or not.</p>
-<p>The statistical model consists of two parts: one part identify the two components, and one part modelling the probability whether or not a specific observation belongs to component one or component two. The latter is known as the <em>concomitant model</em>.</p>
-<p>The density of a two-component mixed distribution <span class="math inline">\(h(\dots)\)</span> in its general form is specified as follows:</p>
+<a href="#statistical-model" class="anchor"></a>Statistical Model</h2>
+<p>The automated foehn classification <code>foehnix</code> is based on a two-component mixture model. The basic idea is that two unobservable components (or clusters) exist. One component for situations without foehn, one component for situations with foehn. <code>foehnix</code> uses an unsupervised statistical method to identify the two components based on a set of observed values (e.g., wind speed, gust speed, potential temperature differences) to model the probability whether or not a specific observation is related to a foehn event.</p>
+<p>The statistical model consists of two parts: one part to identify the two components, and a second part modelling the probability whether or not a specific observation belongs to component 1 or component 2. The latter is known as the <em>concomitant model</em>.</p>
+<p>The density of a two-component mixed distribution <span class="math inline">\(h(\dots)\)</span> in its general form is specified as follows for a specific observation <span class="math inline">\(i\)</span>:</p>
 <ul>
-<li><span class="math inline">\(h(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =  \underbrace{(1 - \pi(\mathbf{x}, \alpha)) \cdot f(y, \mathit{\theta}_1)}_{\text{component 1}} +  \underbrace{\pi(\mathbf{x}, \alpha) \cdot f(\mathit{y}_i, \mathit{\theta}_2)}_{\text{component 2}}\)</span></li>
+<li><span class="math inline">\(h(y_i, \mathit{x}_i, \mathit{\theta}, \mathit{\alpha}) =  \underbrace{(1 - \pi(\mathit{x}_i, \alpha)) \cdot f(y_i, \mathit{\theta}_1)}_{\text{component 1}} +  \underbrace{\pi(\mathit{x}_i, \alpha) \cdot f(y_i, \mathit{\theta}_2)}_{\text{component 2}}\)</span></li>
 </ul>
-<p>… where <span class="math inline">\(\mathit{y}\)</span> is the covariate for the first part identifying the two components, <span class="math inline">\(\mathbf{x}\)</span> are the covariates for the concomitant model. The density of the mixed distribution <span class="math inline">\(h\)</span> is the sum or superposition of the densities of the two components (<span class="math inline">\(f\)</span>; i.e., Gaussian distribution) times the probability <span class="math inline">\(\pi\)</span> whether or not a specific observation belongs to the second component. <span class="math inline">\(\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)\)</span> are the distribution parameters for the components, <span class="math inline">\(\mathit{\alpha}\)</span> the parameters for the concomitant model.</p>
+<p>… where <span class="math inline">\(\mathit{y}\)</span> is the covariate for the first part of the statistical model to identify components 1 and 2, and <span class="math inline">\(\mathbf{x}\)</span> the covariates for the concomitant model. The density of the mixed distribution <span class="math inline">\(h\)</span> is the sum (or superposition) of the densities of the two components (<span class="math inline">\(f\)</span>; i.e., Gaussian distribution) times the probability <span class="math inline">\(\pi\)</span> from the concomitant model which describes whether or not a specific observation belongs to component 2. <span class="math inline">\(\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)\)</span> are the distribution parameters of the components, <span class="math inline">\(\mathit{\alpha}\)</span> the parameters of the concomitant model.</p>
 <p>The concomitant model can be any model which fulfills <span class="math inline">\(\pi \in~]0,1[\)</span>, e.g., an constant value or intercept only model (mixture model <em>without concomitants</em>), or any kind of probability model. <code>foehnix</code> uses a logistic regression model of the following form:</p>
 <ul>
-<li><span class="math inline">\(\Big(\frac{\pi}{1 - \pi}\Big) = \mathbf{x}^\top \mathit{\alpha};~~  \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span></li>
+<li><span class="math inline">\(\log\big(\frac{\pi}{1 - \pi}\big) = \mathbf{x}^\top \mathit{\alpha};~~  \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span></li>
 </ul>
-<p>The final probability, also known as the a-posteriori probability, is then:</p>
+<p>The final <em>foehn</em> probability of the two-component mixture model, also known as the a-posteriori probability, is given by:</p>
 <ul>
-<li><span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =  \frac{\pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{ (1 - \pi(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) + \pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)  }\)</span></li>
+<li><span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =  \frac{\pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{ (1 - \pi(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) ~+~ \pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)  }\)</span></li>
 </ul>
 <p>… where <span class="math inline">\(\hat{\mathit{p}}\)</span> in our case represents the probability of foehn. All one has to know are the parameters <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which can be estimated using an appropriate M-estimator such as maximum likelihood.</p>
 </div>
 <div id="parameter-estimation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#parameter-estimation" class="anchor"></a>Parameter Estimation</h2>
-<p>The maximum likelihood of a mixture model can usually not be maximized directly. One possibility to estimate model is an iterative <em>expectation maximization</em> (EM) algorithm to optimize the log-likelihood for a set of observation <span class="math inline">\(i = 1, \dots, N\)</span> given by:</p>
+<p>The maximum likelihood of a mixture model can usually not be maximized directly. One possibility to estimate the coefficients of is an iterative <em>expectation maximization</em> (EM) algorithm. The EM algorithm otimizes the following log-likelihood:</p>
 <ul>
 <li>
 <span class="math inline">\(\ell = \sum_{i=1}^N \big( (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) + \hat{\mathit{p}} \cdot \log(f(\mathit{y}, \mathit{\theta}_2)) + (1 - \hat{\mathit{p}} \cdot \log(1 - \mathit{\pi}(\mathbf{x}, \mathit{\alpha})) + \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha}))  \big)\)</span>.</li>
 </ul>
-<p>with <span class="math inline">\(\hat{\mathit{p}}\)</span> as specified above (a-posteriori probability).</p>
-<p>The EM algorithm is as follows:</p>
+<p>with <span class="math inline">\(\hat{\mathit{p}}\)</span> as specified above (a-posteriori probability). <span class="math inline">\(N\)</span> represents the number of observations.</p>
+<p>The EM algorithm is specified as follows:</p>
 <ul>
 <li><p><strong>Initialization:</strong> initialize values for <span class="math inline">\(\mathbf{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span>.</p></li>
 <li><p><strong>Estimation:</strong> compute the posterior class probability <span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha})\)</span></p></li>
-<li><p><strong>Maximize:</strong> estimate <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which maximize the likelihood using the posterior class probability <span class="math inline">\(\hat{\mathit{p}}\)</span> from the estimation step as weights:</p></li>
-<li><p><span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = \frac{\hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{  (1 - \hat{p}(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) +  \hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2) }\)</span></p></li>
+<li><p><strong>Maximize:</strong> estimate <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which maximize the likelihood using the posterior class probability <span class="math inline">\(\hat{\mathit{p}}\)</span> from the estimation step as weights: <span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = \frac{\hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{  (1 - \hat{p}(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) +  \hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2) }\)</span></p></li>
 </ul>
-<p>The EM steps are repeated until the likelihood improvement falls below a certain limit or the maximum number of iterations is reached.</p>
+<p>The EM steps are repeated until the likelihood improvement falls below a certain threshold or the maximum number of iterations is reached.</p>
 </div>
 <div id="gaussian-mixture-model-without-concomitants" class="section level2">
 <h2 class="hasAnchor">
@@ -183,19 +182,19 @@
 </li>
 <li>Obtain new <span class="math inline">\(\mathit{\theta}^{(j)}\)</span> using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span>:
 <ul>
-<li><span class="math inline">\(\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}})  \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i\)</span></li>
-<li><span class="math inline">\(\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i\)</span></li>
-<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
-<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
+<li><span class="math inline">\(\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)})} \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i\)</span></li>
+<li><span class="math inline">\(\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}} \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i\)</span></li>
+<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})} \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
+<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}} \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}\)</span></li>
 </ul>
 </li>
 <li>Update posterior probabilities <span class="math inline">\(\hat{\mathit{p}}^{(j)}\)</span>:
 <ul>
-<li><span class="math inline">\(\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{  (1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)})  + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}\)</span></li>
+<li><span class="math inline">\(\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{(1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)}) + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}\)</span></li>
 </ul>
 </li>
 <li>Calculate likelihood: <span class="math inline">\(\ell^{(j)}\)</span>. If <span class="math inline">\(j = 1\)</span> proceed with <strong>step 5</strong>.</li>
-<li>For <span class="math inline">\(j &gt; 1\)</span>: if <span class="math inline">\((\ell^{(j)} - \ell^{(j-1)}) &lt; \text{tol}\)</span> the likelihood could not have been improved (converged or stuck): stop EM algorithm. If <span class="math inline">\(j = \text{maxit}\)</span>: maximum number of iterations reached, stop EM algorithm. Else proceed with <strong>step 5</strong> until one of the stopping criteria is reached.</li>
+<li>For <span class="math inline">\(j &gt; 1\)</span>: if <span class="math inline">\((\ell^{(j)} - \ell^{(j-1)}) &lt; \text{tol}\)</span> the likelihood could not have been improved in iteration <span class="math inline">\(j\)</span> (converged or stuck): stop EM algorithm and return parameters of iteration <span class="math inline">\(j-1\)</span>. If <span class="math inline">\(j = \text{maxit}\)</span>: maximum number of iterations reached, stop EM algorithm, return parameters of iteration <span class="math inline">\(j\)</span>. Else proceed with <strong>step 5</strong> until one of the stopping criteria is reached.</li>
 </ol>
 </div>
 </div>
@@ -207,12 +206,12 @@
 <ol style="list-style-type: decimal">
 <li>Initialize class membership <span class="math inline">\(\mathit{z}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
 <li>Initialize coefficients <span class="math inline">\(\mathit{\theta}^{(0)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
-<li>Given <span class="math inline">\(\mathit{z}^{(0)}\)</span> and <span class="math inline">\(\mathbf{x}\)</span>: estimate logistic regression model to obtain the parameters <span class="math inline">\(\mathit{\alpha}^{(0)}\)</span>, calculate <span class="math inline">\(\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span> (see <a href="../iwls_logit.html">iwls_logit</a>).</li>
+<li>Given <span class="math inline">\(\mathit{z}^{(0)}\)</span> and <span class="math inline">\(\mathbf{x}\)</span>: estimate logistic regression model to obtain the parameters <span class="math inline">\(\mathit{\alpha}^{(0)}\)</span>, calculate <span class="math inline">\(\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span> (see <a href="logisticregression.html">logistic regression</a> vignette).</li>
 <li>Calculate a-posteriori probability <span class="math inline">\(\hat{\mathit{p}}^{(0)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
 </ol>
 <p>The EM algorithm for <span class="math inline">\(j = 1, \dots, \text{maxit}\)</span>:</p>
 <ol start="5" style="list-style-type: decimal">
-<li>Update <span class="math inline">\(\pi^{(j)}\)</span> by updating the concomitant model (logistic regression model) using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span> as response for the concomitant model (see <a href="../iwls_logit.html">iwls_logit</a>).</li>
+<li>Update <span class="math inline">\(\pi^{(j)}\)</span> by updating the concomitant model (logistic regression model) using <span class="math inline">\(\hat{\mathit{p}}^{(j-1)}\)</span> as response for the concomitant model (see <a href="logisticregression.html">logistic regression</a> vignette).</li>
 <li>Obtain new <span class="math inline">\(\mathit{\theta}^{(j)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
 <li>Update posterior probabilities <span class="math inline">\(\hat{\mathit{p}}^{(j)}\)</span> <em>as for the Gaussian mixture model without concomitants</em>.</li>
 <li>Calculate likelihood <em>as for the Gaussian mixture model without concomitants</em>.</li>
@@ -241,7 +240,7 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#statistical-models">Statistical Models</a></li>
+<li><a href="#statistical-model">Statistical Model</a></li>
       <li><a href="#parameter-estimation">Parameter Estimation</a></li>
       <li><a href="#gaussian-mixture-model-without-concomitants">Gaussian Mixture Model Without Concomitants</a></li>
       <li><a href="#gaussian-mixture-model-with-concomitants">Gaussian Mixture Model With Concomitants</a></li>

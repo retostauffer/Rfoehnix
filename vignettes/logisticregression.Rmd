@@ -1,0 +1,114 @@
+
+
+## Logistic Regression with Iterative (re-)Weighted Least Squares
+
+Logistic regression (LR) models are generalized linear models and often used
+for binary response models where an observation $\mathit{y}$ is binary zero or one.
+The logit-link is used as cannonical link to ensure that the modelled probabilities
+$\mathit{\pi}$ lie within $]0, 1[$. $\pi_i$ for a specific observation $i \in \{1, \dots, N\}$
+is the probability that we will observe $y_i = 1$.
+The model can be written as follows:
+
+* $\log\big(\frac{\mathit{\pi}}{1 - \mathit{\pi}}\big) = \mathbf{x}^\top \mathit{\alpha}~~$
+  or
+  $~~\pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}$.
+
+$\mathit{\alpha}$ is a vector of length $P$ of
+regression coefficients, $\mathbf{x}$ a matrix of dimension $N \times P$
+containing the covariates.  Given as set of observations
+$\mathit{y} \in \{0, 1\}$ and the corresponding covariates $\mathbf{x}$ the
+regression coefficients $\mathit{\alpha}$ can be estimated using e.g., maximum
+likelihood.  The log-likelihood sum of the LR model can be written as follows:
+
+* $\ell(\mathit{\alpha}~|~\mathit{y}, \mathbf{x}) = \sum_{i=1}^N \big( \mathit{y} \mathbf{x}^\top \mathit{\alpha} -
+  \log(1 + \exp(\mathbf{x}^\top \mathit{\alpha})) \big)$.
+
+## Fitting Logistic Regression Models
+
+The parameters of binary LR models can be estimated using
+an interative (re-)Weighted least squares (IWLS) solver.
+The regression coefficients $\mathit{\alpha}$ are iteratively updated using
+a Newton-Raphson update procedure. A single Newton update (one single iteration) is:
+
+* $\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} - \Big(\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top}\Big)^{-1} \frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}}$
+
+Where the derivates are evaluated at $\mathit{\alpha}^{(j)}$ from the previouse
+iteration. The first order and second order derivatives of
+the log-likelihood are:
+
+* $\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \sum_{i=1}^N x_i \big(y_i - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = \sum_{i=1}^N x_i (y_i - \pi_i)$
+* $\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = \sum_{i=1}^N x_i^2 \big(\frac{\exp(\mathit{x}_i^\top \mathit{\alpha})^2}{(1 + \exp(\mathit{x}_i^\top \mathit{\alpha}))^2} - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = - \sum_{i=1}^N x_i^2 \pi_i (1 - \pi_i)$
+
+The same can be written in matrix notation:
+
+
+* $\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = - \mathbf{x}^\top \mathbf{w} \mathbf{x}$, $~~~\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \mathbf{x}^\top (\mathit{y} - \mathit{\pi})$
+
+... where $\mathbf{w}$ is an $N \times N$ diagonal matrix of weights
+with the diagonal elements $\mathit{\pi} (1 - \mathit{\pi})$ evaluated at $\mathit{\alpha}^{(j)}$.
+Thus, the Newton step in matrix notation is given as:
+
+* $\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} + (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top (\mathit{y} - \mathit{\pi}) = (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top \mathbf{w} (\mathbf{x}\mathit{\alpha}^{(j)} + \mathbf{w}^{-1} (\mathit{y} - \mathit{\pi}))$
+
+With $\tilde{\mathbf{w}} = \mathbf{w}^\frac{1}{2}$ ($\mathbf{w} =
+\tilde{\mathbf{w}}^2$) we can write the Newton step as:
+
+* $\mathit{\alpha}^{(j+1)} = (\mathbf{x}^\top \tilde{\mathbf{w}} \tilde{\mathbf{w}} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}} (\underbrace{\mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})}_{\text{weighted adjusted response}})$.
+
+With $\mathbf{x^*} = \mathbf{x} \tilde{\mathbf{w}}$ and
+$z = \mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})$
+the equation can be rewritten as:
+
+* $\mathit{\alpha}^{(j+1)} = (\mathbf{x}^{*\top} \mathbf{x}^*)^{-1} \mathbf{x}^{*\top} \mathit{z}$
+
+... similar to ordinary least squares. 
+
+
+## IWLS Algorithm
+
+Given the equations above the iterative algorithm can be written as follows:
+
+Initialization
+
+1. Initialize $\mathit{\alpha}^{(0)} = 0$ (set all coefficients to zero)
+2. Initialize $\mathit{\pi}^{(0)} = 0.5$ ($\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}$)
+
+Update step for iteration $j = 1, \dots, \text{maxit}$:
+
+3. Update weights: $\tilde{\mathbf{w}}^{(j)} = \big(\mathit{\pi}^{(j-1)} (1 - \mathit{\pi}^{(j-1)})\big)^\frac{1}{2}$
+4. Update weighted adjusted response: $\mathit{z}^{(j)} = \mathbf{x} \tilde{\mathbf{w}}^{(j)} \mathit{\alpha}^{(j-1)} + (\tilde{\mathbf{w}}^{(j)})^{-1} (\mathit{y} - \mathit{\pi}^{(j-1)})$
+5. Update coefficients: $\mathit{\alpha}^{(j)} = (\mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \tilde{\mathbf{w}}^{(j)} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \mathit{z}^{(j)}$
+6. Calculate likelihood: $\ell^{(j)}$. If $j = 1$ proceed with **step 3**.
+7. For $j > 1$: if $(\ell^{(j)} - \ell^{(j-1)}) < \text{tol}$ the likelihood
+   could not have been improved in this iteration (converged or stuck): stop IWLS
+   algorithm and return $\mathit{\alpha}^{(j-1)}$.
+   If $j = \text{maxit}$: maximum number of iterations reached, stop algorith and
+   return $\mathit{\alpha}^{(j)}$.
+   Else proceed with **step 3** until one of the stopping criteria is reached.
+
+The [manual page of the iwls_logit function](../reference/iwls_logit.html)
+contains a practical example. More details about the IWLS procedure can be
+found in [Hastie, Tibshirani, and Friedman (2009, Chap. 4.4.1)](../index.html#hastie2009),
+[McCullagh and Nelder (1999, Chap. 4.4)](../index.html#mccullagh1999),
+and many other statistical text books (see
+[References](../index.html#references) for details).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

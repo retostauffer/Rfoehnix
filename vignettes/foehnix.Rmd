@@ -143,7 +143,7 @@ another.
 model (the part for the two components of the mixture model plus the one of the
 concomitant model) plus the full likelihood path.  The x-axis shows the
 log-iterations of the EM algorithm (see [statistical
-models](articles/statmodel.html) for more details).  Increasing values indicate
+models](articles/mixedmodel.html) for more details).  Increasing values indicate
 positive log-likelihood contributions (improvement of the model).
 
 

@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 18:39 on marvin
+# - L@ST MODIFIED: 2019-01-02 15:35 on marvin
 # -------------------------------------------------------------------
 
 
@@ -171,7 +171,7 @@ edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names =
 
 #' @rdname foehnix
 #' @export
-print.foehnix <- function(object, ...) print(summary(object, ...))
+print.foehnix <- function(x, ...) print(summary(object, ...))
 
 
 #' Get Estimated Mixture Model Coefficients
@@ -248,7 +248,7 @@ print.coef.foehnix <- function(x, ...) {
 
 #' @rdname foehnix
 #' @export
-formula.foehnix <- function(object, ...) object$formula
+formula.foehnix <- function(x, ...) x$formula
 
 
 #' @rdname foehnix
@@ -311,3 +311,129 @@ print.summary.foehnix <- function(x, ...) {
     }
 }
 
+#' foehnix Image Plot - Hoevmoeller Diagram
+#'
+#' The default \code{\link{image}} plot of a \code{\link{foehnix}} object
+#' is a Hoevmoeller diagram.
+#'
+#' @param x object of class \code{\link{foehnix}}.
+#' @param FUN character string or a custom aggregation function. See 'Details'
+#'        section for more information.
+#' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
+#'        concours should be added.
+#' @param deltat integer, interval in seconds for the time of day axis. Has to be
+#'        a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
+#'        interval of the time series object will be used.
+#' @param ... additional arguments, currently unused.
+#'
+#' @details Plotting a Hoevmoeller diagram based on the \code{\link{zoo}} time
+#' series object of the \code{\link{foehnix}} classification. Different plot
+#' types are available. The default functions (see list below) use \code{na.rm = TRUE}.
+#'
+#' Input \code{FUN} can be one of the following character strings:
+#' \itemize{
+#'    \item \code{mean}: mean probability.
+#'    \item \code{freq}: plotting frequencies.
+#'    \item \code{occ}: plotting occurance of foehn (where probability \code{>= 0.5}).
+#'    \item \code{noocc}: contrary to \code{occ}: occurance of no foehn (probability \code{< 0.5}).
+#' }
+#'
+#' \code{FUN} can also be a custom function used for time series aggregation
+#' (see \code{\link{aggregate.zoo}}).
+#' 
+#' @export
+image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, ...) {
+
+    x <- x$prob
+    stopifnot(is.regular(x, strict = TRUE))
+    index(x) <- as.POSIXct(index(x))
+    if ( is.null(deltat) )
+        deltat <- as.numeric(diff(index(x)[1:2]), unit = "secs")
+    if ( ! round(86400 / deltat) * deltat == 86400 )
+        stop(sprintf("deltat = %d is not a fraction of 86400 (one day in seconds).", deltat))
+
+    # Aggregation function
+    if ( is.character(FUN) ) {
+        if ( FUN == "mean" ) {
+            FUN <- function(x) mean(x, na.rm = TRUE)
+        } else if ( FUN == "occ" ) {
+            FUN <- function(x) sum(x >= 0.5, na.rm = TRUE)
+        } else if ( FUN == "noocc" ) {
+            FUN <- function(x) sum(x <  0.5, na.rm = TRUE)
+        } else if ( FUN == "freq" ) {
+            FUN <- function(x) sum(x >= 0.5, na.rm = TRUE) / sum(!is.na(x))
+        }
+    }
+
+    # Create a long form of the matrix. A data.frame with three columns
+    # containing "time" (HHMM as integer, e.g., 01:00 gets 100, 00:00 is set to 2400),
+    # "yday" containing the day of the year (January 1 is 0), and "prob", the
+    # foehn probability from the classification.
+    longform <- function(x, secs) {
+        lt   <- as.POSIXlt(ceiling(as.numeric(index(x)) / secs) * secs, origin = "1970-01-01")
+        time <- lt$hour
+        yday <- ifelse(lt$hour == 0, lt$yday + 1, lt$yday)
+        yday <- ifelse(yday < 365, yday, 0)
+        data.frame(time = time, yday = yday, prob = x$prob)
+    }
+    data <- longform(x, deltat)
+
+    # Aggregate the data given "time" and "yday" from "data"
+    by <- sprintf("%d_%03d", data$time, data$yday)
+    data <- aggregate(data$prob, by = list(by), FUN = FUN)
+    names(data) <- c("hash", "prob")
+
+    # Deparsing the information again
+    data$time <- as.integer(regmatches(data$hash, regexpr("^[0-9]+",   data$hash)))
+    data$yday <- as.integer(regmatches(data$hash, regexpr("[0-9]{3}$", data$hash)))
+
+    # Create a matrix to take up the aggregated values
+    dim_time <- sort(unique(data$time))
+    dim_yday <- sort(unique(data$yday))
+    mat <- matrix(NA, nrow = length(dim_yday), ncol = length(dim_time), dimnames = list(dim_yday, dim_time))
+
+    # Fill in the data
+    mat[cbind(sprintf("%d", data$yday), sprintf("%d", data$time))] <- data$prob
+
+    # Format "time" to "HH:MM"
+    tmp <- as.integer(colnames(mat))
+    tmp <- list(hour = floor(tmp / 100), min = tmp - 100 * floor(tmp / 100))
+    colnames(mat) <- sprintf("%02d:%02d", ifelse(tmp$hour == 24, 0, tmp$hour), tmp$min) 
+    # Note: origin _has to be_ a Monday!
+    rownames(mat) <- strftime(as.Date(as.integer(rownames(mat)), origin = "2018-01-01"), "%b %d")
+
+    # Format yday as "Mon d". Must be a shift year
+    data$date <- strftime(as.Date(data$yday, origin = "2016-01-01"), "%b %d")
+    
+    # Plotting method
+    plotmat <- function(mat, contours = FALSE, ...) {
+        # Step one: we have to extend the matrix to be able to plot
+        # nice contours. We do it as well even if concour is set to FALSE.
+        orig_dim <- dim(mat)
+        mat <- rbind(tail(mat,2), mat, head(mat,2))
+        mat <- cbind(mat[,c(-1,0)+ncol(mat)], mat, mat[,1:2])
+
+        # Calculate x and y limits
+        ylim <- c(1 / (2 * (ncol(mat) - 1))) * 3; ylim <- c(ylim,1 - ylim)
+        xlim <- c(1 / (2 * (nrow(mat) - 1))) * 3; xlim <- c(xlim,1 - xlim)
+        print(xlim)
+
+        image(mat, ..., xaxt = "n", xaxs = "i", xlim = xlim,
+                        yaxt = "n", yaxs = "i", ylim = ylim)
+        if ( contours ) contour(mat, add = TRUE)
+
+        xat  <- seq(par()$usr[1L], par()$usr[2L], length = nrow(mat) - 4L)
+        xidx <- seq.int(3L, nrow(mat) - 2L, length = 12)
+        axis(side = 1, at = xat[xidx], labels = rownames(mat)[xidx])
+        browser()
+
+        yat <- seq(par()$usr[3L], par()$usr[4L], length = ncol(mat) - 4 + 1)
+        yidx <- c(ncol(mat)-2, seq.int(3L, ncol(mat) - 2L))
+        axis(side = 2, at = yat, labels = colnames(mat)[yidx])
+
+    }
+    plotmat(mat, contours = contours, col = rev(gray.colors(20))) 
+
+    return(data)
+
+}

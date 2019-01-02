@@ -15,7 +15,7 @@ windrose(x, ...)
   windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5)
 }
 \arguments{
-\item{x}{forwarded to windrose S3 methods.}
+\item{x}{forwarded to windrose methods.}
 
 \item{...}{forwarded as well.}
 
@@ -30,6 +30,8 @@ the wind direction information.}
 
 \item{ffvar}{character, name of the column in the training data set which contains
 the wind speed (or gust speed) data.}
+
+\item{mfcol}{integer, number of columns of subplots.}
 
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}
@@ -59,8 +61,6 @@ alpha behaviour.}
 
 \item{x}{object of class \code{\link{foehnix}}.}
 
-\item{mfcolinteger, }{number of columns of subplots.}
-
 \item{type}{character, one of \code{density} or \code{histogram}, controls
 the plot type.}
 }
@@ -74,7 +74,25 @@ Windrose plot, can handle two type of plots (see \code{type}) using
 the same information.
 }
 \details{
-TODO: not yet finished and/or tested!
+Allows to draw windrose plots from a \code{\link{foehnix}} mixture model
+object. Two \code{type}s are available: circular density plots and circular
+histograms, both for \code{which = "unconditional"}, \code{which = "nofoehn"},
+and \code{which = "foehn"}, details below.
+By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+
+\itemize{
+   \item \code{which = "unconditional"}: unconditional windrose (all observations
+         of the data set used to estimate the \code{\link{foehnix}} model).
+   \item \code{which = "nofoehn"}: windrose of all observations which have not been
+         classified as foehn (probability \code{< 0.5}).
+   \item \code{which = "foehn"}: windrose of all observations classified as foehn events
+         (probability \code{>= 0.5}).
+}
+
+Specific combinations can be selected by calling the windrose function with e.g.,
+\code{type = "histogram"} and \code{which = c("foehn", "nofoehn")} (will show
+histograms for foehn and no foehn events), or \code{type = NULL} and \code{which = "foehn"}
+(will show density and histogram plot for foehn events).
 }
 \seealso{
 windrose.default windrose.foehnix

@@ -60,6 +60,13 @@ _Journal of Applied Meteorology and Climatology_, **53**(3), 652&mdash;659,
 <a href="https://dx.doi.org/10.1175/JAMC-D-13-0267.1" target="_blank">10.1175/JAMC-D-13-0267.1</a>
 </p>
 
+<p id="hastie2009">
+Hastie T, Tibshirani R, Friedman J (2009).
+Fitting Logistic Regression Models. In _The Elements of Statistical Learning_
+(Chapter 4.4.1), 2_nd_ edition, ISBN 978-0387848570.
+<a href="https://web.stanford.edu/~hastie/ElemStatLearn/" target="_blank">PDF download</a>
+</p>
+
 <p id="gruen2008">
 Gr&uuml;n B, Friedrich L (2008).
 FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
@@ -87,3 +94,12 @@ Model-Based Clustering, Discriminant Analysis, and Density Estimation.
 _Journal of the American Statistical Association_, **97**(458), 611&mdash;631,
 doi:<a href="https://dx.doi.org/10.1198/016214502760047131" target="_blank">10.1198/016214502760047131</a>
 </p>
+
+<p id="mccullagh1999">
+McCullagh P, Nelder JA (1999).
+Likelihood functions for binary data. In _Generalized Linear Models_ (Chapter 4.4),
+2_nd_ edition, ISBN 0-412-31760-5.
+</p>
+
+
+

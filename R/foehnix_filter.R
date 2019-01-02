@@ -272,7 +272,7 @@ foehnix_filter <- function(x, filter) {
 
 #' @rdname foehnix_filter
 #' @export
-print.foehnix.filter <- function(x) {
+print.foehnix.filter <- function(x, ...) {
     cat("\nFoehnix Filter Object:\n")
     cat("Call: "); print(x$call)
     cat(sprintf("Total data set length:          %8d\n", x$total))

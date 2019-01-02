@@ -1,4 +1,11 @@
 
+# foehnix 0.0-6
+
+
+* Added vignette for the logistic regression model (IWLS).
+* Added new references.
+* In `iwls_logit`: renamed variable `mu` to `prob`.
+
 # foehnix 0.0-5
 
 * Extended manual pages for `Getting Started`, `Statistical Model`,

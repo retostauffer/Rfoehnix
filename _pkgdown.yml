@@ -15,7 +15,9 @@ navbar:
         - text: "Advanced"
           menu:
             - text: "Statistical Model"
-              href: articles/statmodel.html
+              href: articles/mixedmodel.html
+            - text: "Logistic Regression (IWLS)"
+              href: articles/logisticregression.html
             - text: "Censoring and Truncation"
               href: articles/advanced_simulation.html
             - text: "foehnix Families"

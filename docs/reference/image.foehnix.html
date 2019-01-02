@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get Color Matrix and Legend for Windrose Plot — windrose_get_cols • foehnix</title>
+<title>foehnix Image Plot - Hoevmoeller Diagram — image.foehnix • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Get Color Matrix and Legend for Windrose Plot — windrose_get_cols" />
+<meta property="og:title" content="foehnix Image Plot - Hoevmoeller Diagram — image.foehnix" />
 
-<meta property="og:description" content="Get Color Matrix and Legend for Windrose Plot" />
+<meta property="og:description" content="The default image plot of a foehnix object
+is a Hoevmoeller diagram." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,48 +136,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get Color Matrix and Legend for Windrose Plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/windrose.R'><code>R/windrose.R</code></a></small>
-    <div class="hidden name"><code>windrose_get_cols.Rd</code></div>
+    <h1>foehnix Image Plot - Hoevmoeller Diagram</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
+    <div class="hidden name"><code>image.foehnix.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Get Color Matrix and Legend for Windrose Plot</p>
+    <p>The default <code><a href='https://www.rdocumentation.org/packages/graphics/topics/image'>image</a></code> plot of a <code><a href='foehnix.html'>foehnix</a></code> object
+is a Hoevmoeller diagram.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>windrose_get_cols</span>(<span class='no'>x</span>, <span class='no'>col</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>50L</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/image'>image</a></span>(<span class='no'>x</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='st'>"freq"</span>, <span class='kw'>contours</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>deltat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>2-D matrix with counts (see <code><a href='windrose_get_counts.html'>windrose_get_counts</a></code>).</p></td>
+      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
     </tr>
     <tr>
-      <th>col</th>
-      <td><p>single hex color, or a vector of hex colors. Alpha channel
-will be removed.</p></td>
+      <th>FUN</th>
+      <td><p>character string or a custom aggregation function. See 'Details'
+section for more information.</p></td>
     </tr>
     <tr>
-      <th>p</th>
-      <td><p>numeric value, power parameter for non-linear color transformation.</p></td>
+      <th>contours</th>
+      <td><p>logical <code>TRUE</code> or <code>FALSE</code>, whether or not the
+concours should be added.</p></td>
     </tr>
     <tr>
-      <th>ncol</th>
-      <td><p>integer, if <code>col</code> is a single value the color will be repeated
-<code>ncol</code> times. Default is <code>50L</code>.</p></td>
+      <th>deltat</th>
+      <td><p>integer, interval in seconds for the time of day axis. Has to be
+a fraction of 86400 (24 hours in seconds). It <code>NuLL</code> (default) the
+interval of the time series object will be used.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns a list with two elements: <code>colormatrix</code> of the same
-dimension as <code>x</code> with colors for the different bins based on the
-counts, and <code>legend</code> with levels and colors for the color legend of the
-plot.</p>
+    <p>Plotting a Hoevmoeller diagram based on the <code>zoo</code> time
+series object of the <code><a href='foehnix.html'>foehnix</a></code> classification. Different plot
+types are available. The default functions (see list below) use <code>na.rm = TRUE</code>.</p>
+<p>Input <code>FUN</code> can be one of the following character strings:</p><ul>
+<li><p><code>mean</code>: mean probability.</p></li>
+<li><p><code>freq</code>: plotting frequencies.</p></li>
+<li><p><code>occ</code>: plotting occurance of foehn (where probability <code>&gt;= 0.5</code>).</p></li>
+<li><p><code>noocc</code>: contrary to <code>occ</code>: occurance of no foehn (probability <code>&lt; 0.5</code>).</p></li>
+</ul>
+    <p><code>FUN</code> can also be a custom function used for time series aggregation
+(see <code>aggregate.zoo</code>).</p>
     
 
   </div>
@@ -185,7 +198,7 @@ plot.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

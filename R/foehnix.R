@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 21:14 on marvin
+# - L@ST MODIFIED: 2019-01-02 15:39 on marvin
 # -------------------------------------------------------------------
 
 
@@ -24,7 +24,7 @@
 #' @param y numeric vector, covariate for the components of the
 #'        mixture model, dimension \code{N}.
 #' @param family object of class \code{\link{foehnix.family}}.
-#' @param logical wether or not the two components should be switched.
+#' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
 #'        Depending on what your covariate is you might need to switch
@@ -153,7 +153,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
 #' @param family object of class \code{\link{foehnix.family}}.
-#' @param logical wether or not the two components should be switched.
+#' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
 #'        Depending on what your covariate is you might need to switch
@@ -290,7 +290,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
 #' @param family object of class \code{\link{foehnix.family}}.
-#' @param logical wether or not the two components should be switched.
+#' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
 #'        Depending on what your covariate is you might need to switch
@@ -329,7 +329,7 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #' @param family character specifying the distribution of the components in the
 #'        mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.  For
 #'        experts: custom \code{foehnix.family} objects can be provided as well.
-#' @param logical wether or not the two components should be switched.
+#' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
 #'        Depending on what your covariate is you might need to switch

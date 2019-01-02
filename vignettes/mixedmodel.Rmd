@@ -1,51 +1,52 @@
 
 
-## Statistical Models
-
+## Statistical Model
 
 The automated foehn classification `foehnix` is based on a two-component
-mixture model. The basic idea is that two unobservable components (or cluster)
-exist, one for situations without foehn, one for foehn situations.
-`foehnix` uses an unsupervised statistical model to identify these two components
+mixture model. The basic idea is that two unobservable components (or clusters)
+exist. One component for situations without foehn, one component for situations with foehn.
+`foehnix` uses an unsupervised statistical method to identify the two components
 based on a set of observed values (e.g., wind speed, gust speed,
 potential temperature differences) to model the probability whether or not a 
-specific observation is related to a foehn event or not.
+specific observation is related to a foehn event.
 
-The statistical model consists of two parts: one part identify the two
-components, and one part modelling the probability whether or not a specific
-observation belongs to component one or component two. The latter is known as
+The statistical model consists of two parts: one part to identify the two
+components, and a second part modelling the probability whether or not a specific
+observation belongs to component 1 or component 2. The latter is known as
 the _concomitant model_.
 
 The density of a two-component mixed distribution $h(\dots)$ in its general form is
-specified as follows:
+specified as follows for a specific observation $i$:
 
-* $h(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =
-  \underbrace{(1 - \pi(\mathbf{x}, \alpha)) \cdot f(y, \mathit{\theta}_1)}_{\text{component 1}} +
-  \underbrace{\pi(\mathbf{x}, \alpha) \cdot f(\mathit{y}_i, \mathit{\theta}_2)}_{\text{component 2}}$
+* $h(y_i, \mathit{x}_i, \mathit{\theta}, \mathit{\alpha}) =
+  \underbrace{(1 - \pi(\mathit{x}_i, \alpha)) \cdot f(y_i, \mathit{\theta}_1)}_{\text{component 1}} +
+  \underbrace{\pi(\mathit{x}_i, \alpha) \cdot f(y_i, \mathit{\theta}_2)}_{\text{component 2}}$
 
-... where $\mathit{y}$ is the covariate for the first part identifying the two
-components, $\mathbf{x}$ are the covariates for the concomitant model.  The
-density of the mixed distribution $h$ is the sum or superposition of the
-densities of the two components ($f$; i.e., Gaussian distribution) times the
-probability $\pi$ whether or not a specific observation belongs to the second
-component. $\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)$ are the
-distribution parameters for the components, $\mathit{\alpha}$ the parameters for
-the concomitant model.
+... where $\mathit{y}$ is the covariate for the first part of the statistical
+model to identify components 1 and 2, and $\mathbf{x}$ the covariates for the
+concomitant model. The density of the mixed distribution $h$ is the sum (or
+superposition) of the densities of the two components ($f$; i.e., Gaussian
+distribution) times the probability $\pi$ from the concomitant model which
+describes whether or not a specific observation belongs to component 2.
+$\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)$ are the distribution
+parameters of the components, $\mathit{\alpha}$ the parameters of the
+concomitant model.
 
 The concomitant model can be any model which fulfills $\pi \in~]0,1[$,
 e.g., an constant value or intercept only model (mixture model _without concomitants_),
 or any kind of probability model. `foehnix` uses a logistic regression model of
 the following form:
 
-* $\Big(\frac{\pi}{1 - \pi}\Big) = \mathbf{x}^\top \mathit{\alpha};~~
+* $\log\big(\frac{\pi}{1 - \pi}\big) = \mathbf{x}^\top \mathit{\alpha};~~
   \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}$
 
-The final probability, also known as the a-posteriori probability, is then:
+The final _foehn_ probability of the two-component mixture model, also known as the
+a-posteriori probability, is given by:
 
 * $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = 
-  \frac{\pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{
-    (1 - \pi(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) +
-    \pi(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)
+  \frac{\pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{
+    (1 - \pi(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) ~+~
+    \pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)
   }$
 
 ... where $\hat{\mathit{p}}$ in our case represents the probability of foehn.
@@ -55,9 +56,8 @@ which can be estimated using an appropriate M-estimator such as maximum likeliho
 ## Parameter Estimation
 
 The maximum likelihood of a mixture model can usually not be maximized
-directly. One possibility to estimate model is an iterative _expectation
-maximization_ (EM) algorithm to optimize the log-likelihood for a set of
-observation $i = 1, \dots, N$ given by:
+directly. One possibility to estimate the coefficients of is an iterative _expectation
+maximization_ (EM) algorithm. The EM algorithm otimizes the following log-likelihood:
 
 * $\ell = \sum_{i=1}^N \big(
     (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) +
@@ -66,10 +66,11 @@ observation $i = 1, \dots, N$ given by:
     \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha}))
   \big)$.
 
-with $\hat{\mathit{p}}$ as specified above (a-posteriori probability).
+with $\hat{\mathit{p}}$ as specified above (a-posteriori probability). $N$ represents
+the number of observations.
 
 
-The EM algorithm is as follows:
+The EM algorithm is specified as follows:
 
 * **Initialization:** initialize values for $\mathbf{\theta}$ and $\mathit{\alpha}$.
 
@@ -79,15 +80,14 @@ The EM algorithm is as follows:
 * **Maximize:** estimate $\mathit{\theta}$ and $\mathit{\alpha}$ which maximize
   the likelihood using the posterior class probability $\hat{\mathit{p}}$
   from the estimation step as weights:
-  
-  * $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = 
-    \frac{\hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)}{
-      (1 - \hat{p}(\mathbf{x}, \mathit{alpha})) f(\mathbf{y}, \mathbf{\theta}_1) +
-      \hat{p}(\mathbf{x}, \mathit{alpha}) f(\mathbf{y}, \mathbf{\theta}_2)
+  $\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = 
+    \frac{\hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{
+      (1 - \hat{p}(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) +
+      \hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)
     }$
 
 The EM steps are repeated until the likelihood improvement falls below a
-certain limit or the maximum number of iterations is reached.
+certain threshold or the maximum number of iterations is reached.
 
 ## Gaussian Mixture Model Without Concomitants
 
@@ -137,23 +137,18 @@ the EM algorithm for $j = 1, ..., maxit$:
 
 5. Update $\pi^{(j)} = \text{mean}(\hat{\mathit{p}}^{(j-1)})$
 6. Obtain new $\mathit{\theta}^{(j)}$ using $\hat{\mathit{p}}^{(j-1)}$:
-     * $\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}})
-       \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i$
-     * $\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
-       \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i$
-     * $\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}
-       \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
-     * $\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}
-       \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
+     * $\mu_1^{(j)} = \frac{1}{\sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)})} \sum_{i=1}^{N} (1 - \hat{\mathit{p}}_i^{(j-1)}) \cdot y_i$
+     * $\mu_2^{(j)} = \frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}} \sum_{i=1}^{N} \hat{\mathit{p}}_i^{(j-1)} \cdot y_i$
+     * $\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})} \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
+     * $\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}} \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}$
 7. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$:
-     * $\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{
-                        (1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)})
-                        + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}$
-
+     * $\hat{\mathit{p}}^{(j)} = \frac{\mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}{(1 - \mathit{\pi}^{(j)}) \cdot \phi(\mathit{y}, \mathit{\theta}_1^{(j)}) + \mathit{\pi}^{(j)} \cdot \phi(\mathit{y}, \mathit{\theta}_2^{(j)})}$
 8. Calculate likelihood: $\ell^{(j)}$. If $j = 1$ proceed with **step 5**.
 9. For $j > 1$: if $(\ell^{(j)} - \ell^{(j-1)}) < \text{tol}$ the likelihood
-   could not have been improved (converged or stuck): stop EM algorithm. 
-   If $j = \text{maxit}$: maximum number of iterations reached, stop EM algorithm.
+   could not have been improved in iteration $j$ (converged or stuck): stop EM algorithm
+   and return parameters of iteration $j-1$.
+   If $j = \text{maxit}$: maximum number of iterations reached, stop EM algorithm,
+   return parameters of iteration $j$.
    Else proceed with **step 5** until one of the stopping criteria is reached.
 
 
@@ -174,8 +169,8 @@ The following algorithm is used:
    _as for the Gaussian mixture model without concomitants_.
 3. Given $\mathit{z}^{(0)}$ and $\mathbf{x}$: estimate logistic
      regression model to obtain the parameters $\mathit{\alpha}^{(0)}$,
-     calculate $\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}}$
-   (see [iwls_logit](reference/iwls_logit.html)).
+     calculate $\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}$
+   (see [logistic regression](logisticregression.html) vignette).
 4. Calculate a-posteriori probability $\hat{\mathit{p}}^{(0)}$
    _as for the Gaussian mixture model without concomitants_.
 
@@ -183,7 +178,7 @@ The EM algorithm for $j = 1, \dots, \text{maxit}$:
 
 5. Update $\pi^{(j)}$ by updating the concomitant model (logistic regression model)
    using $\hat{\mathit{p}}^{(j-1)}$ as response for the concomitant model
-   (see [iwls_logit](reference/iwls_logit.html)).
+   (see [logistic regression](logisticregression.html) vignette).
 6. Obtain new $\mathit{\theta}^{(j)}$
    _as for the Gaussian mixture model without concomitants_.
 7. Update posterior probabilities $\hat{\mathit{p}}^{(j)}$ 
@@ -195,7 +190,7 @@ The EM algorithm for $j = 1, \dots, \text{maxit}$:
    is reached.
 
 
-## Logistic Regression Model
+## Logistic Mixture Model
 
 The logistic two-component mixture models can be estimated as the
 Gaussian ones except that component density is the density of
