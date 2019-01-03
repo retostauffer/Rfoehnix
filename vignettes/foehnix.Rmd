@@ -299,7 +299,7 @@ test$diff_t <- test$crest_t + 10.27 - test$t
 print(test)
 ```
 
-Given our model we can not perform the classification on this new data
+Given our model we can now perform the classification on this new data
 set which has not been used for training the `foehnix` mixture model by calling:
 
 ```{r}

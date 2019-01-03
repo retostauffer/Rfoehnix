@@ -43,7 +43,7 @@ reference:
     - title: "Support functions"
       contents:
         - iwls_logit
-        - image
+        - image.foehnix
         - windrose
         - windrose.foehnix
         - tsplot

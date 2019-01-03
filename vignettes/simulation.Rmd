@@ -47,7 +47,7 @@ components specified above (`true`) whereof two third come from the
 first component, one third from the second component. Or in other words:
 the _true probability_ that an observation comes from the second 
 component is `0.333`.
-We can not _estimate a foehnix model_:
+We can now _estimate a foehnix model_:
 
 ```{r, fig = FALSE, results = 'hide'}
 # Estimate foehnix model
