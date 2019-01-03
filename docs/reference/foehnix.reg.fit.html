@@ -169,6 +169,14 @@ for the concomitant model (logistic regression model matrix).</p></td>
       <td><p>object of class <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></td>
     </tr>
     <tr>
+      <th>switch</th>
+      <td><p>logical whether or not the two components should be switched.
+By default (<code>switch = FALSE</code>) the component which shows
+higher values of <code>y</code> is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting <code>switch = TRUE</code>).</p></td>
+    </tr>
+    <tr>
       <th>maxit</th>
       <td><p>positive integer, or vector of length 2 with positive
 integer values. Maximum number of iterations of the EM algorithm
@@ -193,14 +201,6 @@ verbose output will be suppressed.</p></td>
     <tr>
       <th>...</th>
       <td><p>additional arguments, unused.</p></td>
-    </tr>
-    <tr>
-      <th>logical</th>
-      <td><p>wether or not the two components should be switched.
-By default (<code>switch = FALSE</code>) the component which shows
-higher values of <code>y</code> is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting <code>switch = TRUE</code>).</p></td>
     </tr>
     </table>
     

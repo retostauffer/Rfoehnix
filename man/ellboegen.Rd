@@ -3,7 +3,7 @@
 \docType{data}
 \name{ellboegen}
 \alias{ellboegen}
-\title{Meteorological Observation Data Station Ellboegen}
+\title{Meteorological Observation Data, Station Ellboegen}
 \source{
 Station operated by the Department of Atmospheric and Cryospheric
 Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.

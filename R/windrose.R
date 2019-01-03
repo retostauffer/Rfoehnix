@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-02 15:34 on marvin
+# - L@ST MODIFIED: 2019-01-03 13:58 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -226,6 +226,8 @@ windrose_get_density <- function(x, dd.breaks = seq(0, 360, by = 30),
 #' dimension as \code{x} with colors for the different bins based on the
 #' counts, and \code{legend} with levels and colors for the color legend of the
 #' plot.
+#'
+#' @importFrom grDevices rgb
 windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
     # Extend colors if needed
     if ( length(col) == 1 ) col <- rep(col, ncol)

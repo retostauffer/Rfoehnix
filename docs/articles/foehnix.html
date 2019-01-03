@@ -202,7 +202,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.3 seconds</code></pre>
+## Time required for model estimation: 1.4 seconds</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
@@ -279,6 +279,37 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">which =</span> <span class="st">"foehn"</span>, <span class="dt">mfcol =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
 <p>One type shows the density function (<code>type = "density"</code>), the other one a 2-D histogram (<code>type = "histogram"</code>). The argument <code>which</code> allows to plot the unconditional windrose (<code>which = "unconditional"</code>), the ‘no foehn event’ windrose (<code>which = "nofoehn"</code>) which shows only observations where the classification gives a probability of foehn below <code>0.5</code>, and a wind rose for ‘foehn’ events where the classification returned a probability of <code>&gt;= 0.5</code>.</p>
+</div>
+<div id="hovmoller-diagrams" class="section level2">
+<h2 class="hasAnchor">
+<a href="#hovmoller-diagrams" class="anchor"></a>Hovmöller Diagrams</h2>
+<p>The <code>image</code> method applied to <code>foehnix</code> objects allows to plot Hovmöller diagrams with a set of options. Some of the features are:</p>
+<ul>
+<li>Aggregate the data along the time-of-the-day axis (y-axis) as well as along the time-of-the-hear axis (x-axis).</li>
+<li>Add contour lines on top of the data.</li>
+<li>Beside the “default” aggregation functions custom aggregation functions can be used. Examples:
+<ul>
+<li>
+<code>FUN = "mean"</code>: aggregates mean foehn probability.</li>
+<li>`FUN = “occ”: occurrence of foehn events (events with a probability &gt;= 0.5).</li>
+<li>`FUN = “noocc”: occurrence of non-foehn events (events with a probability &lt; 0.5).</li>
+<li>`FUN = “freq”: frequency of foehn events.</li>
+<li>
+<code>FUN = function(x) sum(x &gt; 0.8, na.rm = TRUE)</code>: an example of a custom function, in this case the occurrence of events with a probability larger than 0.8.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example 1</strong>: Default plot, no aggregation on the time axis (<code>deltat = NULL</code>; takes increments of the underlying data), weekly aggregation along the time of the year axis (<code>deltad = 7L</code>), the frequency (<code>FUN = "freq"</code>) is plotted without contours.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"freq"</span>)</code></pre></div>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
+<p><strong>Example 2</strong>: Aggregated to three-hourly intervals (<code>deltat = 3600 * 3</code>), two-week mean values (<code>deltad = 14L</code>), occurrance of foehn (<code>FUN = "occ"</code>), with custom colors and contours (without labels).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="dt">h =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">120</span>), <span class="dt">c. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">80</span>, <span class="dv">10</span>)))
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> col,
+      <span class="dt">deltat =</span> <span class="dv">3</span> <span class="op">*</span><span class="st"> </span><span class="dv">3600</span>, <span class="dt">deltad =</span> 14L,
+      <span class="dt">contours =</span> <span class="ot">TRUE</span>, <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">drawlabels =</span> <span class="ot">FALSE</span>,
+      <span class="dt">main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,
+                   <span class="st">"2-Weekly/3-Hourly Sums"</span>, <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>))</code></pre></div>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
 </div>
 <div id="predictions" class="section level2">
 <h2 class="hasAnchor">
@@ -357,6 +388,7 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
 <li><a href="#foehnix-demo">Foehnix Demo</a></li>
       <li><a href="#check-the-model">Check the Model</a></li>
       <li><a href="#conditional-and-unconditional-wind-rose-plots">Conditional and Unconditional Wind Rose Plots</a></li>
+      <li><a href="#hovmoller-diagrams">Hovmöller Diagrams</a></li>
       <li><a href="#predictions">Predictions</a></li>
       </ul>
 </div>

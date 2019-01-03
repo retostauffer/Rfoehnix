@@ -3,7 +3,7 @@
 \docType{data}
 \name{sattelberg}
 \alias{sattelberg}
-\title{Meteorological Observation Data Station Sattelberg}
+\title{Meteorological Observation Data, Station Sattelberg}
 \source{
 Station operated by the Department of Atmospheric and Cryospheric
 Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.

@@ -16,7 +16,7 @@ for the concomitant model (logistic regression model matrix).}
 
 \item{family}{object of class \code{\link{foehnix.family}}.}
 
-\item{switch}{logical wether or not the two components should be switched.
+\item{switch}{logical whether or not the two components should be switched.
 By default (\code{switch = FALSE}) the component which shows
 higher values of \code{y} is assumed to be the foehn cluster!
 Depending on what your covariate is you might need to switch

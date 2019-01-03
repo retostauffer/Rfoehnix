@@ -9,6 +9,7 @@
 \alias{print.foehnix}
 \alias{formula.foehnix}
 \alias{summary.foehnix}
+\alias{image.foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
 foehnix(formula, data, switch = FALSE, filter = NULL,
@@ -28,6 +29,10 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 \method{formula}{foehnix}(x, ...)
 
 \method{summary}{foehnix}(object, ...)
+
+\method{image}{foehnix}(x, FUN = "freq", deltat = NULL, deltad = 7L,
+  col = rev(gray.colors(20)), contours = FALSE,
+  contour.col = "black", zlim = NULL, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} (or one that can be coerced
@@ -54,6 +59,31 @@ or an object of class \code{foehnix.family}.}
 \item{control}{additional control arguments, see \code{\link{foehnix.control}}.}
 
 \item{...}{forwarded to \code{\link{foehnix.control}}}
+
+\item{x}{object of class \code{\link{foehnix}}.}
+
+\item{FUN}{character string or a custom aggregation function. See 'Details'
+section for more information.}
+
+\item{deltat}{integer, interval in seconds for the time of day axis. Has to be
+a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
+interval of the time series object will be used.}
+
+\item{col}{vector of colors forwarded to \code{image.default}. By default
+a gray scale color map is used.}
+
+\item{contours}{logical \code{TRUE} or \code{FALSE}, whether or not the
+concours should be added.}
+
+\item{contour.col}{color for the contour lines, only used if \code{contours = TRUE}.}
+
+\item{zlim}{vector of two numeric values to manually specify the range of the
+color map used.}
+
+\item{deltat}{integer, similar to \code{deltat}, the interval in days for the
+grid on the x-axis. Default is \code{7L} (aggregate to weekly values).}
+
+\item{...}{additional arguments forwarded to the image and contour plot.}
 }
 \value{
 Returns an object of class \code{foehnix}.
@@ -61,6 +91,9 @@ Returns an object of class \code{foehnix}.
 \description{
 This is the main method of the foehnix package to estimate
 two-component mixture models for automated foehn classification.
+
+The default \code{\link{image}} plot of a \code{\link{foehnix}} object
+is a Hovmoeller diagram.
 }
 \details{
 The two-component mixture model can be specified via formula object where
@@ -118,6 +151,21 @@ will be returned.  If \code{lambda.min} is either AIC or BIC a ridge penalty
 (L2 penalty) is used. A fixed set of penalties will be tested. The one
 minimising either the AIC or BIC criteria will be used for the foehn
 classification model.
+
+Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
+series object of the \code{\link{foehnix}} classification. Different plot
+types are available. The default functions (see list below) use \code{na.rm = TRUE}.
+
+Input \code{FUN} can be one of the following character strings:
+\itemize{
+   \item \code{mean}: mean probability.
+   \item \code{freq}: plotting frequencies.
+   \item \code{occ}: plotting occurance of foehn (where probability \code{>= 0.5}).
+   \item \code{noocc}: contrary to \code{occ}: occurance of no foehn (probability \code{< 0.5}).
+}
+
+\code{FUN} can also be a custom function used for time series aggregation
+(see \code{\link{aggregate.zoo}}).
 }
 \references{
 Plavcan D, Mayr GJ, Zeileis A (2014).

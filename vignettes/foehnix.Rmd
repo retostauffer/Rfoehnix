@@ -238,6 +238,44 @@ a probability of foehn below `0.5`, and a wind rose for 'foehn' events where the
 classification returned a probability of `>= 0.5`.
 
 
+## Hovmöller Diagrams
+
+The `image` method applied to `foehnix` objects allows to plot Hovmöller diagrams
+with a set of options. Some of the features are:
+
+* Aggregate the data along the time-of-the-day axis (y-axis) as well as along
+  the time-of-the-hear axis (x-axis).
+* Add contour lines on top of the data.
+* Beside the "default" aggregation functions custom aggregation functions
+  can be used. Examples:
+    * `FUN = "mean"`: aggregates mean foehn probability.
+    * `FUN = "occ": occurrence of foehn events (events with a probability >= 0.5).
+    * `FUN = "noocc": occurrence of non-foehn events (events with a probability < 0.5).
+    * `FUN = "freq": frequency of foehn events.
+    * `FUN = function(x) sum(x > 0.8, na.rm = TRUE)`: an example of a custom function,
+      in this case the occurrence of events with a probability larger than 0.8.
+
+**Example 1**: Default plot, no aggregation on the time axis (`deltat = NULL`; takes increments of the
+underlying data), weekly aggregation along the time of the year axis (`deltad = 7L`),
+the frequency (`FUN = "freq"`) is plotted without contours.
+
+```{r, echo = TRUE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 6.5}
+image(mod, FUN = "freq")
+```
+
+**Example 2**: Aggregated to three-hourly intervals (`deltat = 3600 * 3`), two-week
+mean values (`deltad = 14L`), occurrance of foehn (`FUN = "occ"`), with custom colors
+and contours (without labels).
+
+```{r, echo = TRUE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 6.5}
+col <- rev(colorspace::sequential_hcl(51, h = c(-50, 120), c. = c(80, 10)))
+image(mod, FUN = "occ", col = col,
+      deltat = 3 * 3600, deltad = 14L,
+      contours = TRUE, contour.col = "white", lwd = 2, drawlabels = FALSE,
+      main = paste("Hovmoeller Diagram, Occurrence of Foehn",
+                   "2-Weekly/3-Hourly Sums", sep = "\n"))
+```
+
 ## Predictions
 
 A last important method is `predict`. The term predict refers to

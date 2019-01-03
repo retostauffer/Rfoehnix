@@ -160,6 +160,14 @@ mixture model. Allowed: <code>"gaussian"</code> and <code>"logistic"</code>.  Fo
 experts: custom <code>foehnix.family</code> objects can be provided as well.</p></td>
     </tr>
     <tr>
+      <th>switch</th>
+      <td><p>logical whether or not the two components should be switched.
+By default (<code>switch = FALSE</code>) the component which shows
+higher values of <code>y</code> is assumed to be the foehn cluster!
+Depending on what your covariate is you might need to switch
+the clusters (by setting <code>switch = TRUE</code>).</p></td>
+    </tr>
+    <tr>
       <th>left</th>
       <td><p>default is <code>-Inf</code>, left censoring or truncation point.  See
 also input <code>right</code> and input <code>truncated</code>. Can be set to any finite
@@ -210,14 +218,6 @@ criteria.</p></td>
     <tr>
       <th>...</th>
       <td><p>currently set to hell.</p></td>
-    </tr>
-    <tr>
-      <th>logical</th>
-      <td><p>wether or not the two components should be switched.
-By default (<code>switch = FALSE</code>) the component which shows
-higher values of <code>y</code> is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting <code>switch = TRUE</code>).</p></td>
     </tr>
     </table>
     

@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-02 19:35 on marvin
+# - L@ST MODIFIED: 2019-01-03 13:58 on marvin
 # -------------------------------------------------------------------
 
 
@@ -171,7 +171,7 @@ edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names =
 
 #' @rdname foehnix
 #' @export
-print.foehnix <- function(x, ...) print(summary(object, ...))
+print.foehnix <- function(x, ...) print(summary(x, ...))
 
 
 #' Get Estimated Mixture Model Coefficients
@@ -311,25 +311,29 @@ print.summary.foehnix <- function(x, ...) {
     }
 }
 
-#' foehnix Image Plot - Hoevmoeller Diagram
+#' foehnix Image Plot - Hovmoeller Diagram
 #'
 #' The default \code{\link{image}} plot of a \code{\link{foehnix}} object
-#' is a Hoevmoeller diagram.
+#' is a Hovmoeller diagram.
 #'
 #' @param x object of class \code{\link{foehnix}}.
 #' @param FUN character string or a custom aggregation function. See 'Details'
 #'        section for more information.
-#' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
-#'        concours should be added.
 #' @param deltat integer, interval in seconds for the time of day axis. Has to be
 #'        a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
 #'        interval of the time series object will be used.
+#' @param deltat integer, similar to \code{deltat}, the interval in days for the
+#'        grid on the x-axis. Default is \code{7L} (aggregate to weekly values).
 #' @param col vector of colors forwarded to \code{image.default}. By default
 #'        a gray scale color map is used.
+#' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
+#'        concours should be added.
 #' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
-#' @param ... additional arguments, currently unused.
+#' @param zlim vector of two numeric values to manually specify the range of the
+#'        color map used.
+#' @param ... additional arguments forwarded to the image and contour plot.
 #'
-#' @details Plotting a Hoevmoeller diagram based on the \code{\link{zoo}} time
+#' @details Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 #' series object of the \code{\link{foehnix}} classification. Different plot
 #' types are available. The default functions (see list below) use \code{na.rm = TRUE}.
 #'
@@ -344,9 +348,12 @@ print.summary.foehnix <- function(x, ...) {
 #' \code{FUN} can also be a custom function used for time series aggregation
 #' (see \code{\link{aggregate.zoo}}).
 #' 
+#' @importFrom grDevices gray.colors
+#' @rdname foehnix
 #' @export
-image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, deltad = 7L,
-                          col = rev(gray.colors(20)), contour.col = "black", ...) {
+image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
+                          col = rev(gray.colors(20)), contours = FALSE,
+                          contour.col = "black", zlim = NULL, ...) {
 
     x <- x$prob
     stopifnot(is.regular(x, strict = TRUE))
@@ -400,7 +407,7 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, delt
 
 
     breaks.time <- seq(0, 86400, by = deltat)
-    breaks.date <- pmax(0, c(seq(-1, 365, by = 10), 365))
+    breaks.date <- unique(pmax(0, c(seq(-1, 364, by = deltad), 364)))
     data <- cbind(as.data.frame(x), longform(x, breaks.time, breaks.date))
 
     # Aggregate information
@@ -435,8 +442,8 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, delt
         time_to   <- sapply(regmatches(time, regexpr("[0-9]+\\S$", time)), kill_last)
 
         data.frame(hash = x,
-                   yday_from = yday_from, yday_mid = (yday_from + yday_to) / 2, yday_to = yday_to,
-                   time_from = time_from, time_mid = (time_from + time_to) / 2, time_to = time_to)
+                   yday_from = yday_from, yday_mid = (1 + yday_from + yday_to) / 2, yday_to = yday_to,
+                   time_from = time_from, time_mid = (time_from + time_to) / 2,     time_to = time_to)
 
     }
 
@@ -447,7 +454,7 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, delt
     arg <- list(...)
     xlab = if(! "xlab" %in% names(arg)) arg$xlab  = "time of the year"
     ylab = if(! "ylab" %in% names(arg)) arg$ylab  = "time of the day"
-    main = if(! "main" %in% names(arg)) arg$main  = "foehnix Hoevmoeller Diagram"
+    main = if(! "main" %in% names(arg)) arg$main  = "foehnix Hovmoeller Diagram"
 
     # Convert values to colors for the plot.
     get_color <- function(x, col, zlim = NULL) {
@@ -466,13 +473,30 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, delt
 
     # Draw plot
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
-    par(mar = c(4.1, 4.1, 2, 0.5))
-    plot(NA, bty = "n",
-         xlim = c(-0.5, 365.5), xaxt = "n", xaxs = "i",
-         ylim = c(0, 86400),    yaxt = "n", yaxs = "i",
-         xlab = arg$xlab, ylab = arg$ylab, main = arg$main)
 
-    # Adding the data (rectangles)
+    # Using layout to draw the diagram plus a legend. First we 
+    # need to know the dimension of the image such that we can
+    # adjust our layout:
+    imgsize = structure(as.list(par()$pin), names = c("width", "height"))
+
+    # Setting the parameters for the plot
+    if ( inherits(arg$main, "character") ) {
+        oma_top <- length(strsplit(arg$main, "\n")[[1]]) + 2
+    } else { oma_top <- 2; }
+    par(mar = rep(.3, 4), oma = c(4.1, 4.1, 3, 3))
+    layout(matrix(1:2, nrow = 1), widths = c(imgsize$width - 0.5, 0.5))
+
+    # Create an empty plot with the extend we need, namely
+    # 0 - 354 (0 based Julian day) along the x-axis, and
+    # 0 - 86400 (one full day in seconds) along the y-axis.
+    plot(NA, bty = "n",
+         xlim = c(-0.5, 364.5), xaxt = "n", xaxs = "i",
+         ylim = c(0, 86400),    yaxt = "n", yaxs = "i",
+         xlab = NA, ylab = NA, main = NA)
+    mtext(side = 1, line = 3.0, arg$xlab)
+    mtext(side = 2, line = 3.3, arg$ylab)
+
+    # Adding the data (rectangles), the aggregated data.
     rect(agg$yday_from, agg$time_from, agg$yday_to, agg$time_to,
          border = NA, col = agg$color)
 
@@ -485,9 +509,138 @@ image.foehnix <- function(x, FUN = "freq", contours = FALSE, deltat = NULL, delt
     xat <- as.POSIXlt(sprintf("2016-%02d-01", 2:12))
     axis(side = 1, at = xat$yday - 0.5, labels = NA)
     xat <- as.POSIXlt(sprintf("2016-%02d-15", 1:12))
-    axis(side = 1, at = xat$yday, labels = strftime(xat, "%b"), tick = FALSE, las = 2)
+    axis(side = 1, at = xat$yday, labels = strftime(xat, "%b"), tick = FALSE,
+         las = ifelse(par()$pin[1L] < 6, 2, 1))
 
-    # Draw outline (box)
+    # If the user wants to have contour lines: draw contours.
+    if ( contours ) {
+
+        # ------------------------------------------
+        # expand_agg is used to expand the aggregated
+        # data values, matrix like, as follows:
+        #  1  |  2  |  3
+        # ---------------
+        #  4  |  5  |  6
+        # ---------------
+        #  7  |  8  |  9 
+        # This is necessary to get cyclic data when
+        # drawing the contour lines.
+        # ------------------------------------------
+        expand_agg <- function(x) {
+
+            x <- subset(x, select = c(time_mid, yday_mid, value))
+
+            res <- list(); for ( i in 1:9 ) res[[i]] <- x
+            # North West
+            res[[1]]$time_mid <- res[[1]]$time_mid + 86400
+            res[[1]]$yday_mid <- res[[1]]$yday_mid - 364
+            # North
+            res[[2]]$time_mid <- res[[2]]$time_mid + 86400
+            # North East
+            res[[3]]$time_mid <- res[[3]]$time_mid + 86400
+            res[[3]]$yday_mid <- res[[3]]$yday_mid + 364
+            # West
+            res[[4]]$yday_mid <- res[[4]]$yday_mid - 364
+            # East
+            res[[6]]$yday_mid <- res[[6]]$yday_mid + 364
+            # South West
+            res[[7]]$time_mid <- res[[7]]$time_mid - 86400
+            res[[7]]$yday_mid <- res[[7]]$yday_mid - 364
+            # South
+            res[[8]]$time_mid <- res[[8]]$time_mid - 86400
+            # South East
+            res[[9]]$time_mid <- res[[9]]$time_mid - 86400
+            res[[9]]$yday_mid <- res[[9]]$yday_mid + 364
+
+            # Combine the data
+            res <- return(do.call(rbind, res))
+
+            # And shrink them. We don't need 9 times the data,
+            # cut the parts to far off the plotted area.
+            res <- subset(res, time_mid > -3600 &
+                               time_mid < (86400 + 3600) &
+                               yday_mid > -10 &
+                               yday_mid < (364 + 10))
+            return(res)
+        }
+
+        # Expand the data set to get  cyclic bounds
+        expagg <- expand_agg(agg)
+
+        # Manual grid. Step 1: setting up the dimension names of the new matrix
+        cont <- list(sprintf("%.0f", sort(unique(expagg$time_mid))),
+                     sprintf("%.0f", sort(unique(expagg$yday_mid))))
+        # Step 2: create a matrix with these dimensions
+        cont <- matrix(NA, nrow = length(cont[[1]]), ncol = length(cont[[2]]),
+                       dimnames = cont)
+
+        # Step 3: mapping data
+        tmpcolname <- sprintf("%.0f", expagg$yday_mid)
+        tmprowname <- sprintf("%.0f", expagg$time_mid)
+        idx <- cbind(match(tmprowname, rownames(cont)), match(tmpcolname, colnames(cont)))
+        cont[idx] <- expagg$val
+
+        # Adding contour plot
+        contour(x = as.numeric(colnames(cont)), y = as.numeric(rownames(cont)), z = t(cont),
+                add = TRUE, col = contour.col, ...)
+    }
+
+    # Drawing the outline/box
     box()
 
+
+    # Drawing the legend
+    draw_legend <- function(x, col, zlim = NULL) {
+
+        if ( is.null(zlim) ) {
+            print(range(x))
+            at <- seq(min(x, na.rm = TRUE), max(x, na.rm = TRUE), length = length(col))
+        } else {
+            at <- seq(min(zlim, na.rm = TRUE), max(zlim, na.rm = TRUE), length = length(col))
+        }
+        # Loading colors
+        colors <- get_color(at, col, zlim = NULL)
+        # Draw the color map
+        image(y = at,
+              z = matrix(1:length(colors), nrow = 1), col = colors,
+              xaxt = "n", xaxs = "i", xlim = c(0,1),
+              yaxt = "n", yaxs = "i", ylim = range(at))
+
+        # Adding legend
+        axis(side = 4, las = 2, at = pretty(at))
+        box()
+    }
+    draw_legend(agg$value, col, arg$zlim)
+
+    # Adding title
+    mtext(side = 3, line = .5, font = 2, cex=  1.2, outer = TRUE, arg$main)
+
+    # That's the end, my friend ...
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

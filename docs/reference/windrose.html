@@ -169,7 +169,7 @@ the same information.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>forwarded to windrose S3 methods.</p></td>
+      <td><p>forwarded to windrose methods.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -194,6 +194,10 @@ the wind direction information.</p></td>
       <th>ffvar</th>
       <td><p>character, name of the column in the training data set which contains
 the wind speed (or gust speed) data.</p></td>
+    </tr>
+    <tr>
+      <th>mfcol</th>
+      <td><p>integer, number of columns of subplots.</p></td>
     </tr>
     <tr>
       <th>maxpp</th>
@@ -242,10 +246,6 @@ alpha behaviour.</p></td>
       <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
     </tr>
     <tr>
-      <th>mfcolinteger, </th>
-      <td><p>number of columns of subplots.</p></td>
-    </tr>
-    <tr>
       <th>type</th>
       <td><p>character, one of <code>density</code> or <code>histogram</code>, controls
 the plot type.</p></td>
@@ -254,7 +254,23 @@ the plot type.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>TODO: not yet finished and/or tested!</p>
+    <p>Allows to draw windrose plots from a <code><a href='foehnix.html'>foehnix</a></code> mixture model
+object. Two <code>type</code>s are available: circular density plots and circular
+histograms, both for <code>which = "unconditional"</code>, <code>which = "nofoehn"</code>,
+and <code>which = "foehn"</code>, details below.
+By default (<code>type = NULL</code>, <code>which = NULL</code>) all combinations will be plotted.</p>
+<ul>
+<li><p><code>which = "unconditional"</code>: unconditional windrose (all observations
+         of the data set used to estimate the <code><a href='foehnix.html'>foehnix</a></code> model).</p></li>
+<li><p><code>which = "nofoehn"</code>: windrose of all observations which have not been
+         classified as foehn (probability <code>&lt; 0.5</code>).</p></li>
+<li><p><code>which = "foehn"</code>: windrose of all observations classified as foehn events
+         (probability <code>&gt;= 0.5</code>).</p></li>
+</ul>
+    <p>Specific combinations can be selected by calling the windrose function with e.g.,
+<code>type = "histogram"</code> and <code>which = c("foehn", "nofoehn")</code> (will show
+histograms for foehn and no foehn events), or <code>type = NULL</code> and <code>which = "foehn"</code>
+(will show density and histogram plot for foehn events).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

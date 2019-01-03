@@ -33,7 +33,9 @@
 <meta property="og:title" content="Foehn Classification Based on a Two-Component Mixture Model — foehnix" />
 
 <meta property="og:description" content="This is the main method of the foehnix package to estimate
-two-component mixture models for automated foehn classification." />
+two-component mixture models for automated foehn classification.
+The default image plot of a foehnix object
+is a Hovmoeller diagram." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -145,6 +147,8 @@ two-component mixture models for automated foehn classification." />
     
     <p>This is the main method of the foehnix package to estimate
 two-component mixture models for automated foehn classification.</p>
+<p>The default <code><a href='https://www.rdocumentation.org/packages/graphics/topics/image'>image</a></code> plot of a <code>foehnix</code> object
+is a Hovmoeller diagram.</p>
     
     </div>
 
@@ -165,13 +169,18 @@ two-component mixture models for automated foehn classification.</p>
 <span class='fu'><a href='edf.html'>edf</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for foehnix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for foehnix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/formula'>formula</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/formula'>formula</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for foehnix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/image'>image</a></span>(<span class='no'>x</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='st'>"freq"</span>, <span class='kw'>deltat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>deltad</span> <span class='kw'>=</span> <span class='fl'>7L</span>,
+  <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rev'>rev</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/gray.colors'>gray.colors</a></span>(<span class='fl'>20</span>)), <span class='kw'>contours</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>contour.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>zlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -214,6 +223,49 @@ or an object of class <code>foehnix.family</code>.</p></td>
     <tr>
       <th>...</th>
       <td><p>forwarded to <code><a href='foehnix.control.html'>foehnix.control</a></code></p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>object of class <code>foehnix</code>.</p></td>
+    </tr>
+    <tr>
+      <th>FUN</th>
+      <td><p>character string or a custom aggregation function. See 'Details'
+section for more information.</p></td>
+    </tr>
+    <tr>
+      <th>deltat</th>
+      <td><p>integer, interval in seconds for the time of day axis. Has to be
+a fraction of 86400 (24 hours in seconds). It <code>NuLL</code> (default) the
+interval of the time series object will be used.</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>vector of colors forwarded to <code>image.default</code>. By default
+a gray scale color map is used.</p></td>
+    </tr>
+    <tr>
+      <th>contours</th>
+      <td><p>logical <code>TRUE</code> or <code>FALSE</code>, whether or not the
+concours should be added.</p></td>
+    </tr>
+    <tr>
+      <th>contour.col</th>
+      <td><p>color for the contour lines, only used if <code>contours = TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>zlim</th>
+      <td><p>vector of two numeric values to manually specify the range of the
+color map used.</p></td>
+    </tr>
+    <tr>
+      <th>deltat</th>
+      <td><p>integer, similar to <code>deltat</code>, the interval in days for the
+grid on the x-axis. Default is <code>7L</code> (aggregate to weekly values).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments forwarded to the image and contour plot.</p></td>
     </tr>
     </table>
     
@@ -271,6 +323,17 @@ will be returned.  If <code>lambda.min</code> is either AIC or BIC a ridge penal
 (L2 penalty) is used. A fixed set of penalties will be tested. The one
 minimising either the AIC or BIC criteria will be used for the foehn
 classification model.</p>
+<p>Plotting a Hovmoeller diagram based on the <code>zoo</code> time
+series object of the <code>foehnix</code> classification. Different plot
+types are available. The default functions (see list below) use <code>na.rm = TRUE</code>.</p>
+<p>Input <code>FUN</code> can be one of the following character strings:</p><ul>
+<li><p><code>mean</code>: mean probability.</p></li>
+<li><p><code>freq</code>: plotting frequencies.</p></li>
+<li><p><code>occ</code>: plotting occurance of foehn (where probability <code>&gt;= 0.5</code>).</p></li>
+<li><p><code>noocc</code>: contrary to <code>occ</code>: occurance of no foehn (probability <code>&lt; 0.5</code>).</p></li>
+</ul>
+    <p><code>FUN</code> can also be a custom function used for time series aggregation
+(see <code>aggregate.zoo</code>).</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
