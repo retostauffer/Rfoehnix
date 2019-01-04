@@ -1,4 +1,16 @@
 
+# Current State
+
+**Please note that this software is under development. Some things
+might not work as intended right now. We are looking forward to push
+our first release candidate (version 1.0) in the first half of 2019,
+together with an implementation in python (see below).**
+
+If there are any questions please do not hesitate to contact me (via github).
+
+All best,
+
+_Reto, Matthias, Georg, and Fabien._
 
 # Documentation
 
@@ -7,6 +19,13 @@ documentation of the package. However, if you would like to get some
 more details and examples please visit our latest documentation on:
 
 * [http://retostauffer.github.io/Rfoehnix](http://retostauffer.github.io/Rfoehnix)
+
+# Python Version of the foehnix Package
+
+The `foehnix` package was develoed for both, the statistical programming
+language _R_ and python. The python package can be found here:
+
+* [foehnix for python](https://github.com/matthiasdusch/foehnix-python)
 
 
 # Installation
