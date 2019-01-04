@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-02 13:48 on marvin
+# - L@ST MODIFIED: 2019-01-04 12:14 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -183,8 +183,8 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # Not converged? Drop warning.
     if ( ! is.null(tol) & iter == maxit ) warning("IWLS solver for logistic model did not converge.")
 
-    if ( is.standardized(X) ) XDS <- destandardize(X)
-    beta_vcov <- as.matrix(sqrt(diag(solve(t(XDS*w) %*% (XDS*w)))))
+    if ( is.standardized(X) ) XDS <- destandardize(X) else XDS <- X
+    beta.se <- as.matrix(sqrt(diag(solve(t(XDS*w) %*% (XDS*w)))))
     rm(XDS)
 
     # Just naming the column containing the coefficients.
@@ -197,11 +197,12 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
 
     # Unscale coefficients if needed
     ll   <- tail(llpath, 1)
-    rval <- list(lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
+    rval <- list(call = match.call(), iterations = iter,
+                 lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
                  BIC = -2 * ll + log(nrow(X)) * edf,
                  converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$beta      <- beta
-    rval$beta_vcov <- vcov
+    rval$beta.se   <- beta.se
     rval$coef      <- if ( standardize ) destandardize_coefficients(beta, X) else beta
 
     # Return list object containing
@@ -221,6 +222,29 @@ coef.ccmodel <- function(object, which = "coef", ...) {
     c <- as.data.frame(t(object[[which]][,1]))
     names(c) <- sprintf("cc.%s", names(c))
     c
+}
+
+
+#' @rdname iwls_logit
+#' @export
+summary.ccmodel <- function(object, ...) {
+
+    cat("\nConcomitant model: z test of coefficients\n")
+
+    res <- matrix(NA, ncol = 4, nrow = length(coef(object)),
+                  dimnames = list(names(coef(object)),
+                                  c("Estimate", "Std. error", "z value", "Pr(>|z|)")))
+    res[,"Estimate"]     <- as.numeric(coef(object))
+    res[,"Std. error"]   <- as.numeric(object$beta.se)
+    res[,"z value"]      <- res[,"Estimate"] / res[,"Std. error"]
+    res[,"Pr(>|z|)"]     <- 2 * pnorm(0, abs(res[,"z value"]))
+
+    printCoefmat(res, P.values = TRUE, has.Pvalue = TRUE)
+
+    cat(sprintf("Number of IWLS iterations: %d (%s)\n", object$iterations,
+        ifelse(object$converged, "algorithm converged", "algorithm did not converge")))
+    cat("Dispersion parameter for binomial family taken to be 1.\n")
+
 }
 
 

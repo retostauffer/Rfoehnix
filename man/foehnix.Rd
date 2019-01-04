@@ -28,7 +28,7 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 
 \method{formula}{foehnix}(x, ...)
 
-\method{summary}{foehnix}(object, ...)
+\method{summary}{foehnix}(object, detailed = FALSE, ...)
 
 \method{image}{foehnix}(x, FUN = "freq", deltat = NULL, deltad = 7L,
   col = rev(gray.colors(20)), contours = FALSE,

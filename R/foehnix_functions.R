@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-03 13:58 on marvin
+# - L@ST MODIFIED: 2019-01-04 13:33 on marvin
 # -------------------------------------------------------------------
 
 
@@ -253,7 +253,7 @@ formula.foehnix <- function(x, ...) x$formula
 
 #' @rdname foehnix
 #' @export
-summary.foehnix <- function(object, ...) {
+summary.foehnix <- function(object, detailed = FALSE, ...) {
 
     rval <- list()
     rval$call    <- object$call
@@ -269,7 +269,14 @@ summary.foehnix <- function(object, ...) {
     rval$edf        <- edf(object)
     rval$n.iter     <- object$optimizer$n.iter
     rval$maxit      <- object$optimizer$maxit
-    rval$converged  <- object$optimizer$converged
+    rval$detailed   <- detailed
+    if ( detailed ) {
+        rval$converged  <- object$optimizer$converged
+        rval$mu.se      <- object$mu.se
+    }
+
+    # Appending concomitant model
+    rval$ccmodel    <- object$optimizer$ccmodel
 
     class(rval) <- "summary.foehnix"
     return(rval)
@@ -308,6 +315,37 @@ print.summary.foehnix <- function(x, ...) {
         cat(sprintf("Time required for model estimation: %.1f seconds\n", x$time))
     } else {
         cat(sprintf("Time required for model estimation: %.1f minutes\n", x$time / 60))
+    }
+
+    # If "detailed" has been set to "TRUE" we will also print the
+    # test statistics of the coefficients of the mixture model.
+    if ( x$detailed ) {
+        # Summary statistics for the components
+        tmp <- matrix(NA, ncol = 4, nrow = 2, dimnames = list(
+                      c("(Intercept).1", "(Intercept).2"),
+                      c("Estimate", "Std. Error", "t value", "Pr(>|t|)")))
+        # Store coefficients on "Estimate"
+        # Store standard deviation of the coefficients on "Std. Error"
+        tmp[,"Estimate"]   <- c(x$coef["mu1"], x$coef["mu2"])
+        tmp[,"Std. Error"] <- as.numeric(x$mu.se)
+        # Calculate t value and the corresponding p value based on
+        # a Gaussian or t-test
+        tmp[,"t value"]    <- tmp[,"Estimate"] / tmp[,"Std. Error"]
+        tmp[,"Pr(>|t|)"]   <- 2 * pnorm(0, tmp[,"t value"])
+
+        # Show information
+        cat("\n---------------------------------\n\n")
+        cat("Components: t test of coefficients\n")
+        printCoefmat(tmp, P.values = TRUE, has.Pvalues = TRUE)
+
+        # If there is a concomitant model: show estimated coefficients and
+        # z statistics.
+        if ( ! is.null(x$ccmodel) ) {
+            cat("\n---------------------------------\n")
+            summary(x$ccmodel)
+        }
+    } else {
+        cat("\nUse summary(object, detailed = TRUE) to get additional test statistics.\n")
     }
 }
 

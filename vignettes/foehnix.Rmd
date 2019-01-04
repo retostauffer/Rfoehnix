@@ -135,6 +135,15 @@ print(c["mu1"])
 print(c["mu2"])
 ```
 
+The `summary` method allows to get the test statistics for the estimated
+coefficients, namely the z statistics for the concomitant model (if any)
+and the t statistics for the two location parameters of the two components.
+
+```{r}
+summary(mod, detailed = TRUE)
+```
+
+
 The method `plot` provides a set of model assessment plots.  Different types
 are available, if no `which` argument is set all will be shown one after
 another.

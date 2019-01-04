@@ -1,0 +1,104 @@
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library("foehnix"))
+```
+
+## Foehnix Demo
+
+`foehnix` objects also provide asymptotic inference of the estimated
+coefficients of the mixture model (see [statistical model](mixedmodel.html) and
+[logistic regression with IWLS](logisticregression.html)).
+
+Let's start with estimating our demo `flexmix` foehn diagnosis model. We have
+already prepared the data sets (object `data`). Details how to generate
+the data object and more information about the `foehnix` model specification
+can be found [on the getting started](foehnix.html) manual page.
+
+```{r, echo = FALSE}
+# Loading observations (data.frame), convert to zoo
+data("ellboegen", package = "foehnix")
+data("sattelberg", package = "foehnix")
+timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
+ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
+sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
+# Rename sattelberg variables, combine zoo objects
+names(sattelberg) <- paste0("crest_", names(sattelberg))
+data <- merge(ellboegen, sattelberg)
+# Calculate dry adiabatic temperature difference
+data$diff_t <- data$crest_t + 10.27 - data$t
+```
+
+```{r, echo = TRUE, results = "hide"}
+# Estimate the model
+mod <- foehnix(diff_t ~ ff + rh, data = data)
+```
+
+The `summary` method prints the test statistics for both
+parts of the mixture model, the component model and the
+concomitant model (if specified).
+
+```{r, echo = TRUE}
+summary(mod, detailed = TRUE)
+```
+
+## Component Model Inference
+
+The inference for the two location parameters $\mu_1$ and $\mu_2$ of the two
+components are based on the asymptotic theory.  We expect that the estimates of
+our coefficients are unbiased. Thus, the expectation of our estimated
+coefficients is the estimated coefficient itself
+($\text{E}(\hat{\mu}_1) = \mu_1$, $\text{E}(\hat{\mu}_2) = \mu_2$).
+
+In a general form the covariance matrix of a liner model (one component,
+unweighted) for a set of $i = 1, \dots, N$ observations can be expressed as follows:
+
+* $\text{Cov}(\beta) = \frac{1}{N - P} \mathit{\epsilon}^\top \mathit{\epsilon} (\mathbf{X}^\top \mathbf{X})^{-1}$
+
+... where $N$ is the sample size, $P$ the number of parameters or covariates,
+$\mathit{\epsilon} = \mathit{y} - \mu_\bullet$ the model residuals, and $\mathbf{X}$ the model matrix of
+the linear model.  In case of a `foehnix` model we have two components where
+each component consists of an intercept only model ($\mu_1$ and $\mu_2$ do not
+depend on additional covariates). Thus, $P = 1$ and $\mathbf{X}$ is an $N
+\times 1$ matrix with 1s. The estimates are based on a set of weighted
+observation $y$, in this example `diff_t` ($y =$ `diff_t`).
+The weights are the a-posteriori probabilities $\hat{\mathit{p}}$ (the foehn probabilities) of
+the `foehnix` model and have to be taken into account when calculating the standard errors.
+With these weights the standard error for _component 2_ can be written as:
+
+* $\hat{\text{sd}}(\mu_2)^2 = \frac{1}{\sum_{i=1}^N \hat{p}_i - 1} (\mathit{\epsilon} \cdot \hat{\mathit{p}})^\top (\mathit{\epsilon} \cdot \hat{\mathit{p}}) \big((\mathbf{X} \cdot \hat{\mathit{p}})^\top (\mathbf{X} \cdot \hat{\mathit{p}})\big)^{-1}$
+
+... or much simpler:
+
+* $\hat{\text{sd}}(\mu_2)^2 = \frac{1}{\sum_{i=1}^N \hat{p}_i^2 \cdot (\sum_{i=1}^N \hat{p}_i - 1)} \sum_{i=1}^N \big((y_i - \mu_2) \cdot \hat{p}_i\big)^2$
+
+The same holds for _component 1_ except that our weights are $1 - \hat{\mathit{p}}$:
+
+* $\hat{\text{sd}}(\mu_1)^2 = \frac{1}{\sum_{i=1}^N (1 - \hat{p}_i)^2 \cdot (\sum_{i=1}^N (1 - \hat{p}_i) - 1)} \sum_{i=1}^N \big((y_i - \mu_2) \cdot (1 - \hat{p}_i)\big)^2$
+
+## Concomitant Model Inference
+
+If a concomitant model has been specified `summary` will also return the
+corresponding z statistics for the estimated regression coefficients of the
+logistic regression model (see [logistic regression with IWLS](logisticregression.html)).
+
+The covariance matrix of a logistic logistic regression model with the regression
+coefficients $\mathit{\alpha}$ (with $P$ coefficients) with a dispersion parameter of 1
+of the binomial family is given as:
+
+* $\hat{\text{cov}}(\mathit{\alpha}) = (\mathbf{X} \mathit{\omega})^\top (\mathbf{X} \mathit{\omega})$
+
+where $\mathbf{X}$ is the model matrix of the concomitant model (un-standardized) of
+dimension $N \times P$ and $\mathit{\omega} = (\mathit{\pi} * (1 - \mathit{\pi}))^\frac{1}{2}$.
+$\pi$ is final response, probability returned by the logistic regression model.
+The diagonal of the covariance matrix contains the variances of the estimated
+regression coefficients. Thus,
+
+* $\hat{\text{sd}}(\mathit{\alpha}) = \Big( \text{diag}\big((\mathbf{X} \mathit{\omega})^\top (\mathbf{X} \mathit{\omega}) \big) \Big)^\frac{1}{2}$.
+
+
+
+
+
+
+
+
+

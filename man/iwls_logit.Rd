@@ -3,12 +3,15 @@
 \name{iwls_logit}
 \alias{iwls_logit}
 \alias{coef.ccmodel}
+\alias{summary.ccmodel}
 \title{IWLS Solver for Binary Logistic Regression Model}
 \usage{
 iwls_logit(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
   maxit = 100L, tol = 1e-08, verbose = FALSE, ...)
 
 \method{coef}{ccmodel}(object, which = "coef", ...)
+
+\method{summary}{ccmodel}(object, ...)
 }
 \arguments{
 \item{X}{model matrix including intercept (if required).}

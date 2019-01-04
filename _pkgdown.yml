@@ -18,6 +18,8 @@ navbar:
               href: articles/mixedmodel.html
             - text: "Logistic Regression (IWLS)"
               href: articles/logisticregression.html
+            - text: "Inference"
+              href: articles/inference.html
             - text: "Censoring and Truncation"
               href: articles/advanced_simulation.html
             - text: "foehnix Families"
@@ -36,6 +38,7 @@ reference:
         - foehnix.unreg.fit
         - foehnix.reg.fit
         - foehnix_filter
+        - summary.foehnix
     - title: "Demo Data Sets"
       contents:
         - ellboegen

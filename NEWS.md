@@ -1,6 +1,5 @@
 
-# foehnix 0.0-6
-
+# foehnix 0.0-8
 
 * Added vignette for the logistic regression model (IWLS).
 * Added new references.
@@ -8,6 +7,8 @@
 * Added a Hovmoeller diagram method (`image.foehnix`) with some
   features. Has to be seen as "under development" at the moment!
 * Removed some warnings/notes.
+* Added inference to the summary output (asymptotic theory).
+* Added vignette for the inference part.
 
 # foehnix 0.0-5
 

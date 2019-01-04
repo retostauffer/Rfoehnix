@@ -68,6 +68,9 @@
       <a href="../articles/logisticregression.html">Logistic Regression (IWLS)</a>
     </li>
     <li>
+      <a href="../articles/inference.html">Inference</a>
+    </li>
+    <li>
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
@@ -202,7 +205,9 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.3 seconds</code></pre>
+## Time required for model estimation: 1.3 seconds
+## 
+## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
@@ -219,19 +224,55 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(c[<span class="st">"mu2"</span>])</code></pre></div>
 <pre><code>##      mu2 
 ## 1.287428</code></pre>
+<p>The <code>summary</code> method allows to get the test statistics for the estimated coefficients, namely the z statistics for the concomitant model (if any) and the t statistics for the two location parameters of the two components.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod, <span class="dt">detailed =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## 
+## Call: foehnix(formula = diff_t ~ ff, data = train, switch = TRUE, filter = filter)
+## 
+## Number of observations (total)    71346
+## Removed due to missing values      4660 (6.5 percent)
+## Outside defined wind sector       49066 (68.8 percent)
+## Used for classification           17620 (24.7 percent)
+## 
+## Climatological foehn occurance 12.27 percent (on n = 66686)
+## Mean foehn probability 12.13 percent (on n = 66686)
+## 
+## Log-likelihood: -40634.7, 6 effective degrees of freedom
+## Corresponding AIC = 81281.3, BIC = 81328.0
+## Time required for model estimation: 1.3 seconds
+## 
+## ---------------------------------
+## 
+## Components: t test of coefficients
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept).1 5.988051   0.027467 218.012 &lt; 2.2e-16 ***
+## (Intercept).2 1.287428   0.012943  99.469 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## ---------------------------------
+## 
+## Concomitant model: z test of coefficients
+##                 Estimate Std. error  z value Pr(&gt;|z|)    
+## cc.(Intercept) -0.022704   0.091357  -0.2485   0.8037    
+## cc.ff           3.981185   0.015243 261.1792   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## Number of IWLS iterations: 2 (algorithm converged)
+## Dispersion parameter for binomial family taken to be 1.</code></pre>
 <p>The method <code>plot</code> provides a set of model assessment plots. Different types are available, if no <code>which</code> argument is set all will be shown one after another.</p>
 <p><code>which = "loglik"</code> shows the log-likelihood path of the two components of the model (the part for the two components of the mixture model plus the one of the concomitant model) plus the full likelihood path. The x-axis shows the log-iterations of the EM algorithm (see <a href="articles/mixedmodel.html">statistical models</a> for more details). Increasing values indicate positive log-likelihood contributions (improvement of the model).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglik"</span>, <span class="dt">log =</span> F)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-10-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
 <p><code>which = "loglikcontribution"</code> shows the same information as <code>which = "loglik"</code> but with respect to the log-likelihood of the initial parameters. Increasing values indicate positive log-likelihood contributions (improvement of the model).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-12-1.png" width="960"></p>
 <p>Similar to the plots above we can also check the paths of the coefficients trough the iterations of the EM algorithm with <code>which = "coef"</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"coef"</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-12-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
 <p>Last but not least the <code>which = "hist"</code> plot shows the conditional histograms of the two clusters. Two histograms are shown given the main covariate of the <code>foehnix</code> mixture model, in this case (model <code>mod</code>) it is <code>delta_t</code>, the potential temperature difference between the valley station <a href="reference/ellboegen.html">Ellboegen</a> and the crest station <a href="reference/sattelberg.html">Sattelberg</a>. The left panel corresponds to the “no foehn” component or cluster, the right one to the “foehn” component. If a <code>filter</code> rule is used: only the data which have been used for classification will be shown. Observations with a higher probability to be in the left component are sown left, observations with a higher probability to be a member of the second component are shown right. On top (line) the estimated density of the two components is shown.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-14-1.png" width="960"></p>
 <p>Fitted probabilities (the probabilities obtained by the model based on the training data set) can be accessed by calling <code>fitted</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Class of fitted probabilities is a zoo object</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod))</code></pre></div>
@@ -274,10 +315,10 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <a href="#conditional-and-unconditional-wind-rose-plots" class="anchor"></a>Conditional and Unconditional Wind Rose Plots</h2>
 <p>In addition, <a href="reference/windrose.foehnix.html">windrose</a> proides a convenient function to plot wind roses.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">mfcol =</span> <span class="dv">3</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-16-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
 <p>The individual plots can also be plotted separately:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">which =</span> <span class="st">"foehn"</span>, <span class="dt">mfcol =</span> <span class="dv">2</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
 <p>One type shows the density function (<code>type = "density"</code>), the other one a 2-D histogram (<code>type = "histogram"</code>). The argument <code>which</code> allows to plot the unconditional windrose (<code>which = "unconditional"</code>), the ‘no foehn event’ windrose (<code>which = "nofoehn"</code>) which shows only observations where the classification gives a probability of foehn below <code>0.5</code>, and a wind rose for ‘foehn’ events where the classification returned a probability of <code>&gt;= 0.5</code>.</p>
 </div>
 <div id="hovmoller-diagrams" class="section level2">
@@ -301,7 +342,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 </ul>
 <p><strong>Example 1</strong>: Default plot, no aggregation on the time axis (<code>deltat = NULL</code>; takes increments of the underlying data), weekly aggregation along the time of the year axis (<code>deltad = 7L</code>), the frequency (<code>FUN = "freq"</code>) is plotted without contours.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"freq"</span>)</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
 <p><strong>Example 2</strong>: Aggregated to three-hourly intervals (<code>deltat = 3600 * 3</code>), two-week mean values (<code>deltad = 14L</code>), occurrance of foehn (<code>FUN = "occ"</code>), with custom colors and contours (without labels).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="dt">h =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">120</span>), <span class="dt">c. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">80</span>, <span class="dv">10</span>)))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> col,
@@ -309,7 +350,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
       <span class="dt">contours =</span> <span class="ot">TRUE</span>, <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">drawlabels =</span> <span class="ot">FALSE</span>,
       <span class="dt">main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,
                    <span class="st">"2-Weekly/3-Hourly Sums"</span>, <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>))</code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-20-1.png" width="1152"></p>
 </div>
 <div id="predictions" class="section level2">
 <h2 class="hasAnchor">

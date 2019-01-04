@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-02 15:39 on marvin
+# - L@ST MODIFIED: 2019-01-04 13:31 on marvin
 # -------------------------------------------------------------------
 
 
@@ -670,6 +670,18 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 
     # Store coefficients
     res$coef <- rval$theta; res$coef$concomitants = coef
+
+    # Calculate the weightes standard error of the estimated
+    # coefficients for the test statistics.
+    # First: calculate weighted sum of squared residuals for
+    # both components
+    res_c1 <- (y - res$coef$mu1) * (1 - rval$post)
+    res_c2 <- (y - res$coef$mu2) *      rval$post
+    mu1.se <- sqrt((sum(res_c1^2) / (sum((1 - rval$post)^2) * (sum(1 - rval$post) - 1))))
+    mu2.se <- sqrt((sum(res_c2^2) / (sum(     rval$post^2 ) * (sum(    rval$post) - 1))))
+
+    # Standard errors for intercept of mu1 (component1) and mu2 (component 2)
+    res$mu.se  <- setNames(c(mu1.se, mu2.se), c("mu1.se", "mu2.se"))
 
     # The final result, the foehn probability. Creates an object
     # of the same class as the input "data" (currently only zoo!)
