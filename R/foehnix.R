@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-04 13:31 on marvin
+# - L@ST MODIFIED: 2019-01-06 12:00 on marvin
 # -------------------------------------------------------------------
 
 
@@ -129,6 +129,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
     rval <- list(prob       = prob,
                  post       = post,
                  theta      = theta,
+                 iter       = iter,
                  loglik     = ll,
                  edf        = ncol(coefpath),
                  AIC        = - 2 * ll + 2 * ncol(coefpath),
@@ -264,6 +265,7 @@ if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!
     rval <- list(prob       = prob,
                  post       = post,
                  theta      = theta,
+                 iter       = iter,
                  loglik     = ll,
                  edf        = ncol(coefpath),
                  AIC        = - 2 * ll + 2 * ncol(coefpath),
@@ -661,6 +663,15 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     } else {
         coef <- NULL
     }
+
+    # If there was only one iteration: drop a warning
+    if ( rval$iter == 1 )
+        warning(paste("The EM algorithm stopped after one iteration!",
+                      "The coefficients returned are the initial coefficients.",
+                      "Indicates that the model as specified is not suitable",
+                      "for the data. Suggestion: check model (e.g, using",
+                      "plot(...) and summary(..., detailed = TRUE)) and",
+                      "try a different model specification (change formula)."))
 
     # Create the return list object (foehnix object)
     res <- list(optimizer = rval, data = data, filter = filter,

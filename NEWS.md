@@ -1,4 +1,15 @@
 
+# TODO
+
+* Regularized probability models (based on glmnet).
+* Tests.
+
+# foehnix 0.0-9
+
+* Added a warning which will be shown if the EM algorithm stops
+  in the first iteration (returns initial values). Quite likely
+  a misspecified model (non-suitable formula given the data).
+
 # foehnix 0.0-8
 
 * Added vignette for the logistic regression model (IWLS).
