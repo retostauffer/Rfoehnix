@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 21:27 on marvin
+# - L@ST MODIFIED: 2019-01-07 21:47 on marvin
 # -------------------------------------------------------------------
 
 
@@ -252,7 +252,7 @@ foehnix_filter <- function(x, filter) {
         # - If at least one element is NA -> set to NA
         # - If at least one element FALSE -> set to FALSE
         # - If all elements are TRUE      -> set to TRUE
-        tmp <- apply(tmp, 1, all)
+        tmp <- apply(tmp, 1, function(x) ifelse(any(is.na(x)), NA, all(x)))
     }
 
     # Wrong length? Stop!

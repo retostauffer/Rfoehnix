@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-06 12:00 on marvin
+# - L@ST MODIFIED: 2019-01-07 21:31 on marvin
 # -------------------------------------------------------------------
 
 
@@ -353,6 +353,11 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #'        IWLS backfitting algorithm for the concomitant model.  If a vector of length
 #'        two is provided the first value is used for the EM algorithm, the second for
 #'        the IWLS backfitting.
+#' @param force.inflate logical, default is \code{FALSE}. \code{\link{foehnix}} creates
+#'        a strictly regular time series object by inflating the data set using the
+#'        smallest time interval in the data set. If the inflation rate is larger than
+#'        2 the script will stop except the user forces inflation by specifying
+#'        \code{force.inflate = TRUE}. See 'Details' section for more information.
 #' @param tol similar as for \code{maxit}. Used to identify convergence of the
 #'        iterative solvers. Default is \code{1e-8}, if two values are given the first
 #'        will be used for the EM algorithm, the second one for the IWLS backfitting
@@ -362,6 +367,29 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently set to hell.
 #'
+#' @details \code{\link{foehnix}} models are based on time series objects. 
+#' For some methods (e.g., to create nice and easy to read time series plots and
+#' count statistics)
+#' \code{\link{foehnix}} inflates the time series object using the smallest time
+#' interval in the data set. This can, possibly, yield very large data sets. Thus,
+#' \code{\link{foehnix}} is pre-calculating the inflation rate, the fraction between
+#' the length of the inflated data set versus the length of the data set provided by
+#' the user. If this inflation rate exceeds 2 the script will raise an error!
+#'
+#' In this case the user should make sure that the time series object provided
+#' is proper before continuing. A possible scenario: a user is performing foehn diagnosis
+#' using 5 years of data from one station with 10 minute observations. This yields
+#' (neglecting leap years) \code{5 * 365 * 144 = 262.800} observations. Imagine that there
+#' is one incorrect observation reported one second after one of the regular
+#' 10 minute records. The smallest time increment would thus be 1 second. This would
+#' yield an inflated time series object with a total record length of
+#' \code{5 * 365 * 86.400 = 157.680.000}. Even if only filled with missing values
+#' (\code{NA}) this will be extremely memory demanding. To avoid this action
+#' \code{\link{foehnix}} will stop in such situations.
+#'
+#' However, the user is allowed to overrule this condition by setting the
+#' \code{force.inflate} option to \code{TRUE}.
+#'
 #' @seealso \code{\link{foehnix}}, \code{\link{foehnix.family}}.
 #'
 #' @author Reto Stauffer
@@ -369,10 +397,16 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #' @export
 foehnix.control <- function(family, switch, left = -Inf, right = Inf, truncated = FALSE, 
                             standardize = TRUE, maxit = 100L, tol = 1e-8,
+                            force.inflate = FALSE,
                             alpha = NULL, verbose = TRUE, ...) {
 
     # "truncated" has to be logical
     stopifnot(inherits(truncated, "logical"))
+
+    # Logical values
+    stopifnot(inherits(standardize,   "logical"))
+    stopifnot(inherits(verbose,       "logical"))
+    stopifnot(inherits(force.inflate, "logical"))
 
     # Checking limits for censoring/truncation.
     if ( any(!is.null(c(left, right))) ) {
@@ -420,6 +454,7 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf, truncated 
     rval <- list(family = family, switch = switch,
                  left = left, right = right, truncated = truncated,
                  standardize = standardize, maxit = maxit, tol = tol,
+                 force.inflate = force.inflate,
                  alpha = alpha, verbose = verbose)
     class(rval) <- c("foehnix.control")
     rval
@@ -438,7 +473,8 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @param formula an object of class \code{formula} (or one that can be coerced
 #'        to that class): a symbolic description of the model to be fitted.  The
 #'        details of model specification are given under 'Details'.
-#' @param data a time series object of class \code{zoo} containing the
+#' @param data a regular (not necessarily strictly regular)
+#'        time series object of class \code{zoo} containing the
 #'        variables for the two-part mixture model.
 #' @param switch logical. If set to \code{TRUE} the two estimated components
 #'        will be switched. This is important if the covariate for the components
@@ -569,19 +605,60 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # Stop if input control is not of class foehnix.control
     stopifnot(inherits(control, "foehnix.control"))
 
+    # If the original time series object is not regular: stop.
+    if ( ! is.regular(data) )
+        stop("The \"zoo\" time seris object on \"data\" has to be regular.")
+
     # Create strictly regular time series object with POSIXct
-    # time stamp.
+    # time stamp. Making a time series strictly regular means that the
+    # time series is inflated such that a continuous time series is
+    # getting created using the _smallest time step_. Depending on the data
+    # set this can create a large data set.
+    # Thus foehnix calculates the inflation rate (the ratio between the
+    # data set provided by the user and the one which would be created
+    # when making the time series object strictly regular). If the inflation
+    # rate is more than a factor of two the script will stop and raise an error.
+    # When `force.inflate` is set a warning instead of an error will be shown.
     index(data) <- as.POSIXct(index(data))
-    if ( is.regular(data) & ! is.regular(data, strict = TRUE) ) {
-        interval <- min(diff(index(data)))
-        tmp <- seq(min(index(data)), max(index(data)), by = interval)
-        data <- merge(data, zoo(,tmp))
+    if ( ! is.regular(data, strict = TRUE) ) {
+
+        # deltat: smallest time increment/time interval
+        interval <- deltat(data)
+        # inflated_index: new fully strict time series object.
+        inflated_index <- seq(min(index(data)), max(index(data)), by = interval)
+
+        # If the inflation ratio is larger than 2: stop!
+        if ( (length(inflated_index) / nrow(data)) > 2 & ! control$force.inflate ) {
+            str <- paste("ERROR:\n\n",
+                         "You have provided a time series object spanning the time period",
+                         "%s to %s.",
+                         "The smallest recorded time interval is %d seconds.",
+                         "foehnix tries to inflate the time series to create a strictly",
+                         "regular time series object which, in this case, would yield a",
+                         "data set of dimension %d x %d (%d values) which is %.2f times",
+                         "the original data set. To avoid running into memory issues",
+                         "foehnix stops here! We ask you to check your data set.",
+                         "This condition can be overruled by setting the input argument",
+                         "force.inflate = TRUE if needed. For more details please read the",
+                         "foehnix.control manual page.")
+            stop(sprintf(str, min(index(data)), max(index(data)), deltat(data),
+                         length(inflated_index), ncol(data),
+                         length(inflated_index) * ncol(data),
+                         length(inflated_index) / nrow(data)))
+        }
+        # Keep the number of observations (rows) added due to inflation.
+        N_inflated <- length(inflated_index) - nrow(data)
+        data <- merge(data, zoo(, inflated_index))
     }
 
     # Extracting model.frame used for the concomitant model,
     # and the vector y used for the clustering (main covariate).
     # Keep missing values.
-    mf <- model.frame(formula, data, na.action = na.pass)
+    mf <- try(model.frame(formula, data, na.action = na.pass))
+    if ( inherits(mf, "try-error") )
+        stop(paste("Cannot create model matrix given the formula provided. Please",
+                   "check that all variables used in the formula exist in the \"data\"",
+                   "time series object!"))
     y  <- as.numeric(model.response(mf))
 
     # If a truncated family is used: y has to lie within the
@@ -676,6 +753,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # Create the return list object (foehnix object)
     res <- list(optimizer = rval, data = data, filter = filter,
                 filter_obj = filter_obj,
+                inflated = N_inflated,
                 call = match.call(), formula = formula,
                 control = control, switch = switch)
 

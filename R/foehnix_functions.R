@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-04 13:33 on marvin
+# - L@ST MODIFIED: 2019-01-07 21:29 on marvin
 # -------------------------------------------------------------------
 
 
@@ -256,9 +256,10 @@ formula.foehnix <- function(x, ...) x$formula
 summary.foehnix <- function(object, detailed = FALSE, ...) {
 
     rval <- list()
-    rval$call    <- object$call
-    rval$prob    <- object$prob
-    rval$coef    <- coef(object, type = "parameter")
+    rval$call     <- object$call
+    rval$inflated <- object$inflated
+    rval$prob     <- object$prob
+    rval$coef     <- coef(object, type = "parameter")
 
     # Optimizer statistics
     rval$filter_obj <- object$filter_obj
@@ -297,7 +298,8 @@ print.summary.foehnix <- function(x, ...) {
     mean_prob <- 100 * mean(x$prob$prob[!is.na(x$prob$flag)])
 
     # Additional information about the data/model
-    cat(sprintf("\nNumber of observations (total) %8d\n", nrow(x$prob)))
+    cat(sprintf("\nNumber of observations (total) %8d (%d due to inflation)\n",
+                nrow(x$prob), x$inflated))
     cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
                 sum_na, sum_na / nrow(x$prob) * 100))
     cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", 

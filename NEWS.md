@@ -3,12 +3,29 @@
 
 * Regularized probability models (based on glmnet).
 * Tests.
+* There is one import ":::" (cgaussian family) in one of the
+  examples -> illegal!
 
 # foehnix 0.0-9
 
 * Added a warning which will be shown if the EM algorithm stops
   in the first iteration (returns initial values). Quite likely
   a misspecified model (non-suitable formula given the data).
+* Added inflation handling. foehnix tries to inflate the time series
+  object provided by the user to create a strictly regular time series
+  object. If the inflation ratio exceeds 2 (the data set would be inflated
+  by a factor of 2 or more) the script will STOP! foehnix.control provides
+  an option (force.inflate) to overrule this check, however, might cause
+  memory issues.
+* summary.foehnix shows "inflation" count.
+* foehnix will stop if the data set is not regular (note: regular is not
+  "strictly regular", but is one requirement to create a strictly regular
+  time series (inflate feature).
+* Fixed an issue with foehnix_filter where observations (rows) where not
+  all elements have been NA have been treated as "outside wind sector"
+  rather than "not all observations available" (FALSE has been returned
+  instead of NA; now an NA will be returned by if multiple filters are
+  used and at least one element is missing).
 
 # foehnix 0.0-8
 
