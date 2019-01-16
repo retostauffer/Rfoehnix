@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 21:41 on marvin
+# - L@ST MODIFIED: 2019-01-16 22:19 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -92,13 +92,40 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' windrose(data$dd, data$ff, type = "density")
 #'
 #' # Estimate a foehnix foehn classification model
-#' mod <- foehnix(diff_t ~ ff + rh, data = data, verbose = FALSE)
+#' filter <- list(dd = c(43, 223), crest_dd = c(90, 270)) 
+#' mod <- foehnix(diff_t ~ ff + rh, data = data,
+#'                filter = filter, verbose = FALSE)
 #'
 #' # Plotting wind roses
 #' windrose(mod)
 #'
 #' # Only density windrose for foehn events
 #' windrose(mod, type = "density", which = "foehn")
+#'
+#' # Using custom names: by default wind direction is expected
+#' # to be called 'dd', wind speed is expected to be called 'ff'.
+#' # However, ddvar and ffvar allow to change that (only if
+#' # windrose is called with a foehnix object as input).
+#' # An example:
+#' # - make a copy of data to data2
+#' # - rename dd to winddir, crest_dd to crest_winddir
+#' # - estimate the same foehnix model as above using the
+#' #   new variable names
+#' # - plot windrose with custom names for wind direction (winddir)
+#' #   and wind speed (windspd).
+#'
+#' data2 <- data
+#' names(data2)[grep("^ff$",       names(data2)] <- "windspd"
+#' names(data2)[grep("^dd$",       names(data2)] <- "winddir"
+#' names(data2)[grep("^crest_dd$", names(data2)] <- "crest_winddir"
+#' print(head(data2))
+#' 
+#' filter2 <- list(winddir = c(43, 223), crest_winddir = c(90, 270)) 
+#' mod2 <- foehnix(diff_t ~ ff + rh, data = data2,
+#'                 filter = filter2, verbose = FALSE)
+#'
+#' windrose(mod2, type = "density", which = "foehn",
+#'          ddvar = "winddir", ffvar = "windspd")
 #'
 #' @rdname windrose
 #' @author Reto Stauffer

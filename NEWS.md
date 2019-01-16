@@ -9,11 +9,12 @@
 * Allow to add a wind sector when using `windrose.default`, 
   Similar for `foehnix` models given the user-defined `dd`, `ff`
   names.
-* **Imprtant**: for `windrose.foehnix` and `tsplot`: a renaming
-  control argument is needed such that the user can specify how
-  his/her `dd` and `ff` values are called. Currently the scripts
-  are using hardcoded `dd` and `ff`. `tsplot` requires a very specific
-  format, else it will simply fail.
+
+# foehnix 0.0-10 (upcoming)
+
+* `windrose` allows to specify custom names.
+* `tsplot` allows to specify custom variable names (rename defaults).
+   Requires some more testing.
 
 # foehnix 0.0-9
 

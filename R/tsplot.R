@@ -8,8 +8,23 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 17:27 on marvin
+# - L@ST MODIFIED: 2019-01-16 23:10 on marvin
 # -------------------------------------------------------------------
+
+
+tsplot_varnames <- function(...) {
+    vars <- list(t      = "t",
+                 rh     = "rh",
+                 diff_t = "diff_t",
+                 dd     = "dd",
+                 ff     = "ff",
+                 fx     = "fx")
+    arg <- as.list(...)
+    for ( key in names(vars) ) {
+        if ( key %in% names(arg) ) vars[[key]] <- arg[[key]]
+    }
+    return(vars)
+}
 
 #' Time Series Plot of foehnix Models
 #' 
@@ -20,6 +35,7 @@
 #' @param start POSIXt object or an object which can be converted to POSIXt.
 #' @param end POSIXt object or an object which can be converted to POSIXt.
 #' @param ndays integer, number of days used when looping trough the time series.
+#' @param varnames list of custom variable names, see 'Details' section.
 #' @param ... additional arguments, ignored.
 #' @param xtra optional zoo object with probabilities in \code{]0,1[} to compare
 #'         two classification algorithms.
@@ -30,22 +46,77 @@
 #' made much more general. At the moment the method heavily depends on the
 #' names of the data used as input for \code{\link{foehnix}}.
 #'
-#' TODO: this is very specific to our data and our variable names.
-#'       either provide something like this and force the users to
-#'       follow our naming conventions, or make it much more
-#'       flexible/generig.
+#' This time series plotting function creates a relatively specific plot
+#' and also expects, by default, a set of default variables and variable
+#' names. This function uses the data set provided on the \code{data}
+#' input argument when calling the \code{\link{foehnix}} method.
+#' As they might differ from the \code{foehnix} defaults the
+#' \code{varnames} input argument allows to specify custom names.
+#' The ones expected:
+#' 
+#' \itemize{
+#'      \item \code{t}: dry air temperature
+#'      \item \code{rh}: relative humidity (in percent)
+#'      \item \code{diff_t}: temperature difference between the
+#'            crest and the valley station
+#'      \item \code{dd}: meteorological wind direction (\code{[0, 360]})
+#'      \item \code{ff}: wind speed
+#' }
+#'
+#' Custom names can be specified by renaming the defaults based on a
+#' named list. As an example: assume that wind direction is called
+#' \code{winddir} and wind speed is called \code{windspd} in your data set.
+#' Specify the following input to rename/respecify the defaults:
+#' \itemize{
+#'       \item \code{varnames = list(dd = "winddir", ff = "windspd")}
+#' }
+#'
+#' Please note: if a variable cannot be found (no matter whether
+#' the default variable names have been renamed or not) this specific
+#' variable will be ignored. Subplots will not be displayed if no
+#' data are available at all.
 #'
 #' @author Reto Stauffer
 #' @export
-tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, ask = TRUE) {
+tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
+                   varnames = NULL,
+                   ..., xtra = NULL, ask = TRUE) {
 
+    # Input 'x' needs to be of class foehnix
     if ( ! inherits(x, "foehnix") )
         stop("tsplot is only for objects of class \"foehnix\".")
 
+    # Default/custom variable names
+    vars <- tsplot_varnames(varnames)
+
+    # Check available data. This allows us to check
+    # which of the default subplots can be drawn.
+    check <- function(x, vars, check) {
+        check <- unlist(sapply(check, function(x, vars) vars[[x]], vars = vars))
+        return(sum(check %in% x) > 0)
+    }
+    doplot <- list(
+        "temp"        = check(names(x$data), vars, c("t", "rh")),
+        "tempdiff"    = check(names(x$data), vars, c("diff_t")),
+        "wind"        = check(names(x$data), vars, c("dd", "ff", "ffx")),
+        "prob"        = TRUE
+    )
+    Nplots <- sum(sapply(doplot, function(x) return(x)))
+    if ( Nplots == 0 )
+        stop(sprintf(paste("Cannot find any of the required variables!",
+             "One reason: your variable names do not match any of",
+             "the default variable names (%s).",
+             "The 'varnames' input argument allows you to",
+             "change these names (please see ?tsplot manual page)."),
+             paste(names(vars), collapse = ", ")))
+
+
+    # Helper function to add the gray boxes (background)
     add_boxes <- function(x, col = "gray90") {
         dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
         up   <- which(diff(x >= .5) == 1) + 1
         down <- which(diff(x >= .5) == -1)
+        if ( length(up) == 0 | length(down) == 0 ) return();
         if ( min(down) < min(up) ) up <- c(1, up)
         isna <- which(is.na(x))
         if ( length(up) > 0 & length(down) > 0 ) {
@@ -64,6 +135,8 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, as
             }
         }
     }
+
+    # Helper function to add the vertical lines
     add_midnight_lines <- function(x) {
         ndays <- as.numeric(diff(range(index(x))), unit = "days")
         if ( ndays < 50 ) {
@@ -127,7 +200,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, as
     names(data)[1L] <- "prob"
 
     # Looping over the different periods we have to plot
-    par(mfrow = c(4,1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
+    par(mfrow = c(Nplots, 1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
     for ( k in seq_along(start) ) {
 
         tmp <- window(data, start = start[k], end = end[k])
@@ -141,58 +214,69 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL, as
         }
 
         # Air temperature
-        plot(tmp$t, type = "n", ylab = NA, xaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        lines(tmp$t, col ="red", lwd = 2)
-        mtext(side = 2, line = 3, "dry air temperature")
-        box()
-    
-        # Relative humidity
-        par(new = TRUE)
-        plot(tmp$rh, type = "n", lwd = 2, yaxt = "n", ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-        add_polygon(tmp$rh, col = "#009900")
-        abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
-        axis(side = 4, at = seq(20, 100, by = 20))
-        mtext(side = 4, line = 3, "relative humidity")
-        box()
-    
-        # Temperature difference
-        plot(tmp$diff_t, type = "n", xaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        lines(tmp$diff_t, col = "orange", lwd = 2)
-        abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
-        abline(h = 0, col = 1)
-        mtext(side = 2, line = 3, "temperature difference")
-        box()
-    
-        # Wind speed and direction
-        if ( ! is.null(x$windsector) ) {
-            stopifnot("dd" %in% names(tmp))
-            if ( x$windsector[1L] < x$windsector[2L] ) {
-                ddflag <- ifelse(tmp$dd < x$windsector[1L] | tmp$dd > x$windsector[2L], 1, 2) 
+        if ( doplot$temp ) {
+            # If temperature is in the data set: plot temperature,
+            # if not, set up an empty plot (required to be able to
+            # add relative humidity and temperature differences).
+            if ( vars$t %in% names(tmp) ) {
+                plot(tmp[,vars$t], type = "n", ylab = NA, xaxt = "n", bty = "n")
+                add_boxes(tmp$prob); add_midnight_lines(tmp)
+                lines(tmp[,vars$t], col ="red", lwd = 2)
+                mtext(side = 2, line = 3, "dry air temperature")
+                box()
             } else {
-                ddflag <- ifelse(tmp$dd > x$windsector[1L] | tmp$dd < x$windsector[2L], 1, 2) 
+                plot(NA, xaxt = "n", yaxt = "n", xlab = NA, ylab = NA,
+                     xlim = range(index(tmp)))
             }
-        } else { ddflag <- rep(2, nrow(tmp)) }
-        plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
-                 ylim = c(0, 360), yaxt = "n", bty = "n")
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
-        if ( "dd" %in% names(tmp) ) {
-            points(tmp$dd, col = c("gray50","black")[ddflag], pch = c(1, 19)[ddflag], cex = c(.3, .5)[ddflag])
-        }
-        axis(side = 2, at = seq(90, 360 - 90, by = 90))
-        mtext(side = 2, line = 3, "wind direction")
-        if ( ! is.null(x$windsector) ) abline(h = x$windsector, col = "gray", lty = 3)
-        box()
     
-        # Adding wind speed
-        par(new = TRUE)
-        plot(tmp$ff, type = "n", ylim = c(0, max(tmp$ff, na.rm = TRUE)) * 1.05,
-             yaxs = "i", yaxt = "n", xaxt = "n")
-        add_polygon(tmp$ff, col = "#005ce6")
-        axis(side = 4, at = pretty(tmp$ff))
-        mtext(side = 4, line = 3, "wind speed")
-        box()
+            # Relative humidity
+            if ( vars$rh %in% names(tmp) ) {
+                par(new = TRUE)
+                plot(tmp[,vars$rh], type = "n", lwd = 2, yaxt = "n",
+                     ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
+                add_polygon(tmp[,vars$rh], col = "#009900")
+                abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
+                axis(side = 4, at = seq(20, 100, by = 20))
+                mtext(side = 4, line = 3, "relative humidity")
+                box()
+            }
+    
+            # Temperature difference
+            if ( vars$diff_t %in% names(tmp) ) {
+                plot(tmp[,vars$diff_t], type = "n", xaxt = "n", bty = "n")
+                add_boxes(tmp$prob); add_midnight_lines(tmp)
+                lines(tmp$diff_t, col = "orange", lwd = 2)
+                abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
+                abline(h = 0, col = 1)
+                mtext(side = 2, line = 3, "temperature difference")
+                box()
+            }
+        }
+
+    
+        # Plotting wind direction and wind speed
+        if ( doplot$wind ) {
+            plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
+                     ylim = c(0, 360), yaxt = "n", bty = "n")
+            add_boxes(tmp$prob); add_midnight_lines(tmp)
+            if ( vars$dd %in% names(tmp) ) {
+                points(tmp[,vars$dd], col = "black", pch = 19, cex = 0.5)
+                axis(side = 2, at = seq(90, 360 - 90, by = 90))
+                mtext(side = 2, line = 3, "wind direction")
+                box()
+            }
+        
+            # Adding wind speed
+            if ( vars$ff %in% names(tmp) ) {
+                par(new = TRUE)
+                plot(tmp[,vars$ff], type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
+                     ylim = c(0, max(tmp[,vars$ff], na.rm = TRUE)) * 1.05)
+                add_polygon(tmp[,vars$ff], col = "#005ce6")
+                axis(side = 4, at = pretty(tmp[,vars$ff]))
+                mtext(side = 4, line = 3, "wind speed")
+                box()
+            }
+        }
     
         # Foehn prob
         plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 

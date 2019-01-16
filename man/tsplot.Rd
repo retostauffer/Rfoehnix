@@ -4,8 +4,8 @@
 \alias{tsplot}
 \title{Time Series Plot of foehnix Models}
 \usage{
-tsplot(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL,
-  ask = TRUE)
+tsplot(x, start = NULL, end = NULL, ndays = 10, varnames = NULL,
+  ..., xtra = NULL, ask = TRUE)
 }
 \arguments{
 \item{x}{object of type \code{foehnix}.}
@@ -15,6 +15,8 @@ tsplot(x, start = NULL, end = NULL, ndays = 10, ..., xtra = NULL,
 \item{end}{POSIXt object or an object which can be converted to POSIXt.}
 
 \item{ndays}{integer, number of days used when looping trough the time series.}
+
+\item{varnames}{list of custom variable names, see 'Details' section.}
 
 \item{...}{additional arguments, ignored.}
 
@@ -33,10 +35,35 @@ proabilities.  For software release this method should either be removed or
 made much more general. At the moment the method heavily depends on the
 names of the data used as input for \code{\link{foehnix}}.
 
-TODO: this is very specific to our data and our variable names.
-      either provide something like this and force the users to
-      follow our naming conventions, or make it much more
-      flexible/generig.
+This time series plotting function creates a relatively specific plot
+and also expects, by default, a set of default variables and variable
+names. This function uses the data set provided on the \code{data}
+input argument when calling the \code{\link{foehnix}} method.
+As they might differ from the \code{foehnix} defaults the
+\code{varnames} input argument allows to specify custom names.
+The ones expected:
+
+\itemize{
+     \item \code{t}: dry air temperature
+     \item \code{rh}: relative humidity (in percent)
+     \item \code{diff_t}: temperature difference between the
+           crest and the valley station
+     \item \code{dd}: meteorological wind direction (\code{[0, 360]})
+     \item \code{ff}: wind speed
+}
+
+Custom names can be specified by renaming the defaults based on a
+named list. As an example: assume that wind direction is called
+\code{winddir} and wind speed is called \code{windspd} in your data set.
+Specify the following input to rename/respecify the defaults:
+\itemize{
+      \item \code{varnames = list(dd = "winddir", ff = "windspd")}
+}
+
+Please note: if a variable cannot be found (no matter whether
+the default variable names have been renamed or not) this specific
+variable will be ignored. Subplots will not be displayed if no
+data are available at all.
 }
 \author{
 Reto Stauffer
