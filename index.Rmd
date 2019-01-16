@@ -25,14 +25,7 @@ Some of the features:
 ```{r, echo = FALSE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 8}
 suppressPackageStartupMessages(library("foehnix"))
 # Loading observations (data.frame), convert to zoo
-data("ellboegen", package = "foehnix")
-data("sattelberg", package = "foehnix")
-timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
-ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
-sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
-names(sattelberg) <- paste0("crest_", names(sattelberg))
-data <- merge(ellboegen, sattelberg)
-data$diff_t <- data$crest_t + 10.27 - data$t
+data <- demodata()
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 mod <- foehnix(diff_t ~ ff, data = data, filter = filter, switch = TRUE)
 # Plot

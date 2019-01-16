@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 22:19 on marvin
+# - L@ST MODIFIED: 2019-01-16 23:41 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -71,21 +71,8 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' (\code{type = "histogram"} or \code{type = "density"}).
 #'
 #' @examples
-#' # Loading observations (data.frame), convert to zoo
-#' data("ellboegen",  package = "foehnix")
-#' data("sattelberg", package = "foehnix")
-#' ellboegen  <- zoo(ellboegen[,-1],  as.POSIXct(ellboegen[,1],  origin = "1970-01-01"))
-#' sattelberg <- zoo(sattelberg[,-1], as.POSIXct(sattelberg[,1], origin = "1970-01-01"))
-#' 
-#' # Modify sattelberg variable names (crest_ identifies Sattelberg
-#' # observations, our crest station) and combine both data sets.
-#' names(sattelberg) <- paste0("crest_", names(sattelberg))
-#' data <- merge(ellboegen, sattelberg)
-#' 
-#' # Dry adiabatic temperature difference between 
-#' # Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by
-#' # 1027/10 degrees.
-#' data$diff_t <- data$crest_t + 10.27 - data$t
+#' # Loading combined demo data set
+#' data <- demodata()
 #'
 #' # Before estimating a model: plot a wind rose for all observations
 #' windrose(data$dd, data$ff, type = "histogram")

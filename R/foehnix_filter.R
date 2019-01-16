@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-07 21:47 on marvin
+# - L@ST MODIFIED: 2019-01-16 23:44 on marvin
 # -------------------------------------------------------------------
 
 
@@ -128,10 +128,8 @@
 #' @examples
 #' # Loading example data set and conver to zoo time series
 #' # time series object.
-#' data("ellboegen", package = "foehnix")
-#' library("zoo")
-#' ellboegen <- zoo(subset(ellboegen, select = -timestamp),
-#'                  as.POSIXct(ellboegen$timestamp, origin = "1970-01-01", tz = "UTC"))
+#' # Loading combined demo data set
+#' ellboegen <- demodata("ellboegen")
 #' 
 #' # Case 1:
 #' # -----------------
@@ -160,17 +158,8 @@
 #' # has to show southerly flows with a wind direction from
 #' # 90 degrees (East) to 270 degrees (West).
 #' 
-#' # Loading Sattelberg station data and convert to zoo
-#' # time series object.
-#' data("sattelberg", package = "foehnix")
-#' require("zoo")
-#' sattelberg <- zoo(subset(sattelberg, select = -timestamp),
-#'                  as.POSIXct(sattelberg$timestamp, origin = "1970-01-01", tz = "UTC"))
-#' names(sattelberg) <- paste0("crest_", names(sattelberg)) # Renaming variables
-#' 
-#' # Combine Ellboegen observations with Sattelberg observations
-#' data <- merge(ellboegen, sattelberg)
-#' print(head(data))
+#' # Loading combined demo data set
+#' data <- demodata()
 #' 
 #' # Now apply a wind filter
 #' my_filter  <- list(dd = c(43, 223), crest_dd = c(90, 270))

@@ -41,7 +41,7 @@ Variable description (columns):
 }
 }
 \seealso{
-\code{\link{ellboegen}}.
+\code{\link{ellboegen}}, \code{\link{demodata}}.
 }
 \author{
 Reto Stauffer

@@ -41,6 +41,7 @@ reference:
         - summary.foehnix
     - title: "Demo Data Sets"
       contents:
+        - demodata
         - ellboegen
         - sattelberg
     - title: "Support functions"

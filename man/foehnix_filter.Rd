@@ -130,10 +130,8 @@ any complexity. As an example:
 \examples{
 # Loading example data set and conver to zoo time series
 # time series object.
-data("ellboegen", package = "foehnix")
-library("zoo")
-ellboegen <- zoo(subset(ellboegen, select = -timestamp),
-                 as.POSIXct(ellboegen$timestamp, origin = "1970-01-01", tz = "UTC"))
+# Loading combined demo data set
+ellboegen <- demodata("ellboegen")
 
 # Case 1:
 # -----------------
@@ -162,17 +160,8 @@ hist(ellboegen$dd[idx_north$good], xlab = "dd", main = "northerly winds")
 # has to show southerly flows with a wind direction from
 # 90 degrees (East) to 270 degrees (West).
 
-# Loading Sattelberg station data and convert to zoo
-# time series object.
-data("sattelberg", package = "foehnix")
-require("zoo")
-sattelberg <- zoo(subset(sattelberg, select = -timestamp),
-                 as.POSIXct(sattelberg$timestamp, origin = "1970-01-01", tz = "UTC"))
-names(sattelberg) <- paste0("crest_", names(sattelberg)) # Renaming variables
-
-# Combine Ellboegen observations with Sattelberg observations
-data <- merge(ellboegen, sattelberg)
-print(head(data))
+# Loading combined demo data set
+data <- demodata()
 
 # Now apply a wind filter
 my_filter  <- list(dd = c(43, 223), crest_dd = c(90, 270))

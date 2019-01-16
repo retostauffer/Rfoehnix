@@ -41,7 +41,7 @@ Variable description (columns):
 }
 }
 \seealso{
-\code{\link{sattelberg}}.
+\code{\link{sattelberg}}, \code{\link{demodata}}.
 }
 \author{
 Reto Stauffer

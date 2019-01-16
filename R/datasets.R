@@ -34,7 +34,7 @@
 #'    \item \code{t}: dry air temperature in degrees Celsius
 #' }
 #'
-#' @seealso \code{\link{sattelberg}}.
+#' @seealso \code{\link{sattelberg}}, \code{\link{demodata}}.
 #'
 #' @name ellboegen
 #' @docType data
@@ -77,7 +77,7 @@ NULL
 #'    \item \code{t}: dry air temperature in degrees Celsius
 #' }
 #'
-#' @seealso \code{\link{ellboegen}}.
+#' @seealso \code{\link{ellboegen}}, \code{\link{demodata}}.
 #'
 #' @name sattelberg
 #' @docType data
