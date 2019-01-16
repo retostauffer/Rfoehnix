@@ -5,12 +5,24 @@
 * Tests.
 * There is one import ":::" (cgaussian family) in one of the
   examples -> illegal!
+* A separate `windrose` vignette might be nice.
+* Allow to add a wind sector when using `windrose.default`, 
+  Similar for `foehnix` models given the user-defined `dd`, `ff`
+  names.
+* **Imprtant**: for `windrose.foehnix` and `tsplot`: a renaming
+  control argument is needed such that the user can specify how
+  his/her `dd` and `ff` values are called. Currently the scripts
+  are using hardcoded `dd` and `ff`. `tsplot` requires a very specific
+  format, else it will simply fail.
 
 # foehnix 0.0-9
 
 * Added a warning which will be shown if the EM algorithm stops
   in the first iteration (returns initial values). Quite likely
   a misspecified model (non-suitable formula given the data).
+* `windrose` manual extended, `windrose` also allows to plot a windrose
+  of non-`foehnix` objects (e.g., univariate zoo objects of `dd` and `ff`
+  or two numeric vectors). Examples included.
 * Added inflation handling. foehnix tries to inflate the time series
   object provided by the user to create a strictly regular time series
   object. If the inflation ratio exceeds 2 (the data set would be inflated
@@ -26,6 +38,7 @@
   rather than "not all observations available" (FALSE has been returned
   instead of NA; now an NA will be returned by if multiple filters are
   used and at least one element is missing).
+* Fixed a bug where `N_inflated` was missing when no inflation was needed.
 
 # foehnix 0.0-8
 

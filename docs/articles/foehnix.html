@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
       </span>
     </div>
 
@@ -107,7 +107,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/foehnix.Rmd"><code>vignettes/foehnix.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/foehnix.Rmd"><code>../vignettes/foehnix.Rmd</code></a></small>
       <div class="hidden name"><code>foehnix.Rmd</code></div>
 
     </div>
@@ -195,17 +195,17 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <pre><code>## 
 ## Call: foehnix(formula = diff_t ~ ff, data = train, switch = TRUE, filter = filter)
 ## 
-## Number of observations (total)    71346
-## Removed due to missing values      4660 (6.5 percent)
-## Outside defined wind sector       49066 (68.8 percent)
+## Number of observations (total)    71346 (273 due to inflation)
+## Removed due to missing values     10187 (14.3 percent)
+## Outside defined wind sector       43539 (61.0 percent)
 ## Used for classification           17620 (24.7 percent)
 ## 
-## Climatological foehn occurance 12.27 percent (on n = 66686)
-## Mean foehn probability 12.13 percent (on n = 66686)
+## Climatological foehn occurance 13.38 percent (on n = 61159)
+## Mean foehn probability 13.23 percent (on n = 61159)
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.3 seconds
+## Time required for model estimation: 1.4 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
@@ -229,17 +229,17 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <pre><code>## 
 ## Call: foehnix(formula = diff_t ~ ff, data = train, switch = TRUE, filter = filter)
 ## 
-## Number of observations (total)    71346
-## Removed due to missing values      4660 (6.5 percent)
-## Outside defined wind sector       49066 (68.8 percent)
+## Number of observations (total)    71346 (273 due to inflation)
+## Removed due to missing values     10187 (14.3 percent)
+## Outside defined wind sector       43539 (61.0 percent)
 ## Used for classification           17620 (24.7 percent)
 ## 
-## Climatological foehn occurance 12.27 percent (on n = 66686)
-## Mean foehn probability 12.13 percent (on n = 66686)
+## Climatological foehn occurance 13.38 percent (on n = 61159)
+## Mean foehn probability 13.23 percent (on n = 61159)
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.3 seconds
+## Time required for model estimation: 1.4 seconds
 ## 
 ## ---------------------------------
 ## 
@@ -282,10 +282,10 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ##  Min.   :2010-01-18 09:00:00   Min.   :0.000  
 ##  1st Qu.:2012-01-31 13:15:00   1st Qu.:0.000  
 ##  Median :2014-02-12 17:30:00   Median :0.000  
-##  Mean   :2014-02-12 17:30:00   Mean   :0.121  
+##  Mean   :2014-02-12 17:30:00   Mean   :0.132  
 ##  3rd Qu.:2016-02-25 21:45:00   3rd Qu.:0.000  
 ##  Max.   :2018-03-10 02:00:00   Max.   :1.000  
-##                                NA's   :4660</code></pre>
+##                                NA's   :10187</code></pre>
 <p>The method let’s you access the fitted probabilities (<code>which = "probability"</code>), a flag which comes with the fitted values (<code>which = "flag"</code>), or both (<code>which = "both"</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Probabilities only</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"probability"</span>))</code></pre></div>

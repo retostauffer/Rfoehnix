@@ -6,7 +6,7 @@
 \usage{
 foehnix.control(family, switch, left = -Inf, right = Inf,
   truncated = FALSE, standardize = TRUE, maxit = 100L, tol = 1e-08,
-  alpha = NULL, verbose = TRUE, ...)
+  force.inflate = FALSE, alpha = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{family}{character specifying the distribution of the components in the
@@ -47,6 +47,12 @@ will be used for the EM algorithm, the second one for the IWLS backfitting
 procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
 criteria.}
 
+\item{force.inflate}{logical, default is \code{FALSE}. \code{\link{foehnix}} creates
+a strictly regular time series object by inflating the data set using the
+smallest time interval in the data set. If the inflation rate is larger than
+2 the script will stop except the user forces inflation by specifying
+\code{force.inflate = TRUE}. See 'Details' section for more information.}
+
 \item{alpha}{TODO alpha parameter for the penalization of the concomitant model.}
 
 \item{verbose}{logical, if set to \code{FALSE} output is suppressed.}
@@ -55,6 +61,30 @@ criteria.}
 }
 \description{
 Used to control the \code{\link{foehnix}} mixture models.
+}
+\details{
+\code{\link{foehnix}} models are based on time series objects. 
+For some methods (e.g., to create nice and easy to read time series plots and
+count statistics)
+\code{\link{foehnix}} inflates the time series object using the smallest time
+interval in the data set. This can, possibly, yield very large data sets. Thus,
+\code{\link{foehnix}} is pre-calculating the inflation rate, the fraction between
+the length of the inflated data set versus the length of the data set provided by
+the user. If this inflation rate exceeds 2 the script will raise an error!
+
+In this case the user should make sure that the time series object provided
+is proper before continuing. A possible scenario: a user is performing foehn diagnosis
+using 5 years of data from one station with 10 minute observations. This yields
+(neglecting leap years) \code{5 * 365 * 144 = 262.800} observations. Imagine that there
+is one incorrect observation reported one second after one of the regular
+10 minute records. The smallest time increment would thus be 1 second. This would
+yield an inflated time series object with a total record length of
+\code{5 * 365 * 86.400 = 157.680.000}. Even if only filled with missing values
+(\code{NA}) this will be extremely memory demanding. To avoid this action
+\code{\link{foehnix}} will stop in such situations.
+
+However, the user is allowed to overrule this condition by setting the
+\code{force.inflate} option to \code{TRUE}.
 }
 \seealso{
 \code{\link{foehnix}}, \code{\link{foehnix.family}}.

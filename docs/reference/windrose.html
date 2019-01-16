@@ -67,7 +67,7 @@ the same information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
       </span>
     </div>
 
@@ -172,11 +172,7 @@ the same information.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>forwarded to windrose methods.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>forwarded as well.</p></td>
+      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>, see 'Details' section.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -245,23 +241,35 @@ for the whole range of <code>ff</code>, values <code>!= 1</code> change the
 alpha behaviour.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
-    </tr>
-    <tr>
       <th>type</th>
       <td><p>character, one of <code>density</code> or <code>histogram</code>, controls
 the plot type.</p></td>
+    </tr>
+    <tr>
+      <th>dd</th>
+      <td><p>a vector with meteorological wind directions within <code>[0-360]</code>,
+see 'Details' section.</p></td>
+    </tr>
+    <tr>
+      <th>ff</th>
+      <td><p>a vector with wind speed measurements within <code>[0,Inf]</code>,
+see 'Details' section.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Allows to draw windrose plots from a <code><a href='foehnix.html'>foehnix</a></code> mixture model
-object. Two <code>type</code>s are available: circular density plots and circular
-histograms, both for <code>which = "unconditional"</code>, <code>which = "nofoehn"</code>,
-and <code>which = "foehn"</code>, details below.
-By default (<code>type = NULL</code>, <code>which = NULL</code>) all combinations will be plotted.</p>
+    <p>Allows to draw windrose plots from <code><a href='foehnix.html'>foehnix</a></code> mixture model
+object or a set of observations. If input <code>x</code> to <code>windrose</code> is
+an object of class <code>foehnix</code> (as returned by <code><a href='foehnix.html'>foehnix</a></code>) the
+data set which the classification is based on is used to plot the windrose.
+If inputs <code>dd</code> and <code>ff</code> are given (univariate <code>zoo</code> time series
+objects or <code>numeric</code> vectors) windrose plots can be plotted for observations
+without the need of a <code>foehnix</code> object.</p>
+<p>Two <code>type</code>s are available: circular density plots and circular
+histograms. If the input argument <code>x</code> is a <code>foehnix</code> object an additional
+input argument <code>which</code> is available to specify the subset which should be used
+to create the windrose plots. The following inputs are allowed:</p>
 <ul>
 <li><p><code>which = "unconditional"</code>: unconditional windrose (all observations
          of the data set used to estimate the <code><a href='foehnix.html'>foehnix</a></code> model).</p></li>
@@ -269,17 +277,48 @@ By default (<code>type = NULL</code>, <code>which = NULL</code>) all combination
          classified as foehn (probability <code>&lt; 0.5</code>).</p></li>
 <li><p><code>which = "foehn"</code>: windrose of all observations classified as foehn events
          (probability <code>&gt;= 0.5</code>).</p></li>
-</ul>
-    <p>Specific combinations can be selected by calling the windrose function with e.g.,
+<li><p><code>which = NULL</code>: all three subsets will be plotted (individual
+         windroses).</p></li>
+</ul><p>Specific combinations can be specified by calling the windrose function with e.g.,
 <code>type = "histogram"</code> and <code>which = c("foehn", "nofoehn")</code> (will show
 histograms for foehn and no foehn events), or <code>type = NULL</code> and <code>which = "foehn"</code>
-(will show density and histogram plot for foehn events).</p>
+(will show density and histogram plot for foehn events).
+By default (<code>type = NULL</code>, <code>which = NULL</code>) all combinations will be plotted.</p>
+<p>If <code>dd</code> and <code>ff</code> are set only the <code>type</code> argument is available
+(<code>type = "histogram"</code> or <code>type = "density"</code>).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>windrose.default windrose.foehnix</p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Loading observations (data.frame), convert to zoo</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"ellboegen"</span>,  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
+<span class='no'>ellboegen</span>  <span class='kw'>&lt;-</span> <span class='fu'>zoo</span>(<span class='no'>ellboegen</span>[,-<span class='fl'>1</span>],  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>ellboegen</span>[,<span class='fl'>1</span>],  <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>))
+<span class='no'>sattelberg</span> <span class='kw'>&lt;-</span> <span class='fu'>zoo</span>(<span class='no'>sattelberg</span>[,-<span class='fl'>1</span>], <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>sattelberg</span>[,<span class='fl'>1</span>], <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>))
+
+<span class='co'># Modify sattelberg variable names (crest_ identifies Sattelberg</span>
+<span class='co'># observations, our crest station) and combine both data sets.</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"crest_"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>))
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/merge'>merge</a></span>(<span class='no'>ellboegen</span>, <span class='no'>sattelberg</span>)
+
+<span class='co'># Dry adiabatic temperature difference between </span>
+<span class='co'># Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by</span>
+<span class='co'># 1027/10 degrees.</span>
+<span class='no'>data</span>$<span class='no'>diff_t</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>crest_t</span> + <span class='fl'>10.27</span> - <span class='no'>data</span>$<span class='no'>t</span>
+
+<span class='co'># Before estimating a model: plot a wind rose for all observations</span>
+<span class='fu'>windrose</span>(<span class='no'>data</span>$<span class='no'>dd</span>, <span class='no'>data</span>$<span class='no'>ff</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"histogram"</span>)</div><div class='img'><img src='windrose-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>windrose</span>(<span class='no'>data</span>$<span class='no'>dd</span>, <span class='no'>data</span>$<span class='no'>ff</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>)</div><div class='img'><img src='windrose-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Estimate a foehnix foehn classification model</span>
+<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='foehnix.html'>foehnix</a></span>(<span class='no'>diff_t</span> ~ <span class='no'>ff</span> + <span class='no'>rh</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># Plotting wind roses</span>
+<span class='fu'>windrose</span>(<span class='no'>mod</span>)</div><div class='img'><img src='windrose-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Only density windrose for foehn events</span>
+<span class='fu'>windrose</span>(<span class='no'>mod</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"foehn"</span>)</div><div class='img'><img src='windrose-4.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -289,7 +328,9 @@ histograms for foehn and no foehn events), or <code>type = NULL</code> and <code
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     <p>Reto Stauffer</p>

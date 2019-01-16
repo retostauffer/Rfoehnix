@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
       </span>
     </div>
 
@@ -139,6 +139,20 @@
       <small>Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="foehnix-0-0-9" class="section level1">
+<h1 class="page-header">
+<a href="#foehnix-0-0-9" class="anchor"></a>foehnix 0.0-9</h1>
+<ul>
+<li>Added a warning which will be shown if the EM algorithm stops in the first iteration (returns initial values). Quite likely a misspecified model (non-suitable formula given the data).</li>
+<li>
+<code>windrose</code> manual extended, <code>windrose</code> also allows to plot a windrose of non-<code>foehnix</code> objects (e.g., univariate zoo objects of <code>dd</code> and <code>ff</code> or two numeric vectors). Examples included.</li>
+<li>Added inflation handling. foehnix tries to inflate the time series object provided by the user to create a strictly regular time series object. If the inflation ratio exceeds 2 (the data set would be inflated by a factor of 2 or more) the script will STOP! foehnix.control provides an option (force.inflate) to overrule this check, however, might cause memory issues.</li>
+<li>summary.foehnix shows “inflation” count.</li>
+<li>foehnix will stop if the data set is not regular (note: regular is not “strictly regular”, but is one requirement to create a strictly regular time series (inflate feature).</li>
+<li>Fixed an issue with foehnix_filter where observations (rows) where not all elements have been NA have been treated as “outside wind sector” rather than “not all observations available” (FALSE has been returned instead of NA; now an NA will be returned by if multiple filters are used and at least one element is missing).</li>
+<li>Fixed a bug where <code>N_inflated</code> was missing when no inflation was needed.</li>
+</ul>
+</div>
     <div id="foehnix-0-0-8" class="section level1">
 <h1 class="page-header">
 <a href="#foehnix-0-0-8" class="anchor"></a>foehnix 0.0-8</h1>
@@ -207,6 +221,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#foehnix-0-0-9">0.0-9</a></li>
         <li><a href="#foehnix-0-0-8">0.0-8</a></li>
         <li><a href="#foehnix-0-0-5">0.0-5</a></li>
         <li><a href="#foehnix-0-0-4">0.0-4</a></li>

@@ -15,9 +15,7 @@ windrose(x, ...)
   windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5)
 }
 \arguments{
-\item{x}{forwarded to windrose methods.}
-
-\item{...}{forwarded as well.}
+\item{x}{object of class \code{\link{foehnix}}, see 'Details' section.}
 
 \item{type}{\code{NULL} or character, one of \code{density} or \code{histogram}.
 If \code{NULL} both types will be plotted.}
@@ -59,10 +57,14 @@ used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
 for the whole range of \code{ff}, values \code{!= 1} change the
 alpha behaviour.}
 
-\item{x}{object of class \code{\link{foehnix}}.}
-
 \item{type}{character, one of \code{density} or \code{histogram}, controls
 the plot type.}
+
+\item{dd}{a vector with meteorological wind directions within \code{[0-360]},
+see 'Details' section.}
+
+\item{ff}{a vector with wind speed measurements within \code{[0,Inf]},
+see 'Details' section.}
 }
 \description{
 Plotting a windrose using meteorological wind direction and
@@ -74,11 +76,18 @@ Windrose plot, can handle two type of plots (see \code{type}) using
 the same information.
 }
 \details{
-Allows to draw windrose plots from a \code{\link{foehnix}} mixture model
-object. Two \code{type}s are available: circular density plots and circular
-histograms, both for \code{which = "unconditional"}, \code{which = "nofoehn"},
-and \code{which = "foehn"}, details below.
-By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+Allows to draw windrose plots from \code{\link{foehnix}} mixture model
+object or a set of observations. If input \code{x} to \code{\link{windrose}} is
+an object of class \code{foehnix} (as returned by \code{\link{foehnix}}) the
+data set which the classification is based on is used to plot the windrose.
+If inputs \code{dd} and \code{ff} are given (univariate \code{zoo} time series
+objects or \code{numeric} vectors) windrose plots can be plotted for observations
+without the need of a \code{foehnix} object.
+
+Two \code{type}s are available: circular density plots and circular
+histograms. If the input argument \code{x} is a \code{foehnix} object an additional
+input argument \code{which} is available to specify the subset which should be used
+to create the windrose plots. The following inputs are allowed:
 
 \itemize{
    \item \code{which = "unconditional"}: unconditional windrose (all observations
@@ -87,12 +96,48 @@ By default (\code{type = NULL}, \code{which = NULL}) all combinations will be pl
          classified as foehn (probability \code{< 0.5}).
    \item \code{which = "foehn"}: windrose of all observations classified as foehn events
          (probability \code{>= 0.5}).
+   \item \code{which = NULL}: all three subsets will be plotted (individual
+         windroses).
 }
-
-Specific combinations can be selected by calling the windrose function with e.g.,
+Specific combinations can be specified by calling the windrose function with e.g.,
 \code{type = "histogram"} and \code{which = c("foehn", "nofoehn")} (will show
 histograms for foehn and no foehn events), or \code{type = NULL} and \code{which = "foehn"}
 (will show density and histogram plot for foehn events).
+By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+
+If \code{dd} and \code{ff} are set only the \code{type} argument is available
+(\code{type = "histogram"} or \code{type = "density"}).
+}
+\examples{
+# Loading observations (data.frame), convert to zoo
+data("ellboegen",  package = "foehnix")
+data("sattelberg", package = "foehnix")
+ellboegen  <- zoo(ellboegen[,-1],  as.POSIXct(ellboegen[,1],  origin = "1970-01-01"))
+sattelberg <- zoo(sattelberg[,-1], as.POSIXct(sattelberg[,1], origin = "1970-01-01"))
+
+# Modify sattelberg variable names (crest_ identifies Sattelberg
+# observations, our crest station) and combine both data sets.
+names(sattelberg) <- paste0("crest_", names(sattelberg))
+data <- merge(ellboegen, sattelberg)
+
+# Dry adiabatic temperature difference between 
+# Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by
+# 1027/10 degrees.
+data$diff_t <- data$crest_t + 10.27 - data$t
+
+# Before estimating a model: plot a wind rose for all observations
+windrose(data$dd, data$ff, type = "histogram")
+windrose(data$dd, data$ff, type = "density")
+
+# Estimate a foehnix foehn classification model
+mod <- foehnix(diff_t ~ ff + rh, data = data, verbose = FALSE)
+
+# Plotting wind roses
+windrose(mod)
+
+# Only density windrose for foehn events
+windrose(mod, type = "density", which = "foehn")
+
 }
 \seealso{
 windrose.default windrose.foehnix

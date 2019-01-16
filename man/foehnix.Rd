@@ -39,7 +39,8 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 to that class): a symbolic description of the model to be fitted.  The
 details of model specification are given under 'Details'.}
 
-\item{data}{a time series object of class \code{zoo} containing the
+\item{data}{a regular (not necessarily strictly regular)
+time series object of class \code{zoo} containing the
 variables for the two-part mixture model.}
 
 \item{switch}{logical. If set to \code{TRUE} the two estimated components

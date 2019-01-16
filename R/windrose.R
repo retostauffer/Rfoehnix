@@ -7,16 +7,13 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-03 13:58 on marvin
+# - L@ST MODIFIED: 2019-01-16 21:41 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
 #'
 #' Plotting a windrose using meteorological wind direction and
 #' wind speed (or gust speed).
-#'
-#' @param x forwarded to windrose methods.
-#' @param ... forwarded as well.
 #'
 #' @seealso windrose.default windrose.foehnix
 #'
@@ -28,7 +25,7 @@ windrose <- function(x, ...) UseMethod("windrose")
 #'
 #' Windrose plot based on a \code{\link{foehnix}} mixture model object.
 #'
-#' @param x object of class \code{\link{foehnix}}.
+#' @param x object of class \code{\link{foehnix}}, see 'Details' section.
 #' @param type \code{NULL} or character, one of \code{density} or \code{histogram}.
 #'        If \code{NULL} both types will be plotted.
 #' @param which \code{NULL} or character, one of \code{unconditional}, \code{nofoehn},
@@ -41,11 +38,18 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
 #'
-#' @details Allows to draw windrose plots from a \code{\link{foehnix}} mixture model
-#' object. Two \code{type}s are available: circular density plots and circular
-#' histograms, both for \code{which = "unconditional"}, \code{which = "nofoehn"},
-#' and \code{which = "foehn"}, details below.
-#' By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+#' @details Allows to draw windrose plots from \code{\link{foehnix}} mixture model
+#' object or a set of observations. If input \code{x} to \code{\link{windrose}} is
+#' an object of class \code{foehnix} (as returned by \code{\link{foehnix}}) the
+#' data set which the classification is based on is used to plot the windrose.
+#' If inputs \code{dd} and \code{ff} are given (univariate \code{zoo} time series
+#' objects or \code{numeric} vectors) windrose plots can be plotted for observations
+#' without the need of a \code{foehnix} object.
+#'
+#' Two \code{type}s are available: circular density plots and circular
+#' histograms. If the input argument \code{x} is a \code{foehnix} object an additional
+#' input argument \code{which} is available to specify the subset which should be used
+#' to create the windrose plots. The following inputs are allowed:
 #'
 #' \itemize{
 #'    \item \code{which = "unconditional"}: unconditional windrose (all observations
@@ -54,18 +58,56 @@ windrose <- function(x, ...) UseMethod("windrose")
 #'          classified as foehn (probability \code{< 0.5}).
 #'    \item \code{which = "foehn"}: windrose of all observations classified as foehn events
 #'          (probability \code{>= 0.5}).
+#'    \item \code{which = NULL}: all three subsets will be plotted (individual
+#'          windroses).
 #' }
-#'
-#' Specific combinations can be selected by calling the windrose function with e.g.,
+#' Specific combinations can be specified by calling the windrose function with e.g.,
 #' \code{type = "histogram"} and \code{which = c("foehn", "nofoehn")} (will show
 #' histograms for foehn and no foehn events), or \code{type = NULL} and \code{which = "foehn"}
 #' (will show density and histogram plot for foehn events).
+#' By default (\code{type = NULL}, \code{which = NULL}) all combinations will be plotted.
+#'
+#' If \code{dd} and \code{ff} are set only the \code{type} argument is available
+#' (\code{type = "histogram"} or \code{type = "density"}).
+#'
+#' @examples
+#' # Loading observations (data.frame), convert to zoo
+#' data("ellboegen",  package = "foehnix")
+#' data("sattelberg", package = "foehnix")
+#' ellboegen  <- zoo(ellboegen[,-1],  as.POSIXct(ellboegen[,1],  origin = "1970-01-01"))
+#' sattelberg <- zoo(sattelberg[,-1], as.POSIXct(sattelberg[,1], origin = "1970-01-01"))
+#' 
+#' # Modify sattelberg variable names (crest_ identifies Sattelberg
+#' # observations, our crest station) and combine both data sets.
+#' names(sattelberg) <- paste0("crest_", names(sattelberg))
+#' data <- merge(ellboegen, sattelberg)
+#' 
+#' # Dry adiabatic temperature difference between 
+#' # Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by
+#' # 1027/10 degrees.
+#' data$diff_t <- data$crest_t + 10.27 - data$t
+#'
+#' # Before estimating a model: plot a wind rose for all observations
+#' windrose(data$dd, data$ff, type = "histogram")
+#' windrose(data$dd, data$ff, type = "density")
+#'
+#' # Estimate a foehnix foehn classification model
+#' mod <- foehnix(diff_t ~ ff + rh, data = data, verbose = FALSE)
+#'
+#' # Plotting wind roses
+#' windrose(mod)
+#'
+#' # Only density windrose for foehn events
+#' windrose(mod, type = "density", which = "foehn")
 #'
 #' @rdname windrose
 #' @author Reto Stauffer
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
                              mfcol = 2, maxpp = Inf, ...) {
+
+    # Just to be on the very safe side.
+    stopifnot(inherits(x, "foehnix"))
 
     # -------------------
     # Checking argument which
@@ -123,12 +165,15 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     # Else start plotting
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
-    maxpp <- min(maxpp, length(which))
-    mfcol = max(ceiling(maxpp / 2), mfcol)
-    mfrow = ceiling(maxpp / mfcol)
-    if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
+    # Number of rows and columns needed
+    if ( length(which) > 1 ) {
+        maxpp <- min(maxpp, length(which))
+        mfcol = max(ceiling(maxpp / 2), mfcol)
+        mfrow = ceiling(maxpp / mfcol)
+        if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
+        par(mfrow = c(mfrow, mfcol))
+    } else { mfrow = 1; mfcol = 1; }
 
-    par(mfrow = c(mfrow, mfcol))
     if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
 
     # Plot type = "density"
@@ -274,12 +319,24 @@ windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
 #'        \code{type = "histogram"}. If \code{1} the alpha channel is linear
 #'        for the whole range of \code{ff}, values \code{!= 1} change the
 #'        alpha behaviour.
+#' @param dd a vector with meteorological wind directions within \code{[0-360]},
+#'        see 'Details' section.
+#' @param ff a vector with wind speed measurements within \code{[0,Inf]},
+#'        see 'Details' section.
 #'
 #' @rdname windrose
 #' @author Reto Stauffer
 #' @export
 windrose.default <- function(dd, ff, interval = 10, type = "density", 
     windsector = NULL, main = NULL, hue = c(10,100), power = .5) {
+
+    # Check "dd" values
+    if ( ! length(dd) == length(ff) )
+        stop("Unequal length of wind speed and wind direction values!")
+    if ( min(dd, na.rm = TRUE) < 0 | max(dd, na.rm = TRUE) > 360 )
+        stop("Wind direction not within the expected range of [0, 360]!")
+    if ( min(ff, na.rm = TRUE) < 0 )
+        stop("Got wind speeds below 0!")
 
     # Plot type
     type = match.arg(type, c("density", "histogram"))

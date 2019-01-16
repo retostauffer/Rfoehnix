@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-07 21:31 on marvin
+# - L@ST MODIFIED: 2019-01-16 21:30 on marvin
 # -------------------------------------------------------------------
 
 
@@ -649,7 +649,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
         # Keep the number of observations (rows) added due to inflation.
         N_inflated <- length(inflated_index) - nrow(data)
         data <- merge(data, zoo(, inflated_index))
-    }
+    } else { N_inflated <- 0 }
 
     # Extracting model.frame used for the concomitant model,
     # and the vector y used for the clustering (main covariate).
