@@ -8,22 +8,117 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 23:10 on marvin
+# - L@ST MODIFIED: 2019-01-18 19:31 on marvin
 # -------------------------------------------------------------------
 
 
-tsplot_varnames <- function(...) {
-    vars <- list(t      = "t",
-                 rh     = "rh",
-                 diff_t = "diff_t",
-                 dd     = "dd",
-                 ff     = "ff",
-                 fx     = "fx")
-    arg <- as.list(...)
-    for ( key in names(vars) ) {
-        if ( key %in% names(arg) ) vars[[key]] <- arg[[key]]
+#' foehnix Time Series Plot Config
+#'
+#' The foehnix package comes with a default time series plotting
+#' function (see \code{\link[foehnix]{tsplot}}) with a pre-specified
+#' behavior regarding variable names, colors, and labels.
+#' The \code{\link[foehnix]{tsplot}} function, however, allows to
+#' set some custom specifications, e.g., if the names of your
+#' observations (variable name of the observations in the time
+#' series object used to train the \code{\link[foehnix]{foehnix}}
+#' model) are different, if different labels are required, or
+#' if you do not like our pretty colors! This function returns
+#' a control object for the time series plots for customization.
+#'
+#' @param ... a set of named inputs to overwrite the defaults.
+#'     see 'Details' section.
+#' @param var used when calling the \code{\link[foehnix]{get.tsplot.control}}
+#'     function. Name of the (original!) variable name
+#' @param property the property which should be returned by
+#'     \code{\link[foehnix]{get.tsplot.control}}.
+#'
+#' @details By default the \code{\link[foehnix]{tsplot}} function
+#'     expects that the variable names are called
+#' \itemize{
+#'      \item \code{t}: dry air temperature (degrees Celsuis)
+#'      \item \code{rh}: relative humidity in percent
+#'      \item \code{diff_t}: temperature difference to a nearby
+#'             crest station
+#'      \item \code{dd}: wind direction in (meteorological) degrees
+#'      \item \code{ff}: wind speed in meters per second
+#'      \item \code{ffx}: gust speed in meters per second
+#' }
+#' If \code{\link[foehnix]{tsplot}} can find these variables,
+#' it will plot the corresponding observations, label the plots,
+#' and uses a set of default colors.
+#' The \code{\link[foehnix]{tsplot.control}} function allows
+#' to overrule the defaults by specifying custom values, e.g.:
+#' imagine that your wind speed variable is not \code{ff} but
+#' \code{windspd}. You can easily tell \code{\link[foehnix]{tsplot}}
+#' that it has to use this custom name by calling \code{\link[foehnix]{tsplot}}
+#' as follows:
+#' \itemize{
+#'      \item \code{tsplot(x, ff = "windspd")}
+#' }
+#' If your wind speed variable is not even in meters per second but knots, and
+#' you dislike our default color, you can also provide a list to overwrite the
+#' default \code{name}, default \code{color} and default \code{label} by calling:
+#' \itemize{
+#'      \item \code{tsplot(x, ff = list(name = "windspd", color = "#0000ff", label = "wind speed in knots")}
+#' }
+#' In the same way it can be used to overrule the defaults for all other
+#' variables used in the time series plotting function (see list above).
+#'
+#' @return Returns an object of class \code{c("tsplot.control", "data.frame")}
+#' with the specification for the time series plot.
+#'
+#' @export
+#' @author Reto Stauffer
+tsplot.control <- function(...) {
+    def <- "
+    var;    name;    color;   label
+    t;      t;       #FF0000; air temperature [C]
+    rh;     rh;      #009900; relative humidity [%]
+    diff_t; diff_t;  orange;  temperature difference [C]
+    dd;     dd;      black;   wind direction [deg]
+    ff;     ff;      #005ce6; wind speed [m/s]
+    ffx;    ffx;     #5c00e6; gust speed [m/s]"
+    # Reading data.frame definition from the string above.
+    def <- read.table(textConnection(def), sep = ";",
+                      header = TRUE,
+                      strip.white = TRUE, comment.char = "",
+                      colClasses = rep("character", 3))
+
+    # User arguments
+    arg <- list(...)
+    for ( n in names(arg) ) {
+        idx <- which(def$name == n)
+        if ( length(idx) == 0 ) next
+        # Else modify the definition.
+        # If input is a character: modify name
+        if ( inherits(arg[[n]], "character") ) {
+            def[idx,"name"] <- arg[[n]]
+        # If input is a list: modify the elements we have
+        # in the definition above.
+        } else if ( inherits(arg[[n]], "list") ) {
+            for ( m in names(arg[[n]]) ) {
+                m <- match.arg(m, names(def))
+                if ( m %in% names(def) ) def[idx,m] <- arg[[n]][[m]]
+            }
+        } else {
+            warning("Got unexpected input on 'tsplot.control'. Will be ignored.")
+        }
     }
-    return(vars)
+
+    # Add custom class and return
+    class(def) <- c("tsplot.control", "data.frame")
+    return(def)
+}
+
+#' @rdname tsplot.control
+get <- function(x, ...) UseMethod("get")
+get.tsplot.control <- function(x, var, property) {
+    # Check if we have the property (match.arg)
+    property <- match.arg(property, names(x))
+    # Try to find the variable (match.arg)
+    var <- match.arg(var, x$var)
+    # Return
+    return(x[which(x$var == var), property])
 }
 
 #' Time Series Plot of foehnix Models
@@ -79,26 +174,25 @@ tsplot_varnames <- function(...) {
 #' @author Reto Stauffer
 #' @export
 tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
-                   varnames = NULL,
+                   control = tsplot.control(...),
                    ..., xtra = NULL, ask = TRUE) {
 
     # Input 'x' needs to be of class foehnix
     if ( ! inherits(x, "foehnix") )
         stop("tsplot is only for objects of class \"foehnix\".")
 
-    # Default/custom variable names
-    vars <- tsplot_varnames(varnames)
+    # Stop if control is not of tsplot.control
+    stopifnot(inherits(control, "tsplot.control"))
 
     # Check available data. This allows us to check
     # which of the default subplots can be drawn.
-    check <- function(x, vars, check) {
-        check <- unlist(sapply(check, function(x, vars) vars[[x]], vars = vars))
-        return(sum(check %in% x) > 0)
+    check <- function(x, control, check) {
+        return(sum(check %in% control$var) > 0)
     }
     doplot <- list(
-        "temp"        = check(names(x$data), vars, c("t", "rh")),
-        "tempdiff"    = check(names(x$data), vars, c("diff_t")),
-        "wind"        = check(names(x$data), vars, c("dd", "ff", "ffx")),
+        "temp"        = check(names(x$data), control, c("t", "rh")),
+        "tempdiff"    = check(names(x$data), control, c("diff_t")),
+        "wind"        = check(names(x$data), control, c("dd", "ff", "ffx")),
         "prob"        = TRUE
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
@@ -109,7 +203,6 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
              "The 'varnames' input argument allows you to",
              "change these names (please see ?tsplot manual page)."),
              paste(names(vars), collapse = ", ")))
-
 
     # Helper function to add the gray boxes (background)
     add_boxes <- function(x, col = "gray90") {
@@ -192,16 +285,16 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     # Keep user settings (will be reset when this function ends)
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
-    # If multiple periods have to be plotted: set ask = TRUE
-    if ( length(start) > 1 ) par(ask = ask) else par(ask = FALSE)
 
     # Combine foehn probabilities and observations
     data <- merge(x$prob, x$data)
     names(data)[1L] <- "prob"
 
     # Looping over the different periods we have to plot
-    par(mfrow = c(Nplots, 1), mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 4.1))
     for ( k in seq_along(start) ) {
+
+        # Parameters of the graphical output device
+        par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
 
         tmp <- window(data, start = start[k], end = end[k])
         # No data, or only missing data?
@@ -218,11 +311,13 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             # If temperature is in the data set: plot temperature,
             # if not, set up an empty plot (required to be able to
             # add relative humidity and temperature differences).
-            if ( vars$t %in% names(tmp) ) {
-                plot(tmp[,vars$t], type = "n", ylab = NA, xaxt = "n", bty = "n")
+            param <- get(control, "t", "name")
+            if ( param %in% names(tmp) ) {
+                plot(tmp[,param], type = "n", ylab = NA, xaxt = "n", bty = "n")
                 add_boxes(tmp$prob); add_midnight_lines(tmp)
-                lines(tmp[,vars$t], col ="red", lwd = 2)
-                mtext(side = 2, line = 3, "dry air temperature")
+                lines(tmp[,param], lwd = 2,
+                      col = get(control, "t", "color"))
+                mtext(side = 2, line = 3, get(control, "t", "label"))
                 box()
             } else {
                 plot(NA, xaxt = "n", yaxt = "n", xlab = NA, ylab = NA,
@@ -230,50 +325,76 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             }
     
             # Relative humidity
-            if ( vars$rh %in% names(tmp) ) {
+            param <- get(control, "rh", "name")
+            if ( param %in% names(tmp) ) {
                 par(new = TRUE)
-                plot(tmp[,vars$rh], type = "n", lwd = 2, yaxt = "n",
+                plot(tmp[,param], type = "n", lwd = 2, yaxt = "n",
                      ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-                add_polygon(tmp[,vars$rh], col = "#009900")
-                abline(h = seq(20, 100, by = 20), lty = 3, col = "#00990060")
+                add_polygon(tmp[,param], col = "#009900")
+                abline(h = seq(20, 100, by = 20), lty = 3,
+                       col = sprintf("%s50", get(control, "rh", "color")))
                 axis(side = 4, at = seq(20, 100, by = 20))
                 mtext(side = 4, line = 3, "relative humidity")
                 box()
             }
     
             # Temperature difference
-            if ( vars$diff_t %in% names(tmp) ) {
-                plot(tmp[,vars$diff_t], type = "n", xaxt = "n", bty = "n")
+            param <- get(control, "diff_t", "name")
+            if ( param %in% names(tmp) ) {
+                plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
                 add_boxes(tmp$prob); add_midnight_lines(tmp)
-                lines(tmp$diff_t, col = "orange", lwd = 2)
+                lines(tmp[,param], lwd = 2,
+                      col = get(control, "diff_t", "color"))
                 abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
                 abline(h = 0, col = 1)
                 mtext(side = 2, line = 3, "temperature difference")
                 box()
             }
         }
-
     
         # Plotting wind direction and wind speed
         if ( doplot$wind ) {
             plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
                      ylim = c(0, 360), yaxt = "n", bty = "n")
             add_boxes(tmp$prob); add_midnight_lines(tmp)
-            if ( vars$dd %in% names(tmp) ) {
-                points(tmp[,vars$dd], col = "black", pch = 19, cex = 0.5)
+            param <- get(control, "dd", "name")
+            if ( param %in% names(tmp) ) {
+                points(tmp[,param], col = "black", pch = 19, cex = 0.5)
                 axis(side = 2, at = seq(90, 360 - 90, by = 90))
                 mtext(side = 2, line = 3, "wind direction")
                 box()
             }
         
             # Adding wind speed
-            if ( vars$ff %in% names(tmp) ) {
+            pff  <- get(control, "ff", "name")
+            pffx <- get(control, "ffx", "name")
+            if ( any(c(pff, pffx) %in% names(tmp)) ) {
+                # Get y limits
+                if ( all(c(pff, pffx) %in% names(tmp)) ) {
+                    ymax <- max(max(tmp[,pff], na.rm = TRUE), max(tmp[,pffx], na.rm = TRUE))
+                    ylab <- sprintf("%s\n%s", get(control, "ffx", "label"), get(control, "ff", "label"))
+                } else if ( pff %in% names(tmp) ) {
+                    ymax <- max(tmp[,pff], na.rm = TRUE)
+                    ylab <- get(control, "ff", "label")
+                } else {
+                    ymax <- max(tmp[,pffx], na.rm = TRUE)
+                    ylab <- get(control, "ffx", "label")
+                }
+                ylim <- c(0, ymax*1.05)
+                # Plotting an empty sub-figure
                 par(new = TRUE)
-                plot(tmp[,vars$ff], type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
-                     ylim = c(0, max(tmp[,vars$ff], na.rm = TRUE)) * 1.05)
-                add_polygon(tmp[,vars$ff], col = "#005ce6")
-                axis(side = 4, at = pretty(tmp[,vars$ff]))
-                mtext(side = 4, line = 3, "wind speed")
+                print(range(index(tmp)))
+                print(ylim)
+                plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
+                     xlim = range(index(tmp)), ylim = ylim)
+                # Adding ffx if existing
+                if ( pffx %in% names(tmp) )
+                    lines(tmp[, pffx], col = get(control, "ffx", "color"))
+                # Adding ff if existing
+                if ( pff %in% names(tmp) )
+                    add_polygon(tmp[, pff], col = get(control, "ff", "color"))
+                axis(side = 4, at = pretty(tmp[,param]))
+                mtext(side = 4, line = 3, ylab)
                 box()
             }
         }
@@ -299,6 +420,10 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         # Adding a title to the plot
         title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])
         mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
+
+        # If multiple periods have to be plotted: set ask = TRUE
+        if ( ask & k < length(start) ) readline("Press Enter for next plot> ")
+
     } # End of loop over start/end (loop index k)
 
 

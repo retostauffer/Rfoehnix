@@ -51,6 +51,7 @@ reference:
         - windrose
         - windrose.foehnix
         - tsplot
+        - tsplot.control
         - add_polygon
         - windrose
         - ddff2uv
