@@ -4,11 +4,12 @@
 \alias{tsplot}
 \title{Time Series Plot of foehnix Models}
 \usage{
-tsplot(x, start = NULL, end = NULL, ndays = 10, varnames = NULL,
-  ..., xtra = NULL, ask = TRUE)
+tsplot(x, start = NULL, end = NULL, ndays = 10,
+  control = tsplot.control(...), ..., ask = TRUE)
 }
 \arguments{
-\item{x}{object of type \code{foehnix}.}
+\item{x}{object of type \code{foehnix} or a list with \code{foehnix} and
+univariate \code{zoo} objects, see 'Details'.}
 
 \item{start}{POSIXt object or an object which can be converted to POSIXt.}
 
@@ -16,12 +17,12 @@ tsplot(x, start = NULL, end = NULL, ndays = 10, varnames = NULL,
 
 \item{ndays}{integer, number of days used when looping trough the time series.}
 
-\item{varnames}{list of custom variable names, see 'Details' section.}
+\item{control}{an object of class \code{\link[foehnix]{tsplot.control}}.}
 
-\item{...}{additional arguments, ignored.}
-
-\item{xtra}{optional zoo object with probabilities in \code{]0,1[} to compare
-two classification algorithms.}
+\item{...}{additional arguments forwarded to \code{\link[foehnix]{tsplot.control}}.
+can be used to rename varaiables and to change the look of the time series
+plot. Please see 'Examples' and the manual of the function
+\code{\link[foehnix]{tsplot.control}} for more details.}
 
 \item{ask}{logical, default is \code{TRUE}.}
 }
@@ -64,6 +65,11 @@ Please note: if a variable cannot be found (no matter whether
 the default variable names have been renamed or not) this specific
 variable will be ignored. Subplots will not be displayed if no
 data are available at all.
+
+TODO: describe input 'x'
+}
+\seealso{
+\code{\link[foehnix]{tsplot.control}}.
 }
 \author{
 Reto Stauffer

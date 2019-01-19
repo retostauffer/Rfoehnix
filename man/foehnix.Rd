@@ -70,6 +70,9 @@ section for more information.}
 a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
 interval of the time series object will be used.}
 
+\item{deltad}{integer, similar to \code{deltat}, the interval in days for the
+grid on the x-axis. Default is \code{7L} (aggregate to weekly values).}
+
 \item{col}{vector of colors forwarded to \code{image.default}. By default
 a gray scale color map is used.}
 
@@ -80,9 +83,6 @@ concours should be added.}
 
 \item{zlim}{vector of two numeric values to manually specify the range of the
 color map used.}
-
-\item{deltat}{integer, similar to \code{deltat}, the interval in days for the
-grid on the x-axis. Default is \code{7L} (aggregate to weekly values).}
 
 \item{...}{additional arguments forwarded to the image and contour plot.}
 }

@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 23:44 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:34 on marvin
 # -------------------------------------------------------------------
 
 
@@ -35,6 +35,8 @@
 #'        function operating on \code{x}, or a named list with a simple
 #'        filter rule (\code{numeric} of length two) or custom filter
 #'        functions. Details provided in the 'Details' section.
+#' @param ... currently unused.
+#'
 #' @return Returns a vector of integers corresponding to those rows in
 #' the data set \code{x} which fulfill all filte criteria. If input
 #' \code{filter = NULL} an integer vector \code{1:nrow(x)} is returned.

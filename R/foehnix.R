@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 21:30 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:32 on marvin
 # -------------------------------------------------------------------
 
 
@@ -365,7 +365,10 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #'        criteria.
 #' @param alpha TODO alpha parameter for the penalization of the concomitant model.
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
-#' @param ... currently set to hell.
+#' @param ... currently sent to hell.
+#' @param object a \code{foehnix} object (input to S3 methods)
+#' @param detailed boolean, default FALSE. If set to true, additional information
+#'        will be printed.
 #'
 #' @details \code{\link{foehnix}} models are based on time series objects. 
 #' For some methods (e.g., to create nice and easy to read time series plots and

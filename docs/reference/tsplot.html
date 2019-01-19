@@ -64,7 +64,7 @@ models. TODO: they are very specific at the moment!" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
       </span>
     </div>
 
@@ -82,6 +82,9 @@ models. TODO: they are very specific at the moment!" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/foehnix.html">Foehnix Demo</a>
+    </li>
+    <li>
+      <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -151,15 +154,16 @@ models. TODO: they are very specific at the moment!</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>tsplot</span>(<span class='no'>x</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ndays</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='no'>...</span>, <span class='kw'>xtra</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ask</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>tsplot</span>(<span class='no'>x</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ndays</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='tsplot.control.html'>tsplot.control</a></span>(<span class='no'>...</span>), <span class='no'>...</span>, <span class='kw'>ask</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>object of type <code>foehnix</code>.</p></td>
+      <td><p>object of type <code>foehnix</code> or a list with <code>foehnix</code> and
+univariate <code>zoo</code> objects, see 'Details'.</p></td>
     </tr>
     <tr>
       <th>start</th>
@@ -174,13 +178,15 @@ models. TODO: they are very specific at the moment!</p>
       <td><p>integer, number of days used when looping trough the time series.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments, ignored.</p></td>
+      <th>control</th>
+      <td><p>an object of class <code><a href='tsplot.control.html'>tsplot.control</a></code>.</p></td>
     </tr>
     <tr>
-      <th>xtra</th>
-      <td><p>optional zoo object with probabilities in <code>]0,1[</code> to compare
-two classification algorithms.</p></td>
+      <th>...</th>
+      <td><p>additional arguments forwarded to <code><a href='tsplot.control.html'>tsplot.control</a></code>.
+can be used to rename varaiables and to change the look of the time series
+plot. Please see 'Examples' and the manual of the function
+<code><a href='tsplot.control.html'>tsplot.control</a></code> for more details.</p></td>
     </tr>
     <tr>
       <th>ask</th>
@@ -194,10 +200,36 @@ two classification algorithms.</p></td>
 proabilities.  For software release this method should either be removed or
 made much more general. At the moment the method heavily depends on the
 names of the data used as input for <code><a href='foehnix.html'>foehnix</a></code>.</p>
-<p>TODO: this is very specific to our data and our variable names.
-      either provide something like this and force the users to
-      follow our naming conventions, or make it much more
-      flexible/generig.</p>
+<p>This time series plotting function creates a relatively specific plot
+and also expects, by default, a set of default variables and variable
+names. This function uses the data set provided on the <code>data</code>
+input argument when calling the <code><a href='foehnix.html'>foehnix</a></code> method.
+As they might differ from the <code>foehnix</code> defaults the
+<code>varnames</code> input argument allows to specify custom names.
+The ones expected:</p>
+<ul>
+<li><p><code>t</code>: dry air temperature</p></li>
+<li><p><code>rh</code>: relative humidity (in percent)</p></li>
+<li><p><code>diff_t</code>: temperature difference between the
+           crest and the valley station</p></li>
+<li><p><code>dd</code>: meteorological wind direction (<code>[0, 360]</code>)</p></li>
+<li><p><code>ff</code>: wind speed</p></li>
+</ul>
+    <p>Custom names can be specified by renaming the defaults based on a
+named list. As an example: assume that wind direction is called
+<code>winddir</code> and wind speed is called <code>windspd</code> in your data set.
+Specify the following input to rename/respecify the defaults:</p><ul>
+<li><p><code>varnames = list(dd = "winddir", ff = "windspd")</code></p></li>
+</ul>
+    <p>Please note: if a variable cannot be found (no matter whether
+the default variable names have been renamed or not) this specific
+variable will be ignored. Subplots will not be displayed if no
+data are available at all.</p>
+<p>TODO: describe input 'x'</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='tsplot.control.html'>tsplot.control</a></code>.</p></div>
     
 
   </div>
@@ -207,6 +239,8 @@ names of the data used as input for <code><a href='foehnix.html'>foehnix</a></co
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
           </ul>
 
     <h2>Author</h2>

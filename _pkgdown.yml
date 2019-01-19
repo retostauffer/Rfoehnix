@@ -2,6 +2,7 @@ template:
     params:
         bootswatch: "flatly"
 
+
 navbar:
     left:
         - text: "Getting started"
@@ -10,6 +11,8 @@ navbar:
           menu:
             - text: "Foehnix Demo"
               href: articles/foehnix.html
+            - text: "Plotting Functions"
+              href: articles/plotting.html
             - text: "Simulation Examples"
               href: articles/simulation.html
         - text: "Advanced"

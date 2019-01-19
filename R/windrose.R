@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 23:41 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:45 on marvin
 # -------------------------------------------------------------------
 
 #' Windrose Plot
@@ -26,6 +26,7 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' Windrose plot based on a \code{\link{foehnix}} mixture model object.
 #'
 #' @param x object of class \code{\link{foehnix}}, see 'Details' section.
+#' @param ... forwarded to the windrose methods.
 #' @param type \code{NULL} or character, one of \code{density} or \code{histogram}.
 #'        If \code{NULL} both types will be plotted.
 #' @param which \code{NULL} or character, one of \code{unconditional}, \code{nofoehn},
@@ -102,13 +103,13 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' #   and wind speed (windspd).
 #'
 #' data2 <- data
-#' names(data2)[grep("^ff$",       names(data2)] <- "windspd"
-#' names(data2)[grep("^dd$",       names(data2)] <- "winddir"
-#' names(data2)[grep("^crest_dd$", names(data2)] <- "crest_winddir"
+#' names(data2)[which(names(data2) == "ff")]       <- "windspd"
+#' names(data2)[which(names(data2) == "dd")]       <- "winddir"
+#' names(data2)[which(names(data2) == "crest_dd")] <- "crest_winddir"
 #' print(head(data2))
 #' 
 #' filter2 <- list(winddir = c(43, 223), crest_winddir = c(90, 270)) 
-#' mod2 <- foehnix(diff_t ~ ff + rh, data = data2,
+#' mod2 <- foehnix(diff_t ~ windspd + rh, data = data2,
 #'                 filter = filter2, verbose = FALSE)
 #'
 #' windrose(mod2, type = "density", which = "foehn",
@@ -362,12 +363,20 @@ windrose.default <- function(dd, ff, interval = 10, type = "density",
     # Interval check
     if ( ! floor(360/interval)*interval == 360 ) stop("interval wrong")
 
-    # Both, dd and ff, have to be zoo objects.
-    stopifnot(inherits(dd, "zoo"))
-    stopifnot(inherits(ff, "zoo"))
-
-    # Combine dd, ff, probabilities, and start plotting.
-    data <- na.omit(merge(dd, ff))
+    # If both input objects are of class zoo: merge
+    if ( inherits(dd, "zoo") & inherits(ff, "zoo") ) {
+        stopifnot(inherits(dd, "zoo"))
+        stopifnot(inherits(ff, "zoo"))
+    
+        # Combine dd, ff, probabilities, and start plotting.
+        data <- na.omit(merge(dd, ff))
+    # Else check if length of dd and ff match and create a
+    # data.frame.
+    } else {
+        if ( ! length(dd) == length(ff) )
+            stop("Length of input objects for wind direction and wind speed do not match.")
+        data <- data.frame(dd = as.numeric(dd), ff = as.numeric(ff))
+    }
     if ( nrow(data) == 0 ) stop("No data left after combining \"dd\" and \"ff\".")
 
     # Breaks for classification

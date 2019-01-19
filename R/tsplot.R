@@ -8,7 +8,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-18 19:31 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:36 on marvin
 # -------------------------------------------------------------------
 
 
@@ -77,7 +77,8 @@ tsplot.control <- function(...) {
     diff_t; diff_t;  orange;  temperature difference [C]
     dd;     dd;      black;   wind direction [deg]
     ff;     ff;      #005ce6; wind speed [m/s]
-    ffx;    ffx;     #5c00e6; gust speed [m/s]"
+    ffx;    ffx;     #5c00e6; gust speed [m/s]
+    prob;   ----;    #FF6666; probability"
     # Reading data.frame definition from the string above.
     def <- read.table(textConnection(def), sep = ";",
                       header = TRUE,
@@ -87,7 +88,7 @@ tsplot.control <- function(...) {
     # User arguments
     arg <- list(...)
     for ( n in names(arg) ) {
-        idx <- which(def$name == n)
+        idx <- which(def$var == n)
         if ( length(idx) == 0 ) next
         # Else modify the definition.
         # If input is a character: modify name
@@ -105,13 +106,17 @@ tsplot.control <- function(...) {
         }
     }
 
+    # Polygons use hex + alpha. Thus, we do have to convert
+    # all colors to hex.
+    tmp  <- grDevices::col2rgb(def$color) / 255
+    def$color <- colorspace::hex(colorspace::sRGB(tmp[1,], tmp[2,], tmp[3,]))
+
     # Add custom class and return
     class(def) <- c("tsplot.control", "data.frame")
     return(def)
 }
 
 #' @rdname tsplot.control
-get <- function(x, ...) UseMethod("get")
 get.tsplot.control <- function(x, var, property) {
     # Check if we have the property (match.arg)
     property <- match.arg(property, names(x))
@@ -126,14 +131,16 @@ get.tsplot.control <- function(x, var, property) {
 #' Development time series plots of estimated \code{\link{foehnix}}
 #' models. TODO: they are very specific at the moment!
 #' 
-#' @param x object of type \code{foehnix}.
+#' @param x object of type \code{foehnix} or a list with \code{foehnix} and
+#'     univariate \code{zoo} objects, see 'Details'.
 #' @param start POSIXt object or an object which can be converted to POSIXt.
 #' @param end POSIXt object or an object which can be converted to POSIXt.
 #' @param ndays integer, number of days used when looping trough the time series.
-#' @param varnames list of custom variable names, see 'Details' section.
-#' @param ... additional arguments, ignored.
-#' @param xtra optional zoo object with probabilities in \code{]0,1[} to compare
-#'         two classification algorithms.
+#' @param control an object of class \code{\link[foehnix]{tsplot.control}}.
+#' @param ... additional arguments forwarded to \code{\link[foehnix]{tsplot.control}}.
+#'        can be used to rename varaiables and to change the look of the time series
+#'        plot. Please see 'Examples' and the manual of the function
+#'        \code{\link[foehnix]{tsplot.control}} for more details.
 #' @param ask logical, default is \code{TRUE}.
 #' 
 #' @details Development method to access plausability of the estimated foehn
@@ -171,23 +178,142 @@ get.tsplot.control <- function(x, var, property) {
 #' variable will be ignored. Subplots will not be displayed if no
 #' data are available at all.
 #'
+#' TODO: describe input 'x' 
+#'
+#' @example
+#' # Loading demo data
+#' data <- demodata()
+#' filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+#' 
+#' # Create foehnix foehn classification model, provide full data
+#' # set with all parameters
+#' mod1 <- foehnix(diff_t ~ ff + rh, data = data,
+#'                 filter = filter, switch = TRUE, verbose = FALSE)
+#' 
+#' # Create foehnix foehn classification model, provide full data
+#' # set with all parameters
+#' sub  <- subset(data, select = c(rh, ff, dd))
+#' mod2 <- foehnix(ff ~ rh, data = sub, filter = list(dd = c(43, 223)),
+#'                 verbose = FALSE)
+#' 
+#' # Plotting the time series of the a period in 2018
+#' tsplot(mod1, start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # The same for the second model which is based on a subset
+#' # of the observation data and only includes 'ff' (wind speed)
+#' # 'dd' (wind direction), and 'rh' (relative humitity) of the
+#' # target station. Thus, only a subset of all subplots will be shown.
+#' tsplot(mod2, start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # To compare the estimated foehn probabilities of both models,
+#' # both 'foehnix' objects can be provided as a list. The plots
+#' # are based on the data of the first object (mod1), the probabilities
+#' # of the second 'foehnix' model will be added in the last subplot.
+#' tsplot(list(mod1, mod2), start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # If the input is a named list, the names are used for the legend
+#' tsplot(list("full model" = mod1, "subset model" = mod2), start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # The first element in the list has to be a 'foehnix' object,
+#' # but as additional inputs univariate time series with probabilities
+#' # (in the range [0,1]) can be provided. This allows to compare
+#' # 'foehnix' classification against other classification algorithms,
+#' # if available.
+#' probs <- fitted(mod2) # Time series of probabilities of 'mod2'
+#' tsplot(list("full model" = mod1, "zoo" = probs), start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # Additional arguments can be provided to
+#' # - use differt names in the time series plots
+#' # - change the look of the plot.
+#' # Some examples
+#' 
+#' # Imagine that the variable names in the data set have the
+#' # following names:
+#' # - winddir: wind direction
+#' # - windspd: wind speed
+#' data <- demodata("Ellboegen")
+#' names(data)[which(names(data) == "dd") <- "winddir"
+#' names(data)[which(names(data) == "ff") <- "windspd"
+#' 
+#' # Estimate a foehnix model
+#' mod3 <- foehnix(windspd ~ rh, data = data, filter = list(winddir = c(43, 223)), verbose = FALSE)
+#' 
+#' # The time serie plot expects wind speed and wind direction
+#' # to be called 'dd' and 'ff', but they can be renamed. If only
+#' # a string is provided (e.g., dd = "winddir") this specifies
+#' # the name of the variable in the data set ('data').
+#' tsplot(mod3, dd = "winddir", ff = "windspd", start = "2018-03-01", end = "2018-03-10")
+#' 
+#' # For each element a list can be provided:
+#' # - 'name': new name of the variable
+#' # - 'color': color used for plotting
+#' # - 'label': label for the axis on the plot
+#' # See also ?tsplot.control for more information.
+#' tsplot(mod3, dd = list(name = "winddir", color = "cyan", label = "WIND DIRECTION LABEL"),
+#'              ff = list(name = "windspd", color = "#FF00FF", label = "WIND SPEED LABEL"),
+#'              rh = list(color = 4, label = "RELHUM LABEL"),
+#'              t  = list(color = 5, label = "TEMPERATURE LABEL"),
+#'              prob = list(color = "yellow", label = "PROBABILITY LABEL"),
+#'              start = "2018-03-01", end = "2018-03-10")
+#'
+#' @seealso \code{\link[foehnix]{tsplot.control}}.
+#'
 #' @author Reto Stauffer
 #' @export
 tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                    control = tsplot.control(...),
-                   ..., xtra = NULL, ask = TRUE) {
+                   ..., ask = TRUE) {
 
-    # Input 'x' needs to be of class foehnix
-    if ( ! inherits(x, "foehnix") )
-        stop("tsplot is only for objects of class \"foehnix\".")
 
     # Stop if control is not of tsplot.control
     stopifnot(inherits(control, "tsplot.control"))
 
+    # The function allows that 'x' is either a single
+    # foehnix object or a list of foehnix objects (or zoo).
+    # The first element in the list has to be a foehnix model,
+    # all others can be foehnix models or univariate zoo objects
+    # containing probabilities ([0,1]).
+    # The next lines do the following:
+    # - if 'x' is a foehnix object: set xtra to NULL and continue
+    # - if 'x' is a list:
+    #   - check if x[[1]] is a foehnix model. If not, stop.
+    #   - check that all others, if any, are foehnix or zoo objects.
+    #   - if zoo objects are provided: check that they are univariate
+    #     and contain values within [0,1]. If not, stop.
+    #   - store x[[2]], x[[3]], ... on "xtra", store x[[1]] as x.
+    #   - keep names, if there are any (on xtra_names)
+    if ( inherits(x, "list") && length(x) == 1 ) x <- x[[1]]
+    if ( inherits(x, "foehnix") ) {
+        xtra <- NULL; xtra_names <- NULL
+    } else {
+        if ( ! inherits(x[[1]], "foehnix") )
+            stop("The first element on \"x\" has to be of class \"foehnix\".")
+        # Take xtra objects.
+        xtra <- list()
+        for ( i in 2:length(x) ) {
+            if ( ! inherits(x[[i]], c("zoo", "foehnix")) )
+                stop(sprintf("Element x[[%d]] is neither a zoo object nor a foehnix object.", i))
+            if ( inherits(x[[i]], "zoo") ) {
+                if ( ! is.null(dim(x[[i]])) )
+                    stop(sprintf("Only univariate zoo objects are allowed (x[[%d]]).", i))
+                if ( ! all(is.na(x[[i]])) ) { 
+                    if ( min(x[[i]], na.rm = TRUE) < 0 | max(x[[i]], na.rm = TRUE) > 1 )
+                        stop(sprintf("Values in (x[[%d]]) have to be within [0,1]!", i))
+                }
+            }
+            # All fine? Store
+            xtra[[i - 1]] <- x[[i]]
+        }
+        xtra_names <- names(x)
+        # Store the main foehnix object to x
+        x <- x[[1]]
+    }
+
     # Check available data. This allows us to check
     # which of the default subplots can be drawn.
-    check <- function(x, control, check) {
-        return(sum(check %in% control$var) > 0)
+    check <- function(available, control, check) {
+        control <- subset(control, var %in% check)
+        return(sum(control$name %in% available) > 0)
     }
     doplot <- list(
         "temp"        = check(names(x$data), control, c("t", "rh")),
@@ -285,16 +411,19 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     # Keep user settings (will be reset when this function ends)
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
-
     # Combine foehn probabilities and observations
     data <- merge(x$prob, x$data)
     names(data)[1L] <- "prob"
+
+    # For convenience:
+    get <- get.tsplot.control
 
     # Looping over the different periods we have to plot
     for ( k in seq_along(start) ) {
 
         # Parameters of the graphical output device
-        par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
+        par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4),
+            xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
 
         tmp <- window(data, start = start[k], end = end[k])
         # No data, or only missing data?
@@ -319,25 +448,29 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                       col = get(control, "t", "color"))
                 mtext(side = 2, line = 3, get(control, "t", "label"))
                 box()
-            } else {
-                plot(NA, xaxt = "n", yaxt = "n", xlab = NA, ylab = NA,
-                     xlim = range(index(tmp)))
             }
     
             # Relative humidity
             param <- get(control, "rh", "name")
             if ( param %in% names(tmp) ) {
-                par(new = TRUE)
+                if ( get(control, "t", "name") %in% names(tmp) )
+                    par(new = TRUE)
+                # Plotting relative humidity data
                 plot(tmp[,param], type = "n", lwd = 2, yaxt = "n",
                      ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-                add_polygon(tmp[,param], col = "#009900")
+                if ( ! get(control, "t", "name") %in% names(tmp) )
+                    add_boxes(tmp$prob); add_midnight_lines(tmp)
+                add_polygon(tmp[,param], col = get(control, "rh", "color"))
                 abline(h = seq(20, 100, by = 20), lty = 3,
                        col = sprintf("%s50", get(control, "rh", "color")))
                 axis(side = 4, at = seq(20, 100, by = 20))
-                mtext(side = 4, line = 3, "relative humidity")
+                mtext(side = 4, line = 3, get(control, "rh", "label"))
                 box()
             }
+        }
     
+        # Plotting temperature difference
+        if ( doplot$tempdiff ) {
             # Temperature difference
             param <- get(control, "diff_t", "name")
             if ( param %in% names(tmp) ) {
@@ -347,7 +480,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                       col = get(control, "diff_t", "color"))
                 abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
                 abline(h = 0, col = 1)
-                mtext(side = 2, line = 3, "temperature difference")
+                mtext(side = 2, line = 3, get(control, "diff_t", "label"))
                 box()
             }
         }
@@ -361,7 +494,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             if ( param %in% names(tmp) ) {
                 points(tmp[,param], col = "black", pch = 19, cex = 0.5)
                 axis(side = 2, at = seq(90, 360 - 90, by = 90))
-                mtext(side = 2, line = 3, "wind direction")
+                mtext(side = 2, line = 3, get(control, "dd", "label"))
                 box()
             }
         
@@ -383,8 +516,6 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                 ylim <- c(0, ymax*1.05)
                 # Plotting an empty sub-figure
                 par(new = TRUE)
-                print(range(index(tmp)))
-                print(ylim)
                 plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
                      xlim = range(index(tmp)), ylim = ylim)
                 # Adding ffx if existing
@@ -393,29 +524,49 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                 # Adding ff if existing
                 if ( pff %in% names(tmp) )
                     add_polygon(tmp[, pff], col = get(control, "ff", "color"))
-                axis(side = 4, at = pretty(tmp[,param]))
+                axis(side = 4, at = pretty(c(0, ymax)))
                 mtext(side = 4, line = 3, ylab)
                 box()
             }
         }
-    
-        # Foehn prob
-        plot(tmp$prob * 100, type = "n", ylab = NA, ylim = c(-4,104), yaxs = "i") 
+
+        # Foehn prob (main object 'x')
+        xlim <- range(index(tmp))
+        plot(NA, type = "n", xlim = xlim, xaxt = "n",
+             ylab = NA, ylim = c(-4,104), yaxs = "i") 
+        axis(side = 1, at = pretty(xlim), strftime(pretty(xlim), "%Y-%m-%d %H:%M"))
         add_boxes(tmp$prob); add_midnight_lines(tmp)
-        if ( ! is.null(xtra) ) lines(xtra * 100, col = "gray50", lty = 5)
+
+        # Adding additional foehn probs
+        if ( ! is.null(xtra) ) {
+            for ( i in seq_along(xtra) ) {
+                tmp_xtra <- if ( inherits(xtra[[i]], "foehnix") ) xtra[[i]]$prob$prob else xtra[[i]]
+                lines(100 * window(tmp_xtra, start = min(index(tmp)), end = max(index(tmp))),
+                      col = "black", lty = i + 1)
+            }
+        }
         abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
-        mtext(side = 2, line = 3, "foehn probability")
-        add_polygon(tmp$prob * 100, col = "#FF6666", lower.limit = -4)
+        mtext(side = 2, line = 3, get(control, "prob", "label"))
+        add_polygon(tmp$prob * 100, col = get(control, "prob", "color"), lower.limit = -4)
+
         # Adding RUG
         at <- index(tmp$prob)[which(tmp$prob >= .5)]
-        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = 2)
+        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA,
+                                   col = get(control, "prob", "color"))
+
         # Adding "missing data" RUG
         at <- index(tmp$prob)[which(is.na(tmp$prob))]
         if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = "gray50")
         box()
-        if ( ! is.null(xtra) )
-            legend("left", bg = "white", col = c("#FF6666", "gray50"), lty = c(1,5),
-                   legend = c("foehnix", "xtra"))
+
+        # Adding extra probabilities
+        if ( ! is.null(xtra) ) {
+            if ( is.null(xtra_names) )
+                xtra_names <- c("foehnix", sprintf("extra %d", seq(1, length(xtra))))
+            cols <- c(get(control, "prob", "color"), rep("gray50", length(xtra)))
+            ltys <- c(1, seq_along(xtra) + 1)
+            legend("left", bg = "white", col = cols, lty = ltys, legend = xtra_names)
+        }
     
         # Adding a title to the plot
         title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])

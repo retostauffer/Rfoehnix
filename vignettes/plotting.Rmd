@@ -1,0 +1,92 @@
+
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library("foehnix"))
+```
+
+## Windrose
+
+The `foehnix` package comes with methods to create windrose plot for
+foehn classification models (see [getting started](foehnix.html),
+[`foehnix reference`](../references/foehnix.html)) and observation
+data. Two types of windrose plots are available:
+
+* **density**: empirical density
+* **histogram**: empirical circular histogram
+
+### Windrose Plot for Observation Data
+
+The [`windrose`](../references/windrose.html) function can be called
+with a set of (observed) wind direction and wind speed values. Wind
+direction has to be the meteorological wind direction in degrees
+(`[0, 360]`, `0` and `360` corresponds to wind coming from North,
+`90` for wind from East, `180` for wind from South, and `270` from
+West).
+
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 10, fig.height = 5}
+# Loading the demo data set for station Ellboegen
+data <- demodata("Ellboegen")
+print(head(data))
+
+# Plotting windrose
+windrose(data$dd, data$ff, type = "density")
+windrose(as.numeric(data$dd), as.numeric(data$ff), type = "histogram")
+```
+
+### Windrose Plot for foehnix Models
+
+Windrose plots can also be created for `foehnix` foehn classification
+models if wind speed and wind direction information has been provided
+to the [`foehnix`](../references/foehnix.html) function when estimating
+the classification model.
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
+# Loading the demo data set
+data <- demodata()
+print(head(data))
+
+# Estimate a foehnix classification model
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod <- foehnix(diff_t ~ ff + rh, data = data, filter = filter,
+               switch = TRUE, verbose = FALSE)
+
+# Plotting windroses
+windrose(mod)
+```
+
+By default, `windrose` expects that the parameters are called `dd` (wind direction)
+and `ff` (wind speed), however, custom names can also be used.
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
+# Loading the demo data set for station Ellboegen
+data <- demodata()
+names(data) <- gsub("dd$", "winddir", names(data))
+names(data) <- gsub("ff$", "windspd", names(data))
+print(head(data))
+
+# Estimate a foehnix classification model
+filter <- list(winddir = c(43, 223), crest_winddir = c(90, 270))
+mod <- foehnix(diff_t ~ windspd + rh, data = data, filter = filter,
+               switch = TRUE, verbose = FALSE)
+
+# Plotting windroses
+windrose(mod, ddvar = "winddir", ffvar = "windspd")
+```
+
+
+## Default Time Series Plot
+
+TODO: Write vignette.
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 8}
+# Loading the demo data set for station Ellboegen
+data <- demodata()
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod <- foehnix(diff_t ~ ff + rh, data = data, filter = filter,
+               switch = TRUE, verbose = FALSE)
+
+# Time Series Plot
+tsplot(mod, start = "2018-03-01", end = "2018-03-20")
+```
+
+

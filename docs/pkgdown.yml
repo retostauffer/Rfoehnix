@@ -8,5 +8,6 @@ articles:
   inference: inference.html
   logisticregression: logisticregression.html
   mixedmodel: mixedmodel.html
+  plotting: plotting.html
   simulation: simulation.html
 

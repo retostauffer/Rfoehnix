@@ -67,7 +67,7 @@ the same information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@ the same information." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/foehnix.html">Foehnix Demo</a>
+    </li>
+    <li>
+      <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -173,6 +176,10 @@ the same information.</p>
     <tr>
       <th>x</th>
       <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>, see 'Details' section.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>forwarded to the windrose methods.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -293,32 +300,56 @@ By default (<code>type = NULL</code>, <code>which = NULL</code>) all combination
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Loading observations (data.frame), convert to zoo</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"ellboegen"</span>,  <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"foehnix"</span>)
-<span class='no'>ellboegen</span>  <span class='kw'>&lt;-</span> <span class='fu'>zoo</span>(<span class='no'>ellboegen</span>[,-<span class='fl'>1</span>],  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>ellboegen</span>[,<span class='fl'>1</span>],  <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>))
-<span class='no'>sattelberg</span> <span class='kw'>&lt;-</span> <span class='fu'>zoo</span>(<span class='no'>sattelberg</span>[,-<span class='fl'>1</span>], <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='no'>sattelberg</span>[,<span class='fl'>1</span>], <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>))
-
-<span class='co'># Modify sattelberg variable names (crest_ identifies Sattelberg</span>
-<span class='co'># observations, our crest station) and combine both data sets.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste0</a></span>(<span class='st'>"crest_"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>sattelberg</span>))
-<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/merge'>merge</a></span>(<span class='no'>ellboegen</span>, <span class='no'>sattelberg</span>)
-
-<span class='co'># Dry adiabatic temperature difference between </span>
-<span class='co'># Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by</span>
-<span class='co'># 1027/10 degrees.</span>
-<span class='no'>data</span>$<span class='no'>diff_t</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>$<span class='no'>crest_t</span> + <span class='fl'>10.27</span> - <span class='no'>data</span>$<span class='no'>t</span>
+    <pre class="examples"><div class='input'><span class='co'># Loading combined demo data set</span>
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>()
 
 <span class='co'># Before estimating a model: plot a wind rose for all observations</span>
 <span class='fu'>windrose</span>(<span class='no'>data</span>$<span class='no'>dd</span>, <span class='no'>data</span>$<span class='no'>ff</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"histogram"</span>)</div><div class='img'><img src='windrose-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>windrose</span>(<span class='no'>data</span>$<span class='no'>dd</span>, <span class='no'>data</span>$<span class='no'>ff</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>)</div><div class='img'><img src='windrose-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Estimate a foehnix foehn classification model</span>
-<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='foehnix.html'>foehnix</a></span>(<span class='no'>diff_t</span> ~ <span class='no'>ff</span> + <span class='no'>rh</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>filter</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>crest_dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
+<span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='foehnix.html'>foehnix</a></span>(<span class='no'>diff_t</span> ~ <span class='no'>ff</span> + <span class='no'>rh</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>,
+               <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='co'># Plotting wind roses</span>
 <span class='fu'>windrose</span>(<span class='no'>mod</span>)</div><div class='img'><img src='windrose-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Only density windrose for foehn events</span>
 <span class='fu'>windrose</span>(<span class='no'>mod</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"foehn"</span>)</div><div class='img'><img src='windrose-4.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='co'># Using custom names: by default wind direction is expected</span>
+<span class='co'># to be called 'dd', wind speed is expected to be called 'ff'.</span>
+<span class='co'># However, ddvar and ffvar allow to change that (only if</span>
+<span class='co'># windrose is called with a foehnix object as input).</span>
+<span class='co'># An example:</span>
+<span class='co'># - make a copy of data to data2</span>
+<span class='co'># - rename dd to winddir, crest_dd to crest_winddir</span>
+<span class='co'># - estimate the same foehnix model as above using the</span>
+<span class='co'>#   new variable names</span>
+<span class='co'># - plot windrose with custom names for wind direction (winddir)</span>
+<span class='co'>#   and wind speed (windspd).</span>
+
+<span class='no'>data2</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>) <span class='kw'>==</span> <span class='st'>"ff"</span>)]       <span class='kw'>&lt;-</span> <span class='st'>"windspd"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>) <span class='kw'>==</span> <span class='st'>"dd"</span>)]       <span class='kw'>&lt;-</span> <span class='st'>"winddir"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data2</span>) <span class='kw'>==</span> <span class='st'>"crest_dd"</span>)] <span class='kw'>&lt;-</span> <span class='st'>"crest_winddir"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>data2</span>))</div><div class='output co'>#&gt;                     winddir windspd     p rh    t crest_winddir crest_ff
+#&gt; 2010-01-18 09:00:00     338     1.2 899.8 75 -0.9             3      5.6
+#&gt; 2010-01-18 10:00:00      18     0.1 899.9 66  0.2           344      5.3
+#&gt; 2010-01-18 11:00:00     344     0.8 899.1 63  0.7           360      6.0
+#&gt; 2010-01-18 12:00:00     303     2.4 898.8 60  0.7           357      6.5
+#&gt; 2010-01-18 13:00:00     292     2.8 898.5 57  1.9           358      8.7
+#&gt; 2010-01-18 14:00:00     316     1.6 898.6 70  0.3           352      7.6
+#&gt;                     crest_p crest_rh crest_t diff_t
+#&gt; 2010-01-18 09:00:00   787.7       93    -8.7   2.47
+#&gt; 2010-01-18 10:00:00   787.9       90    -8.0   2.07
+#&gt; 2010-01-18 11:00:00   787.3       80    -7.7   1.87
+#&gt; 2010-01-18 12:00:00   786.8       77    -7.3   2.27
+#&gt; 2010-01-18 13:00:00   786.6       78    -7.2   1.17
+#&gt; 2010-01-18 14:00:00   786.8       80    -7.2   2.77</div><div class='input'>
+<span class='no'>filter2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>winddir</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>crest_winddir</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
+<span class='no'>mod2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='foehnix.html'>foehnix</a></span>(<span class='no'>diff_t</span> ~ <span class='no'>windspd</span> + <span class='no'>rh</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data2</span>,
+                <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter2</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>windrose</span>(<span class='no'>mod2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"foehn"</span>,
+         <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

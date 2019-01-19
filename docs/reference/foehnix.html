@@ -66,7 +66,7 @@ is a Hovmoeller diagram." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
       </span>
     </div>
 
@@ -84,6 +84,9 @@ is a Hovmoeller diagram." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/foehnix.html">Foehnix Demo</a>
+    </li>
+    <li>
+      <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -244,6 +247,11 @@ a fraction of 86400 (24 hours in seconds). It <code>NuLL</code> (default) the
 interval of the time series object will be used.</p></td>
     </tr>
     <tr>
+      <th>deltad</th>
+      <td><p>integer, similar to <code>deltat</code>, the interval in days for the
+grid on the x-axis. Default is <code>7L</code> (aggregate to weekly values).</p></td>
+    </tr>
+    <tr>
       <th>col</th>
       <td><p>vector of colors forwarded to <code>image.default</code>. By default
 a gray scale color map is used.</p></td>
@@ -261,11 +269,6 @@ concours should be added.</p></td>
       <th>zlim</th>
       <td><p>vector of two numeric values to manually specify the range of the
 color map used.</p></td>
-    </tr>
-    <tr>
-      <th>deltat</th>
-      <td><p>integer, similar to <code>deltat</code>, the interval in days for the
-grid on the x-axis. Default is <code>7L</code> (aggregate to weekly values).</p></td>
     </tr>
     <tr>
       <th>...</th>

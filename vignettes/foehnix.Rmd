@@ -1,3 +1,4 @@
+
 ```{r, echo = FALSE}
 suppressPackageStartupMessages(library("foehnix"))
 ```
@@ -96,7 +97,8 @@ the crest station ([Sattelberg](reference/sattelberg.html)) in several ways:
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 
 # Estimate the mixture model for automated foehn classification
-mod <- foehnix(diff_t ~ ff, data = train, filter = filter, switch = TRUE)
+mod <- foehnix(diff_t ~ ff, data = train, filter = filter,
+               switch = TRUE, verbose = FALSE)
 ```
 
 ## Check the Model

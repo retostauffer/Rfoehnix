@@ -14,17 +14,8 @@ the data object and more information about the `foehnix` model specification
 can be found [on the getting started](foehnix.html) manual page.
 
 ```{r, echo = FALSE}
-# Loading observations (data.frame), convert to zoo
-data("ellboegen", package = "foehnix")
-data("sattelberg", package = "foehnix")
-timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
-ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
-sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
-# Rename sattelberg variables, combine zoo objects
-names(sattelberg) <- paste0("crest_", names(sattelberg))
-data <- merge(ellboegen, sattelberg)
-# Calculate dry adiabatic temperature difference
-data$diff_t <- data$crest_t + 10.27 - data$t
+# Loading combined demo data set
+data <- demodata()
 ```
 
 ```{r, echo = TRUE, results = "hide"}

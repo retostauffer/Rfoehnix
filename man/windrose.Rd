@@ -17,6 +17,8 @@ windrose(x, ...)
 \arguments{
 \item{x}{object of class \code{\link{foehnix}}, see 'Details' section.}
 
+\item{...}{forwarded to the windrose methods.}
+
 \item{type}{\code{NULL} or character, one of \code{density} or \code{histogram}.
 If \code{NULL} both types will be plotted.}
 
@@ -140,13 +142,13 @@ windrose(mod, type = "density", which = "foehn")
 #   and wind speed (windspd).
 
 data2 <- data
-names(data2)[grep("^ff$",       names(data2)] <- "windspd"
-names(data2)[grep("^dd$",       names(data2)] <- "winddir"
-names(data2)[grep("^crest_dd$", names(data2)] <- "crest_winddir"
+names(data2)[which(names(data2) == "ff")]       <- "windspd"
+names(data2)[which(names(data2) == "dd")]       <- "winddir"
+names(data2)[which(names(data2) == "crest_dd")] <- "crest_winddir"
 print(head(data2))
 
 filter2 <- list(winddir = c(43, 223), crest_winddir = c(90, 270)) 
-mod2 <- foehnix(diff_t ~ ff + rh, data = data2,
+mod2 <- foehnix(diff_t ~ windspd + rh, data = data2,
                 filter = filter2, verbose = FALSE)
 
 windrose(mod2, type = "density", which = "foehn",

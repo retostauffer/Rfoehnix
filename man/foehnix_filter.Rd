@@ -17,6 +17,8 @@ observations.}
 function operating on \code{x}, or a named list with a simple
 filter rule (\code{numeric} of length two) or custom filter
 functions. Details provided in the 'Details' section.}
+
+\item{...}{currently unused.}
 }
 \value{
 Returns a vector of integers corresponding to those rows in

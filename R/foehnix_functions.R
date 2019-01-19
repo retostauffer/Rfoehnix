@@ -9,9 +9,10 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-07 21:29 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:33 on marvin
 # -------------------------------------------------------------------
 
+utils::globalVariables(c("time_mid", "yday_mid", "value"))
 
 #' Standardize (Model) Matrix
 #'
@@ -362,7 +363,7 @@ print.summary.foehnix <- function(x, ...) {
 #' @param deltat integer, interval in seconds for the time of day axis. Has to be
 #'        a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
 #'        interval of the time series object will be used.
-#' @param deltat integer, similar to \code{deltat}, the interval in days for the
+#' @param deltad integer, similar to \code{deltat}, the interval in days for the
 #'        grid on the x-axis. Default is \code{7L} (aggregate to weekly values).
 #' @param col vector of colors forwarded to \code{image.default}. By default
 #'        a gray scale color map is used.
