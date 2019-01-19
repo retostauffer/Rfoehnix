@@ -8,7 +8,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-19 19:36 on marvin
+# - L@ST MODIFIED: 2019-01-19 19:56 on marvin
 # -------------------------------------------------------------------
 
 
@@ -180,7 +180,7 @@ get.tsplot.control <- function(x, var, property) {
 #'
 #' TODO: describe input 'x' 
 #'
-#' @example
+#' @examples
 #' # Loading demo data
 #' data <- demodata()
 #' filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
@@ -232,8 +232,8 @@ get.tsplot.control <- function(x, var, property) {
 #' # - winddir: wind direction
 #' # - windspd: wind speed
 #' data <- demodata("Ellboegen")
-#' names(data)[which(names(data) == "dd") <- "winddir"
-#' names(data)[which(names(data) == "ff") <- "windspd"
+#' names(data)[which(names(data) == "dd")] <- "winddir"
+#' names(data)[which(names(data) == "ff")] <- "windspd"
 #' 
 #' # Estimate a foehnix model
 #' mod3 <- foehnix(windspd ~ rh, data = data, filter = list(winddir = c(43, 223)), verbose = FALSE)

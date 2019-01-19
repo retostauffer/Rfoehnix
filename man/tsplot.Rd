@@ -68,6 +68,83 @@ data are available at all.
 
 TODO: describe input 'x'
 }
+\examples{
+# Loading demo data
+data <- demodata()
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+
+# Create foehnix foehn classification model, provide full data
+# set with all parameters
+mod1 <- foehnix(diff_t ~ ff + rh, data = data,
+                filter = filter, switch = TRUE, verbose = FALSE)
+
+# Create foehnix foehn classification model, provide full data
+# set with all parameters
+sub  <- subset(data, select = c(rh, ff, dd))
+mod2 <- foehnix(ff ~ rh, data = sub, filter = list(dd = c(43, 223)),
+                verbose = FALSE)
+
+# Plotting the time series of the a period in 2018
+tsplot(mod1, start = "2018-03-01", end = "2018-03-10")
+
+# The same for the second model which is based on a subset
+# of the observation data and only includes 'ff' (wind speed)
+# 'dd' (wind direction), and 'rh' (relative humitity) of the
+# target station. Thus, only a subset of all subplots will be shown.
+tsplot(mod2, start = "2018-03-01", end = "2018-03-10")
+
+# To compare the estimated foehn probabilities of both models,
+# both 'foehnix' objects can be provided as a list. The plots
+# are based on the data of the first object (mod1), the probabilities
+# of the second 'foehnix' model will be added in the last subplot.
+tsplot(list(mod1, mod2), start = "2018-03-01", end = "2018-03-10")
+
+# If the input is a named list, the names are used for the legend
+tsplot(list("full model" = mod1, "subset model" = mod2), start = "2018-03-01", end = "2018-03-10")
+
+# The first element in the list has to be a 'foehnix' object,
+# but as additional inputs univariate time series with probabilities
+# (in the range [0,1]) can be provided. This allows to compare
+# 'foehnix' classification against other classification algorithms,
+# if available.
+probs <- fitted(mod2) # Time series of probabilities of 'mod2'
+tsplot(list("full model" = mod1, "zoo" = probs), start = "2018-03-01", end = "2018-03-10")
+
+# Additional arguments can be provided to
+# - use differt names in the time series plots
+# - change the look of the plot.
+# Some examples
+
+# Imagine that the variable names in the data set have the
+# following names:
+# - winddir: wind direction
+# - windspd: wind speed
+data <- demodata("Ellboegen")
+names(data)[which(names(data) == "dd")] <- "winddir"
+names(data)[which(names(data) == "ff")] <- "windspd"
+
+# Estimate a foehnix model
+mod3 <- foehnix(windspd ~ rh, data = data, filter = list(winddir = c(43, 223)), verbose = FALSE)
+
+# The time serie plot expects wind speed and wind direction
+# to be called 'dd' and 'ff', but they can be renamed. If only
+# a string is provided (e.g., dd = "winddir") this specifies
+# the name of the variable in the data set ('data').
+tsplot(mod3, dd = "winddir", ff = "windspd", start = "2018-03-01", end = "2018-03-10")
+
+# For each element a list can be provided:
+# - 'name': new name of the variable
+# - 'color': color used for plotting
+# - 'label': label for the axis on the plot
+# See also ?tsplot.control for more information.
+tsplot(mod3, dd = list(name = "winddir", color = "cyan", label = "WIND DIRECTION LABEL"),
+             ff = list(name = "windspd", color = "#FF00FF", label = "WIND SPEED LABEL"),
+             rh = list(color = 4, label = "RELHUM LABEL"),
+             t  = list(color = 5, label = "TEMPERATURE LABEL"),
+             prob = list(color = "yellow", label = "PROBABILITY LABEL"),
+             start = "2018-03-01", end = "2018-03-10")
+
+}
 \seealso{
 \code{\link[foehnix]{tsplot.control}}.
 }
