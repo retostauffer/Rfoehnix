@@ -58,11 +58,6 @@ smallest time interval in the data set. If the inflation rate is larger than
 \item{verbose}{logical, if set to \code{FALSE} output is suppressed.}
 
 \item{...}{currently sent to hell.}
-
-\item{object}{a \code{foehnix} object (input to S3 methods)}
-
-\item{detailed}{boolean, default FALSE. If set to true, additional information
-will be printed.}
 }
 \description{
 Used to control the \code{\link{foehnix}} mixture models.

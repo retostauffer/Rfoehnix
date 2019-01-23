@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-19 19:33 on marvin
+# - L@ST MODIFIED: 2019-01-23 18:17 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -372,7 +372,6 @@ print.summary.foehnix <- function(x, ...) {
 #' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
 #' @param zlim vector of two numeric values to manually specify the range of the
 #'        color map used.
-#' @param ... additional arguments forwarded to the image and contour plot.
 #'
 #' @details Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 #' series object of the \code{\link{foehnix}} classification. Different plot

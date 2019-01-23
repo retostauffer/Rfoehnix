@@ -24,5 +24,8 @@ counts, and \code{legend} with levels and colors for the color legend of the
 plot.
 }
 \description{
-Get Color Matrix and Legend for Windrose Plot
+The \code{\link{windrose}} method provides one windrose/wind count
+plot type. Based on the count matrix (\code{\link{windrose_get_counts}})
+this function returns a matrix with hex colors (with alpha channel)
+and a data.frame used for the legend.
 }

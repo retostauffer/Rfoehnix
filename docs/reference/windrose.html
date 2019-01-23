@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Windrose Plot — windrose • foehnix</title>
+<title>Windrose Plot for foehnix Mixture Models and Observations — windrose • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="Windrose Plot — windrose" />
+<meta property="og:title" content="Windrose Plot for foehnix Mixture Models and Observations — windrose" />
 
-<meta property="og:description" content="Plotting a windrose using meteorological wind direction and
-wind speed (or gust speed).
-Windrose plot based on a foehnix mixture model object.
+<meta property="og:description" content="foehnix Mixture Model Windrose Plot
 Windrose plot, can handle two type of plots (see type) using
 the same information." />
 <meta name="twitter:card" content="summary" />
@@ -145,16 +143,14 @@ the same information." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Windrose Plot</h1>
+    <h1>Windrose Plot for foehnix Mixture Models and Observations</h1>
     <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/windrose.R'><code>R/windrose.R</code></a></small>
     <div class="hidden name"><code>windrose.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Plotting a windrose using meteorological wind direction and
-wind speed (or gust speed).</p>
-<p>Windrose plot based on a <code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p>
+    <p>foehnix Mixture Model Windrose Plot</p>
 <p>Windrose plot, can handle two type of plots (see <code>type</code>) using
 the same information.</p>
     
@@ -212,13 +208,13 @@ page the script loops trough.</p></td>
     </tr>
     <tr>
       <th>dd</th>
-      <td><p>zoo object with meteorological wind directions (<code>]0, 360[</code>,
-0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
-and 270 'wind from west'.</p></td>
+      <td><p>zoo object or a numeric vector with meteorological wind directions
+(<code>]0, 360[</code>, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west'.</p></td>
     </tr>
     <tr>
       <th>ff</th>
-      <td><p>zoo object with sind speed data (<code>&gt;= 0</code>).</p></td>
+      <td><p>zoo object or numeric vector with sind speed data (<code>&gt;= 0</code>).</p></td>
     </tr>
     <tr>
       <th>interval</th>
@@ -252,21 +248,12 @@ alpha behaviour.</p></td>
       <td><p>character, one of <code>density</code> or <code>histogram</code>, controls
 the plot type.</p></td>
     </tr>
-    <tr>
-      <th>dd</th>
-      <td><p>a vector with meteorological wind directions within <code>[0-360]</code>,
-see 'Details' section.</p></td>
-    </tr>
-    <tr>
-      <th>ff</th>
-      <td><p>a vector with wind speed measurements within <code>[0,Inf]</code>,
-see 'Details' section.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Allows to draw windrose plots from <code><a href='foehnix.html'>foehnix</a></code> mixture model
+    <p>Windrose plot based on a <code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p>
+<p>Allows to draw windrose plots from <code><a href='foehnix.html'>foehnix</a></code> mixture model
 object or a set of observations. If input <code>x</code> to <code>windrose</code> is
 an object of class <code>foehnix</code> (as returned by <code><a href='foehnix.html'>foehnix</a></code>) the
 data set which the classification is based on is used to plot the windrose.
@@ -293,10 +280,6 @@ histograms for foehn and no foehn events), or <code>type = NULL</code> and <code
 By default (<code>type = NULL</code>, <code>which = NULL</code>) all combinations will be plotted.</p>
 <p>If <code>dd</code> and <code>ff</code> are set only the <code>type</code> argument is available
 (<code>type = "histogram"</code> or <code>type = "density"</code>).</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>windrose.default windrose.foehnix</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -357,15 +340,12 @@ By default (<code>type = NULL</code>, <code>which = NULL</code>) all combination
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     <p>Reto Stauffer</p>
-<p>Reto Stauffer</p>
   </div>
 </div>
 
@@ -375,7 +355,7 @@ By default (<code>type = NULL</code>, <code>which = NULL</code>) all combination
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
    </div>

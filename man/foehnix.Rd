@@ -61,7 +61,12 @@ or an object of class \code{foehnix.family}.}
 
 \item{...}{forwarded to \code{\link{foehnix.control}}}
 
+\item{object}{a \code{foehnix} object (input to S3 methods)}
+
 \item{x}{object of class \code{\link{foehnix}}.}
+
+\item{detailed}{boolean, default FALSE. If set to true, additional information
+will be printed.}
 
 \item{FUN}{character string or a custom aggregation function. See 'Details'
 section for more information.}
@@ -83,8 +88,6 @@ concours should be added.}
 
 \item{zlim}{vector of two numeric values to manually specify the range of the
 color map used.}
-
-\item{...}{additional arguments forwarded to the image and contour plot.}
 }
 \value{
 Returns an object of class \code{foehnix}.

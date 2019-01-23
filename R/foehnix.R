@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-19 19:32 on marvin
+# - L@ST MODIFIED: 2019-01-23 18:20 on marvin
 # -------------------------------------------------------------------
 
 
@@ -37,7 +37,8 @@
 #'        Check manual of \code{\link{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param \dots additional arguments, unused.
+#' @param \dots additional arguments used when calling \code{image.foehnix},
+#'        forwarded to \code{image} and \code{contour}.
 #'
 #' @seealso
 #' \code{\link{foehnix.family}},
@@ -366,9 +367,6 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #' @param alpha TODO alpha parameter for the penalization of the concomitant model.
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently sent to hell.
-#' @param object a \code{foehnix} object (input to S3 methods)
-#' @param detailed boolean, default FALSE. If set to true, additional information
-#'        will be printed.
 #'
 #' @details \code{\link{foehnix}} models are based on time series objects. 
 #' For some methods (e.g., to create nice and easy to read time series plots and
@@ -398,8 +396,9 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #' @author Reto Stauffer
 #' @import utils
 #' @export
-foehnix.control <- function(family, switch, left = -Inf, right = Inf, truncated = FALSE, 
-                            standardize = TRUE, maxit = 100L, tol = 1e-8,
+foehnix.control <- function(family, switch, left = -Inf, right = Inf,
+                            truncated = FALSE,  standardize = TRUE,
+                            maxit = 100L, tol = 1e-8,
                             force.inflate = FALSE,
                             alpha = NULL, verbose = TRUE, ...) {
 
@@ -492,6 +491,9 @@ print.foehnix.control <- function(x, ...) str(x)
 #'        or an object of class \code{foehnix.family}.
 #' @param control additional control arguments, see \code{\link{foehnix.control}}.
 #' @param ... forwarded to \code{\link{foehnix.control}}
+#' @param object a \code{foehnix} object (input to S3 methods)
+#' @param detailed boolean, default FALSE. If set to true, additional information
+#'        will be printed.
 #'
 #' @return Returns an object of class \code{foehnix}.
 #'

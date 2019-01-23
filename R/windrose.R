@@ -7,20 +7,11 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 16:00 on marvin
+# - L@ST MODIFIED: 2019-01-23 19:10 on marvin
 # -------------------------------------------------------------------
 
-#' Windrose Plot
+#' Windrose Plot for foehnix Mixture Models and Observations
 #'
-#' Plotting a windrose using meteorological wind direction and
-#' wind speed (or gust speed).
-#'
-#' @seealso windrose.default windrose.foehnix
-#'
-#' @export
-windrose <- function(x, ...) UseMethod("windrose")
-
-
 #' foehnix Mixture Model Windrose Plot
 #'
 #' Windrose plot based on a \code{\link{foehnix}} mixture model object.
@@ -115,8 +106,12 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' windrose(mod2, type = "density", which = "foehn",
 #'          ddvar = "winddir", ffvar = "windspd")
 #'
-#' @rdname windrose
 #' @author Reto Stauffer
+#' @export
+windrose <- function(x, ...) UseMethod("windrose")
+
+
+#' @rdname windrose
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
                              mfcol = 2, maxpp = Inf, ...) {
@@ -217,114 +212,18 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 
 
 
-#' Get Count Matrix for Windrose Plot
-#'
-#' The \code{\link{windrose}} method provides one windrose/wind count
-#' plot type. This function returns a matrix with counts for different
-#' multivariate bins (binning along wind direction dd and wind speed ff).
-#'
-#' @param x data object of type zoo or data.frame. Needs to contain
-#'        at least the two columns \code{dd} (meteorological wid direction
-#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
-#'        (range >= 0).
-#' @param dd.breaks numeric vector with breaks along wind direction.
-#'        Default is \code{seq(0, 360, by = 30)}.
-#' @param ff.breaks numeric vector with breaks along wind speed.
-#'        default is \code{pretty(x$ff)}.
-#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
-#'         with counts \code{>= 0}.
-windrose_get_counts <- function(x, dd.breaks = seq(0, 360, by = 30),
-                                   ff.breaks = pretty(x$ff)) {
-    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
-                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
-    x[which(is.na(x), arr.ind = TRUE)] <- 0
-    x
-}
-
-
-#' Get Density Matrix for Windrose Plot
-#'
-#' The \code{\link{windrose}} method provides one 'density wind rose'
-#' method (the classical wind rose plot).
-#' This function returns a matrix with densities for different
-#' multivariate bins (binning along wind direction dd and wind speed ff).
-#'
-#' @param x data object of type zoo or data.frame. Needs to contain
-#'        at least the two columns \code{dd} (meteorological wid direction
-#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
-#'        (range >= 0).
-#' @param dd.breaks numeric vector with breaks along wind direction.
-#'        Default is \code{seq(0, 360, by = 30)}.
-#' @param ff.breaks numeric vector with breaks along wind speed.
-#'        default is \code{pretty(x$ff)}.
-#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
-#'         with densities \code{>= 0}.
-windrose_get_density <- function(x, dd.breaks = seq(0, 360, by = 30),
-                                    ff.breaks = pretty(x$ff)) {
-    N <- nrow(x)
-    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
-                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
-    x[which(is.na(x), arr.ind = TRUE)] <- 0
-    t(apply(x, 1, cumsum)) / N
-}
-
-
-#' Get Color Matrix and Legend for Windrose Plot
-#'
-#' The \code{\link{windrose}} method provides one windrose/wind count
-#' plot type. Based on the count matrix (\code{\link{windrose_get_counts})
-#' this function returns a matrix with hex colors (with alpha channel)
-#' and a data.frame used for the legend.
-#'
-#' @param x 2-D matrix with counts (see \code{\link{windrose_get_counts}}).
-#' @param col single hex color, or a vector of hex colors. Alpha channel
-#'        will be removed.
-#' @param p numeric value, power parameter for non-linear color transformation.
-#' @param ncol integer, if \code{col} is a single value the color will be repeated
-#'        \code{ncol} times. Default is \code{50L}.
-#' @return Returns a list with two elements: \code{colormatrix} of the same
-#' dimension as \code{x} with colors for the different bins based on the
-#' counts, and \code{legend} with levels and colors for the color legend of the
-#' plot.
-#'
-#' @importFrom grDevices rgb
-windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
-    # Extend colors if needed
-    if ( length(col) == 1 ) col <- rep(col, ncol)
-    # Remove alpha
-    col <- substr(col, 0, 7)
-    # Calculate new colors. 
-    fun <- function(x, col, p) {
-        alpha <- as.integer(round((x / max(x))^p * 99 + 1))
-        alpha <- substr(rgb(1, 1, 1, 1:100 / 100), 8, 10)[alpha]
-        x <- round((x / max(x)) / max(x / max(x)) * (length(col) - 1) + 1)
-        x <- sprintf("%s%s", col[x], alpha)
-    }
-    colormatrix <- matrix(fun(x, col, p), ncol = ncol(x), dimnames = dimnames(x))
-
-    # Create legend element
-    leg <- data.frame(level = pretty(range(x), 5))
-    leg$color <- fun(leg$level, col, p)
-
-    list(colormatrix = colormatrix, legend = leg)
-}
-
-
-
 #' Default Wind Rose Plot
 #'
 #' Windrose plot, can handle two type of plots (see \code{type}) using
 #' the same information.
 #'
-#' @param dd zoo object with meteorological wind directions (\code{]0, 360[},
-#'        0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
-#'        and 270 'wind from west'.
-#' @param ff zoo object with sind speed data (\code{>= 0}).
+#' @param dd zoo object or a numeric vector with meteorological wind directions
+#'        (\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
+#'        180 'wind from south', and 270 'wind from west'.
+#' @param ff zoo object or numeric vector with sind speed data (\code{>= 0}).
 #' @param interval numeric, a fraction of 360. If 360 cannot be devided by
 #'        \code{interval} without a rest the script will stop. Interval
 #'        for the segments along the wind direction \code{dd}. Default \code{10}.
-#' @param type character, one of \code{density} or \code{histogram}, controls
-#'        the plot type.
 #' @param windsector TODO: currently unused.
 #' @param main character, title. If no title is set a default one will be shown.
 #' @param hue numeric vector of length 1 or two (for \code{type = "density"}
@@ -334,14 +233,12 @@ windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
 #'        \code{type = "histogram"}. If \code{1} the alpha channel is linear
 #'        for the whole range of \code{ff}, values \code{!= 1} change the
 #'        alpha behaviour.
-#' @param dd a vector with meteorological wind directions within \code{[0-360]},
-#'        see 'Details' section.
-#' @param ff a vector with wind speed measurements within \code{[0,Inf]},
-#'        see 'Details' section.
 #'
 #' @rdname windrose
-#' @author Reto Stauffer
 #' @export
+
+#TODO: Merge docstring of windrose and windrose.default and windrose.foehnix,
+# tricky to keep track of duplicates and missings as it is.
 windrose.default <- function(dd, ff, interval = 10, type = "density", 
     windsector = NULL, main = NULL, hue = c(10,100), power = .5) {
 
@@ -512,3 +409,100 @@ windrose.default <- function(dd, ff, interval = 10, type = "density",
     text(x0, -mean(tail(at, 2)), pos = 4, sprintf("N = %d", nrow(data)))
 
 }
+
+
+#' Get Count Matrix for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one windrose/wind count
+#' plot type. This function returns a matrix with counts for different
+#' multivariate bins (binning along wind direction dd and wind speed ff).
+#'
+#' @param x data object of type zoo or data.frame. Needs to contain
+#'        at least the two columns \code{dd} (meteorological wid direction
+#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
+#'        (range >= 0).
+#' @param dd.breaks numeric vector with breaks along wind direction.
+#'        Default is \code{seq(0, 360, by = 30)}.
+#' @param ff.breaks numeric vector with breaks along wind speed.
+#'        default is \code{pretty(x$ff)}.
+#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
+#'         with counts \code{>= 0}.
+windrose_get_counts <- function(x, dd.breaks = seq(0, 360, by = 30),
+                                   ff.breaks = pretty(x$ff)) {
+    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
+                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
+    x[which(is.na(x), arr.ind = TRUE)] <- 0
+    x
+}
+
+
+#' Get Density Matrix for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one 'density wind rose'
+#' method (the classical wind rose plot).
+#' This function returns a matrix with densities for different
+#' multivariate bins (binning along wind direction dd and wind speed ff).
+#'
+#' @param x data object of type zoo or data.frame. Needs to contain
+#'        at least the two columns \code{dd} (meteorological wid direction
+#'        in degrees, \code{]0, 360[}) and \code{ff} with wind speed
+#'        (range >= 0).
+#' @param dd.breaks numeric vector with breaks along wind direction.
+#'        Default is \code{seq(0, 360, by = 30)}.
+#' @param ff.breaks numeric vector with breaks along wind speed.
+#'        default is \code{pretty(x$ff)}.
+#' @return Returns a matrix of dimension \code{length(dd.breaks) x length(ff.breaks)}
+#'         with densities \code{>= 0}.
+windrose_get_density <- function(x, dd.breaks = seq(0, 360, by = 30),
+                                    ff.breaks = pretty(x$ff)) {
+    N <- nrow(x)
+    x <- as.matrix(xtabs(~ cut(x$dd, dd.breaks, include.lowest = TRUE) +
+                           cut(x$ff, ff.breaks, include.lowest = TRUE)))
+    x[which(is.na(x), arr.ind = TRUE)] <- 0
+    t(apply(x, 1, cumsum)) / N
+}
+
+
+#' Get Color Matrix and Legend for Windrose Plot
+#'
+#' The \code{\link{windrose}} method provides one windrose/wind count
+#' plot type. Based on the count matrix (\code{\link{windrose_get_counts}})
+#' this function returns a matrix with hex colors (with alpha channel)
+#' and a data.frame used for the legend.
+#'
+#' @param x 2-D matrix with counts (see \code{\link{windrose_get_counts}}).
+#' @param col single hex color, or a vector of hex colors. Alpha channel
+#'        will be removed.
+#' @param p numeric value, power parameter for non-linear color transformation.
+#' @param ncol integer, if \code{col} is a single value the color will be repeated
+#'        \code{ncol} times. Default is \code{50L}.
+#' @return Returns a list with two elements: \code{colormatrix} of the same
+#' dimension as \code{x} with colors for the different bins based on the
+#' counts, and \code{legend} with levels and colors for the color legend of the
+#' plot.
+#'
+#' @importFrom grDevices rgb
+windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
+    # Extend colors if needed
+    if ( length(col) == 1 ) col <- rep(col, ncol)
+    # Remove alpha
+    col <- substr(col, 0, 7)
+    # Calculate new colors. 
+    fun <- function(x, col, p) {
+        alpha <- as.integer(round((x / max(x))^p * 99 + 1))
+        alpha <- substr(rgb(1, 1, 1, 1:100 / 100), 8, 10)[alpha]
+        x <- round((x / max(x)) / max(x / max(x)) * (length(col) - 1) + 1)
+        x <- sprintf("%s%s", col[x], alpha)
+    }
+    colormatrix <- matrix(fun(x, col, p), ncol = ncol(x), dimnames = dimnames(x))
+
+    # Create legend element
+    leg <- data.frame(level = pretty(range(x), 5))
+    leg$color <- fun(leg$level, col, p)
+
+    list(colormatrix = colormatrix, legend = leg)
+}
+
+
+
+

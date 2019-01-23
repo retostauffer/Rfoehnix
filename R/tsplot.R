@@ -8,7 +8,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-19 19:56 on marvin
+# - L@ST MODIFIED: 2019-01-23 19:11 on marvin
 # -------------------------------------------------------------------
 
 
@@ -31,6 +31,7 @@
 #'     function. Name of the (original!) variable name
 #' @param property the property which should be returned by
 #'     \code{\link[foehnix]{get.tsplot.control}}.
+#' @param x a \code{\link[foehnix]{tsplot.control}} object.
 #'
 #' @details By default the \code{\link[foehnix]{tsplot}} function
 #'     expects that the variable names are called

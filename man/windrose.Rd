@@ -4,7 +4,7 @@
 \alias{windrose}
 \alias{windrose.foehnix}
 \alias{windrose.default}
-\title{Windrose Plot}
+\title{Windrose Plot for foehnix Mixture Models and Observations}
 \usage{
 windrose(x, ...)
 
@@ -36,11 +36,11 @@ the wind speed (or gust speed) data.}
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}
 
-\item{dd}{zoo object with meteorological wind directions (\code{]0, 360[},
-0/360 is 'wind from north', 90 'wind from east', 180 'wind from south',
-and 270 'wind from west'.}
+\item{dd}{zoo object or a numeric vector with meteorological wind directions
+(\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west'.}
 
-\item{ff}{zoo object with sind speed data (\code{>= 0}).}
+\item{ff}{zoo object or numeric vector with sind speed data (\code{>= 0}).}
 
 \item{interval}{numeric, a fraction of 360. If 360 cannot be devided by
 \code{interval} without a rest the script will stop. Interval
@@ -61,23 +61,16 @@ alpha behaviour.}
 
 \item{type}{character, one of \code{density} or \code{histogram}, controls
 the plot type.}
-
-\item{dd}{a vector with meteorological wind directions within \code{[0-360]},
-see 'Details' section.}
-
-\item{ff}{a vector with wind speed measurements within \code{[0,Inf]},
-see 'Details' section.}
 }
 \description{
-Plotting a windrose using meteorological wind direction and
-wind speed (or gust speed).
-
-Windrose plot based on a \code{\link{foehnix}} mixture model object.
+foehnix Mixture Model Windrose Plot
 
 Windrose plot, can handle two type of plots (see \code{type}) using
 the same information.
 }
 \details{
+Windrose plot based on a \code{\link{foehnix}} mixture model object.
+
 Allows to draw windrose plots from \code{\link{foehnix}} mixture model
 object or a set of observations. If input \code{x} to \code{\link{windrose}} is
 an object of class \code{foehnix} (as returned by \code{\link{foehnix}}) the
@@ -155,11 +148,6 @@ windrose(mod2, type = "density", which = "foehn",
          ddvar = "winddir", ffvar = "windspd")
 
 }
-\seealso{
-windrose.default windrose.foehnix
-}
 \author{
-Reto Stauffer
-
 Reto Stauffer
 }
