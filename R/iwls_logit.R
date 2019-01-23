@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-04 12:14 on marvin
+# - L@ST MODIFIED: 2019-01-23 14:26 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -163,18 +163,18 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
         coefpath[[iter]] <- beta
 
         # Continue if iter == 1 and/or is.null(tol)
-        if ( iter == 1 | is.null(tol) ) next
+        if ( iter == 1L | is.null(tol) ) next
 
         if ( verbose) cat(sprintf("Iteration %d, ll = %15.4f, %s\r", iter, ll,
             ifelse(is.null(lambda), "unregularized", sprintf("lambda = %10.4f", lambda))))
 
         # Check if improvement falls below tolerance: early stopping,
         # remove latest likelihood/coefficients and stop iteration.
-        if ( (llpath[[iter]] - llpath[[iter - 1]]) < tol ) {
+        if ( (llpath[[iter]] - llpath[[iter - 1L]]) < tol ) {
             # Falling below tolerance, return last step
             llpath[[iter]] <- NULL       # Remove latest likelihood
             coefpath[[iter]] <- NULL     # Remove latest set of coefficients
-            iter <- iter - 1; break      # Stop iteration
+            iter <- iter - 1L; break     # Stop iteration
         }
 
     }
