@@ -15,11 +15,11 @@ Authors@R: c(person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
 Description: A package providing tools to perform objective probabilistic foehn
              wind diagnosis and methods based on Gaussian mixture models with optional
              concomitants and methods to access the estimates.
-License:     GPL-2
-Encoding:    UTF-8
-LazyData:    true
-URL:         https://github.com/retostauffer/Rfoehnix
-BugReports:  https://github.com/retostauffer/Rfoehnix/issues
-Depends:     R (>= 3.0.0), zoo, stats, graphics
-Suggests:    colorspace, glmnet, shiny
-RoxygenNote: 6.1.0
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/retostauffer/Rfoehnix
+BugReports: https://github.com/retostauffer/Rfoehnix/issues
+Depends: R (>= 3.0.0), zoo, stats, graphics
+Suggests: colorspace, glmnet, shiny, testthat
+RoxygenNote: 6.1.1
