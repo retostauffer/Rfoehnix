@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2019-01-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-16 23:40 on marvin
+# - L@ST MODIFIED: 2019-01-23 16:04 on marvin
 # -------------------------------------------------------------------
 
 
@@ -48,8 +48,8 @@
 #' print(head(x))
 #'
 #' @seealso \code{\link{ellboegen}}, \code{\link{sattelberg}}
-#' @export
 #' @author Reto Stauffer
+#' @export
 demodata <- function(which = "combined") {
 
     which <- match.arg(tolower(which), c("combined", "ellboegen", "sattelberg"))

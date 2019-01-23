@@ -21,5 +21,5 @@ LazyData: true
 URL: https://github.com/retostauffer/Rfoehnix
 BugReports: https://github.com/retostauffer/Rfoehnix/issues
 Depends: R (>= 3.0.0), zoo, stats, graphics
-Suggests: colorspace, glmnet, shiny, testthat
+Suggests: colorspace, glmnet, shiny
 RoxygenNote: 6.1.1

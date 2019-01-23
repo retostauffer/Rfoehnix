@@ -1,5 +1,21 @@
 
-^docs$
+
+
+# Ignore git, travis, and pkgdown
+^\.git$
+^\.gitignore$
+^\.travis\.yml$
 ^_pkgdown\.yml$
+^/pkgdown$
+
+# Markdown files in root folder
+^NEWS\.md$
+^README\.md$
+^contact\.md$
 ^index.Rmd$
-^contact.md$
+^index\.Rmd$
+^contact\.md$
+
+# Ignore tests and vignettes and html doc
+^vignettes\/.*$
+^docs$
