@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-19 19:34 on marvin
+# - L@ST MODIFIED: 2019-01-24 14:20 on marvin
 # -------------------------------------------------------------------
 
 
@@ -294,7 +294,7 @@ apply_foehnix_filter <- function(x, filter, name) {
     if ( inherits(res, "zoo") ) {
         if ( ! inherits(zoo::coredata(res), "logical") )
             stop("Custom filter function returns unexpected results.")
-    } else if ( ! inherits(zoo::coredata(res), "logical") ) {
+    } else if ( ! inherits(as.vector(zoo::coredata(res)), "logical") ) {
         stop("Custom filter function returns unexpected results.")
     }
     if ( length(res) != N )
