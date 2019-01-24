@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 06:34 on marvin
+# - L@ST MODIFIED: 2019-01-24 12:26 on marvin
 # -------------------------------------------------------------------
 
 
@@ -73,9 +73,9 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
     # selected family.
-    iter <- 0
+    iter <- 0L
     while ( iter < maxit[1L] ) {
-        iter <- iter + 1;
+        iter <- iter + 1L
 
         # M-step: update probabilites and theta
         prob  <- mean(post)
@@ -100,14 +100,14 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
         }
 
         # If the log-likelihood decreases: proceed!
-        if ( iter == 1 ) next
+        if ( iter == 1L ) next
 
         # Likelihood improvement felt below the threshold:
         # remove last iteration and return.
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) {
             llpath[[iter]]   <- NULL  # Removes last likelihood entry
             coefpath[[iter]] <- NULL  # Removes last coefficient entry
-            iter <- iter - 1; break   # Stop EM iterations.
+            iter <- iter - 1L; break  # Stop EM iterations.
         }
 
     }; if ( verbose ) cat("\n")
@@ -210,9 +210,9 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
     # EM algorithm: estimate probabilities (prob; E-step), update the model
     # given the new probabilities (M-step). Always with respect to the
     # selected family.
-    iter <- 0
+    iter <- 0L
     while ( iter < maxit[1L] ) {
-        iter <- iter + 1;
+        iter <- iter + 1L
 
         # M-step: update probabilites and theta
         ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE,
@@ -242,7 +242,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
         if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) {
             llpath[[iter]]   <- NULL  # Removes last likelihood entry
             coefpath[[iter]] <- NULL  # Removes last coefficient entry
-            iter <- iter - 1; break   # Stop EM iterations.
+            iter <- iter - 1L; break  # Stop EM iterations.
         }
 
     }; if ( verbose ) cat("\n")
@@ -322,6 +322,7 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE,
                     alpha = NULL, ...) {
 
+    browser()
     print("hallo from foehix.reg")
 }
 
@@ -748,7 +749,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     }
 
     # If there was only one iteration: drop a warning
-    if ( rval$iter == 1 )
+    if ( rval$iter == 1L )
         warning(paste("The EM algorithm stopped after one iteration!",
                       "The coefficients returned are the initial coefficients.",
                       "Indicates that the model as specified is not suitable",

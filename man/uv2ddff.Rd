@@ -18,8 +18,8 @@ Iv input \code{u} is a single vector \code{v} has to be given.}
 direction in radiant rather than in degrees.}
 }
 \value{
-Returns a data.frame with two columns named \code{ff}
-   and \code{dd} containing wind speed (same physical unit as
+Returns a data.frame with two columns named \code{dd}
+   and \code{ff} containing wind speed (same physical unit as
    input \code{u}/\code{v}) and wind direction. Wind direction
    is either in meteorological degrees (0 from North, from 90 East,
    180 from South, and 270 from West) or in mathematical radiant

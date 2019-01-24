@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-21, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 21:23 on marvin
+# - L@ST MODIFIED: 2019-01-24 07:10 on marvin
 # -------------------------------------------------------------------
 
 #' Convert U and V Wind Components to Wind Speed and Direction
@@ -23,8 +23,8 @@
 #' @param rad \code{logical}, default is \code{FALSE}. Returns wind
 #'    direction in radiant rather than in degrees.
 #'
-#' @return Returns a data.frame with two columns named \code{ff}
-#'    and \code{dd} containing wind speed (same physical unit as
+#' @return Returns a data.frame with two columns named \code{dd}
+#'    and \code{ff} containing wind speed (same physical unit as
 #'    input \code{u}/\code{v}) and wind direction. Wind direction
 #'    is either in meteorological degrees (0 from North, from 90 East,
 #'    180 from South, and 270 from West) or in mathematical radiant
@@ -68,7 +68,7 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
    idx <- which( !is.na(dd) & !is.na(ff) );   dd[idx] <- dd[idx] + 2 * pi
    ## if rad (radiants) = F we have to convert to degrees.
    if ( ! rad ) dd <- dd * 180 / pi
-   data.frame(ff, dd)
+   data.frame(dd, ff)
 }
 
 #' Conver Wind Speed and Wind Direction In U/V Components
@@ -109,7 +109,7 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
 #' df <- data.frame('ff'=ff,'dd'=dd)
 #'
 #' ## Using with vectors 
-#' print(head(ddff2uv( 'ff' = ff, 'dd' = dd )))
+#' print(head(ddff2uv('dd' = dd, 'ff' = ff)))
 #' 
 #' ## Using with data.frame
 #' print(head(ddff2uv(df)))
@@ -126,7 +126,6 @@ ddff2uv <- function(dd, ff = NULL){
        stop('necessary colums "ff" and/or "dd" missing')
      ff = as.numeric(dd$ff)
      dd = as.numeric(dd$dd)
-     print('x')
    ## if ff has 2 columns the second column is taken as dd
    } else if(NCOL(dd) == 2) {
      ff <- dd[,1]

@@ -44,7 +44,7 @@ dd <- sample(seq(0,359),20)
 df <- data.frame('ff'=ff,'dd'=dd)
 
 ## Using with vectors 
-print(head(ddff2uv( 'ff' = ff, 'dd' = dd )))
+print(head(ddff2uv('dd' = dd, 'ff' = ff)))
 
 ## Using with data.frame
 print(head(ddff2uv(df)))
