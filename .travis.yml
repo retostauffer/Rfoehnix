@@ -20,10 +20,6 @@ r_packages:
     - covr
 
 # Custom R CMD ------------------
-install:
-    - R -e "install.packages('devtools')"
-    - R -e "devtools::install_deps(dep = T)"
-
 script:
     - R CMD build --no-build-vignettes .
     - R CMD check *tar.gz
