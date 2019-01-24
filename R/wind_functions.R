@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-21, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 07:10 on marvin
+# - L@ST MODIFIED: 2019-01-24 13:56 on marvin
 # -------------------------------------------------------------------
 
 #' Convert U and V Wind Components to Wind Speed and Direction
@@ -48,15 +48,19 @@
 #' @export
 uv2ddff <- function(u, v = NULL, rad = FALSE){
    ## if input u is zoo or data.frame
-   if ( class(u) %in% c('zoo','data.frame') ) {
-      if ( sum(! c('u','v') %in% names(u) ) > 0 )
-        stop('necessary colums "u" and/or "v" missing')
+   if ( inherits(u, c("zoo", "data.frame")) ) {
+      if ( ! all(c("u", "v") %in% names(u)) )
+        stop("necessary colums \"u\" and/or \"v\" missing")
       v = as.numeric(u$v)
       u = as.numeric(u$u)
    ## if u has 2 columns the second column is taken as v
    } else if(NCOL(u) == 2) {
       v <- u[,2]
       u <- u[,1]
+   } else {
+      if ( is.null(v) ) stop("input \"v\" missing")
+      if ( !identical(length(u), length(v)) )
+          stop("Length of \"u\" and \"v\" not identical")
    }
    ## polar coordinates:
    ff <- sqrt(u^2 + v^2)
@@ -121,15 +125,19 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
 ddff2uv <- function(dd, ff = NULL){
    ## if ff is a data.frame or a zoo object we have to
    ## search for necessary 'dd' and 'ff'
-   if ( class(dd) %in% c('zoo','data.frame') ) {
+   if ( inherits(dd, c("zoo", "data.frame")) ) {
      if ( sum(! c('ff','dd') %in% names(dd) ) > 0 )
        stop('necessary colums "ff" and/or "dd" missing')
      ff = as.numeric(dd$ff)
      dd = as.numeric(dd$dd)
    ## if ff has 2 columns the second column is taken as dd
    } else if(NCOL(dd) == 2) {
-     ff <- dd[,1]
-     dd <- dd[,2]
+     ff <- dd[,2]
+     dd <- dd[,1]
+   } else {
+      if ( is.null(ff) ) stop("input \"ff\" missing")
+      if ( !identical(length(dd), length(ff)) )
+          stop("Length of \"dd\" and \"ff\" not identical")
    }
 
    ## convert into polar coordinates

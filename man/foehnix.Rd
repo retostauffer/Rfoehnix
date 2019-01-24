@@ -139,10 +139,10 @@ definition (\code{90} = from east, \code{180} = from south, \dots).  The
 following condition is used:
 \itemize{
     \item If \code{windsector[1L] < windsector[2L]}: use \code{data} where
-          \code{data$dd >= windsector[1L] & data$dd <= windsector[2L]}
+          \code{data$dd >= windsector[1L]} \code{&} \code{data$dd <= windsector[2L]}
           (e.g., \code{windsector = c(90, 270)} for south wind sector).
     \item If \code{windsector[1L] > windsector[2L]}: use \code{data} where
-          \code{data$dd >= windsector[1L] | data$dd <= windsector[2L]}
+          \code{data$dd >= windsector[1L]} \code{|} \code{data$dd <= windsector[2L]}
           (e.g., \code{windsector = c(270, 90)} for north wind sector).
 }
 

@@ -8,18 +8,32 @@
 ///      href: ""
 $(document).ready(function(){
 
+    var target = $("div.developers")
+    if ( target.length == 0 ) return;
+
     $("div.developers").append("<div class=\"foehnix-links\"></div>");
     $("div.foehnix-links").append("<h2>Links and Batches</h2><ul></ul>");
 
+    // Travis badge
     $(".foehnix-links > ul").append("<li>"
         + "<a href=\"https://matthiasdusch.github.io/python-foehnix\" target=\"_new\">"
         + "<img src=\"https://travis-ci.org/retostauffer/Rfoehnix.svg?branch=master\" /></a>"
         + "</a>")
 
+    // Code coverage badge
     $(".foehnix-links > ul").append("<li>"
-        + "<a href=\"https://matthiasdusch.github.io/foehnix-python/_build/html/index.html\">
+        + "<a href=\"https://codecov.io/gh/retostauffer/Rfoehnix\">"
+        + "<img src=\"https://codecov.io/gh/retostauffer/Rfoehnix/branch/master/graph/badge.svg\">"
+        + "</img>"
+        + "</a>")
+
+    // Link to python package
+    $(".foehnix-links > ul").append("<li>"
+        + "<a href=\"https://matthiasdusch.github.io/foehnix-python/_build/html/index.html\">"
         + "foehnix Python Package!!!</a>"
         + "</a>")
-        + 
-    http://ertel2.uibk.ac.at:8080/ertel/foehndiag.php
+    ///foehnix in action? http://ertel2.uibk.ac.at:8080/ertel/foehndiag.php
 });
+
+
+

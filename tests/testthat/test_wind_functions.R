@@ -14,9 +14,17 @@ test_that("Testing foehnix wind conversion support functions", {
     expect_identical(uv2ddff(v = as.numeric(uv$v), u = as.numeric(uv$u)), ddff)
     expect_identical(uv2ddff(zoo::zoo(uv, seq.int(nrow(uv)))),            ddff)
 
+    # Misspecified input
+    expect_error(uv2ddff(data.frame(u = 1)))
+    expect_error(uv2ddff(data.frame(aa = 1, bb = 2)))
+    expect_error(uv2ddff(u = 1))
+    expect_error(uv2ddff(u = 1, v = c(1,2)))
+    expect_error(uv2ddff(v = 1))
+    expect_error(uv2ddff(u = c(1,2), v = 1))
+
+    # Checking return
     expect_equal(ddff$dd, c(90, 180, 270, 360))
     expect_equal(ddff$ff, rep(1, 4))
-
 
     # Testing ddff -> uv
     ddff <- data.frame(dd = c(0, 90, 180, 270, 360), ff = rep(1, 5))
@@ -24,11 +32,21 @@ test_that("Testing foehnix wind conversion support functions", {
     expect_is(uv, "data.frame")
     expect_identical(names(uv), c("u", "v", "rad"))
 
+    ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff))
     expect_identical(ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff)),           uv)
     expect_identical(ddff2uv(dd = as.numeric(ddff$dd), ff = as.numeric(ddff$ff)), uv)
     expect_identical(ddff2uv(ff = as.numeric(ddff$ff), dd = as.numeric(ddff$dd)), uv)
     expect_identical(ddff2uv(zoo::zoo(ddff, seq.int(nrow(ddff)))),        uv)
 
+    # Misspecified input
+    expect_error(ddff2uv(data.frame(dd = 1)))
+    expect_error(ddff2uv(data.frame(aa = 1, bb = 2)))
+    expect_error(ddff2uv(u = 1))
+    expect_error(ddff2uv(u = 1, v = c(1,2)))
+    expect_error(ddff2uv(v = 1))
+    expect_error(ddff2uv(u = c(1,2), v = 1))
+
+    # Checking return
     expect_equal(uv$u, c(0, -1, 0, 1, 0))
     expect_equal(uv$v, c(-1, 0, 1, 0, -1))
 

@@ -181,8 +181,8 @@ direction in radiant rather than in degrees.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a data.frame with two columns named <code>ff</code>
-   and <code>dd</code> containing wind speed (same physical unit as
+    <p>Returns a data.frame with two columns named <code>dd</code>
+   and <code>ff</code> containing wind speed (same physical unit as
    input <code>u</code>/<code>v</code>) and wind direction. Wind direction
    is either in meteorological degrees (0 from North, from 90 East,
    180 from South, and 270 from West) or in mathematical radiant
@@ -200,23 +200,23 @@ direction in radiant rather than in degrees.</p></td>
                     <span class='kw'>v</span>    <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>1</span>,  <span class='fl'>0</span>,  <span class='fl'>1</span>,  <span class='fl'>0</span> ) )
 <span class='co'>## Use data.frame input</span>
 <span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span> )
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff  dd
-#&gt; 1    N  0 -1  1 360
-#&gt; 2    E -1  0  1  90
-#&gt; 3    S  0  1  1 180
-#&gt; 4    W  1  0  1 270</div><div class='input'><span class='co'>## Use u/v components as two separate vector inputs</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v  dd ff
+#&gt; 1    N  0 -1 360  1
+#&gt; 2    E -1  0  90  1
+#&gt; 3    S  0  1 180  1
+#&gt; 4    W  1  0 270  1</div><div class='input'><span class='co'>## Use u/v components as two separate vector inputs</span>
 <span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span>$<span class='no'>u</span>, <span class='no'>data</span>$<span class='no'>v</span> )
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff  dd
-#&gt; 1    N  0 -1  1 360
-#&gt; 2    E -1  0  1  90
-#&gt; 3    S  0  1  1 180
-#&gt; 4    W  1  0  1 270</div><div class='input'><span class='co'>## Radiant</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v  dd ff
+#&gt; 1    N  0 -1 360  1
+#&gt; 2    E -1  0  90  1
+#&gt; 3    S  0  1 180  1
+#&gt; 4    W  1  0 270  1</div><div class='input'><span class='co'>## Radiant</span>
 <span class='no'>ddff</span> <span class='kw'>&lt;-</span> <span class='fu'>uv2ddff</span>( <span class='no'>data</span>, <span class='kw'>rad</span> <span class='kw'>=</span> <span class='fl'>TRUE</span> )
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v ff       dd
-#&gt; 1    N  0 -1  1 6.283185
-#&gt; 2    E -1  0  1 1.570796
-#&gt; 3    S  0  1  1 3.141593
-#&gt; 4    W  1  0  1 4.712389</div></pre>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>( <span class='no'>data</span>, <span class='no'>ddff</span> )</div><div class='output co'>#&gt;   name  u  v       dd ff
+#&gt; 1    N  0 -1 6.283185  1
+#&gt; 2    E -1  0 1.570796  1
+#&gt; 3    S  0  1 3.141593  1
+#&gt; 4    W  1  0 4.712389  1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
