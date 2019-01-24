@@ -322,10 +322,10 @@ the wind direction <code>dd</code> is assumed to be in degrees, meteorological
 definition (<code>90</code> = from east, <code>180</code> = from south, &#8230;).  The
 following condition is used:</p><ul>
 <li><p>If <code>windsector[1L] &lt; windsector[2L]</code>: use <code>data</code> where
-          <code>data$dd &gt;= windsector[1L] &amp; data$dd &lt;= windsector[2L]</code>
+          <code>data$dd &gt;= windsector[1L]</code> <code>&amp;</code> <code>data$dd &lt;= windsector[2L]</code>
           (e.g., <code>windsector = c(90, 270)</code> for south wind sector).</p></li>
 <li><p>If <code>windsector[1L] &gt; windsector[2L]</code>: use <code>data</code> where
-          <code>data$dd &gt;= windsector[1L] | data$dd &lt;= windsector[2L]</code>
+          <code>data$dd &gt;= windsector[1L]</code> <code>|</code> <code>data$dd &lt;= windsector[2L]</code>
           (e.g., <code>windsector = c(270, 90)</code> for north wind sector).</p></li>
 </ul>
     <p>TODO: Details for lambda. If <code>"auto"</code> the default is <code>"loglik"</code>

@@ -29,6 +29,11 @@ Returns a data.frame with two columns named \code{dd}
 Takes U/V wind components as input and returns wind speed
 and meteorological wind direction.
 }
+\details{
+Note: if both, \code{u} and \code{v} are provided they
+do have to be of the same length OR one of them has to be of length 1.
+The one with length 1 will be repeated.
+}
 \examples{
 ## Generate data.frame with u/v components for all 4 main wind directions
 data <- data.frame( name = c("N","E","S","W"),

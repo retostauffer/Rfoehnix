@@ -1,7 +1,8 @@
 
 
 library("testthat")
-devtools::load_all("../../")
+library("foehnix")
+
 test_that("Testing foehnix 'wind filter' function (univariate filter)", {
 
     # Helper function, extracts the counts for 'good', 'bad', and 'ugly'
@@ -40,7 +41,6 @@ test_that("Testing foehnix 'wind filter' function (univariate filter)", {
     expect_identical(res$total, res2$total)
 
     # Same filter but as a complex function
-    devtools::load_all("../../")
     expect_silent(res3 <- foehnix_filter(data, function(x) return(x$dd >= 90 & x <= 270)))
     expect_identical(counts(res), counts(res3))
     expect_identical(res$total, res3$total)
@@ -55,6 +55,16 @@ test_that("Testing foehnix 'wind filter' function (univariate filter)", {
     res6 <- foehnix_filter(data2, list(dd = function(x) return(x >= 270 | x <= 90)))
     expect_identical(counts(res3), counts(res4))
     expect_identical(counts(res5), counts(res6))
+
+    # Check internal "apply_foehnix_filter" method.
+    expect_silent(res7 <- foehnix:::apply_foehnix_filter(data, function(x) return(x >= 90 & x <= 270), "dd"))
+    expect_identical(counts(res),
+        structure(c(sum(res7, na.rm = TRUE), sum(!res7, na.rm = TRUE), sum(is.na(res7))), names = c("good", "bad", "ugly")))
+
+    # Should produce an output, check output
+    expect_output(print(res))
+    expect_is(res, "foehnix.filter")
+    expect_identical(typeof(res), "list")
 
 });
 
@@ -89,7 +99,6 @@ test_that("Testing foehnix 'wind filter' function (multivariate filter)", {
         res[which(apply(data, 1, function(x) any(is.na(x))))] <- NA
         return(res)
     }
-    foehnix_filter(data, fun)
     expect_silent(res6 <- foehnix_filter(data, fun))
     expect_identical(counts(res2), counts(res3))
     expect_identical(counts(res2), counts(res4))

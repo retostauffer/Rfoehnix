@@ -193,6 +193,9 @@ be used for computation) named 'ff' and 'dd'.</p></td>
          the two wind components in the same unit. Wind direction 'dd'
          has to be in meteorological degrees where 0 is North,
          90 is East and so on.</p>
+<p>If both, <code>dd</code> and <code>ff</code> are provided they
+         do have to be of the same length OR one of them has to be of length 1.
+         The one with length 1 will be repeated.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -223,13 +226,7 @@ be used for computation) named 'ff' and 'dd'.</p></td>
 #&gt; 5  1.102549  3.845047  1.2915436
 #&gt; 6  2.087597 14.854021  1.4311700</div><div class='input'>
 <span class='co'>## Using with matrix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ddff2uv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df</span>))))</div><div class='output co'>#&gt;           u         v        rad
-#&gt; 1 -6.359031 10.176577  2.1293017
-#&gt; 2  2.740636 -1.220210 -0.4188790
-#&gt; 3 10.102897  8.181165  0.6806784
-#&gt; 4 11.852260 -1.877214 -0.1570796
-#&gt; 5  1.102549  3.845047  1.2915436
-#&gt; 6  2.087597 14.854021  1.4311700</div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ddff2uv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df</span>))))</div><div class='output co'>#&gt; <span class='error'>Error in dd[, 2]: incorrect number of dimensions</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

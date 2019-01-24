@@ -1,7 +1,10 @@
 
 
-# Testing wind vonversion.
-test_that("Testing foehnix wind conversion support functions", {
+library("testthat")
+library("foehnix")
+
+# Testing wind function uv2ddff 
+test_that("Testing uv2ddff foehnix wind conversion support functions", {
 
     # Testing uv -> ddff
     uv <- data.frame(u = c(-1, 0, 1, 0), v = c(0, 1, 0, -1))
@@ -17,14 +20,23 @@ test_that("Testing foehnix wind conversion support functions", {
     # Misspecified input
     expect_error(uv2ddff(data.frame(u = 1)))
     expect_error(uv2ddff(data.frame(aa = 1, bb = 2)))
-    expect_error(uv2ddff(u = 1))
-    expect_error(uv2ddff(u = 1, v = c(1,2)))
-    expect_error(uv2ddff(v = 1))
-    expect_error(uv2ddff(u = c(1,2), v = 1))
+    expect_error(uv2ddff(u = c(1,2)))
+    expect_error(uv2ddff(u = c(1,2), v = c(1,2,3,5)))
+    expect_error(uv2ddff(v = c(1,2)))
+    expect_error(uv2ddff(u = c(1,2,3,5), v = c(1,2)))
+
+    # Works as u/v/ will be recycled
+    expect_silent(uv2ddff(u = c(1,2,3,5), v = 1))
+    expect_silent(uv2ddff(v = c(1,2,3,5), u = 1))
 
     # Checking return
     expect_equal(ddff$dd, c(90, 180, 270, 360))
     expect_equal(ddff$ff, rep(1, 4))
+
+})
+
+# Testing wind function uv2ddff 
+test_that("Testing ddff2uv foehnix wind conversion support functions", {
 
     # Testing ddff -> uv
     ddff <- data.frame(dd = c(0, 90, 180, 270, 360), ff = rep(1, 5))
@@ -32,7 +44,6 @@ test_that("Testing foehnix wind conversion support functions", {
     expect_is(uv, "data.frame")
     expect_identical(names(uv), c("u", "v", "rad"))
 
-    ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff))
     expect_identical(ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff)),           uv)
     expect_identical(ddff2uv(dd = as.numeric(ddff$dd), ff = as.numeric(ddff$ff)), uv)
     expect_identical(ddff2uv(ff = as.numeric(ddff$ff), dd = as.numeric(ddff$dd)), uv)

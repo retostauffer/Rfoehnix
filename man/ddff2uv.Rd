@@ -35,6 +35,10 @@ Wind speed units can be what you want. You are getting back
          the two wind components in the same unit. Wind direction 'dd'
          has to be in meteorological degrees where 0 is North,
          90 is East and so on.
+
+         If both, \code{dd} and \code{ff} are provided they
+         do have to be of the same length OR one of them has to be of length 1.
+         The one with length 1 will be repeated.
 }
 \examples{
 ## Generate dd and ff variable

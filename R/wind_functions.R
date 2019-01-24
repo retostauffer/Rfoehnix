@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-21, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 13:56 on marvin
+# - L@ST MODIFIED: 2019-01-24 15:48 on marvin
 # -------------------------------------------------------------------
 
 #' Convert U and V Wind Components to Wind Speed and Direction
@@ -29,6 +29,10 @@
 #'    is either in meteorological degrees (0 from North, from 90 East,
 #'    180 from South, and 270 from West) or in mathematical radiant
 #'    if input \code{rad = TRUE}.
+#'
+#' @details Note: if both, \code{u} and \code{v} are provided they
+#' do have to be of the same length OR one of them has to be of length 1.
+#' The one with length 1 will be repeated.
 #'
 #' @seealso ddff2uv
 #' @examples
@@ -59,8 +63,16 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
       u <- u[,1]
    } else {
       if ( is.null(v) ) stop("input \"v\" missing")
-      if ( !identical(length(u), length(v)) )
-          stop("Length of \"u\" and \"v\" not identical")
+      # If lenths do not match and none of them is of length 1: stop.
+      if ( !(length(u) == length(v)) & !any(c(length(u), length(v)) == 1L) ) {
+         stop("Length of \"u\" and \"v\" not identical")
+      # Else recycle the one with length one to the length of the other one.
+      # Damn it, so much one's in one sentence!
+      } else if ( length(u) == 1 ) {
+         u <- rep(u, length(v))
+      } else if ( length(v) == 1 ) {
+         v <- rep(v, length(u))
+      }
    }
    ## polar coordinates:
    ff <- sqrt(u^2 + v^2)
@@ -97,6 +109,10 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
 #'          the two wind components in the same unit. Wind direction 'dd'
 #'          has to be in meteorological degrees where 0 is North,
 #'          90 is East and so on.
+#'
+#'          If both, \code{dd} and \code{ff} are provided they
+#'          do have to be of the same length OR one of them has to be of length 1.
+#'          The one with length 1 will be repeated.
 #'
 #' @return Returns a data.frame containing the \code{u} and \code{v} components
 #'         of the data. In addition, \code{rad} (mathematical representation
@@ -136,8 +152,16 @@ ddff2uv <- function(dd, ff = NULL){
      dd <- dd[,1]
    } else {
       if ( is.null(ff) ) stop("input \"ff\" missing")
-      if ( !identical(length(dd), length(ff)) )
-          stop("Length of \"dd\" and \"ff\" not identical")
+      # If lenths do not match and none of them is of length 1: stop.
+      if ( !length(dd) == length(ff) & !any(c(length(dd), length(ff)) == 1L) ) {
+         stop("Length of \"dd\" and \"ff\" not identical")
+      # Else recycle the one with length one to the length of the other one.
+      # Damn it, so much one's in one sentence!
+      } else if ( length(dd) == 1 ) {
+         dd <- rep(dd, length(ff))
+      } else if ( length(ff) == 1 ) {
+         ff <- rep(ff, length(dd))
+      }
    }
 
    ## convert into polar coordinates
