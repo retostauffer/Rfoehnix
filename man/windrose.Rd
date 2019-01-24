@@ -58,9 +58,6 @@ used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
 \code{type = "histogram"}. If \code{1} the alpha channel is linear
 for the whole range of \code{ff}, values \code{!= 1} change the
 alpha behaviour.}
-
-\item{type}{character, one of \code{density} or \code{histogram}, controls
-the plot type.}
 }
 \description{
 foehnix Mixture Model Windrose Plot

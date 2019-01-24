@@ -13,6 +13,8 @@ get.tsplot.control(x, var, property)
 \item{...}{a set of named inputs to overwrite the defaults.
 see 'Details' section.}
 
+\item{x}{a \code{\link[foehnix]{tsplot.control}} object.}
+
 \item{var}{used when calling the \code{\link[foehnix]{get.tsplot.control}}
 function. Name of the (original!) variable name}
 

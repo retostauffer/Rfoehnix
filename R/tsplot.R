@@ -1,15 +1,7 @@
-# -------------------------------------------------------------------
-# - NAME:        tsplot.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-12-16
-# -------------------------------------------------------------------
-# - DESCRIPTION: Time series plot of observations plus classification
-#                based on a foehnix mixture model.
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 19:11 on marvin
-# -------------------------------------------------------------------
+
+
+# Some global variable(s) to make R CMD check happy
+utils::globalVariables("vars")
 
 
 #' foehnix Time Series Plot Config

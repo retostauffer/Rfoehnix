@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 18:20 on marvin
+# - L@ST MODIFIED: 2019-01-24 06:34 on marvin
 # -------------------------------------------------------------------
 
 
@@ -589,6 +589,7 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @importFrom zoo zoo index is.regular
 #' @import utils
 #' @import stats
+#' @import testthat
 #' @author Reto Stauffer
 #' @export foehnix
 #'

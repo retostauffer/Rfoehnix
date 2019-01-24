@@ -1,0 +1,19 @@
+
+/* right hand side navigation, "links and batches" */
+.foehnix-links > ul {
+    list-style: none;
+    width: 100%;
+    padding: .2em;
+    margin: none;
+}
+
+.foehnix-links > ul > li {
+    width: 100%;
+}
+.foehnix-links > ul > li a {
+    border: 2px solid white;
+}
+.foehnix-links > ul > li a:hover {
+    border-color: #2c3e50;
+    background-color: #2c3e50;
+}

@@ -1,14 +1,8 @@
-# -------------------------------------------------------------------
-# - NAME:        windrose.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-12-16
-# -------------------------------------------------------------------
-# - DESCRIPTION:
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 19:10 on marvin
-# -------------------------------------------------------------------
+
+
+# Some global variable(s) to make R CMD check happy
+utils::globalVariables("prob")
+
 
 #' Windrose Plot for foehnix Mixture Models and Observations
 #'
@@ -109,7 +103,6 @@
 #' @author Reto Stauffer
 #' @export
 windrose <- function(x, ...) UseMethod("windrose")
-
 
 #' @rdname windrose
 #' @export
