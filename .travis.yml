@@ -1,23 +1,15 @@
 language: R
 sudo: required
 cache: packages
+latex: none
 
 #warnings_are_errors: true
 before_install:
     - sudo apt-get install -y udunits-bin libudunits2-dev
     - sudo apt-get -qq update
     - tlmgr install index
-    - tlmgr install hyperref
+    #LaTeX- tlmgr install hyperref
 
-
-# Custom R CMD ------------------
-install:
-    - R -e 'devtools::install_deps(dep = T)'
-
-script:
-    - R CMD build --no-build-vignettes .
-    - R CMD check *tar.gz
-# Custom R CMD ------------------
 
 r:
     - release
@@ -26,6 +18,16 @@ r:
 r_packages:
     - devtools
     - covr
+
+# Custom R CMD ------------------
+install:
+    - R -e "install.packages('devtools')"
+    - R -e "devtools::install_deps(dep = T)"
+
+script:
+    - R CMD build --no-build-vignettes .
+    - R CMD check *tar.gz
+# Custom R CMD ------------------
 
 after_success:
     - Rscript -e 'covr::codecov()'
