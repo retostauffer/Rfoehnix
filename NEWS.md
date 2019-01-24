@@ -15,6 +15,10 @@
 * `windrose` allows to specify custom names.
 * `tsplot` allows to specify custom variable names (rename defaults).
    Requires some more testing.
+* `foehnix` objects (returned by `foehnix`) contain a new element
+   `nobs`, the number of elements used for classification.
+   Could also be computed from the filter 'good' and 'ugly'.
+   This is just for convenience.
 
 # foehnix 0.0-9
 

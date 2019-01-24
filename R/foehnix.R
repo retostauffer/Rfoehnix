@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 12:59 on marvin
+# - L@ST MODIFIED: 2019-01-24 16:48 on marvin
 # -------------------------------------------------------------------
 
 
@@ -767,6 +767,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
                 inflated = N_inflated,
                 call = match.call(), formula = formula,
                 control = control, switch = switch)
+    res$nobs <- length(idx_take)
 
     # Store coefficients
     res$coef <- rval$theta; res$coef$concomitants = coef
@@ -909,7 +910,6 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
     idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
     # Inverse wind filter
     filter_obj <- foehnix_filter(newdata, object$filter)
-    print(filter_obj)
 
     # Create return object of type zoo. By default:
     # - prob is the a-posteriory probability, flag is 1.
@@ -934,6 +934,11 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
 
 }
 
+#' Returns the Number of Values Used for Classification
+#'
+#' @rdname foehnix
+#' @export
+nobs.foehnix <- function(object, ...) return(object$nobs)
 
 #' Returns Fitted Values of foehnix Mixture Models
 #'

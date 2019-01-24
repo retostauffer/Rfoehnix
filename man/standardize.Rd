@@ -5,6 +5,7 @@
 \alias{standardize.matrix}
 \alias{scale.standardized}
 \alias{center}
+\alias{destandardize.standardized}
 \alias{destandardize_coefficients}
 \title{Standardize (Model) Matrix}
 \usage{
@@ -15,6 +16,8 @@ standardize(x, ...)
 \method{scale}{standardized}(x, ...)
 
 center(x, ...)
+
+\method{destandardize}{standardized}(x, ...)
 
 destandardize_coefficients(beta, X)
 }

@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 18:17 on marvin
+# - L@ST MODIFIED: 2019-01-24 16:12 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -81,7 +81,20 @@ center <- function(x, ...) UseMethod("center")
 #' @export
 center.standardized <- function(x, ...) return(attr(x, "scaled:center"))
 
+#' Destandardize a Standardized Matrix
+#'
+#' Reverse function of \code{\link[foehnix]{standardize}}.
+#'
+#' @param x standardized matrix of class \code{standardized}.
+#' @param ... forwarded, unused.
+#'
+#' @seealso \code{\link[foehnix]{standardize}}
+#' @author Reto Stauffer
+#' @export
 destandardize <- function(x, ...) UseMethod("destandardize")
+
+#' @export
+#' @rdname standardize
 destandardize.standardized <- function(x, ...) {
     center <- center(x)
     scale  <- scale(x)

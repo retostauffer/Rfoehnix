@@ -2,6 +2,7 @@
 % Please edit documentation in R/foehnix.R, R/foehnix_functions.R
 \name{foehnix}
 \alias{foehnix}
+\alias{nobs.foehnix}
 \alias{logLik.foehnix}
 \alias{AIC.foehnix}
 \alias{BIC.foehnix}
@@ -15,6 +16,8 @@
 foehnix(formula, data, switch = FALSE, filter = NULL,
   family = "gaussian", control = foehnix.control(family, switch, ...),
   ...)
+
+\method{nobs}{foehnix}(object, ...)
 
 \method{logLik}{foehnix}(object, ...)
 
