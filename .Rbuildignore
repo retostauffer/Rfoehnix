@@ -6,7 +6,7 @@
 ^\.gitignore$
 ^\.travis\.yml$
 ^_pkgdown\.yml$
-^/pkgdown$
+^pkgdown$
 
 # Markdown files in root folder
 ^NEWS\.md$

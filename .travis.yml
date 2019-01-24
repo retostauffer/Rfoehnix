@@ -9,6 +9,16 @@ before_install:
     - tlmgr install index
     - tlmgr install hyperref
 
+
+# Custom R CMD ------------------
+install:
+    - R -e 'devtools::install_deps(dep = T)'
+
+script:
+    - R CMD build --no-build-vignettes .
+    - R CMD check *tar.gz
+# Custom R CMD ------------------
+
 r:
     - release
     #- devel

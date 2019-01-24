@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 12:26 on marvin
+# - L@ST MODIFIED: 2019-01-24 12:59 on marvin
 # -------------------------------------------------------------------
 
 
@@ -125,7 +125,6 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
     #llpath$concomitant <- 0; llpath$full <- llpath$component
 
     # Return a list with results
-if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!")
     ll   <- tail(llpath$full, 1)
     rval <- list(prob       = prob,
                  post       = post,
@@ -261,7 +260,6 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 
     # Return a list with results
     # TODO: Should we implement the binning?
-if ( inherits(y, "binned") ) stop("Stop, requires changes on computation of BIC!")
     ll   <- tail(llpath$full, 1)
     rval <- list(prob       = prob,
                  post       = post,
@@ -324,6 +322,12 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 
     browser()
     print("hallo from foehix.reg")
+
+    # penalized vcov
+    ####z <- logitX
+    ####d <- diag(rep(k$lambda.min, ncol(z)))
+    ####solve(t(z) %*% z) * (t(z) %*% z) * solve(t(z) %*% z + d)
+
 }
 
 
@@ -538,10 +542,10 @@ print.foehnix.control <- function(x, ...) str(x)
 #' following condition is used:
 #' \itemize{
 #'     \item If \code{windsector[1L] < windsector[2L]}: use \code{data} where
-#'           \code{data$dd >= windsector[1L] & data$dd <= windsector[2L]}
+#'           \code{data$dd >= windsector[1L]} \code{&} \code{data$dd <= windsector[2L]}
 #'           (e.g., \code{windsector = c(90, 270)} for south wind sector).
 #'     \item If \code{windsector[1L] > windsector[2L]}: use \code{data} where
-#'           \code{data$dd >= windsector[1L] | data$dd <= windsector[2L]}
+#'           \code{data$dd >= windsector[1L]} \code{|} \code{data$dd <= windsector[2L]}
 #'           (e.g., \code{windsector = c(270, 90)} for north wind sector).
 #' }
 #' 
