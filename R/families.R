@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-20 18:25 on marvin
+# - L@ST MODIFIED: 2019-01-24 19:39 on marvin
 # -------------------------------------------------------------------
 
 
@@ -70,6 +70,7 @@
 #'
 #' @name foehnix.family
 #' @author Reto Stauffer
+#' @export
 print.foehnix.family <- function(x, ...) {
 
     cat(sprintf("foehnix family of class: %s\n", x$name))
@@ -86,12 +87,18 @@ print.foehnix.family <- function(x, ...) {
 
 
 #' @rdname foehnix.family
+#' @export
 is.truncated <- function(x, ...) UseMethod("is.truncated")
+
+#' @export
 is.truncated.foehnix.family <- function(x, ...) "truncated" %in% names(x)
 
 
 #' @rdname foehnix.family
+#' @export
+
 has.left <- function(x, ...) UseMethod("has.left")
+#' @export
 has.left.foehnix.family <- function(x, ...) {
     if ( "left" %in% names(x) ) {
         if ( is.finite(x$left) ) return(TRUE) else return(FALSE)
@@ -101,7 +108,10 @@ has.left.foehnix.family <- function(x, ...) {
 
 
 #' @rdname foehnix.family
+#' @export
 has.right <- function(x, ...) UseMethod("has.right")
+
+#' @export
 has.right.foehnix.family <- function(x, ...) {
     if ( "right" %in% names(x) ) {
         if ( is.finite(x$right) ) return(TRUE) else return(FALSE)
@@ -189,12 +199,16 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
         name = "censored logistic", left = left, right = right, censored = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
             .Call("cdclogis", as.numeric(y), as.numeric(mu),
                   as.numeric(sigma), as.numeric(left), as.numeric(right), log,
                   PACKAGE = "foehnix")
         },
         # Distribution function 
         p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
             .Call("cpclogis", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   PACKAGE = "foehnix")
@@ -295,12 +309,16 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
         name = "truncated logistic", left = left, right = right, truncated = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
             .Call("cdtlogis", as.numeric(y), as.numeric(mu),
                   as.numeric(sigma), as.numeric(left), as.numeric(right), log,
                   PACKAGE = "foehnix")
         },
         # Distribution function 
         p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
             .Call("cptlogis", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   PACKAGE = "foehnix")
@@ -474,12 +492,16 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
         name = "censored Gaussian", left = left, right = right, censored = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
             .Call("cdcnorm", as.numeric(y), as.numeric(mu),
                   as.numeric(sigma), as.numeric(left), as.numeric(right), log,
                   PACKAGE = "foehnix")
         },
         # Distribution function 
         p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
             .Call("cpcnorm", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   PACKAGE = "foehnix")
@@ -580,12 +602,16 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
         name = "truncated Gaussian", left = left, right = right, truncated = TRUE,
         # Density function
         d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
             .Call("cdtnorm", as.numeric(y), as.numeric(mu),
                   as.numeric(sigma), as.numeric(left), as.numeric(right), log,
                   PACKAGE = "foehnix")
         },
         # Distribution function 
         p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
             .Call("cptnorm", as.numeric(q), as.numeric(mu), as.numeric(sigma), 
                   as.numeric(left), as.numeric(right), lower.tail, log.p,
                   PACKAGE = "foehnix")

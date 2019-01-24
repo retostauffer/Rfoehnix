@@ -108,9 +108,9 @@ test_that("Testing foehnix families (simple test)", {
 
     # Gaussian
     expect_output(g1 <- foehnix(ff ~ rh, data = head(data, 1000), family = "gaussian"))
-    expect_output(g2 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_gaussian()))
-    expect_output(g3 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_cgaussian()))
-    expect_output(g4 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_tgaussian()))
+    expect_output(g2 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_gaussian()))
+    expect_output(g3 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_cgaussian()))
+    expect_output(g4 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_tgaussian()))
 
     expect_identical(c(AIC(g1), BIC(g1), logLik(g1)), c(AIC(g2), BIC(g2), logLik(g1)))
     expect_identical(c(AIC(g3), BIC(g3), logLik(g3)), c(AIC(g4), BIC(g4), logLik(g4)))
@@ -123,9 +123,9 @@ test_that("Testing foehnix families (simple test)", {
 
     # Logistic
     expect_output(l1 <- foehnix(ff ~ rh, data = head(data, 1000), family = "logistic"))
-    expect_output(l2 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_logistic()))
-    expect_output(l3 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_clogistic()))
-    expect_output(l4 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix_tlogistic()))
+    expect_output(l2 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_logistic()))
+    expect_output(l3 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_clogistic()))
+    expect_output(l4 <- foehnix(ff ~ rh, data = head(data, 1000), family = foehnix:::foehnix_tlogistic()))
 
     expect_identical(c(AIC(l1), BIC(l1), logLik(l1)), c(AIC(l2), BIC(l2), logLik(l1)))
     expect_identical(c(AIC(l3), BIC(l3), logLik(l3)), c(AIC(l4), BIC(l4), logLik(l4)))
