@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 19:39 on marvin
+# - L@ST MODIFIED: 2019-01-24 21:26 on marvin
 # -------------------------------------------------------------------
 
 
@@ -129,13 +129,21 @@ foehnix_logistic <- function() {
     rval <- list(
         name = "logistic",
         # Density function
-        d = function(y, mu, sigma, log = FALSE)
-            dlogis(y, mu, sigma, log = log),
+        d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
+            dlogis(y, mu, sigma, log = log)
+        },
         # Distribution function 
-        p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE)
-            plogis(q, mu, sigma, lower.tail, log.p),
+        p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
+            plogis(q, mu, sigma, lower.tail, log.p)
+        },
         # Random sample function for two-component logistic distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             c(rlogis(n[1L], mu[1L], sigma[1L]), rlogis(n[2L], mu[2L], sigma[2L]))
         },
@@ -215,8 +223,8 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
         },
         # Random sample function for two-component censored logistic distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
-            stopifnot(length(mu) == 2)
-            stopifnot(length(sigma) == 2)
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             lower <- if ( lower.tail ) left else right
             upper <- if ( lower.tail ) right else left
@@ -325,8 +333,8 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
         },
         # Random sample function for two-component truncated logistic distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
-            stopifnot(length(mu) == 2)
-            stopifnot(length(sigma) == 2)
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             lower <- if ( lower.tail ) left else right
             upper <- if ( lower.tail ) right else left
@@ -419,11 +427,17 @@ foehnix_gaussian <- function() {
     rval <- list(
         name = "Gaussian",
         # Density function
-        d = function(y, mu, sigma, log = FALSE)
-            dnorm(y, mu, sigma, log = log),
+        d = function(y, mu, sigma, log = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, density function for one specific mu/sigma (have to be of length 1)")
+            dnorm(y, mu, sigma, log = log)
+        },
         # Distribution function 
-        p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE)
-            pnorm(q, mu, sigma, lower.tail, log.p),
+        p = function(q, mu, sigma, lower.tail = TRUE, log.p = FALSE) {
+            if(length(mu) > 1 | length(sigma) > 1)
+                stop("stop, distribution function for one specific mu/sigma (have to be of length 1)")
+            pnorm(q, mu, sigma, lower.tail, log.p)
+        },
         # Calculate log-likelihood sum of the two-component mixture model
         loglik = function(y, post, prob, theta) {
             # Calculate/trace loglik
@@ -440,8 +454,8 @@ foehnix_gaussian <- function() {
         },
         # Random sample function for two-component Gaussian distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
-            stopifnot(length(mu) == 2)
-            stopifnot(length(sigma) == 2)
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             c(rnorm(n[1L], mu[1L], sigma[1L]), rnorm(n[2L], mu[2L], sigma[2L]))
         },
@@ -508,8 +522,8 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
         },
         # Random sample function for two-component censored Gaussian distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
-            stopifnot(length(mu) == 2)
-            stopifnot(length(sigma) == 2)
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             lower <- if ( lower.tail ) left else right
             upper <- if ( lower.tail ) right else left
@@ -618,8 +632,8 @@ foehnix_tgaussian <- function(left = -Inf, right = Inf) {
         },
         # Random sample function for two-component truncated Gaussian distribution
         r = function(n, mu, sigma, lower.tail = TRUE) {
-            stopifnot(length(mu) == 2)
-            stopifnot(length(sigma) == 2)
+            if(length(mu) != 2 | length(sigma) != 2)
+                stop("stop, mu and sigma have to be of length 2 (mu/sigma for the two components)")
             if ( length(n) == 1 ) n <- c(floor(n/2), ceiling(n/2))
             lower <- if ( lower.tail ) left else right
             upper <- if ( lower.tail ) right else left

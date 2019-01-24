@@ -28,12 +28,26 @@ test_that("Testing 'iwls_logit' model estimation.", {
     expect_is(X, "matrix");      expect_identical(dim(mf), xs)
     expect_is(y, "numeric");     expect_identical(length(y), xs[1L])
 
+    # Catching some errors: data with NA
+    Xerr <- X; Xerr[5,] <- NA
+    yerr <- y; yerr[10] <- NA
+    expect_error(iwls_logit(Xerr, y))
+    expect_error(iwls_logit(Xerr, yerr))
+    expect_error(iwls_logit(X, yerr))
+    # Error: multiple columns with constant values
+    Xerr <- X; Xerr[,5] <- 3
+    expect_error(iwls_logit(Xerr, y))
+
     # Default call
     m2 <- iwls_logit(X, y, standardize = FALSE)
     # With standardized coefficients
     m3 <- iwls_logit(X, y, standardize = TRUE)
     # No early stop, stop when maxit = 100 is reached. Will through
     expect_warning(m4 <- iwls_logit(X, y, standardize = TRUE, tol = -Inf, maxit = 100))
+
+    # Summary produces output
+    expect_output(summary(m2))
+    expect_output(print(m2))
 
     # Model list for later
     ml <- list(m2, m3, m4)

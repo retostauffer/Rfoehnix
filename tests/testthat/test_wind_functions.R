@@ -12,10 +12,25 @@ test_that("Testing uv2ddff foehnix wind conversion support functions", {
     expect_is(ddff, "data.frame")
     expect_identical(names(ddff), c("dd", "ff"))
 
+    # Capture some errors
+    expect_error(uv2ddff(u = as.numeric(uv$u)))
+    expect_error(uv2ddff(v = as.numeric(uv$v)))
+    expect_error(uv2ddff(c(1,2,3), c(1,2)))
+    expect_error(uv2ddff(c(1,2), c(1,2,3)))
+
+    # Input as vector, data.frame, or zoo
     expect_identical(uv2ddff(as.numeric(uv$u), as.numeric(uv$v)),         ddff)
     expect_identical(uv2ddff(u = as.numeric(uv$u), v = as.numeric(uv$v)), ddff)
     expect_identical(uv2ddff(v = as.numeric(uv$v), u = as.numeric(uv$u)), ddff)
     expect_identical(uv2ddff(zoo::zoo(uv, seq.int(nrow(uv)))),            ddff)
+
+    # Unnamed matrix
+    tmp <- as.matrix(uv); colnames(tmp) <- NULL
+    expect_identical(uv2ddff(uv),            ddff)
+
+    # Should work
+    expect_is(ddff2uv(c(90, 180, 270), 5), "data.frame")
+    expect_is(ddff2uv(90, c(0, 5, 10)), "data.frame")
 
     # Misspecified input
     expect_error(uv2ddff(data.frame(u = 1)))
@@ -44,10 +59,25 @@ test_that("Testing ddff2uv foehnix wind conversion support functions", {
     expect_is(uv, "data.frame")
     expect_identical(names(uv), c("u", "v", "rad"))
 
+    # Capture some errors
+    expect_error(ddff2uv(dd = as.numeric(ddff$dd)))
+    expect_error(ddff2uv(ff = as.numeric(ddff$dd)))
+    expect_error(uv2ddff(c(1,2,3), c(1,2)))
+    expect_error(uv2ddff(c(1,2), c(1,2,3)))
+
+    # Should work
+    expect_is(uv2ddff(c(-1, 0, 1), 1), "data.frame")
+    expect_is(uv2ddff(1, c(-1, 0, 1)), "data.frame")
+
+    # Input as vector, data.frame, or zoo
     expect_identical(ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff)),           uv)
     expect_identical(ddff2uv(dd = as.numeric(ddff$dd), ff = as.numeric(ddff$ff)), uv)
     expect_identical(ddff2uv(ff = as.numeric(ddff$ff), dd = as.numeric(ddff$dd)), uv)
     expect_identical(ddff2uv(zoo::zoo(ddff, seq.int(nrow(ddff)))),        uv)
+
+    # Unnamed matrix
+    tmp <- as.matrix(ddff); colnames(tmp) <- NULL
+    expect_identical(ddff2uv(tmp),            uv)
 
     # Misspecified input
     expect_error(ddff2uv(data.frame(dd = 1)))

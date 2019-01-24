@@ -4,7 +4,49 @@ library("foehnix")
 library("testthat")
 
 
-test_that("Tests for foehnix family objects", {
+test_that("Tests for foehnix family objects, random errors, wrong initialization", {
+
+    # Wrong initialization
+    expect_error(foehnix:::foehnix_gaussian(0))
+    expect_error(foehnix:::foehnix_cgaussian(c(1,2), 1))
+    expect_error(foehnix:::foehnix_tgaussian(1, c(1,2)))
+
+    expect_error(foehnix:::foehnix_logistic(0))
+    expect_error(foehnix:::foehnix_clogistic(c(1,2), 1))
+    expect_error(foehnix:::foehnix_tlogistic(1, c(1,2)))
+
+    expect_error(g1$r(100, 1, 2))
+    expect_error(g2$r(100, 1, 2))
+    expect_error(g3$r(100, 1, 2))
+    expect_error(l1$r(100, 1, 2))
+    expect_error(l2$r(100, 1, 2))
+    expect_error(l3$r(100, 1, 2))
+
+    # Random number generator
+    expect_silent(g1 <- foehnix:::foehnix_gaussian())
+    expect_silent(g2 <- foehnix:::foehnix_cgaussian())
+    expect_silent(g3 <- foehnix:::foehnix_tgaussian())
+    expect_silent(l1 <- foehnix:::foehnix_logistic())
+    expect_silent(l2 <- foehnix:::foehnix_clogistic())
+    expect_silent(l3 <- foehnix:::foehnix_tlogistic())
+
+    expect_silent(r <- g1$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+    expect_silent(r <- g2$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+    expect_silent(r <- g3$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+    expect_silent(r <- l1$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+    expect_silent(r <- l2$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+    expect_silent(r <- l3$r(100, c(5, 10), c(1, 2)))
+    expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
+
+
+})
+
+test_that("Tests for foehnix family objects (without truncation/censoring points)", {
 
     expect_silent(g1 <- foehnix:::foehnix_gaussian())
     expect_silent(g2 <- foehnix:::foehnix_cgaussian())
@@ -120,12 +162,228 @@ test_that("Tests for foehnix family objects", {
 });
 
 
+# Left and right censored gaussian distribution
+test_that("Tests for censored gaussian family", {
+
+    # Create new family objects.
+    expect_silent(left1  <- foehnix:::foehnix_cgaussian(left  = -5))
+    expect_silent(left2  <- foehnix:::foehnix_cgaussian(left  =  2))
+    expect_silent(right1 <- foehnix:::foehnix_cgaussian(right = -2))
+    expect_silent(right2 <- foehnix:::foehnix_cgaussian(right =  5))
+    expect_silent(both1  <- foehnix:::foehnix_cgaussian(left = -5, right =  7))
+    expect_silent(both2  <- foehnix:::foehnix_cgaussian(left =  0, right =  4))
+
+    # Just checking a flag
+    expect_true(left1$censored)
+
+    # Checking left/right
+    fams <- list(left1, left2, right1, right2, both1, both2)
+    expect_identical(sapply(fams, has.left),     c(TRUE, TRUE, FALSE, FALSE, TRUE, TRUE))
+    expect_identical(sapply(fams, has.right),    c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE))
+    expect_identical(sapply(fams, is.truncated), rep(FALSE, 6))
+
+    # Check left/right
+    expect_identical(left1[c("left", "right")], list(left = -5, right = Inf))
+    expect_identical(right1[c("left", "right")], list(left = -Inf, right = -2))
+    expect_identical(both1[c("left", "right")], list(left = -5, right = 7))
 
 
+    # Left censored at -5
+    x <- seq(-8, 8, length = 100); mu <- -4; sigma <- 2
+    expect_equal(left1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, pnorm(-5, mu, sigma), dnorm(x, mu, sigma)))
+    expect_equal(left1$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x <= -5, pnorm(-5, mu, sigma, log = TRUE), dnorm(x, mu, sigma, log = TRUE)))
+
+    expect_equal(left1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, 0, pnorm(x, mu, sigma)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x <= -5, -Inf, pnorm(x, mu, sigma, log.p = TRUE)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x <= -5, 0, pnorm(x, mu, sigma)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x <= -5, 1, pnorm(x, mu, sigma, lower.tail = FALSE)))
+
+    # Left censored at +2
+    x <- seq(-8, 8, length = 100); mu <- 1; sigma <- 2
+    expect_equal(left2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 2, pnorm( 2, mu, sigma), dnorm(x, mu, sigma)))
+    expect_equal(left2$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x <= 2, pnorm(2, mu, sigma, log = TRUE), dnorm(x, mu, sigma, log = TRUE)))
+
+    expect_equal(left2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 2, 0, pnorm(x, mu, sigma)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x <= 2, -Inf, pnorm(x, mu, sigma, log.p = TRUE)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x <= 2, 0, pnorm(x, mu, sigma)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x <= 2, 1, pnorm(x, mu, sigma, lower.tail = FALSE)))
+
+    # Right censored at -2
+    x <- seq(-8, 8, length = 100); mu <- -2; sigma <- 2
+    expect_equal(right1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x >= -2, pnorm(-2, mu, sigma), dnorm(x, mu, sigma)))
+    expect_equal(right1$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x >= -2, pnorm(-2, mu, sigma, log = TRUE), dnorm(x, mu, sigma, log = TRUE)))
+
+    expect_equal(right1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x >= -2, 1, pnorm(x, mu, sigma)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x >= -2, 0, pnorm(x, mu, sigma, log.p = TRUE)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x >= -2, 1, pnorm(x, mu, sigma)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x >= -2, 0, pnorm(x, mu, sigma, lower.tail = FALSE)))
+
+                                                               
+    # Right censored at 5
+    x <- seq(-8, 8, length = 100); mu <- 5; sigma <- 2
+    expect_equal(right2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x >= 5, pnorm(5, mu, sigma), dnorm(x, mu, sigma)))
+    expect_equal(right2$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x >= 5, pnorm(5, mu, sigma, log = TRUE), dnorm(x, mu, sigma, log = TRUE)))
+
+    expect_equal(right2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x >= 5, 1, pnorm(x, mu, sigma)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x >= 5, 0, pnorm(x, mu, sigma, log.p = TRUE)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x >= 5, 1, pnorm(x, mu, sigma)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x >= 5, 0, pnorm(x, mu, sigma, lower.tail = FALSE)))
+
+    # Left at -5 and right at 7
+    x <- seq(-8, 8, length = 100); mu <- 3; sigma <- 2
+    expect_equal(both1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, pnorm(-5, mu, sigma),
+                        ifelse(x >= 7, 1 - pnorm(7, mu, sigma), dnorm(x, mu, sigma))))
+    expect_equal(both1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, 0,
+                        ifelse(x >= 7, 1, pnorm(x, mu, sigma))))
+
+    # Left at 0 and right at 4
+    x <- seq(-8, 8, length = 100); mu <- 3; sigma <- 2
+    expect_equal(both2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 0, pnorm(0, mu, sigma),
+                        ifelse(x >= 4, 1 - pnorm(4, mu, sigma), dnorm(x, mu, sigma))))
+    expect_equal(both2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 0, 0,
+                        ifelse(x >= 4, 1, pnorm(x, mu, sigma))))
+
+})
 
 
+# Left and right censored logistic distribution
+test_that("Tests for censored gaussian family", {
+
+    # Create new family objects.
+    expect_silent(left1  <- foehnix:::foehnix_clogistic(left  = -5))
+    expect_silent(left2  <- foehnix:::foehnix_clogistic(left  =  2))
+    expect_silent(right1 <- foehnix:::foehnix_clogistic(right = -2))
+    expect_silent(right2 <- foehnix:::foehnix_clogistic(right =  5))
+    expect_silent(both1  <- foehnix:::foehnix_clogistic(left = -5, right =  7))
+    expect_silent(both2  <- foehnix:::foehnix_clogistic(left =  0, right =  4))
+
+    # Just checking a flag
+    expect_true(left1$censored)
+
+    # Checking left/right
+    fams <- list(left1, left2, right1, right2, both1, both2)
+    expect_identical(sapply(fams, has.left),     c(TRUE, TRUE, FALSE, FALSE, TRUE, TRUE))
+    expect_identical(sapply(fams, has.right),    c(FALSE, FALSE, TRUE, TRUE, TRUE, TRUE))
+    expect_identical(sapply(fams, is.truncated), rep(FALSE, 6))
+
+    # Check left/right
+    expect_identical(left1[c("left", "right")], list(left = -5, right = Inf))
+    expect_identical(right1[c("left", "right")], list(left = -Inf, right = -2))
+    expect_identical(both1[c("left", "right")], list(left = -5, right = 7))
 
 
+    # Left censored at -5
+    x <- seq(-8, 8, length = 100); mu <- -4; sigma <- 2
+    expect_equal(left1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, plogis(-5, mu, sigma), dlogis(x, mu, sigma)))
+    expect_equal(left1$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x <= -5, plogis(-5, mu, sigma, log = TRUE), dlogis(x, mu, sigma, log = TRUE)))
+
+    expect_equal(left1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, 0, plogis(x, mu, sigma)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x <= -5, -Inf, plogis(x, mu, sigma, log.p = TRUE)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x <= -5, 0, plogis(x, mu, sigma)))
+    expect_equal(left1$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x <= -5, 1, plogis(x, mu, sigma, lower.tail = FALSE)))
+
+    # Left censored at +2
+    x <- seq(-8, 8, length = 100); mu <- 1; sigma <- 2
+    expect_equal(left2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 2, plogis( 2, mu, sigma), dlogis(x, mu, sigma)))
+    expect_equal(left2$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x <= 2, plogis(2, mu, sigma, log = TRUE), dlogis(x, mu, sigma, log = TRUE)))
+
+    expect_equal(left2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 2, 0, plogis(x, mu, sigma)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x <= 2, -Inf, plogis(x, mu, sigma, log.p = TRUE)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x <= 2, 0, plogis(x, mu, sigma)))
+    expect_equal(left2$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x <= 2, 1, plogis(x, mu, sigma, lower.tail = FALSE)))
+
+    # Right censored at -2
+    x <- seq(-8, 8, length = 100); mu <- -2; sigma <- 2
+    expect_equal(right1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x >= -2, plogis(-2, mu, sigma), dlogis(x, mu, sigma)))
+    expect_equal(right1$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x >= -2, plogis(-2, mu, sigma, log = TRUE), dlogis(x, mu, sigma, log = TRUE)))
+
+    expect_equal(right1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x >= -2, 1, plogis(x, mu, sigma)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x >= -2, 0, plogis(x, mu, sigma, log.p = TRUE)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x >= -2, 1, plogis(x, mu, sigma)))
+    expect_equal(right1$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x >= -2, 0, plogis(x, mu, sigma, lower.tail = FALSE)))
+
+                                                               
+    # Right censored at 5
+    x <- seq(-8, 8, length = 100); mu <- 5; sigma <- 2
+    expect_equal(right2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x >= 5, plogis(5, mu, sigma), dlogis(x, mu, sigma)))
+    expect_equal(right2$d(x, mu = mu, sigma = sigma, log = TRUE),
+                 ifelse(x >= 5, plogis(5, mu, sigma, log = TRUE), dlogis(x, mu, sigma, log = TRUE)))
+
+    expect_equal(right2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x >= 5, 1, plogis(x, mu, sigma)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, log.p = TRUE),
+                 ifelse(x >= 5, 0, plogis(x, mu, sigma, log.p = TRUE)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, lower.tail = TRUE),
+                 ifelse(x >= 5, 1, plogis(x, mu, sigma)))
+    expect_equal(right2$p(x, mu = mu, sigma = sigma, lower.tail = FALSE),
+                 ifelse(x >= 5, 0, plogis(x, mu, sigma, lower.tail = FALSE)))
+
+    # Left at -5 and right at 7
+    x <- seq(-8, 8, length = 100); mu <- 3; sigma <- 2
+    expect_equal(both1$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, plogis(-5, mu, sigma),
+                        ifelse(x >= 7, 1 - plogis(7, mu, sigma), dlogis(x, mu, sigma))))
+    expect_equal(both1$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= -5, 0,
+                        ifelse(x >= 7, 1, plogis(x, mu, sigma))))
+
+    # Left at 0 and right at 4
+    x <- seq(-8, 8, length = 100); mu <- 3; sigma <- 2
+    expect_equal(both2$d(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 0, plogis(0, mu, sigma),
+                        ifelse(x >= 4, 1 - plogis(4, mu, sigma), dlogis(x, mu, sigma))))
+    expect_equal(both2$p(x, mu = mu, sigma = sigma),
+                 ifelse(x <= 0, 0,
+                        ifelse(x >= 4, 1, plogis(x, mu, sigma))))
+
+})
 
 
 

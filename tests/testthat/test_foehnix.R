@@ -7,6 +7,8 @@ library("zoo")
 test_that("Testing foehnix function (basic, S3)", {
 
     # Loading test data
+    expect_silent(data <- demodata("Ellboegen"))
+    expect_silent(data <- demodata("Sattelberg"))
     expect_silent(data <- demodata())
 
     # Specify our wind filter rule(s)
@@ -54,6 +56,7 @@ test_that("Testing foehnix S3 functions", {
     expect_silent(data <- demodata("Ellboegen"))
     expect_silent(mod <- foehnix(ff ~ rh, data = data, switch = TRUE,
                                  filter = list(dd = c(43, 223)), verbose = FALSE))
+    expect_is(formula(mod), "formula")
 
     # See if we can extract AIC/BIC/logLik
     expect_silent(ll <- logLik(mod))
@@ -78,16 +81,30 @@ test_that("Testing foehnix S3 functions", {
     expect_silent(x <- formula(mod))
     expect_is(x, "formula")
 
-    # return coefficients
+    # return coefficients, parameter scale
     expect_silent(c1 <- coef(mod))
     expect_silent(c2 <- coefficients(mod))
     expect_identical(c1, c2)
     expect_is(c1, c("coef.coehnix", "numeric"))
     expect_identical(length(c1), unname(edf(mod)))
+    expect_output(print(c1))
+    expect_output(print(c2))
+
+    # return coefficients, coefficient scale
+    expect_silent(c1 <- coef(mod, type = "coefficient"))
+    expect_silent(c2 <- coefficients(mod, type = "coefficient"))
+    expect_identical(c1, c2)
+    expect_is(c1, c("coef.coehnix", "numeric"))
+    expect_identical(length(c1), unname(edf(mod)))
+    expect_output(print(c1))
+    expect_output(print(c2))
 
     # print method(s)
     expect_output(print(mod))
     expect_silent(x <- summary(mod))
+    expect_is(x, "summary.foehnix")
+    expect_output(print(x))
+    expect_silent(x <- summary(mod, detailed = TRUE))
     expect_is(x, "summary.foehnix")
     expect_output(print(x))
 
@@ -137,6 +154,7 @@ test_that("Testing foehnix families (simple test)", {
     expect_true(all(fitted(l4) >= 0 & fitted(l4) <= 1))
 
 });
+
 
 
 

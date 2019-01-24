@@ -12,19 +12,22 @@ test_that("Testing foehnix 'wind filter' function (univariate filter)", {
     data <- data.frame(dd = sample(rep(c(NA, 0, 180), each = 5)))
 
     # Misusage
-    expect_error(foehnix_filter())
-    expect_error(foehnix_filter("foo"))
-    expect_error(foehnix_filter(matrix(NA, ncol = 2, nrow = 2)))
-    expect_error(foehnix_filter(data, ))
-    expect_error(foehnix_filter(data, "foo"))
-    expect_error(foehnix_filter(data, matrix(NA, ncol = 2, nrow = 2)))
-    expect_error(foehnix_filter(data, list(dd = c(90, Inf))))
-    expect_error(foehnix_filter(data, list(dd = c(90, NA))))
-    expect_error(foehnix_filter(data, list(dd = c(90, list()))))
+    expect_error(foehnix_filter()) # Missing inputs
+    expect_error(foehnix_filter("foo")) # Wrong data type
+    expect_error(foehnix_filter(matrix(NA, ncol = 2, nrow = 2))) # Wrong data type
+    expect_error(foehnix_filter(data, )) # Missing filter specification
+    expect_error(foehnix_filter(data, "foo")) # Wrong class
+    expect_error(foehnix_filter(data, matrix(NA, ncol = 2, nrow = 2))) # Wrong class
+    expect_error(foehnix_filter(data, list(c(90, 170))))  # Unnamed list
+    expect_error(foehnix_filter(data, list(c(90, 170), dd = c(90, 170))))  # Unnamed list
+    expect_error(foehnix_filter(data, list(dd = c(90, Inf)))) # Infinite value in filter
+    expect_error(foehnix_filter(data, list(dd = c(90, NA))))  # Infinite value in filter
+    expect_error(foehnix_filter(data, list(dd = c(90, list())))) # Wrong 'list of two numerics'
     expect_error(foehnix_filter(data, list(dd = function(x) return("wrong return type"))))
     expect_error(foehnix_filter(data, list(dd = function(x) return(c(NA, TRUE)))))
     expect_error(foehnix_filter(data, function(x) return("wrong return type")))
     expect_error(foehnix_filter(data, function(x) c(NA, TRUE, FALSE)))
+    expect_error(foehnix_filter(data, list(cc = c(1,2), foo = c(2,3)))) # foo does not exist
 
     # Misspecification as variable will not be found
     expect_error(foehnix_filter(data, list(foo = c(90, Inf))))
