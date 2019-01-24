@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 16:48 on marvin
+# - L@ST MODIFIED: 2019-01-24 18:53 on marvin
 # -------------------------------------------------------------------
 
 
@@ -411,6 +411,7 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
     stopifnot(inherits(truncated, "logical"))
 
     # Logical values
+    stopifnot(inherits(switch,        "logical"))
     stopifnot(inherits(standardize,   "logical"))
     stopifnot(inherits(verbose,       "logical"))
     stopifnot(inherits(force.inflate, "logical"))
@@ -613,6 +614,11 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # Start timing (execution time of foehnix)
     timing <- Sys.time() # Measure execution time
 
+    # Formula check
+    if ( ! inherits(formula, "formula") ) formula <- try(as.formula(formula), silent = TRUE)
+    if ( ! inherits(formula, "formula") )
+        stop("input \"formula\" is no valid formula")
+
     # Stop if input control is not of class foehnix.control
     stopifnot(inherits(control, "foehnix.control"))
 
@@ -630,6 +636,8 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # when making the time series object strictly regular). If the inflation
     # rate is more than a factor of two the script will stop and raise an error.
     # When `force.inflate` is set a warning instead of an error will be shown.
+    if ( ! inherits(data, "zoo") )
+        stop("Input \"data\" has to be a time series object of class \"zoo\".")
     index(data) <- as.POSIXct(index(data))
     if ( ! is.regular(data, strict = TRUE) ) {
 
@@ -665,7 +673,9 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # Extracting model.frame used for the concomitant model,
     # and the vector y used for the clustering (main covariate).
     # Keep missing values.
-    mf <- try(model.frame(formula, data, na.action = na.pass))
+
+    #if ( ! inherits(formula, "formula") ) formula <- try(as.formula(formula), silent = TRUE)
+    mf <- try(model.frame(formula, data, na.action = na.pass), silent = TRUE)
     if ( inherits(mf, "try-error") )
         stop(paste("Cannot create model matrix given the formula provided. Please",
                    "check that all variables used in the formula exist in the \"data\"",
