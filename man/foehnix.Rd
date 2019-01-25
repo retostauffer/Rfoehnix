@@ -35,7 +35,7 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 
 \method{image}{foehnix}(x, FUN = "freq", deltat = NULL, deltad = 7L,
   col = rev(gray.colors(20)), contours = FALSE,
-  contour.col = "black", ..., plot = TRUE)
+  contour.col = "black", ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} (or one that can be coerced
@@ -88,9 +88,6 @@ a gray scale color map is used.}
 concours should be added.}
 
 \item{contour.col}{color for the contour lines, only used if \code{contours = TRUE}.}
-
-\item{plot}{boolean, if set to \code{FALSE} some numbers and properties will be
-returned. Mainly used for testing.}
 }
 \value{
 Returns an object of class \code{foehnix}.

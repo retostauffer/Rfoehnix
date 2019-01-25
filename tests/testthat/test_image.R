@@ -4,6 +4,14 @@ library("testthat")
 
 test_that("Testing image plot", {
 
+    # Testing image plot and it's options.
+    imagefun <- function(x, ...) {
+        pdf(file = tempfile(), width = 10, height = 6)
+        res <- image(x, ...)
+        dev.off()
+        return(res)
+    }
+
     # Loading test data
     expect_silent(data <- demodata())
     # Specify our wind filter rule(s)
@@ -15,62 +23,57 @@ test_that("Testing image plot", {
     # Test some errors (wrong usage)
     expect_error(foehnix::image.foehnix(data))
     # Wrong function argument
-    expect_error(image(mod, FUN = 3))  
-    expect_error(image(mod, FUN = "foo"))
+    expect_error(imagefun(mod, FUN = 3))  
+    expect_error(imagefun(mod, FUN = "foo"))
     # Wrong deltat
-    expect_error(image(mod, deltat = "foo"))
-    expect_error(image(mod, deltat = -3))
-    expect_error(image(mod, deltat = -3))
-    expect_error(image(mod, deltat = 77777))
+    expect_error(imagefun(mod, deltat = "foo"))
+    expect_error(imagefun(mod, deltat = -3))
+    expect_error(imagefun(mod, deltat = -3))
+    expect_error(imagefun(mod, deltat = 77777))
     # Wrong deltad
-    expect_error(image(mod, deltad = "foo"))
-    expect_error(image(mod, deltad = -3))
-    expect_error(image(mod, deltad = -3))
-    expect_error(image(mod, deltad = 77777))
+    expect_error(imagefun(mod, deltad = "foo"))
+    expect_error(imagefun(mod, deltad = -3))
+    expect_error(imagefun(mod, deltad = -3))
+    expect_error(imagefun(mod, deltad = 77777))
     # Wrong colors
-    expect_error(image(mod, col = list()))
-    expect_error(image(mod, col = "#ff00ff"))
+    expect_error(imagefun(mod, col = list()))
+    expect_error(imagefun(mod, col = "#ff00ff"))
 
-    # Testing image plot and it's options.
-    # With plot = FALSE we will get a list as the return
-    # With some control arguments and data objects used
-    # for plotting. Check if we (internally) calculate what
-    # is expected:
-    expect_silent(res <- image(mod, plot = FALSE))
+    expect_silent(res <- imagefun(mod))
     expect_is(res, "list")
     expect_is(res$agg, "data.frame")
     expect_equal((length(res$breaks.time)-1) * (length(res$breaks.date)-1), nrow(res$agg))
 
-    expect_silent(res <- image(mod, deltad = 31, plot = FALSE))
+    expect_silent(res <- imagefun(mod, deltad = 31))
     expect_is(res, "list")
     expect_is(res$agg, "data.frame")
     expect_equal((length(res$breaks.time)-1) * (length(res$breaks.date)-1), nrow(res$agg))
 
-    expect_silent(res <- image(mod, deltat = 3*3600, plot = FALSE))
+    expect_silent(res <- imagefun(mod, deltat = 3*3600))
     expect_is(res, "list")
     expect_is(res$agg, "data.frame")
     expect_equal((length(res$breaks.time)-1) * (length(res$breaks.date)-1), nrow(res$agg))
 
-    expect_silent(res <- image(mod, deltat = 3*3600, deltad = 31, plot = FALSE))
+    expect_silent(res <- imagefun(mod, deltat = 3*3600, deltad = 31))
     expect_is(res, "list")
     expect_is(res$agg, "data.frame")
     expect_equal((length(res$breaks.time)-1) * (length(res$breaks.date)-1), nrow(res$agg))
 
     # Test if our default functions are handled correctly
-    expect_is(image(mod, FUN = "mean",  plot = FALSE), "list")
-    expect_is(image(mod, FUN = "occ",   plot = FALSE), "list")
-    expect_is(image(mod, FUN = "noocc", plot = FALSE), "list")
-    expect_is(image(mod, FUN = "freq",  plot = FALSE), "list")
+    expect_is(imagefun(mod, FUN = "mean"), "list")
+    expect_is(imagefun(mod, FUN = "occ"), "list")
+    expect_is(imagefun(mod, FUN = "noocc"), "list")
+    expect_is(imagefun(mod, FUN = "freq"), "list")
 
     # Custom colors
-    expect_is(image(mod, col = rainbow(100), plot = FALSE), "list")
-    expect_is(image(mod, contours = TRUE, plot = FALSE), "list")
-    expect_is(image(mod, contours = TRUE, contour.col = "black", plot = FALSE), "list")
+    expect_is(imagefun(mod, col = rainbow(100)), "list")
+    expect_is(imagefun(mod, contours = TRUE), "list")
+    expect_is(imagefun(mod, contours = TRUE, contour.col = "black"), "list")
 
     # Custom zlim
-    expect_is(res <- image(mod, plot = FALSE), "list")
+    expect_is(res <- imagefun(mod), "list")
     expect_true(is.null(res$zlim))
-    expect_is(res <- image(mod, zlim = c(0,1), plot = FALSE), "list")
+    expect_is(res <- imagefun(mod, zlim = c(0,1)), "list")
     expect_identical(res$zlim, c(0,1))
 
 })

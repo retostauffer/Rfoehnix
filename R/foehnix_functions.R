@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-25 08:22 on marvin
+# - L@ST MODIFIED: 2019-01-25 19:55 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -383,8 +383,6 @@ print.summary.foehnix <- function(x, ...) {
 #' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
 #'        concours should be added.
 #' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
-#' @param plot boolean, if set to \code{FALSE} some numbers and properties will be
-#'        returned. Mainly used for testing.
 #'
 #' @details Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 #' series object of the \code{\link{foehnix}} classification. Different plot
@@ -406,7 +404,7 @@ print.summary.foehnix <- function(x, ...) {
 #' @export
 image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
                           col = rev(gray.colors(20)), contours = FALSE,
-                          contour.col = "black", ..., plot = TRUE) {
+                          contour.col = "black", ...) {
 
     stopifnot(inherits(x, "foehnix"))
 
@@ -542,22 +540,6 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     }
     agg$color <- get_color(agg$value, col, zlim = arg$zlim)
 
-    # If plot == FALSE: return some properties
-    # Mainly used to be able to run some tests.
-    if ( ! plot ) {
-        return(list(agg = agg,
-                    xlab = xlab,
-                    ylab = ylab,
-                    zlim = arg$zlim,
-                    breaks.time = breaks.time,
-                    breaks.date = breaks.date,
-                    control = list(FUN = FUN,
-                                   deltat = deltat,
-                                   deltad = deltad,
-                                   contours = contours,
-                                   contour.col = contour.col)))
-    }
-
     # Draw plot
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
@@ -680,7 +662,6 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     draw_legend <- function(x, col, zlim = NULL) {
 
         if ( is.null(zlim) ) {
-            print(range(x))
             at <- seq(min(x, na.rm = TRUE), max(x, na.rm = TRUE), length = length(col))
         } else {
             at <- seq(min(zlim, na.rm = TRUE), max(zlim, na.rm = TRUE), length = length(col))
@@ -703,6 +684,19 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     mtext(side = 3, line = .5, font = 2, cex=  1.2, outer = TRUE, arg$main)
 
     # That's the end, my friend ...
+    # Return some properties (insisibile), mainly for testing.
+    invisible(list(agg = agg,
+                   xlab = xlab,
+                   ylab = ylab,
+                   zlim = arg$zlim,
+                   breaks.time = breaks.time,
+                   breaks.date = breaks.date,
+                   control = list(FUN = FUN,
+                                  deltat = deltat,
+                                  deltad = deltad,
+                                  contours = contours,
+                                  contour.col = contour.col)))
+
 }
 
 
