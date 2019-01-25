@@ -3,26 +3,34 @@
 library("testthat")
 library("foehnix")
 
+# Function for testing, creates a pdf output.
+windrosefun <- function(x, ...) {
+    pdf(file = tempfile(), width = 10, height = 6)
+    res <- windrose(x, ...)
+    dev.off()
+    return(res)
+}
 
 test_that("Testing wind rose plot functionality (basic type)", {
 
+
     # Testing errors if wrong inputs are used
-    expect_error(windrose())
-    expect_error(windrose(3))
-    expect_error(windrose(list()))
-    expect_error(windrose(c(1,2,3)))
+    expect_error(windrosefun())
+    expect_error(windrosefun(3))
+    expect_error(windrosefun(list()))
+    expect_error(windrosefun(c(1,2,3)))
 
     # For the default windrose plot: test for error
     # if length(dd) != length(ff)
-    expect_error(windrose(dd = c(1,2,3)))
-    expect_error(windrose(ff = c(1,2,3)))
-    expect_error(windrose(dd = c(1,2,3)), ff = c(1,2))
-    expect_error(windrose(dd = c(1,2)), ff = c(1,2,3))
+    expect_error(windrosefun(dd = c(1,2,3)))
+    expect_error(windrosefun(ff = c(1,2,3)))
+    expect_error(windrosefun(dd = c(1,2,3)), ff = c(1,2))
+    expect_error(windrosefun(dd = c(1,2)), ff = c(1,2,3))
     # Wind direction outside defined range of 0 - 360
-    expect_error(windrose(dd = c(-10,180), ff = c(1,1)))
-    expect_error(windrose(dd = c(10,580), ff = c(1,1)))
+    expect_error(windrosefun(dd = c(-10,180), ff = c(1,1)))
+    expect_error(windrosefun(dd = c(10,580), ff = c(1,1)))
     # Wind speed < 0
-    expect_error(windrose(dd = c(10,180), ff = c(-3,1)))
+    expect_error(windrosefun(dd = c(10,180), ff = c(-3,1)))
 
     # Loading some data
     expect_silent(data <- demodata("Ellboegen"))
@@ -30,8 +38,8 @@ test_that("Testing wind rose plot functionality (basic type)", {
     # -------------------------------
     # Testing the two basic types
     # First: the density plot 
-    expect_silent(res <- windrose(as.numeric(data$dd), as.numeric(data$ff),
-                                  type = "density", plot = FALSE))
+    expect_silent(res <- windrosefun(as.numeric(data$dd), as.numeric(data$ff),
+                                  type = "density"))
     expect_is(res$tab, "matrix")
     expect_true(nrow(res$tab) == (360 / res$interval))
     expect_identical(dim(res$tab), c(length(res$dd.breaks), length(res$ff.breaks)) - 1L)
@@ -39,8 +47,8 @@ test_that("Testing wind rose plot functionality (basic type)", {
 
 
     # Second: the histogram plot
-    expect_silent(res <- windrose(as.numeric(data$dd), as.numeric(data$ff),
-                                  type = "histogram", plot = FALSE))
+    expect_silent(res <- windrosefun(as.numeric(data$dd), as.numeric(data$ff),
+                                  type = "histogram"))
     expect_is(res$tab, "list")
     expect_is(res$tab$colormatrix, "matrix")
     expect_is(res$tab$legend, "data.frame")
@@ -59,21 +67,20 @@ test_that("Testing foehnix plot on windrose object", {
                                  filter = filter, verbose = FALSE))
 
     # Thest error, wrong input
-    expect_error(windrose(mod, type = list()))
-    expect_error(windrose(mod, type = "foo"))
-    expect_error(windrose(mod, which = list()))
-    expect_error(windrose(mod, which = "foo"))
+    expect_error(windrosefun(mod, type = list()))
+    expect_error(windrosefun(mod, type = "foo"))
+    expect_error(windrosefun(mod, which = list()))
+    expect_error(windrosefun(mod, which = "foo"))
     # Rename the variables dd/ff -> should result in an error
-    expect_error(windrose(mod, ddvar = "foo"))
-    expect_error(windrose(mod, ffvar = "foo"))
-    expect_error(windrose(mod, mfcol =  -10))
-    expect_error(windrose(mod, mfcol =  "foo"))
-    expect_error(windrose(mod, maxpp =  -10))
-    expect_error(windrose(mod, maxpp = -Inf))
-    expect_error(windrose(mod, plot = "foo"))
+    expect_error(windrosefun(mod, ddvar = "foo"))
+    expect_error(windrosefun(mod, ffvar = "foo"))
+    expect_error(windrosefun(mod, mfcol =  -10))
+    expect_error(windrosefun(mod, mfcol =  "foo"))
+    expect_error(windrosefun(mod, maxpp =  -10))
+    expect_error(windrosefun(mod, maxpp = -Inf))
 
     # Make the default plot (without plotting)
-    expect_silent(res <- windrose(mod, plot = FALSE))
+    expect_silent(res <- windrosefun(mod))
     expect_is(res, "list")
     expect_identical(length(res), 6L)
     expect_identical(unname(sapply(res, class)), rep("list", 6L))
@@ -95,18 +102,18 @@ test_that("Testing foehnix plot on windrose object", {
     expect_true(all(all(sapply(tmp, function(x) ncol(x$tab$colormatrix) == (length(x$ff.breaks) - 1L)))))
 
     # Subsetting (only a subset of all plots)
-    expect_identical(length(windrose(mod, which = "unconditional", plot = FALSE)), 2L)
-    expect_identical(length(windrose(mod, which = "nofoehn",       plot = FALSE)), 2L)
-    expect_identical(length(windrose(mod, which = "foehn",         plot = FALSE)), 2L)
-    expect_identical(length(windrose(mod, type = "density",        plot = FALSE)), 3L)
-    expect_identical(length(windrose(mod, type = "histogram",      plot = FALSE)), 3L)
+    expect_identical(length(windrosefun(mod, which = "unconditional")), 2L)
+    expect_identical(length(windrosefun(mod, which = "nofoehn")),       2L)
+    expect_identical(length(windrosefun(mod, which = "foehn")),         2L)
+    expect_identical(length(windrosefun(mod, type = "density")),        3L)
+    expect_identical(length(windrosefun(mod, type = "histogram")),      3L)
 
-    expect_identical(length(windrose(mod, which = "unconditional", type = "density", plot = FALSE)), 1L)
-    expect_identical(length(windrose(mod, which = "nofoehn",       type = "density", plot = FALSE)), 1L)
-    expect_identical(length(windrose(mod, which = "foehn",         type = "density", plot = FALSE)), 1L)
-    expect_identical(length(windrose(mod, which = "unconditional", type = "histogram", plot = FALSE)), 1L)
-    expect_identical(length(windrose(mod, which = "nofoehn",       type = "histogram", plot = FALSE)), 1L)
-    expect_identical(length(windrose(mod, which = "foehn",         type = "histogram", plot = FALSE)), 1L)
+    expect_identical(length(windrosefun(mod, which = "unconditional", type = "density")),   1L)
+    expect_identical(length(windrosefun(mod, which = "nofoehn",       type = "density")),   1L)
+    expect_identical(length(windrosefun(mod, which = "foehn",         type = "density")),   1L)
+    expect_identical(length(windrosefun(mod, which = "unconditional", type = "histogram")), 1L)
+    expect_identical(length(windrosefun(mod, which = "nofoehn",       type = "histogram")), 1L)
+    expect_identical(length(windrosefun(mod, which = "foehn",         type = "histogram")), 1L)
 
 })
 
