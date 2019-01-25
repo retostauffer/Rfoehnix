@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 16:12 on marvin
+# - L@ST MODIFIED: 2019-01-25 08:22 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -383,8 +383,8 @@ print.summary.foehnix <- function(x, ...) {
 #' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
 #'        concours should be added.
 #' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
-#' @param zlim vector of two numeric values to manually specify the range of the
-#'        color map used.
+#' @param plot boolean, if set to \code{FALSE} some numbers and properties will be
+#'        returned. Mainly used for testing.
 #'
 #' @details Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 #' series object of the \code{\link{foehnix}} classification. Different plot
@@ -406,23 +406,39 @@ print.summary.foehnix <- function(x, ...) {
 #' @export
 image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
                           col = rev(gray.colors(20)), contours = FALSE,
-                          contour.col = "black", zlim = NULL, ...) {
+                          contour.col = "black", ..., plot = TRUE) {
 
+    stopifnot(inherits(x, "foehnix"))
+
+    # Extend zoo object if needed (inflation)
     x <- x$prob
     stopifnot(is.regular(x, strict = TRUE))
     index(x) <- as.POSIXct(index(x))
-    if ( is.null(deltat) )
+
+    # Checking deltat argument
+    if ( is.null(deltat) ) {
         deltat <- as.numeric(diff(index(x)[1:2]), unit = "secs")
+    } else {
+        stopifnot(is.finite(deltat))
+        stopifnot(deltat > 0)
+    }
     if ( ! round(86400 / deltat) * deltat == 86400 )
         stop(sprintf("deltat = %d is not a fraction of 86400 (one day in seconds).", deltat))
 
     # Checking deltad
-    if ( ! inherits(deltad, c("integer", "numeric")) ) stop("\"deltad\" has to be numeric/integer")
+    stopifnot(inherits(deltad, c("integer", "numeric")))
+    stopifnot(deltad <= 365)
     deltad <- as.integer(deltad)
     if ( deltad < 1 ) stop("\"deltad\" has to be a positive integer.")
 
+    # Checking colors
+    stopifnot(inherits(col, "character"))
+    stopifnot(length(col) > 1)
+
     # Aggregation function
+    FUN_allowed <- c("mean", "occ", "noocc", "freq")
     if ( is.character(FUN) ) {
+        FUN <- match.arg(FUN, FUN_allowed)
         if ( FUN == "mean" ) {
             FUN <- function(x) mean(x, na.rm = TRUE)
         } else if ( FUN == "occ" ) {
@@ -432,8 +448,10 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
         } else if ( FUN == "freq" ) {
             FUN <- function(x) sum(x >= 0.5, na.rm = TRUE) / sum(!is.na(x))
         }
+    } else if ( ! is.function(FUN) ) {
+        stop("input \"FUN\" has to be a function or a character, one of ",
+             paste(FUN_allowed, sep = ", "))
     }
-
 
     # Add information about time and day of the year
     longform <- function(x, breaks.time, breaks.date) {
@@ -523,6 +541,22 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
         col[cID]
     }
     agg$color <- get_color(agg$value, col, zlim = arg$zlim)
+
+    # If plot == FALSE: return some properties
+    # Mainly used to be able to run some tests.
+    if ( ! plot ) {
+        return(list(agg = agg,
+                    xlab = xlab,
+                    ylab = ylab,
+                    zlim = arg$zlim,
+                    breaks.time = breaks.time,
+                    breaks.date = breaks.date,
+                    control = list(FUN = FUN,
+                                   deltat = deltat,
+                                   deltad = deltad,
+                                   contours = contours,
+                                   contour.col = contour.col)))
+    }
 
     # Draw plot
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
