@@ -23,6 +23,8 @@ utils::globalVariables("prob")
 #' @param mfcol integer, number of columns of subplots.
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
+#' @param plot boolean, if set to \code{FALSE} a list of properties will be returned
+#'        but no plot will be made. Used for testing.
 #'
 #' @details Allows to draw windrose plots from \code{\link{foehnix}} mixture model
 #' object or a set of observations. If input \code{x} to \code{\link{windrose}} is
@@ -107,10 +109,11 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' @rdname windrose
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
-                             mfcol = 2, maxpp = Inf, ...) {
+                             mfcol = 2L, maxpp = Inf, ..., plot = TRUE) {
 
     # Just to be on the very safe side.
     stopifnot(inherits(x, "foehnix"))
+    stopifnot(is.logical(plot))
 
     # -------------------
     # Checking argument which
@@ -122,6 +125,19 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     allowed <- c("density", "histogram")
     if ( is.null(type) ) type <- allowed
     type <- match.arg(type, allowed, several.ok = TRUE)
+
+    # Input argument mfcol
+    if ( inherits(mfcol, "numeric") ) { mfcol <- as.integer(mfcol) }
+    else { stopifnot(inherits(mfcol, "integer")) }
+    stopifnot(mfcol > 0)
+
+    # Input argument maxpp
+    if ( !maxpp == Inf ) {
+        if ( maxapp == -Inf ) stop("maxapp is not finite")
+        if ( inherits(maxpp, "numeric") ) { maxpp <- as.integer(maxpp) }
+        stopifnot(inherits(maxpp, "integer"))
+        stopifnot(maxpp > 0)
+    }
 
     # Extend inputs which/type, create list of windrose plots to show.
     tmp <- expand.grid(type = type, which = which)
@@ -166,41 +182,52 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
         stop("No data left after combining \"dd\", \"ff\", and \"foehn probabilities\".")
 
     # Else start plotting
-    hold <- par(no.readonly = TRUE); on.exit(par(hold))
+    # Step 1: calculate number of pages/rows/columns based on
+    # the number of requested plots (given which/type) and the
+    # user specification mfcol/maxpp.
+    if ( plot ) {
+        hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
-    # Number of rows and columns needed
-    if ( length(which) > 1 ) {
-        maxpp <- min(maxpp, length(which))
-        mfcol = max(ceiling(maxpp / 2), mfcol)
-        mfrow = ceiling(maxpp / mfcol)
-        if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
-        par(mfrow = c(mfrow, mfcol))
-    } else { mfrow = 1; mfcol = 1; }
-
-    if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
+        # Number of rows and columns needed
+        if ( length(which) > 1 ) {
+            maxpp <- min(maxpp, length(which))
+            mfcol = max(ceiling(maxpp / 2), mfcol)
+            mfrow = ceiling(maxpp / mfcol)
+            if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
+            par(mfrow = c(mfrow, mfcol))
+        } else { mfrow = 1; mfcol = 1; }
+        if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
+    }
 
     # Plot type = "density"
+    tmp <- list()
     if ( "density_unconditional" %in% which )
-        with(data,                      windrose(dd, ff, hue = c(10, 130),
-                       main = expression("Unconditional")))
+        tmp[["density_unconditional"]] <- with(data,
+              windrose(dd, ff, hue = c(10, 130),
+                       main = expression("Unconditional"), ..., plot = plot))
     if ( "density_nofoehn" %in% which )
-        with(subset(data, prob < 0.5),  windrose(dd, ff, hue = c(100, 180),
-                       main = expression(paste("No Foehn [",pi < 0.5,"]"))))
+        tmp[["density_nofoehn"]] <- with(subset(data, prob < 0.5),
+              windrose(dd, ff, hue = c(100, 180),
+                       main = expression(paste("No Foehn [",pi < 0.5,"]")), ..., plot = plot))
     if ( "density_foehn" %in% which )
-        with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30),
-                       main = expression(paste("Foehn [",pi >= 0.5,"]"))))
+        tmp[["density_foehn"]] <- with(subset(data, prob >= 0.5),
+              windrose(dd, ff, hue = c(-20, 30),
+                       main = expression(paste("Foehn [",pi >= 0.5,"]")), ..., plot = plot))
     # Plot type = "histogram"
     if ( "histogram_unconditional" %in% which )
-        with(data,                      windrose(dd, ff, hue = c(10, 130), type = "histogram",
-                       main = expression("Unconditional")))
+        tmp[["histogram_unconditional"]] <- with(data,
+              windrose(dd, ff, hue = c(10, 130), type = "histogram",
+                       main = expression("Unconditional"), ..., plot = plot))
     if ( "histogram_nofoehn" %in% which )
-        with(subset(data, prob <  0.5), windrose(dd, ff, hue = c(100, 180), type = "histogram",
-                       main = expression(paste("No Foehn [",pi < 0.5,"]"))))
+        tmp[["histogram_nofoehn"]] <- with(subset(data, prob <  0.5),
+              windrose(dd, ff, hue = c(100, 180), type = "histogram",
+                       main = expression(paste("No Foehn [",pi < 0.5,"]")), ..., plot = plot))
     if ( "histogram_foehn" %in% which )
-        with(subset(data, prob >= 0.5), windrose(dd, ff, hue = c(-20, 30), type = "histogram",
-                       main = expression(paste("Foehn [",pi >= 0.5,"]"))))
+        tmp[["histogram_foehn"]] <- with(subset(data, prob >= 0.5),
+              windrose(dd, ff, hue = c(-20, 30), type = "histogram",
+                       main = expression(paste("Foehn [",pi >= 0.5,"]")), ..., plot = plot))
 
-
+    if ( !plot ) return(tmp)
 }
 
 
@@ -233,7 +260,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #TODO: Merge docstring of windrose and windrose.default and windrose.foehnix,
 # tricky to keep track of duplicates and missings as it is.
 windrose.default <- function(dd, ff, interval = 10, type = "density", 
-    windsector = NULL, main = NULL, hue = c(10,100), power = .5) {
+    windsector = NULL, main = NULL, hue = c(10,100), power = .5, plot = TRUE) {
 
     # Check "dd" values
     if ( ! length(dd) == length(ff) )
@@ -273,17 +300,19 @@ windrose.default <- function(dd, ff, interval = 10, type = "density",
     dd.breaks <- seq(-interval / 2, 360, by=interval)
     ff.breaks <- pretty(ff)
 
-    # ----------------
-    # Prepare data for the plots
-
-
     # Picking some colors
     cols <- rev(colorspace::heat_hcl(length(ff.breaks) - 1, h= hue, c. = c(60, 10),
                                      l = c(25, 95), power = c(0.7,2)))
+
+    # ----------------
+    # Prepare data for the plots
     # Type "density"
     if ( type == "density") {
 
+        # Create data table
         tab <- windrose_get_density(data, dd.breaks, ff.breaks)
+        counts <- NULL # Default, required for the checks
+
         # Breaks of densities
         density.breaks <- pretty(tab)
 
@@ -312,6 +341,17 @@ windrose.default <- function(dd, ff, interval = 10, type = "density",
         # Title
         if ( is.null(main) ) main <- "Windrose Histogram"
     }
+
+    # plot == FALSE: return a list with some properties
+    if ( ! plot ) {
+        return(list(xlim     = xlim,
+                    counts   = counts,
+                    interval = interval,
+                    ff.breaks = ff.breaks,
+                    dd.breaks = dd.breaks,
+                    tab      = tab))
+    }
+
 
     # ----------------
     # Base plot

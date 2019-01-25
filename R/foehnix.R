@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 18:53 on marvin
+# - L@ST MODIFIED: 2019-01-25 15:12 on marvin
 # -------------------------------------------------------------------
 
 
@@ -913,12 +913,7 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
     d2   <- object$control$family$d(y, object$coef$mu2, exp(object$coef$logsd2))
     post <- object$control$family$posterior(y, prob, object$coef)
 
-    # If wind filter is used, set posterior probability to
-    # 0 for all observations not inside the filter (they have not
-    # been used for modelling as they are not assumed to show
-    # any foehn).
-    idx_isna <- which(is.na(y) | apply(logitX, 1, function(x) sum(is.na(x)) > 0))
-    # Inverse wind filter
+    # Apply wind filter on 'newdata' to get the good, the bad, and the ugly ones.
     filter_obj <- foehnix_filter(newdata, object$filter)
 
     # Create return object of type zoo. By default:

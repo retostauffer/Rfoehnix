@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-23 14:26 on marvin
+# - L@ST MODIFIED: 2019-01-25 16:52 on marvin
 # -------------------------------------------------------------------
 
 #' IWLS Solver for Binary Logistic Regression Model
@@ -30,7 +30,10 @@
 #'        containing the concomitant variables will be standardized.
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently unused.
-#' @param object,which control the \code{coef} method.
+#' @param object object of type \code{ccmodel} (S3 methods).
+#' @param which character, defines whether the coefficients should be returned on
+#'        the original scale (\code{which = "coef"}) or the standardized scale
+#'        (\code{which = "beta"}; identical if \code{standardize} was \code{FALSE}).
 #' @return Returns an object of class \code{ccmodel} (concomitant model).
 #' The object contains the following information:
 #' 
@@ -198,8 +201,11 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
     # Unscale coefficients if needed
     ll   <- tail(llpath, 1)
     rval <- list(call = match.call(), iterations = iter,
-                 lambda = lambda, edf = edf, loglik = ll, AIC = -2 * ll + 2 * edf,
-                 BIC = -2 * ll + log(nrow(X)) * edf,
+                 lambda = lambda,
+                 edf    = setNames(drop(edf), "edf"),
+                 loglik = setNames(drop(ll), "loglik"),
+                 AIC    = setNames(drop(-2 * ll + 2 * edf), "AIC"),
+                 BIC    = setNames(drop(-2 * ll + log(nrow(X)) * edf), "BIC"),
                  converged = ifelse(iter < maxit, TRUE, FALSE))
     rval$beta      <- beta
     rval$beta.se   <- beta.se
@@ -220,10 +226,26 @@ iwls_logit <- function(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
 coef.ccmodel <- function(object, which = "coef", ...) {
     which <- match.arg(which, c("coef", "beta"))
     c <- as.data.frame(t(object[[which]][,1]))
-    names(c) <- sprintf("cc.%s", names(c))
+    c <- structure(as.numeric(c), names = sprintf("cc.%s", names(c)))
+#    names(c) <- sprintf("cc.%s", names(c))
     c
 }
 
+#' @rdname iwls_logit
+#' @export
+logLik.ccmodel <- function(object, ...) return(object$loglik)
+
+#' @rdname iwls_logit
+#' @export
+AIC.ccmodel <- function(object, ...)    return(object$AIC)
+
+#' @rdname iwls_logit
+#' @export
+BIC.ccmodel <- function(object, ...)    return(object$BIC)
+
+#' @rdname iwls_logit
+#' @export
+edf.ccmodel <- function(object, ...)    return(object$edf)
 
 #' @rdname iwls_logit
 #' @export

@@ -1,5 +1,4 @@
 
-rm(list = ls())
 library("testthat")
 library("foehnix")
 
@@ -49,6 +48,12 @@ test_that("Testing 'iwls_logit' model estimation.", {
     expect_output(summary(m2))
     expect_output(print(m2))
 
+    # Testing S3 methods
+    expect_is(logLik(m2), "numeric");   expect_identical(length(logLik(m2)), 1L)
+    expect_is(AIC(m2), "numeric");      expect_identical(length(AIC(m2)), 1L)
+    expect_is(BIC(m2), "numeric");      expect_identical(length(BIC(m2)), 1L)
+    expect_is(edf(m2), "numeric");      expect_identical(length(edf(m2)), 1L)
+
     # Model list for later
     ml <- list(m2, m3, m4)
 
@@ -64,16 +69,21 @@ test_that("Testing 'iwls_logit' model estimation.", {
     # Make sure we estimated a logistic model
     expect_identical(family(m1)$family, "binomial")
 
-    # Checking loglik/AIC/BIC/edf
-    expect_equal(sapply(ml, function(x) x$loglik), rep(as.numeric(logLik(m1)), 3))
-    expect_equal(sapply(ml, function(x) x$AIC),    rep(as.numeric(AIC(m1)), 3))
-    expect_equal(sapply(ml, function(x) x$BIC),    rep(as.numeric(BIC(m1)), 3))
-    expect_equal(sapply(ml, function(x) x$edf),    rep(nobs(m1) - m1$df.residual, 3))
+    # Return type of logLik/AIC/BIC/edf
+    expect_equal(sapply(ml, function(x) class(logLik(x))), rep("numeric", 3L))
+    expect_equal(sapply(ml, function(x) class(AIC(x))),    rep("numeric", 3L))
+    expect_equal(sapply(ml, function(x) class(BIC(x))),    rep("numeric", 3L))
+    expect_equal(sapply(ml, function(x) class(edf(x))),    rep("numeric", 3L))
+
+    # Value of logLik/AIC/BIC/edf
+    expect_equal(sapply(ml, function(x) unname(logLik(x))), rep(unname(logLik(m1)), 3L))
+    expect_equal(sapply(ml, function(x) unname(AIC(x))),    rep(unname(AIC(m1)), 3L))
+    expect_equal(sapply(ml, function(x) unname(BIC(x))),    rep(unname(BIC(m1)), 3L))
+    expect_equal(sapply(ml, function(x) unname(edf(x))),    rep(length(coef(m1)), 3L))
 
     # Testing names of coefficients
-    expect_equal(sapply(ml, function(x) class(coef(x))), rep("data.frame", 3))
-    expect_equal(sapply(ml, function(x) dim(coef(x))),
-                     matrix(rep(c(1, 6), each = 3), byrow = TRUE, ncol = 3))
+    expect_equal(sapply(ml, function(x) class(coef(x))), rep("numeric", 3L))
+    expect_equal(sapply(ml, function(x) length(coef(x))), rep(length(coef(m1)), 3L))
     for ( i in seq.int(length(coef(m1))) ) {
         expect_match(names(coef(m2))[i], names(coef(m1))[i])
         expect_match(names(coef(m3))[i], names(coef(m1))[i])
@@ -98,3 +108,6 @@ test_that("Testing 'iwls_logit' model estimation.", {
     expect_equal(as.numeric(m2$beta.se), as.numeric(m4$beta.se), tolerance = 1e-4)
 
 })
+
+
+

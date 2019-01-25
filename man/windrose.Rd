@@ -9,10 +9,12 @@
 windrose(x, ...)
 
 \method{windrose}{foehnix}(x, type = NULL, which = NULL,
-  ddvar = "dd", ffvar = "ff", mfcol = 2, maxpp = Inf, ...)
+  ddvar = "dd", ffvar = "ff", mfcol = 2L, maxpp = Inf, ...,
+  plot = TRUE)
 
 \method{windrose}{default}(dd, ff, interval = 10, type = "density",
-  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5)
+  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5,
+  plot = TRUE)
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}}, see 'Details' section.}
@@ -35,6 +37,9 @@ the wind speed (or gust speed) data.}
 
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}
+
+\item{plot}{boolean, if set to \code{FALSE} a list of properties will be returned
+but no plot will be made. Used for testing.}
 
 \item{dd}{zoo object or a numeric vector with meteorological wind directions
 (\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',

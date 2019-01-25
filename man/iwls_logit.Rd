@@ -3,6 +3,10 @@
 \name{iwls_logit}
 \alias{iwls_logit}
 \alias{coef.ccmodel}
+\alias{logLik.ccmodel}
+\alias{AIC.ccmodel}
+\alias{BIC.ccmodel}
+\alias{edf.ccmodel}
 \alias{summary.ccmodel}
 \title{IWLS Solver for Binary Logistic Regression Model}
 \usage{
@@ -10,6 +14,14 @@ iwls_logit(X, y, beta = NULL, lambda = NULL, standardize = TRUE,
   maxit = 100L, tol = 1e-08, verbose = FALSE, ...)
 
 \method{coef}{ccmodel}(object, which = "coef", ...)
+
+\method{logLik}{ccmodel}(object, ...)
+
+\method{AIC}{ccmodel}(object, ...)
+
+\method{BIC}{ccmodel}(object, ...)
+
+\method{edf}{ccmodel}(object, ...)
 
 \method{summary}{ccmodel}(object, ...)
 }
@@ -35,7 +47,11 @@ containing the concomitant variables will be standardized.}
 
 \item{...}{currently unused.}
 
-\item{object, which}{control the \code{coef} method.}
+\item{object}{object of type \code{ccmodel} (S3 methods).}
+
+\item{which}{character, defines whether the coefficients should be returned on
+the original scale (\code{which = "coef"}) or the standardized scale
+(\code{which = "beta"}; identical if \code{standardize} was \code{FALSE}).}
 }
 \value{
 Returns an object of class \code{ccmodel} (concomitant model).
