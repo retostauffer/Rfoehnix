@@ -16,6 +16,9 @@
 ^index\.Rmd$
 ^contact\.md$
 
+# Devel
+^R/shiny\.R$
+
 # Ignore tests and vignettes and html doc
 ^vignettes\/.*$
 ^docs$

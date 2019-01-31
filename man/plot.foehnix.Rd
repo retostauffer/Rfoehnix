@@ -4,7 +4,7 @@
 \alias{plot.foehnix}
 \title{foehnix Model Assessment Plots}
 \usage{
-\method{plot}{foehnix}(x, which = NULL, log = TRUE, ...)
+\method{plot}{foehnix}(x, which = NULL, log = TRUE, ..., ask = TRUE)
 }
 \arguments{
 \item{x}{a \code{\link{foehnix}} mixture model object.}
@@ -20,6 +20,10 @@ or \code{coef} (\code{3}).}
 else on the iteration scale.}
 
 \item{...}{additional arguments, unused.}
+
+\item{ask}{boolean, default is \code{TRUE}. User will be asked to show the
+next figure if multiple figures are requested. Can be set to \code{FALSE}
+to overwrite the default.}
 }
 \description{
 Visual representation \code{\link{foehnix}} model optimization.

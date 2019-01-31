@@ -306,6 +306,25 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         x <- x[[1]]
     }
 
+    # Probabilities out of range?
+    tmp <- range(x$prob$prob, na.rm = TRUE)
+    if(!all(is.na(tmp))) {
+        if ( min(tmp) < 0 | max(tmp) > 1 )
+            stop("probabilities outside range (have to be within 0-1)")
+    }
+    if(inherits(xtra, "list")) {
+        range_check <- function(x) {
+            if(inherits(x, "foehnix")) x <- x$prob$prob
+            if(all(is.na(x))) return(NA)
+            x <- range(x, na.rm = TRUE)
+            return(min(x) < 0 | max(x) > 1)
+        }
+        tmp <- sapply(xtra, range_check)
+        if(any(tmp))
+            stop(sprintf("probabilities in input object(s) %s outside range (have to be within 0-1)",
+                         paste(which(tmp), collapse = ", ")))
+    }
+
     # Check available data. This allows us to check
     # which of the default subplots can be drawn.
     check <- function(available, control, check) {
@@ -319,13 +338,13 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         "prob"        = TRUE
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
-    if ( Nplots == 0 )
-        stop(sprintf(paste("Cannot find any of the required variables!",
-             "One reason: your variable names do not match any of",
-             "the default variable names (%s).",
-             "The 'varnames' input argument allows you to",
-             "change these names (please see ?tsplot manual page)."),
-             paste(names(vars), collapse = ", ")))
+    #if ( Nplots == 0 )
+    #    stop(sprintf(paste("Cannot find any of the required variables!",
+    #         "One reason: your variable names do not match any of",
+    #         "the default variable names (%s).",
+    #         "The 'varnames' input argument allows you to",
+    #         "change these names (please see ?tsplot manual page)."),
+    #         paste(names(vars), collapse = ", ")))
 
     # Helper function to add the gray boxes (background)
     add_boxes <- function(x, col = "gray90") {
@@ -455,8 +474,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                 # Plotting relative humidity data
                 plot(tmp[,param], type = "n", lwd = 2, yaxt = "n",
                      ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-                if ( ! get(control, "t", "name") %in% names(tmp) )
-                    add_boxes(tmp$prob); add_midnight_lines(tmp)
+                add_boxes(tmp$prob); add_midnight_lines(tmp)
                 add_polygon(tmp[,param], col = get(control, "rh", "color"))
                 abline(h = seq(20, 100, by = 20), lty = 3,
                        col = sprintf("%s50", get(control, "rh", "color")))
