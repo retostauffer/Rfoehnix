@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2018-12-21 19:05 on marvin
+# - L@ST MODIFIED: 2019-01-31 08:16 on marvin
 # -------------------------------------------------------------------
 
 
@@ -25,6 +25,9 @@
 #' @param log logical, if \code{TRUE} the x-axis is shown on the log scale,
 #'        else on the iteration scale.
 #' @param ... additional arguments, unused.
+#' @param ask boolean, default is \code{TRUE}. User will be asked to show the
+#'        next figure if multiple figures are requested. Can be set to \code{FALSE}
+#'        to overwrite the default.
 #' 
 #' @details
 #' There are currently three different plot types.
@@ -44,7 +47,7 @@
 #' @import graphics
 #' @author Reto Stauffer
 #' @export
-plot.foehnix <- function(x, which = NULL, log = TRUE, ...) {
+plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
 
     # Define plot type
     allowed <- c("loglik","loglikcontribution", "coef", "hist")
@@ -55,10 +58,11 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ...) {
     } else {
         which <- match.arg(tolower(which), allowed, several.ok = TRUE)
     }
+    if(any(is.na(which))) stop("\"which\" argument not valid")
 
     # Keep user params
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
-    if ( length(which) > 1 ) par(ask = TRUE)
+    if ( length(which) > 1 & ask ) par(ask = TRUE)
 
     flagging <- function(x, log = FALSE) {
         at <- if ( log ) log(1L:length(x)) else 1L:length(x)

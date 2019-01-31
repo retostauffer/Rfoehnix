@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-25 15:12 on marvin
+# - L@ST MODIFIED: 2019-01-31 08:11 on marvin
 # -------------------------------------------------------------------
 
 
@@ -225,7 +225,8 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
         # Store log-likelihood and coefficients of the current
         # iteration.
         llpath[[iter]]   <- family$loglik(y, post, prob, theta)
-        coefpath[[iter]] <- cbind(as.data.frame(theta), coef(ccmodel, which = "beta"))
+        coefpath[[iter]] <- cbind(as.data.frame(theta),
+                                  as.data.frame(t(coef(ccmodel, which = "beta"))))
         if ( verbose )
             cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
 

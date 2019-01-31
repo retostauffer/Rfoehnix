@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-25 19:55 on marvin
+# - L@ST MODIFIED: 2019-01-31 08:23 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -448,7 +448,7 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
         }
     } else if ( ! is.function(FUN) ) {
         stop("input \"FUN\" has to be a function or a character, one of ",
-             paste(FUN_allowed, sep = ", "))
+             paste(FUN_allowed, collapse = ", "))
     }
 
     # Add information about time and day of the year

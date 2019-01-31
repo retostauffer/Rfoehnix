@@ -260,6 +260,10 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
 
     # Stop if control is not of tsplot.control
     stopifnot(inherits(control, "tsplot.control"))
+    stopifnot(inherits(ndays, c("integer", "numeric")))
+    if(inherits(ndays, "numeric")) ndays <- as.integer(ndays)
+    if(ndays <= 0) stop("invalid argument for \"ndays\"")
+
 
     # The function allows that 'x' is either a single
     # foehnix object or a list of foehnix objects (or zoo).

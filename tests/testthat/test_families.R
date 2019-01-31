@@ -43,7 +43,30 @@ test_that("Tests for foehnix family objects, random errors, wrong initialization
     expect_silent(r <- l3$r(100, c(5, 10), c(1, 2)))
     expect_length(r, 100); expect_is(r, "numeric"); expect_true(sum(is.na(r)) == 0)
 
+    # They should only allow one mu and one sigma and/or the other way around
+    expect_error(g1$d(0, mu = c(0,1), sigma = 1)); expect_error(g1$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(g1$p(0, mu = c(0,1), sigma = 1)); expect_error(g1$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(g1$r(0, mu = c(0,1), sigma = 1)); expect_error(g1$r(0, mu = 0, sigma = c(1,2)))
 
+    expect_error(g2$d(0, mu = c(0,1), sigma = 1)); expect_error(g2$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(g2$p(0, mu = c(0,1), sigma = 1)); expect_error(g2$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(g2$r(0, mu = c(0,1), sigma = 1)); expect_error(g2$r(0, mu = 0, sigma = c(1,2)))
+
+    expect_error(g3$d(0, mu = c(0,1), sigma = 1)); expect_error(g3$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(g3$p(0, mu = c(0,1), sigma = 1)); expect_error(g3$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(g3$r(0, mu = c(0,1), sigma = 1)); expect_error(g3$r(0, mu = 0, sigma = c(1,2)))
+
+    expect_error(l1$d(0, mu = c(0,1), sigma = 1)); expect_error(l1$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(l1$p(0, mu = c(0,1), sigma = 1)); expect_error(l1$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(l1$r(0, mu = c(0,1), sigma = 1)); expect_error(l1$r(0, mu = 0, sigma = c(1,2)))
+
+    expect_error(l2$d(0, mu = c(0,1), sigma = 1)); expect_error(l2$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(l2$p(0, mu = c(0,1), sigma = 1)); expect_error(l2$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(l2$r(0, mu = c(0,1), sigma = 1)); expect_error(l2$r(0, mu = 0, sigma = c(1,2)))
+
+    expect_error(l3$d(0, mu = c(0,1), sigma = 1)); expect_error(l3$d(0, mu = 0, sigma = c(1,2)))
+    expect_error(l3$p(0, mu = c(0,1), sigma = 1)); expect_error(l3$p(0, mu = 0, sigma = c(1,2)))
+    expect_error(l3$r(0, mu = c(0,1), sigma = 1)); expect_error(l3$r(0, mu = 0, sigma = c(1,2)))
 })
 
 test_that("Tests for foehnix family objects (without truncation/censoring points)", {
