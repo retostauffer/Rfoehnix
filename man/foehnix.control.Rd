@@ -6,7 +6,7 @@
 \usage{
 foehnix.control(family, switch, left = -Inf, right = Inf,
   truncated = FALSE, standardize = TRUE, maxit = 100L, tol = 1e-08,
-  force.inflate = FALSE, alpha = NULL, verbose = TRUE, ...)
+  force.inflate = FALSE, verbose = TRUE, glmnet.control = NULL, ...)
 }
 \arguments{
 \item{family}{character specifying the distribution of the components in the
@@ -52,8 +52,6 @@ a strictly regular time series object by inflating the data set using the
 smallest time interval in the data set. If the inflation rate is larger than
 2 the script will stop except the user forces inflation by specifying
 \code{force.inflate = TRUE}. See 'Details' section for more information.}
-
-\item{alpha}{TODO alpha parameter for the penalization of the concomitant model.}
 
 \item{verbose}{logical, if set to \code{FALSE} output is suppressed.}
 

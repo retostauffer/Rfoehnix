@@ -284,19 +284,19 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         xtra <- NULL; xtra_names <- NULL
     } else {
         if ( ! inherits(x[[1]], "foehnix") )
-            stop("The first element on \"x\" has to be of class \"foehnix\".")
+            stop("the first element on \"x\" has to be of class \"foehnix\"")
         # Take xtra objects.
         xtra <- list()
         for ( i in 2:length(x) ) {
             if ( ! inherits(x[[i]], c("zoo", "foehnix")) )
-                stop(sprintf("Element x[[%d]] is neither a zoo object nor a foehnix object.", i))
+                stop(sprintf("input object %d is neither a zoo object nor a foehnix object", i))
             if ( inherits(x[[i]], "zoo") ) {
                 if ( ! is.null(dim(x[[i]])) )
-                    stop(sprintf("Only univariate zoo objects are allowed (x[[%d]]).", i))
-                if ( ! all(is.na(x[[i]])) ) { 
-                    if ( min(x[[i]], na.rm = TRUE) < 0 | max(x[[i]], na.rm = TRUE) > 1 )
-                        stop(sprintf("Values in (x[[%d]]) have to be within [0,1]!", i))
-                }
+                    stop(sprintf("only univariate zoo objects are allowed (input object %d)", i))
+                ##if ( ! all(is.na(x[[i]])) ) { 
+                ##    if ( min(x[[i]], na.rm = TRUE) < 0 | max(x[[i]], na.rm = TRUE) > 1 )
+                ##        stop(sprintf("Values in (x[[%d]]) have to be within [0,1]!", i))
+                ##}
             }
             # All fine? Store
             xtra[[i - 1]] <- x[[i]]
@@ -307,15 +307,14 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     }
 
     # Probabilities out of range?
-    tmp <- range(x$prob$prob, na.rm = TRUE)
-    if(!all(is.na(tmp))) {
-        if ( min(tmp) < 0 | max(tmp) > 1 )
+    if(!all(is.na(x$prob$prob))) {
+        if ( min(x$prob$prob, na.rm = TRUE) < 0 | max(x$prob$prob, na.rm = TRUE) > 1 )
             stop("probabilities outside range (have to be within 0-1)")
     }
     if(inherits(xtra, "list")) {
         range_check <- function(x) {
             if(inherits(x, "foehnix")) x <- x$prob$prob
-            if(all(is.na(x))) return(NA)
+            if(all(is.na(x))) return(FALSE)
             x <- range(x, na.rm = TRUE)
             return(min(x) < 0 | max(x) > 1)
         }

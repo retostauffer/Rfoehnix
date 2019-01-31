@@ -180,10 +180,7 @@ test_that("Testing tsplot.foehnix function", {
     expect_identical(unname(unlist(res[which(res$var == "ff"),])),
                      c("ff", "windspd", "#001122", "my wind speed"))
 
-    # tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
-    #                control = tsplot.control(...),
-    #                ..., ask = TRUE) {
-
+    # Plotting helper function for the tests
     tsplotfun <- function(x, ...) {
         pdf(file = tempfile())
         tsplot(x, ...)
@@ -210,8 +207,10 @@ test_that("Testing tsplot.foehnix function", {
     # Renaming ALL covariates. Should result in an error as none of the
     # subplots can be plotted anymore.
     modX <- mod0; modX$prob$prob <- NA
-    expect_error(tsplotfun(modX, start = start, end = end, t = "myt", rh = "myrh",
+    expect_silent(tsplotfun(modX, start = start, end = end, t = "myt", rh = "myrh",
               diff_t = "mydiff_t", dd = "mydd", ff = "myff", prob = "myprob", ask = FALSE))
+    tsplot(modX, start = start, end = end, t = "myt", rh = "myrh",
+              diff_t = "mydiff_t", dd = "mydd", ff = "myff", prob = "myprob", ask = FALSE)
 
     # Should result in an error as probabilities out of range
     modX$prob$prob <- 10

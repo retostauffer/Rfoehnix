@@ -4,8 +4,8 @@
 \alias{foehnix.reg.fit}
 \title{Fitting Regularized foehnix Mixture Model With Concomitant Model.}
 \usage{
-foehnix.reg.fit(y, logitX, family, switch = FALSE, maxit = 100L,
-  tol = 1e-05, verbose = TRUE, alpha = NULL, ...)
+foehnix.reg.fit(y, logitX, family, glmnet.control, switch = FALSE,
+  maxit = 100L, tol = 1e-05, verbose = TRUE, ...)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the
@@ -15,6 +15,9 @@ mixture model, dimension \code{N}.}
 for the concomitant model (logistic regression model matrix).}
 
 \item{family}{object of class \code{\link{foehnix.family}}.}
+
+\item{glmnet.control}{an object of class \code{\link[foehnix]{glmnet.control}}
+containing the arguments for the glmnet function.}
 
 \item{switch}{logical whether or not the two components should be switched.
 By default (\code{switch = FALSE}) the component which shows
@@ -33,8 +36,6 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 
 \item{verbose}{logical, default \code{TRUE}. If set to \code{FALSE}
 verbose output will be suppressed.}
-
-\item{alpha}{#TODO: currently unused.}
 
 \item{...}{additional arguments, unused.}
 }

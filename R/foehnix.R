@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-31 08:11 on marvin
+# - L@ST MODIFIED: 2019-01-31 16:16 on marvin
 # -------------------------------------------------------------------
 
 
@@ -168,7 +168,6 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #'        Check manual of \code{\link{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param alpha #TODO: currently unused.
 #' @param ... additional arguments, unused.
 #'
 #' @seealso
@@ -184,7 +183,7 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #' @import utils
 foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE,
-                    alpha = NULL, ...) {
+                    ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -304,9 +303,10 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #' @param tol numeric, or vector of length 2 containing numeric values.
 #'        Tolerance for the optimization (EM algorithm and concomitant model).
 #'        Check manual of \code{\link{foehnix.control}} for more details.
+#' @param glmnet.control an object of class \code{\link[foehnix]{glmnet.control}}
+#'        containing the arguments for the glmnet function.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param alpha #TODO: currently unused.
 #' @param ... additional arguments, unused.
 #'
 #' @seealso \code{\link{foehnix}}, \code{\link{foehnix.control}},
@@ -314,20 +314,98 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #' \code{\link{iwls_logit}}.
 #'
 #' @author Reto Stauffer
-#####foehnix.reg.fit <- function(formula, data, filter = NULL, family = "gaussian",
-#####                    maxit = 100L, tol = 1e-5, standardize = TRUE,
-#####                    alpha = NULL, nlambda = 100L, verbose = TRUE, ...) {
-foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
-                    maxit = 100L, tol = 1e-5, verbose = TRUE,
-                    alpha = NULL, ...) {
 
-    browser()
-    print("hallo from foehix.reg")
+foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
+                    maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
-    # penalized vcov
-    ####z <- logitX
-    ####d <- diag(rep(k$lambda.min, ncol(z)))
-    ####solve(t(z) %*% z) * (t(z) %*% z) * solve(t(z) %*% z + d)
+    require("glmnet")
+    # Lists to trace log-likelihood path and the development of
+    # the coefficients during EM optimization.
+    llpath   <- list()
+    coefpath <- list()
+    
+    # Given the initial probabilities: calculate parameters
+    # for the two components (mu1, logsd1, mu2, logsd2) given
+    # the selected family and calculate the a-posteriori probabilities.
+    z     <- if ( ! switch ) as.numeric(y >= mean(y)) else as.numeric(y <= mean(y))
+    theta <- family$theta(y, z, init = TRUE) # M-step
+
+    # Initial probability: fifty/fifty!
+    # Force standardize = FALSE. If required logitX has alreday been
+    # standardized in the parent function (foehnix).
+    ccmodel <- foehnix:::foehnix_glmnet(z, logitX, glmnet.control)
+
+    # Initial probabilites and prior probabilities
+    prob    <- plogis(drop(logitX %*% ccmodel$beta))
+    post    <- family$posterior(y, prob, theta)
+
+    # EM algorithm: estimate probabilities (prob; E-step), update the model
+    # given the new probabilities (M-step). Always with respect to the
+    # selected family.
+    iter <- 0L
+    while ( iter < maxit[1L] ) {
+        iter <- iter + 1L
+
+        # M-step: update probabilites and theta
+        ccmodel <- foehnix:::foehnix_glmnet(as.numeric(post >= 0.5), logitX, glmnet.control)
+
+        prob    <- plogis(drop(logitX %*% ccmodel$beta))
+        theta   <- family$theta(y, post, theta = theta)
+
+        # E-step: update expected a-posteriori
+        post    <- family$posterior(y, prob, theta)
+
+        # Store log-likelihood and coefficients of the current
+        # iteration.
+        llpath[[iter]]   <- family$loglik(y, post, prob, theta)
+        coefpath[[iter]] <- cbind(as.data.frame(theta),
+                                  as.data.frame(t(coef(ccmodel, which = "beta"))))
+        if ( verbose )
+            cat(sprintf("EM iteration %d/%d, ll = %10.2f\r", iter, maxit[1L], llpath[[iter]]))
+
+        # If the log-likelihood decreases: proceed!
+        if ( iter == 1 ) next
+
+        # If the log-likelihood improvement falls below the
+        # specified tolerance we assume that the algorithm
+        # converged: stop iteration.
+        if ( (llpath[[iter]]$full - llpath[[iter - 1]]$full) < tol[1L] ) {
+            llpath[[iter]]   <- NULL  # Removes last likelihood entry
+            coefpath[[iter]] <- NULL  # Removes last coefficient entry
+            iter <- iter - 1L; break  # Stop EM iterations.
+        }
+
+    }; if ( verbose ) cat("\n")
+
+    # Check if algorithm converged before maxit was reached
+    converged <- ifelse(iter < maxit[1L], TRUE, FALSE)
+
+    # Combine to data.frame (number of rows corresponds to iter + 1)
+    llpath    <- do.call(rbind, llpath)
+    coefpath  <- do.call(rbind, coefpath)
+
+    # In this case we have no concomitants, however, the log-likelihood
+    # contribution of the concomitants is not == 0 (as log(0) is set to
+    # log(sqrt(.Machine$double.eps)) to avoid -Inf). Fix this here.
+    #llpath$concomitant <- 0; llpath$full <- llpath$component
+
+    # Return a list with results
+    # TODO: Should we implement the binning?
+    ll   <- tail(llpath$full, 1)
+    rval <- list(prob       = prob,
+                 post       = post,
+                 theta      = theta,
+                 iter       = iter,
+                 loglik     = ll,
+                 edf        = ncol(coefpath),
+                 AIC        = - 2 * ll + 2 * ncol(coefpath),
+                 BIC        = - 2 * ll + log(length(y)) * ncol(coefpath),
+                 ccmodel    = ccmodel,
+                 loglikpath = llpath,
+                 coefpath   = coefpath)
+    class(rval) <- c("foehnix.noconcomitant.fit", "foehnix.fit")
+    # Return
+    return(rval)
 
 }
 
@@ -370,7 +448,6 @@ foehnix.reg.fit <- function(y, logitX, family, switch = FALSE,
 #'        will be used for the EM algorithm, the second one for the IWLS backfitting
 #'        procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
 #'        criteria.
-#' @param alpha TODO alpha parameter for the penalization of the concomitant model.
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently sent to hell.
 #'
@@ -406,7 +483,8 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
                             truncated = FALSE,  standardize = TRUE,
                             maxit = 100L, tol = 1e-8,
                             force.inflate = FALSE,
-                            alpha = NULL, verbose = TRUE, ...) {
+                            verbose = TRUE,
+                            glmnet.control = NULL, ...) {
 
     # "truncated" has to be logical
     stopifnot(inherits(truncated, "logical"))
@@ -416,6 +494,7 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
     stopifnot(inherits(standardize,   "logical"))
     stopifnot(inherits(verbose,       "logical"))
     stopifnot(inherits(force.inflate, "logical"))
+    stopifnot(inherits(glmnet.control, c("NULL", "glmnet.control")))
 
     # Checking limits for censoring/truncation.
     if ( any(!is.null(c(left, right))) ) {
@@ -464,7 +543,7 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
                  left = left, right = right, truncated = truncated,
                  standardize = standardize, maxit = maxit, tol = tol,
                  force.inflate = force.inflate,
-                 alpha = alpha, verbose = verbose)
+                 verbose = verbose, glmnet.control = glmnet.control)
     class(rval) <- c("foehnix.control")
     rval
 }
@@ -472,6 +551,50 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
 
 #' @export
 print.foehnix.control <- function(x, ...) str(x)
+
+
+#' Control Object to Allow for Regularized Concomitant Models
+#'
+#' \code{foehnix} allows to estimate regularized concomitant models
+#' based on the R package glmnet. The \code{\link[foehnix]{glmnet.control}}
+#' object controls, if specified, the glmnet input arguments.
+#'
+#' @param min a character, either \code{"AIC"}, \code{"BIC"}, or \code{"loglik"}.
+#'        Default is \code{"AIC"}.
+#' @details Note that the two input arguments \code{intercept} and
+#' \code{family} (to function \code{glmnet}) cannot be overruled by the
+#' foehnix user. In any case a binomial logit model with intercept will
+#' be estimated.
+#'
+#' @export
+#' @author Reto Stauffer
+glmnet.control <- function(min = "AIC", ...) {
+    input <- list(...)
+    # Family is fixed, will be ignored in all cases!
+    if("family" %in% names(input))
+        stop("\"family\" specification for glmnet.control not allowed (forced to binomial logit)")
+    if("intercept" %in% names(input))
+        stop("\"intercept\" specification for glmnet.control not allowed")
+
+
+    # Force binomial logit model
+    # Force intercept = FALSE as our input model matrix will already
+    # contain the intercept.
+    args <- list(...)
+    # Regualization
+    args$min <- match.arg(min, c("AIC", "BIC", "loglik"))
+    class(args) <- "glmnet.control"
+    return(args)
+}
+
+#' @export
+#' @author Reto Stauffer
+#' @rdname glmnet.control
+print.glmnet.control <- function(x, ...) {
+    cat("foehnix glmnet.control settings\n")
+    for(n in names(x))
+        cat(sprintf(" - %s = %s\n", n, as.character(x[[n]])))
+}
 
 
 #' Foehn Classification Based on a Two-Component Mixture Model
@@ -501,6 +624,8 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @param object a \code{foehnix} object (input to S3 methods)
 #' @param detailed boolean, default FALSE. If set to true, additional information
 #'        will be printed.
+#' @param glmnet.control a \code{\link[foehnix]{glmnet.control}}. If specified,
+#'        a regularized glmnet model will be estimated for the concomitant model.
 #'
 #' @return Returns an object of class \code{foehnix}.
 #'
@@ -721,13 +846,6 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     mf <- matrix(unlist(mf[idx_take,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
     y  <- y[idx_take]
 
-    # Check whether regularization is preferred over unpenalized
-#  regression estimation (only if lambda.min is "auto")
-#   if ( lambda.min == "auto" & ncol(mf) > 2 ) {
-#       tmp <- cor(na.omit(mf[,-1])); diag(tmp) <- 0
-#       if ( max(abs(tmp)) > .75 ) lambda.min <- "AIC"
-#   }
-
     # Helper function subsetting data. Avoids that the matrix
     # is reduced to a single vector if x is a single-column matrix
     # or zoo object.
@@ -742,13 +860,15 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
         if ( control$verbose ) cat("Calling foehnix.noconcomitant.fit\n")
         rval <- do.call("foehnix.noconcomitant.fit",
                         append(list(y = y), control))
-    } else if ( is.null(control$alpha) ) {
-        if ( control$verbose ) cat("Calling foehnix.unreg.fit\n")
-        rval <- do.call("foehnix.unreg.fit",
-                        append(list(y = y, logitX = logitX), control))
-    } else {
+    # Calling glmnet for the concomitant model
+    } else if ( inherits(control$glmnet.control, "glmnet.control") ) {
         if ( control$verbose ) cat("Calling foehnix.reg.fit\n")
         rval <- do.call("foehnix.reg.fit",
+                        append(list(y = y, logitX = logitX), control))
+    # Unregularized fit (standard fitting method)
+    } else {
+        if ( control$verbose ) cat("Calling foehnix.unreg.fit\n")
+        rval <- do.call("foehnix.unreg.fit",
                         append(list(y = y, logitX = logitX), control))
     }
     if ( control$verbose ) cat("Estimation finished, create final object\n")

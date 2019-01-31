@@ -5,7 +5,7 @@
 \title{Fitting Unregularized foehnix Mixture Model With Concomitant Model.}
 \usage{
 foehnix.unreg.fit(y, logitX, family, switch = FALSE, maxit = 100L,
-  tol = 1e-05, verbose = TRUE, alpha = NULL, ...)
+  tol = 1e-05, verbose = TRUE, ...)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the
@@ -33,8 +33,6 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 
 \item{verbose}{logical, default \code{TRUE}. If set to \code{FALSE}
 verbose output will be suppressed.}
-
-\item{alpha}{#TODO: currently unused.}
 
 \item{...}{additional arguments, unused.}
 }
