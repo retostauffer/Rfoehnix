@@ -66,7 +66,7 @@ zonal (u) und meridional (v) wind components." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -226,7 +226,13 @@ be used for computation) named 'ff' and 'dd'.</p></td>
 #&gt; 5  1.102549  3.845047  1.2915436
 #&gt; 6  2.087597 14.854021  1.4311700</div><div class='input'>
 <span class='co'>## Using with matrix</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ddff2uv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df</span>))))</div><div class='output co'>#&gt; <span class='error'>Error in dd[, 2]: incorrect number of dimensions</span></div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ddff2uv</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>as.matrix</a></span>(<span class='no'>df</span>))))</div><div class='output co'>#&gt;           u         v      rad
+#&gt; 1 -30.77093 -144.7658 4.502949
+#&gt; 2 -15.38677 -293.5971 4.660029
+#&gt; 3 -51.96369 -225.0795 4.485496
+#&gt; 4 -58.00736 -272.9032 4.502949
+#&gt; 5 -13.67227 -195.5226 4.642576
+#&gt; 6 -48.65798 -181.5941 4.450590</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

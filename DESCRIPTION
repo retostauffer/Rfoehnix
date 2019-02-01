@@ -1,7 +1,7 @@
 Package: foehnix
 Type: Package
 Title: Objectiv Foehn Diagnosis
-Version: 0.0.10
+Version: 0.1.00
 Date: 2019-01-19
 Authors@R: c(person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
                     email = "Reto.Stauffer@uibk.ac.at", comment = c(ORCID = "0000-0002-3798-5507")),

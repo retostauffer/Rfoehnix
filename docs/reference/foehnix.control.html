@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -156,7 +156,7 @@
 
     <pre class="usage"><span class='fu'>foehnix.control</span>(<span class='no'>family</span>, <span class='no'>switch</span>, <span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
   <span class='kw'>truncated</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>standardize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>,
-  <span class='kw'>force.inflate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>force.inflate</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>glmnet.control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -224,8 +224,9 @@ smallest time interval in the data set. If the inflation rate is larger than
 <code>force.inflate = TRUE</code>. See 'Details' section for more information.</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
-      <td><p>TODO alpha parameter for the penalization of the concomitant model.</p></td>
+      <th>glmnet.control</th>
+      <td><p>an object of class <code><a href='glmnet.control.html'>glmnet.control</a></code>
+containing the arguments for the glmnet function.</p></td>
     </tr>
     <tr>
       <th>verbose</th>

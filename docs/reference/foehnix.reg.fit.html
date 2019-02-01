@@ -66,7 +66,7 @@ Typically not called directly, interfaced via foehnix." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -156,8 +156,8 @@ Typically not called directly, interfaced via <code><a href='foehnix.html'>foehn
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>foehnix.reg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='no'>glmnet.control</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +175,11 @@ for the concomitant model (logistic regression model matrix).</p></td>
     <tr>
       <th>family</th>
       <td><p>object of class <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>glmnet.control</th>
+      <td><p>an object of class <code><a href='glmnet.control.html'>glmnet.control</a></code>
+containing the arguments for the glmnet function.</p></td>
     </tr>
     <tr>
       <th>switch</th>
@@ -201,10 +206,6 @@ Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> 
       <th>verbose</th>
       <td><p>logical, default <code>TRUE</code>. If set to <code>FALSE</code>
 verbose output will be suppressed.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>#TODO: currently unused.</p></td>
     </tr>
     <tr>
       <th>...</th>

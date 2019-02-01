@@ -67,7 +67,7 @@ the same information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -162,18 +162,21 @@ the same information.</p>
 
 <span class='co'># S3 method for foehnix</span>
 <span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>mfcol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>maxpp</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>...</span>)
+  <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>mfcol</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>maxpp</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>windrose</span>(<span class='no'>dd</span>, <span class='no'>ff</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>,
-  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</pre>
+<span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='no'>ff</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>,
+  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='no'>...</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>, see 'Details' section.</p></td>
+      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code> if the windrose plot is applied
+to a model, or a vector of wind directions for <code>windrose.default</code>
+(see 'Details' section).</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -209,12 +212,6 @@ the wind speed (or gust speed) data.</p></td>
 page the script loops trough.</p></td>
     </tr>
     <tr>
-      <th>dd</th>
-      <td><p>zoo object or a numeric vector with meteorological wind directions
-(<code>]0, 360[</code>, 0/360 is 'wind from north', 90 'wind from east',
-180 'wind from south', and 270 'wind from west'.</p></td>
-    </tr>
-    <tr>
       <th>ff</th>
       <td><p>zoo object or numeric vector with sind speed data (<code>&gt;= 0</code>).</p></td>
     </tr>
@@ -244,6 +241,12 @@ used at the moment). Hue(s) for <code><a href='https://www.rdocumentation.org/pa
 <code>type = "histogram"</code>. If <code>1</code> the alpha channel is linear
 for the whole range of <code>ff</code>, values <code>!= 1</code> change the
 alpha behaviour.</p></td>
+    </tr>
+    <tr>
+      <th>dd</th>
+      <td><p>zoo object or a numeric vector with meteorological wind directions
+(<code>]0, 360[</code>, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west'.</p></td>
     </tr>
     </table>
     

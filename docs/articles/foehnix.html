@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -211,7 +211,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.4 seconds
+## Time required for model estimation: 1.5 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
@@ -246,7 +246,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -40634.7, 6 effective degrees of freedom
 ## Corresponding AIC = 81281.3, BIC = 81328.0
-## Time required for model estimation: 1.4 seconds
+## Time required for model estimation: 1.5 seconds
 ## 
 ## ---------------------------------
 ## 
@@ -392,13 +392,6 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
 ## 2018-03-10 12:00:00       95    -1.7   1.67</code></pre>
 <p>Given our model we can now perform the classification on this new data set which has not been used for training the <code>foehnix</code> mixture model by calling:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(mod, <span class="dt">newdata =</span> test)</code></pre></div>
-<pre><code>## 
-## Foehnix Filter Object:
-## Call: foehnix_filter(x = newdata, filter = object$filter)
-## Total data set length:                10
-## The good (within filter):             10 (100.0 percent)
-## The bad (outside filter):              0 ( 0.0 percent)
-## The ugly (NA; missing values):         0 ( 0.0 percent)</code></pre>
 <pre><code>##                          prob flag
 ## 2018-03-10 03:00:00 0.9919772    1
 ## 2018-03-10 04:00:00 0.9967549    1

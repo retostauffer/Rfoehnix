@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meteorological Observation Data, Station Sattelberg — sattelberg • foehnix</title>
+<title>Wrapper Function Around glmnet Logistic Regression — foehnix_glmnet • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,14 +32,17 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Meteorological Observation Data, Station Sattelberg — sattelberg" />
+<meta property="og:title" content="Wrapper Function Around glmnet Logistic Regression — foehnix_glmnet" />
 
-<meta property="og:description" content="The foehnix package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
-Ellboegen (see ellboegen), a small town close to Innsbruck,
-the second station (Sattelberg) is located south of Ellboegen close to the
-border between Austria and Italy on top of a mountain close to the crest of
-the European Alps and is used as 'crest station'." />
+<meta property="og:description" content="The foehnix function allows to estimate
+a regularized logistic regression model for the concomitants.
+In case glmnet.control is provided the
+EM algorithm uses this function to estimate the regression coefficients
+of the concomitant model. glmnet.control allows
+to specify options forwarded to glmnet::glmnet except 
+family (&quot;binomial&quot;) and intercept (TRUE).
+Depending on glmnet.control the AIC, BIC, or
+log-likelihood criterion will be used." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -148,63 +151,58 @@ the European Alps and is used as 'crest station'." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Meteorological Observation Data, Station Sattelberg</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/datasets.R'><code>R/datasets.R</code></a></small>
-    <div class="hidden name"><code>sattelberg.Rd</code></div>
+    <h1>Wrapper Function Around glmnet Logistic Regression</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_glmnet.R'><code>R/foehnix_glmnet.R</code></a></small>
+    <div class="hidden name"><code>foehnix_glmnet.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
-Ellboegen (see <code><a href='ellboegen.html'>ellboegen</a></code>), a small town close to Innsbruck,
-the second station (Sattelberg) is located south of Ellboegen close to the
-border between Austria and Italy on top of a mountain close to the crest of
-the European Alps and is used as 'crest station'.</p>
+    <p>The <code><a href='foehnix.html'>foehnix</a></code> function allows to estimate
+a regularized logistic regression model for the concomitants.
+In case <code><a href='glmnet.control.html'>glmnet.control</a></code> is provided the
+EM algorithm uses this function to estimate the regression coefficients
+of the concomitant model. <code><a href='glmnet.control.html'>glmnet.control</a></code> allows
+to specify options forwarded to <code><a href='https://www.rdocumentation.org/packages/glmnet/topics/glmnet'>glmnet::glmnet</a></code> except 
+family (<code>"binomial"</code>) and intercept (<code>TRUE</code>).
+Depending on <code><a href='glmnet.control.html'>glmnet.control</a></code> the AIC, BIC, or
+log-likelihood criterion will be used.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>)</pre>
-        
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>Station operated by the Department of Atmospheric and Cryospheric
-Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
-The data is available under the
-<a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
+    <pre class="usage"><span class='fu'>foehnix_glmnet</span>(<span class='no'>y</span>, <span class='no'>x</span>, <span class='no'>arg</span>)</pre>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Sattelberg:</p><ul>
-<li><p>Location: 11.47889 E/47.01083 N</p></li>
-<li><p>Altitude: 2107 meters above mean sea level</p></li>
-</ul>
-    <p>Variable description (columns):</p><ul>
-<li><p><code>timestamp</code>: UNIX time stamp, seconds since 1970-01-01 00:00:00</p></li>
-<li><p><code>dd</code>: wind direction in degrees, meteorological format
-       (0/360 correspond to 'wind from north', 90 to 'wind from east',
-       180 'wind from south', and 270 'wind from west'</p></li>
-<li><p><code>ff</code>: wind speed in meters per second</p></li>
-<li><p><code>p</code>: station pressure in hectopascal</p></li>
-<li><p><code>rh</code>: relative humidity in percent</p></li>
-<li><p><code>t</code>: dry air temperature in degrees Celsius</p></li>
-</ul>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>y</th>
+      <td><p>response vector (binary)</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>design matrix. If a column <code>"(Intercept)"</code> exists it will be
+dropped (as we force glmnet to estimate an intercept).</p></td>
+    </tr>
+    <tr>
+      <th>arg</th>
+      <td><p>list of arguments forwarded to <code><a href='https://www.rdocumentation.org/packages/glmnet/topics/glmnet'>glmnet::glmnet</a></code>.</p></td>
+    </tr>
+    </table>
     
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p><code><a href='ellboegen.html'>ellboegen</a></code>, <code><a href='demodata.html'>demodata</a></code>.</p></div>
+    <p>Returns an object of class <code>ccmodel</code> for <code><a href='foehnix.html'>foehnix</a></code>
+models.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#source">Source</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
 
     <h2>Author</h2>

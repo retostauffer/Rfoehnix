@@ -67,7 +67,7 @@ concomitant model of the two-component foehnix mixture models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -165,6 +165,18 @@ concomitant model of the two-component foehnix mixture models.</p>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>object</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"coef"</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for ccmodel</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/logLik'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for ccmodel</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>AIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for ccmodel</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>BIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for ccmodel</span>
+<span class='fu'><a href='edf.html'>edf</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for ccmodel</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -210,8 +222,14 @@ containing the concomitant variables will be standardized.</p></td>
       <td><p>currently unused.</p></td>
     </tr>
     <tr>
-      <th>object, which</th>
-      <td><p>control the <code>coef</code> method.</p></td>
+      <th>object</th>
+      <td><p>object of type <code>ccmodel</code> (S3 methods).</p></td>
+    </tr>
+    <tr>
+      <th>which</th>
+      <td><p>character, defines whether the coefficients should be returned on
+the original scale (<code>which = "coef"</code>) or the standardized scale
+(<code>which = "beta"</code>; identical if <code>standardize</code> was <code>FALSE</code>).</p></td>
     </tr>
     </table>
     

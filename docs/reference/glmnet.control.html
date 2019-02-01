@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meteorological Observation Data, Station Sattelberg — sattelberg • foehnix</title>
+<title>Control Object to Allow for Regularized Concomitant Models — glmnet.control • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,14 +32,11 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Meteorological Observation Data, Station Sattelberg — sattelberg" />
+<meta property="og:title" content="Control Object to Allow for Regularized Concomitant Models — glmnet.control" />
 
-<meta property="og:description" content="The foehnix package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
-Ellboegen (see ellboegen), a small town close to Innsbruck,
-the second station (Sattelberg) is located south of Ellboegen close to the
-border between Austria and Italy on top of a mountain close to the crest of
-the European Alps and is used as 'crest station'." />
+<meta property="og:description" content="foehnix allows to estimate regularized concomitant models
+based on the R package glmnet. The glmnet.control
+object controls, if specified, the glmnet input arguments." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -148,67 +145,62 @@ the European Alps and is used as 'crest station'." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Meteorological Observation Data, Station Sattelberg</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/datasets.R'><code>R/datasets.R</code></a></small>
-    <div class="hidden name"><code>sattelberg.Rd</code></div>
+    <h1>Control Object to Allow for Regularized Concomitant Models</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_glmnet.R'><code>R/foehnix_glmnet.R</code></a></small>
+    <div class="hidden name"><code>glmnet.control.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
-Ellboegen (see <code><a href='ellboegen.html'>ellboegen</a></code>), a small town close to Innsbruck,
-the second station (Sattelberg) is located south of Ellboegen close to the
-border between Austria and Italy on top of a mountain close to the crest of
-the European Alps and is used as 'crest station'.</p>
+    <p><code>foehnix</code> allows to estimate regularized concomitant models
+based on the R package glmnet. The <code>glmnet.control</code>
+object controls, if specified, the glmnet input arguments.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>)</pre>
-        
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+    <pre class="usage"><span class='fu'>glmnet.control</span>(<span class='kw'>min</span> <span class='kw'>=</span> <span class='st'>"AIC"</span>, <span class='no'>...</span>)
 
-    <p>Station operated by the Department of Atmospheric and Cryospheric
-Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
-The data is available under the
-<a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
+<span class='co'># S3 method for glmnet.control</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>min</th>
+      <td><p>a character, either <code>"AIC"</code>, <code>"BIC"</code>, or <code>"loglik"</code>.
+Default is <code>"AIC"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments forwarded to <code><a href='https://www.rdocumentation.org/packages/glmnet/topics/glmnet'>glmnet::glmnet</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>an object of class <code>glmnet.control</code> (print method).</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Sattelberg:</p><ul>
-<li><p>Location: 11.47889 E/47.01083 N</p></li>
-<li><p>Altitude: 2107 meters above mean sea level</p></li>
-</ul>
-    <p>Variable description (columns):</p><ul>
-<li><p><code>timestamp</code>: UNIX time stamp, seconds since 1970-01-01 00:00:00</p></li>
-<li><p><code>dd</code>: wind direction in degrees, meteorological format
-       (0/360 correspond to 'wind from north', 90 to 'wind from east',
-       180 'wind from south', and 270 'wind from west'</p></li>
-<li><p><code>ff</code>: wind speed in meters per second</p></li>
-<li><p><code>p</code>: station pressure in hectopascal</p></li>
-<li><p><code>rh</code>: relative humidity in percent</p></li>
-<li><p><code>t</code>: dry air temperature in degrees Celsius</p></li>
-</ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='ellboegen.html'>ellboegen</a></code>, <code><a href='demodata.html'>demodata</a></code>.</p></div>
+    <p>Note that the two input arguments <code>intercept</code> and
+<code>family</code> (to function <code>glmnet</code>) cannot be overruled by the
+foehnix user. In any case a binomial logit model with intercept will
+be estimated.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#source">Source</a></li>
-
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
     <h2>Author</h2>
     <p>Reto Stauffer</p>
+<p>Reto Stauffer</p>
   </div>
 </div>
 
