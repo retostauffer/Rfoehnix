@@ -11,11 +11,14 @@ windrose(x, ...)
 \method{windrose}{foehnix}(x, type = NULL, which = NULL,
   ddvar = "dd", ffvar = "ff", mfcol = 2L, maxpp = Inf, ...)
 
-\method{windrose}{default}(dd, ff, interval = 10, type = "density",
-  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5)
+\method{windrose}{default}(x, ff, interval = 10, type = "density",
+  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5,
+  ..., dd = NULL)
 }
 \arguments{
-\item{x}{object of class \code{\link{foehnix}}, see 'Details' section.}
+\item{x}{object of class \code{\link{foehnix}} if the windrose plot is applied
+to a model, or a vector of wind directions for \code{windrose.default}
+(see 'Details' section).}
 
 \item{...}{forwarded to the windrose methods.}
 
@@ -36,10 +39,6 @@ the wind speed (or gust speed) data.}
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}
 
-\item{dd}{zoo object or a numeric vector with meteorological wind directions
-(\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
-180 'wind from south', and 270 'wind from west'.}
-
 \item{ff}{zoo object or numeric vector with sind speed data (\code{>= 0}).}
 
 \item{interval}{numeric, a fraction of 360. If 360 cannot be devided by
@@ -58,6 +57,10 @@ used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
 \code{type = "histogram"}. If \code{1} the alpha channel is linear
 for the whole range of \code{ff}, values \code{!= 1} change the
 alpha behaviour.}
+
+\item{dd}{zoo object or a numeric vector with meteorological wind directions
+(\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west'.}
 }
 \description{
 foehnix Mixture Model Windrose Plot

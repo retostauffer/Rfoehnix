@@ -88,9 +88,6 @@ a gray scale color map is used.}
 concours should be added.}
 
 \item{contour.col}{color for the contour lines, only used if \code{contours = TRUE}.}
-
-\item{glmnet.control}{a \code{\link[foehnix]{glmnet.control}}. If specified,
-a regularized glmnet model will be estimated for the concomitant model.}
 }
 \value{
 Returns an object of class \code{foehnix}.

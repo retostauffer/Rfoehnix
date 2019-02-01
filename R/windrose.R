@@ -1,7 +1,7 @@
 
 
 # Some global variable(s) to make R CMD check happy
-utils::globalVariables("prob")
+utils::globalVariables(c("prob", "maxpp"))
 
 
 #' Windrose Plot for foehnix Mixture Models and Observations
@@ -10,7 +10,9 @@ utils::globalVariables("prob")
 #'
 #' Windrose plot based on a \code{\link{foehnix}} mixture model object.
 #'
-#' @param x object of class \code{\link{foehnix}}, see 'Details' section.
+#' @param x object of class \code{\link{foehnix}} if the windrose plot is applied
+#'        to a model, or a vector of wind directions for \code{windrose.default}
+#'        (see 'Details' section).
 #' @param ... forwarded to the windrose methods.
 #' @param type \code{NULL} or character, one of \code{density} or \code{histogram}.
 #'        If \code{NULL} both types will be plotted.
@@ -130,7 +132,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 
     # Input argument maxpp
     if ( !maxpp == Inf ) {
-        if ( maxapp == -Inf ) stop("maxapp is not finite")
+        if ( maxpp == -Inf ) stop("maxpp is not finite")
         if ( inherits(maxpp, "numeric") ) { maxpp <- as.integer(maxpp) }
         stopifnot(inherits(maxpp, "integer"))
         stopifnot(maxpp > 0)
@@ -255,8 +257,13 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 
 #TODO: Merge docstring of windrose and windrose.default and windrose.foehnix,
 # tricky to keep track of duplicates and missings as it is.
-windrose.default <- function(dd, ff, interval = 10, type = "density", 
-    windsector = NULL, main = NULL, hue = c(10,100), power = .5) {
+windrose.default <- function(x, ff, interval = 10, type = "density", 
+    windsector = NULL, main = NULL, hue = c(10,100), power = .5, ..., dd = NULL) {
+
+    # If "x" is missing we need "dd"
+    if(missing(x)) x <- dd
+    if(is.null(x)) stop("either \"x\" or \"dd\" have to be specified")
+    dd <- x
 
     # Check "dd" values
     if ( ! length(dd) == length(ff) )

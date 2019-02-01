@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-31 16:16 on marvin
+# - L@ST MODIFIED: 2019-02-01 10:08 on marvin
 # -------------------------------------------------------------------
 
 
@@ -318,7 +318,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
                     maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
-    require("glmnet")
+    requireNamespace("glmnet")
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
     llpath   <- list()
@@ -333,7 +333,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
     # Initial probability: fifty/fifty!
     # Force standardize = FALSE. If required logitX has alreday been
     # standardized in the parent function (foehnix).
-    ccmodel <- foehnix:::foehnix_glmnet(z, logitX, glmnet.control)
+    ccmodel <- foehnix_glmnet(z, logitX, glmnet.control)
 
     # Initial probabilites and prior probabilities
     prob    <- plogis(drop(logitX %*% ccmodel$beta))
@@ -347,7 +347,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
         iter <- iter + 1L
 
         # M-step: update probabilites and theta
-        ccmodel <- foehnix:::foehnix_glmnet(as.numeric(post >= 0.5), logitX, glmnet.control)
+        ccmodel <- foehnix_glmnet(as.numeric(post >= 0.5), logitX, glmnet.control)
 
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
         theta   <- family$theta(y, post, theta = theta)
@@ -448,6 +448,8 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
 #'        will be used for the EM algorithm, the second one for the IWLS backfitting
 #'        procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
 #'        criteria.
+#' @param glmnet.control an object of class \code{\link[foehnix]{glmnet.control}}
+#'        containing the arguments for the glmnet function.
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently sent to hell.
 #'
@@ -483,8 +485,8 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
                             truncated = FALSE,  standardize = TRUE,
                             maxit = 100L, tol = 1e-8,
                             force.inflate = FALSE,
-                            verbose = TRUE,
-                            glmnet.control = NULL, ...) {
+                            glmnet.control = NULL,
+                            verbose = TRUE, ...) {
 
     # "truncated" has to be logical
     stopifnot(inherits(truncated, "logical"))
@@ -553,49 +555,6 @@ foehnix.control <- function(family, switch, left = -Inf, right = Inf,
 print.foehnix.control <- function(x, ...) str(x)
 
 
-#' Control Object to Allow for Regularized Concomitant Models
-#'
-#' \code{foehnix} allows to estimate regularized concomitant models
-#' based on the R package glmnet. The \code{\link[foehnix]{glmnet.control}}
-#' object controls, if specified, the glmnet input arguments.
-#'
-#' @param min a character, either \code{"AIC"}, \code{"BIC"}, or \code{"loglik"}.
-#'        Default is \code{"AIC"}.
-#' @details Note that the two input arguments \code{intercept} and
-#' \code{family} (to function \code{glmnet}) cannot be overruled by the
-#' foehnix user. In any case a binomial logit model with intercept will
-#' be estimated.
-#'
-#' @export
-#' @author Reto Stauffer
-glmnet.control <- function(min = "AIC", ...) {
-    input <- list(...)
-    # Family is fixed, will be ignored in all cases!
-    if("family" %in% names(input))
-        stop("\"family\" specification for glmnet.control not allowed (forced to binomial logit)")
-    if("intercept" %in% names(input))
-        stop("\"intercept\" specification for glmnet.control not allowed")
-
-
-    # Force binomial logit model
-    # Force intercept = FALSE as our input model matrix will already
-    # contain the intercept.
-    args <- list(...)
-    # Regualization
-    args$min <- match.arg(min, c("AIC", "BIC", "loglik"))
-    class(args) <- "glmnet.control"
-    return(args)
-}
-
-#' @export
-#' @author Reto Stauffer
-#' @rdname glmnet.control
-print.glmnet.control <- function(x, ...) {
-    cat("foehnix glmnet.control settings\n")
-    for(n in names(x))
-        cat(sprintf(" - %s = %s\n", n, as.character(x[[n]])))
-}
-
 
 #' Foehn Classification Based on a Two-Component Mixture Model
 #'
@@ -624,8 +583,6 @@ print.glmnet.control <- function(x, ...) {
 #' @param object a \code{foehnix} object (input to S3 methods)
 #' @param detailed boolean, default FALSE. If set to true, additional information
 #'        will be printed.
-#' @param glmnet.control a \code{\link[foehnix]{glmnet.control}}. If specified,
-#'        a regularized glmnet model will be estimated for the concomitant model.
 #'
 #' @return Returns an object of class \code{foehnix}.
 #'
