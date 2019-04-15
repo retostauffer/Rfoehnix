@@ -146,16 +146,6 @@ following condition is used:
           (e.g., \code{windsector = c(270, 90)} for north wind sector).
 }
 
-TODO: Details for lambda. If \code{"auto"} the default is \code{"loglik"}
-except that the correlation between two or more covariates used in
-\code{formula} exceeds \code{0.75} (both positive or negative). In this case
-\code{lambda.min = "AIC"} will be used automatically with additional
-regularization.  If \code{lambda.min = "loglik"} an unpenalized estimate
-will be returned.  If \code{lambda.min} is either AIC or BIC a ridge penalty
-(L2 penalty) is used. A fixed set of penalties will be tested. The one
-minimising either the AIC or BIC criteria will be used for the foehn
-classification model.
-
 Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 series object of the \code{\link{foehnix}} classification. Different plot
 types are available. The default functions (see list below) use \code{na.rm = TRUE}.

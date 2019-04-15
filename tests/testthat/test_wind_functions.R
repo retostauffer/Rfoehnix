@@ -22,7 +22,7 @@ test_that("Testing uv2ddff foehnix wind conversion support functions", {
     expect_identical(uv2ddff(as.numeric(uv$u), as.numeric(uv$v)),         ddff)
     expect_identical(uv2ddff(u = as.numeric(uv$u), v = as.numeric(uv$v)), ddff)
     expect_identical(uv2ddff(v = as.numeric(uv$v), u = as.numeric(uv$u)), ddff)
-    expect_identical(uv2ddff(zoo::zoo(uv, seq.int(nrow(uv)))),            ddff)
+    expect_identical(uv2ddff(zoo::zoo(uv)), zoo::zoo(ddff))
 
     # Unnamed matrix
     tmp <- as.matrix(uv); colnames(tmp) <- NULL
@@ -73,7 +73,7 @@ test_that("Testing ddff2uv foehnix wind conversion support functions", {
     expect_identical(ddff2uv(as.numeric(ddff$dd), as.numeric(ddff$ff)),           uv)
     expect_identical(ddff2uv(dd = as.numeric(ddff$dd), ff = as.numeric(ddff$ff)), uv)
     expect_identical(ddff2uv(ff = as.numeric(ddff$ff), dd = as.numeric(ddff$dd)), uv)
-    expect_identical(ddff2uv(zoo::zoo(ddff, seq.int(nrow(ddff)))),        uv)
+    expect_identical(ddff2uv(zoo::zoo(ddff)), zoo::zoo(uv))
 
     # Unnamed matrix
     tmp <- as.matrix(ddff); colnames(tmp) <- NULL

@@ -1,8 +1,7 @@
 
 # TODO
 
-* Regularized probability models (based on glmnet).
-* Tests.
+* Regularized probability models (based on glmnet): implemented, test
 * There is one import ":::" (cgaussian family) in one of the
   examples -> illegal!
 * A separate `windrose` vignette might be nice.
@@ -10,15 +9,36 @@
   Similar for `foehnix` models given the user-defined `dd`, `ff`
   names.
 
-# foehnix 0.0-10 (upcoming)
+# foehnix 0.1-1 (April 2019)
+
+* `uv2ddff` and `ff2dduv` now return a `zoo` object if the input
+    is a single `zoo` object (`uv2ddff(data)` or `ddff2uv(data)` where `data`
+    is of class `zoo`).
+* Checking for constant values: new check on main variable (after applying
+    the filter). The check for multiple constants for the concomitant model
+    is now performed on the `logitX` model.matrix.
+* Removed custom LASSO option (`lambda`) from the `foehnix` interface.
+    `iwls_logit` would, technically, allow for iterative penalized
+    estimates but is rather slow. Thus, an experimental control argument
+    for regularized estimates based on the `glmnet` package has been
+    implemented (see \code{\link{foehnix.control}}/\code{\link{glmnet.control}}).
+* `windrose.default` allows for custom data filters (using the foehnix filter
+    method) and custom variable names for wind direction and wind speed
+    (`var.dd`/`var.ff`). Default `var.dd = "dd"` and `var.ff = "ff"`.
+    Custom filters only allowed with multivariate objects (zoo or data.frame).
+
+# foehnix 0.1-0 (January 2019)
 
 * `windrose` allows to specify custom names.
 * `tsplot` allows to specify custom variable names (rename defaults).
    Requires some more testing.
 * `foehnix` objects (returned by `foehnix`) contain a new element
    `nobs`, the number of elements used for classification.
-   Could also be computed from the filter 'good' and 'ugly'.
-   This is just for convenience.
+   Note that this is _not_ the same information as provided by
+   the `good`, the `bad`, and the `ugly` from the foehnix filter
+   (the `filter_obj` only contains information based on the variables
+   used with the filter, not on the covariates used for the `foehnix`
+   model).
 
 # foehnix 0.0-9
 
@@ -38,7 +58,7 @@
 * foehnix will stop if the data set is not regular (note: regular is not
   "strictly regular", but is one requirement to create a strictly regular
   time series (inflate feature).
-* Fixed an issue with foehnix_filter where observations (rows) where not
+* Fixed an issue with `foehnix_filter` where observations (rows) where not
   all elements have been NA have been treated as "outside wind sector"
   rather than "not all observations available" (FALSE has been returned
   instead of NA; now an NA will be returned by if multiple filters are

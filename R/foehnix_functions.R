@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-31 08:23 on marvin
+# - L@ST MODIFIED: 2019-04-15 13:57 on marvin
 # -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
@@ -312,8 +312,13 @@ print.summary.foehnix <- function(x, ...) {
     mean_prob <- 100 * mean(x$prob$prob[!is.na(x$prob$flag)])
 
     # Additional information about the data/model
-    cat(sprintf("\nNumber of observations (total) %8d (%d due to inflation)\n",
-                nrow(x$prob), x$inflated))
+    if (x$inflated) {
+        cat(sprintf("\nNumber of observations (total) %8d (%d due to inflation)\n",
+                    nrow(x$prob), x$inflated))
+    } else {
+        cat(sprintf("\nNumber of observations (total) %8d (no inflation)\n",
+                    nrow(x$prob), x$inflated))
+    }
     cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
                 sum_na, sum_na / nrow(x$prob) * 100))
     cat(sprintf("Outside defined wind sector    %8d (%3.1f percent)\n", 
@@ -624,13 +629,14 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
             # Combine the data
             res <- return(do.call(rbind, res))
 
-            # And shrink them. We don't need 9 times the data,
-            # cut the parts to far off the plotted area.
-            res <- subset(res, time_mid > -3600 &
-                               time_mid < (86400 + 3600) &
-                               yday_mid > -10 &
-                               yday_mid < (364 + 10))
-            return(res)
+            #TODO This never happens so far ...
+            ### And shrink them. We don't need 9 times the data,
+            ### cut the parts to far off the plotted area.
+            ##res <- subset(res, time_mid > -3600 &
+            ##                   time_mid < (86400 + 3600) &
+            ##                   yday_mid > -10 &
+            ##                   yday_mid < (364 + 10))
+            ##return(res)
         }
 
         # Expand the data set to get  cyclic bounds

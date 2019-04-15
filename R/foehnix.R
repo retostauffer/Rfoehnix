@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-02-01 10:08 on marvin
+# - L@ST MODIFIED: 2019-04-15 14:26 on marvin
 # -------------------------------------------------------------------
 
 
@@ -79,7 +79,7 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 
         # M-step: update probabilites and theta
         prob  <- mean(post)
-        theta <- family$theta(y, post, theta = theta)
+        theta <- family$theta(y, post)
 
         # E-step: calculate a-posteriori probability
         post  <- family$posterior(y, mean(prob), theta)
@@ -216,7 +216,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
         ccmodel <- iwls_logit(logitX, post, beta = ccmodel$beta, standardize = FALSE,
                               maxit = tail(maxit, 1L), tol = tail(tol, 1L))
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
-        theta   <- family$theta(y, post, theta = theta)
+        theta   <- family$theta(y, post)
 
         # E-step: update expected a-posteriori
         post    <- family$posterior(y, prob, theta)
@@ -350,7 +350,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
         ccmodel <- foehnix_glmnet(as.numeric(post >= 0.5), logitX, glmnet.control)
 
         prob    <- plogis(drop(logitX %*% ccmodel$beta))
-        theta   <- family$theta(y, post, theta = theta)
+        theta   <- family$theta(y, post)
 
         # E-step: update expected a-posteriori
         post    <- family$posterior(y, prob, theta)
@@ -633,16 +633,6 @@ print.foehnix.control <- function(x, ...) str(x)
 #'           (e.g., \code{windsector = c(270, 90)} for north wind sector).
 #' }
 #' 
-#' TODO: Details for lambda. If \code{"auto"} the default is \code{"loglik"}
-#' except that the correlation between two or more covariates used in
-#' \code{formula} exceeds \code{0.75} (both positive or negative). In this case
-#' \code{lambda.min = "AIC"} will be used automatically with additional
-#' regularization.  If \code{lambda.min = "loglik"} an unpenalized estimate
-#' will be returned.  If \code{lambda.min} is either AIC or BIC a ridge penalty
-#' (L2 penalty) is used. A fixed set of penalties will be tested. The one
-#' minimising either the AIC or BIC criteria will be used for the foehn
-#' classification model.
-#' 
 #' @references Plavcan D, Mayr GJ, Zeileis A (2014).
 #' Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
 #' \emph{Journal of Applied Meteorology and Climatology}.
@@ -776,12 +766,6 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
                        sprintf("(left = %d, right = %d)", control$family$left, control$family$right)))
     }
 
-    # Check if we have multiple columns with constant values.
-    # This would lead to a non-identifiable problem.
-    if( sum(apply(mf, 2, function(x) length(unique(na.omit(x)))) <= 1) > 1 )
-        stop("Multiple columns with constant values in model.matrix. Stop!")
-
-
     # Identify rows with missing values
     idx_notna <- which(!is.na(y) & apply(mf, 1, function(x) sum(is.na(x))) == 0)
 
@@ -802,6 +786,11 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # and, if a wind sector is given, with valid wind direction observations).
     mf <- matrix(unlist(mf[idx_take,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
     y  <- y[idx_take]
+    # If "y" is a simple constant: stop.
+    if (isTRUE(all.equal(sd(y), 0))) {
+        stop(sprintf("main variable \"%s\" is constant (after applying the filter). Stop.",
+                     colnames(mf)[1L]))
+    }
 
     # Helper function subsetting data. Avoids that the matrix
     # is reduced to a single vector if x is a single-column matrix
@@ -810,6 +799,10 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
         as.data.frame(matrix(x[idx,], ncol = ncol(x), dimnames = list(NULL, names(x))))
     # Setting up the model matrix for the concomitant model (logit model).
     logitX <- model.matrix(formula, data = subset_data(data, idx_take))
+    # Check if we have multiple columns with constant values.
+    # This would lead to a non-identifiable problem.
+    if( sum(apply(logitX, 2, function(x) length(unique(na.omit(x)))) <= 1) > 1 )
+        stop("Multiple columns with constant values in model matrix of the concomitant model. Stop!")
     if ( control$standardize ) logitX <- standardize(logitX)
 
     # Non-concomitant model

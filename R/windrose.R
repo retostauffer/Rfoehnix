@@ -257,21 +257,64 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 
 #TODO: Merge docstring of windrose and windrose.default and windrose.foehnix,
 # tricky to keep track of duplicates and missings as it is.
-windrose.default <- function(x, ff, interval = 10, type = "density", 
-    windsector = NULL, main = NULL, hue = c(10,100), power = .5, ..., dd = NULL) {
+windrose.default <- function(x, ff,
+                             interval = 10, type = "density", 
+                             windsector = NULL, main = NULL, hue = c(10,100),
+                             power = .5, ..., dd = NULL, filter = NULL,
+                             var.ff = "ff", var.dd = "dd") {
 
     # If "x" is missing we need "dd"
-    if(missing(x)) x <- dd
-    if(is.null(x)) stop("either \"x\" or \"dd\" have to be specified")
+    if (missing(x)) x <- dd
+    if (is.null(x)) stop("either \"x\" or \"dd\" have to be specified")
     dd <- x
 
+    # If an additional filter is set "x" has to be a multivariate
+    # object (zoo or data.frame). If not, stop.
+    if (!is.null(filter)) {
+        if (is.null(ncol(x))) {
+            stop("if a filter is set the first input argument",
+                 "needs to be a multivariate zoo object or a data.frame!")
+        }
+        # Apply foehnix filter. Takes care that the variables exist.
+        # Only take those flagged as "good".
+        filter_obj <- foehnix_filter(x, filter)
+        if(length(filter_obj$good) == 0)
+            stop("no data left after applying the filter")
+
+        # Subset the input "x", reduce data set to those flagged as "good"
+        x <- x[filter_obj$good, ]
+    } else {
+        filter_obj <- NULL
+    }
+
+    # If ff is missing but x is of class zoo or data.frame with
+    # at least two columns: try to find the corresponding variables
+    # needed on object 'x'
+    if (NCOL(x) > 1) {
+        if (!var.ff %in% names(x)) {
+            stop(sprintf("input \"x\" is a multi-column object, but cannot find var.ff = \"%s\"",
+                         var.ff))
+        } else if (!var.dd %in% names(x)) {
+            stop(sprintf("input \"x\" is a multi-column object, but cannot find var.dd = \"%s\"",
+                         var.dd))
+        }
+        # Overwrite dd/ff
+        dd <- x[, var.dd]
+        ff <- x[, var.ff]
+    }
+
     # Check "dd" values
-    if ( ! length(dd) == length(ff) )
+    if (!length(dd) == length(ff)) {
         stop("Unequal length of wind speed and wind direction values!")
-    if ( min(dd, na.rm = TRUE) < 0 | max(dd, na.rm = TRUE) > 360 )
+    } else if (min(dd, na.rm = TRUE) < 0 | max(dd, na.rm = TRUE) > 360) {
         stop("Wind direction not within the expected range of [0, 360]!")
-    if ( min(ff, na.rm = TRUE) < 0 )
+    } else if (min(ff, na.rm = TRUE) < 0) {
         stop("Got wind speeds below 0!")
+    } else if (isTRUE(all.equal(sd(ff), 0))) {
+        stop("variable ff is constant")
+    } else if (isTRUE(all.equal(sd(dd), 0))) {
+        stop("variable dd is constant")
+    }
 
     # Plot type
     type = match.arg(type, c("density", "histogram"))
@@ -405,7 +448,7 @@ windrose.default <- function(x, ff, interval = 10, type = "density",
 
     # If windsector is set: draw windsector
     # TODO: Not yte implemented
-    if ( ! is.null(windsector) ) {
+    if (!is.null(windsector)) {
         lines(c(0, windsector[1,1]), c(0, windsector[1,2]))
         lines(c(0, windsector[2,1]), c(0, windsector[2,2]))
     }
@@ -431,15 +474,21 @@ windrose.default <- function(x, ff, interval = 10, type = "density",
             text(x1, (y0+y1)/2, sprintf("%d", tab$legend$level[i]), pos = 4)
         }
     }
-    text(x0, -mean(tail(at, 2)), pos = 4, sprintf("N = %d", nrow(data)))
+    msg <- if(is.null(filter)) {
+               sprintf("N = %d", nrow(data))
+           } else {
+               sprintf("N = %d/%d\ncustom data filter", nrow(data), filter_obj$total)
+           }
+    text(x0, -mean(tail(at, 2)), pos = 4, msg)
 
     # Invisible return of some properties, mainly for testing.
-    invisible(list(xlim     = xlim,
-                   counts   = counts,
-                   interval = interval,
-                   ff.breaks = ff.breaks,
-                   dd.breaks = dd.breaks,
-                   tab      = tab))
+    invisible(list(xlim       = xlim,
+                   counts     = counts,
+                   interval   = interval,
+                   ff.breaks  = ff.breaks,
+                   filter_obj = filter_obj,
+                   dd.breaks  = dd.breaks,
+                   tab        = tab))
 
 }
 

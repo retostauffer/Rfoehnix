@@ -22,9 +22,10 @@ there have to be at least two columns (only those two will
 be used for computation) named 'ff' and 'dd'.}
 }
 \value{
-Returns a data.frame containing the \code{u} and \code{v} components
-        of the data. In addition, \code{rad} (mathematical representation
-        of wind direction in radiant) is returned.
+Returns a data.frame or zoo object (depending on input \code{ff})
+containing the \code{u} and \code{v} components
+of the data. In addition, \code{rad} (mathematical representation
+of wind direction in radiant) is returned.
 }
 \description{
 Converting wind direction (dd) and wind speed (ff) into 
@@ -56,10 +57,23 @@ print(head(ddff2uv(df)))
 ## Using with matrix
 print(head(ddff2uv(as.matrix(df))))
 
+## Use with zoo
+library("zoo")
+set.seed(100)
+Sys.setenv("TZ" = "UTC")
+data <- zoo(data.frame(dd = runif(20, 0, 360), ff = rnorm(20, .2, 2)^2),
+            as.POSIXct("2019-01-01 12:00") + 0:19 * 3600)
+data <- round(data,2)
+head(data)
+class(data)
+## Calculate dd/ff
+uv <- ddff2uv(data)
+head(uv)
+class(uv)
 }
 \seealso{
 uv2ddff
 }
 \author{
-Jakob Messner
+Jakob Messner, Reto Stauffer
 }

@@ -18,12 +18,13 @@ Iv input \code{u} is a single vector \code{v} has to be given.}
 direction in radiant rather than in degrees.}
 }
 \value{
-Returns a data.frame with two columns named \code{dd}
-   and \code{ff} containing wind speed (same physical unit as
-   input \code{u}/\code{v}) and wind direction. Wind direction
-   is either in meteorological degrees (0 from North, from 90 East,
-   180 from South, and 270 from West) or in mathematical radiant
-   if input \code{rad = TRUE}.
+Returns a data.frame or zoo object (depending on input
+object \code{u}) with two columns named \code{dd}
+and \code{ff} containing wind speed (same physical unit as
+input \code{u}/\code{v}) and wind direction. Wind direction
+is either in meteorological degrees (0 from North, from 90 East,
+180 from South, and 270 from West) or in mathematical radiant
+if input \code{rad = TRUE}.
 }
 \description{
 Takes U/V wind components as input and returns wind speed
@@ -36,19 +37,36 @@ The one with length 1 will be repeated.
 }
 \examples{
 ## Generate data.frame with u/v components for all 4 main wind directions
-data <- data.frame( name = c("N","E","S","W"),
-                    u    = c( 0, -1 , 0,  1 ),
-                    v    = c(-1,  0,  1,  0 ) )
+data <- data.frame(name = c("N","E","S","W"),
+                   u    = c( 0, -1 , 0,  1 ),
+                   v    = c(-1,  0,  1,  0 ))
 ## Use data.frame input
-ddff <- uv2ddff( data )
-cbind( data, ddff )
+ddff <- uv2ddff(data)
+cbind(data, ddff)
 ## Use u/v components as two separate vector inputs
-ddff <- uv2ddff( data$u, data$v )
-cbind( data, ddff )
+ddff <- uv2ddff(data$u, data$v)
+cbind(data, ddff)
 ## Radiant
-ddff <- uv2ddff( data, rad = TRUE )
-cbind( data, ddff )
+ddff <- uv2ddff(data, rad = TRUE)
+cbind(data, ddff)
+
+## Use with zoo
+library("zoo")
+set.seed(100)
+Sys.setenv("TZ" = "UTC")
+data <- zoo(data.frame(u = rnorm(20, 2, 5), v = rnorm(20, 0, 4)),
+            as.POSIXct("2019-01-01 12:00") + 0:19 * 3600)
+head(data)
+class(data)
+## Calculate dd/ff
+ddff <- uv2ddff(data)
+head(ddff)
+class(ddff)
+
 }
 \seealso{
 ddff2uv
+}
+\author{
+Jakob Messner, Reto Stauffer
 }
