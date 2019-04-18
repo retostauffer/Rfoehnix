@@ -67,7 +67,7 @@ the same information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -167,7 +167,7 @@ the same information.</p>
 <span class='co'># S3 method for default</span>
 <span class='fu'>windrose</span>(<span class='no'>x</span>, <span class='no'>ff</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>,
   <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='no'>...</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='no'>...</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>var.ff</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>var.dd</span> <span class='kw'>=</span> <span class='st'>"dd"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,7 +180,7 @@ to a model, or a vector of wind directions for <code>windrose.default</code>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>forwarded to the windrose methods.</p></td>
+      <td><p>forwarded to <code>windrose.default</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -223,7 +223,8 @@ for the segments along the wind direction <code>dd</code>. Default <code>10</cod
     </tr>
     <tr>
       <th>windsector</th>
-      <td><p>TODO: currently unused.</p></td>
+      <td><p>list, matrix, or data frame for highlighting one or multiple
+wind sectors. See 'Examples' ('Highlighting wind sectors').</p></td>
     </tr>
     <tr>
       <th>main</th>
@@ -240,13 +241,37 @@ used at the moment). Hue(s) for <code><a href='https://www.rdocumentation.org/pa
       <td><p>numeric <code>&gt;0</code>, power parameter for the alpha channel if 
 <code>type = "histogram"</code>. If <code>1</code> the alpha channel is linear
 for the whole range of <code>ff</code>, values <code>!= 1</code> change the
-alpha behaviour.</p></td>
+alpha behavior.</p></td>
     </tr>
     <tr>
       <th>dd</th>
-      <td><p>zoo object or a numeric vector with meteorological wind directions
-(<code>]0, 360[</code>, 0/360 is 'wind from north', 90 'wind from east',
-180 'wind from south', and 270 'wind from west'.</p></td>
+      <td><p>can be used if univariate objects or vectors are provided for
+wind speed and meteorological wind direction (see 'Details' section).</p></td>
+    </tr>
+    <tr>
+      <th>filter</th>
+      <td><p>a custom set of filter rules (see <code><a href='foehnix_filter.html'>foehnix_filter</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>var.ff</th>
+      <td><p>string, custom name of the wind speed variable in <code>x</code>
+if <code>x</code> is a multivariate object (see 'Details' section).</p></td>
+    </tr>
+    <tr>
+      <th>var.dd</th>
+      <td><p>string, custom name of the wind direction variable in <code>x</code>
+if <code>x</code> is a multivariate object (see 'Details' section).</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>either an univariate object (<code>numeric</code> vector or <code>zoo</code>)
+containing meteorological wind directions or a multivariate <code>zoo</code> or
+<code>data.frame</code> object containing both, wind speed and wind
+meteorological wind direction. More details provided in the 'Details' section.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>currently unused.</p></td>
     </tr>
     </table>
     
@@ -280,6 +305,35 @@ histograms for foehn and no foehn events), or <code>type = NULL</code> and <code
 By default (<code>type = NULL</code>, <code>which = NULL</code>) all combinations will be plotted.</p>
 <p>If <code>dd</code> and <code>ff</code> are set only the <code>type</code> argument is available
 (<code>type = "histogram"</code> or <code>type = "density"</code>).</p>
+<p>The <code>windrose</code> function can be used in different ways.
+The main purpose is to plot (conditional) wind roses for
+<code><a href='foehnix.html'>foehnix</a></code> objects (uses <code>windrose.foehnix</code>), but there is
+this generic <code>windrose.default</code> method which can be used to
+create wind roses on non-foehnix objects.</p>
+<p><code>windrose.default</code> can either with called with two univariate
+inputs for wind direction and wind speed, or with a multivariate <code>zoo</code>
+object or <code>data.frame</code> which provides both, wind speed and wind
+direction. Moreover, additional variables which can be used in combination
+with the <code>filter</code> option. Examples are provided in the example section.</p>
+<p>Univariate inputs/vectors: the <code>windrose.default</code> function requires both,
+wind direction and wind speed. If univariate objects/vectors are used at least
+the two inputs <code>dd</code> (identical to <code>x</code>) and <code>ff</code> have to be specified.
+<code>dd</code> (<code>x</code>) is the meteorological wind direction in degrees
+(<code>]0, 360[</code>, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west').
+<code>ff</code> has to be of the same length as <code>dd</code> containing the corresponding
+wind speed.</p>
+<p>Multivariate input: rather than providing <code>dd</code> (<code>x</code>) and <code>ff</code>
+a multivariate <code>zoo</code> object or <code>data.frame</code> can be provided when
+calling the function containing (at least) wind direction and wind speed. By
+default, the method expects the wind direction variable to be named
+<code>"dd"</code>, the wind speed named <code>"ff"</code>.  Custom names can be
+specified using the two input arguments <code>var.ff</code> and <code>var.dd</code>.</p>       
+<p>Custom filter: the optional <code>filter</code> input can be used if input
+<code>x</code> is a multivariate object and provides a convenient
+way to subset/filter the data. A detailed description how to define
+the filter rules can be found on the documentation page of 
+the <code><a href='foehnix_filter.html'>foehnix_filter</a></code> method.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -332,7 +386,94 @@ By default (<code>type = NULL</code>, <code>which = NULL</code>) all combination
                 <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter2</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>windrose</span>(<span class='no'>mod2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"foehn"</span>,
-         <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>)</div></pre>
+         <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>)
+
+<span class='co'># Loading observation data for station Ellboegen.</span>
+<span class='co'># The object returned is a zoo time series object</span>
+<span class='co'># containing (see ?ellboegen).</span>
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"Ellboegen"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/class'>class</a></span>(<span class='no'>data</span>)</div><div class='output co'>#&gt; [1] "zoo"</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>data</span>)</div><div class='output co'>#&gt;                      dd  ff     p rh    t
+#&gt; 2010-01-18 09:00:00 338 1.2 899.8 75 -0.9
+#&gt; 2010-01-18 10:00:00  18 0.1 899.9 66  0.2
+#&gt; 2010-01-18 11:00:00 344 0.8 899.1 63  0.7
+#&gt; 2010-01-18 12:00:00 303 2.4 898.8 60  0.7
+#&gt; 2010-01-18 13:00:00 292 2.8 898.5 57  1.9
+#&gt; 2010-01-18 14:00:00 316 1.6 898.6 70  0.3</div><div class='input'>
+<span class='co'># Extract dd/ff and create a windrose,</span>
+<span class='co'># using two vectors as input:</span>
+<span class='no'>dd</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>as.vector</a></span>(<span class='no'>data</span>$<span class='no'>dd</span>)
+<span class='no'>ff</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>as.vector</a></span>(<span class='no'>data</span>$<span class='no'>ff</span>)
+<span class='fu'>windrose</span>(<span class='no'>dd</span>, <span class='no'>ff</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUse vector inputs"</span>)</div><div class='img'><img src='windrose-5.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>windrose</span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='no'>dd</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='no'>ff</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUse vector inputs"</span>)
+
+<span class='co'># Additional wind sector highlighting</span>
+<span class='fu'>windrose</span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='no'>dd</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='no'>ff</span>, <span class='kw'>sector</span> <span class='kw'>=</span>  <span class='no'>...</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUse vector inputs"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): '...' used in an incorrect context</span></div><div class='input'>
+<span class='co'># Using univariate zoo objects as input:</span>
+<span class='fu'>windrose</span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='no'>data</span>$<span class='no'>dd</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='no'>data</span>$<span class='no'>ff</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUnivariate zoo objects as inputs"</span>)</div><div class='img'><img src='windrose-6.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Or specify a multivariate zoo object or data.frame</span>
+<span class='co'># object on input x:</span>
+<span class='fu'>windrose</span>(<span class='no'>data</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUse multivariate zoo object"</span>)</div><div class='img'><img src='windrose-7.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>windrose</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.data.frame'>as.data.frame</a></span>(<span class='no'>data</span>),
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nUse multivariate data.frame object"</span>)</div><div class='img'><img src='windrose-8.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Custom names for ff/dd</span>
+<span class='no'>copy</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>copy</span>)[<span class='fl'>1</span>:<span class='fl'>2</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"wind_dir"</span>, <span class='st'>"wind_spd"</span>)
+<span class='fu'>windrose</span>(<span class='no'>copy</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nMultivariate zoo, custom names"</span>,
+         <span class='kw'>var.dd</span> <span class='kw'>=</span> <span class='st'>"wind_dir"</span>, <span class='kw'>var.ff</span> <span class='kw'>=</span> <span class='st'>"wind_spd"</span>)</div><div class='img'><img src='windrose-9.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Custom filter: for details, see ?foehnix_filter</span>
+<span class='co'># Example 1:</span>
+<span class='co'># - Plot windrose for all observations where the wind</span>
+<span class='co'>#   direction was within 43-233 degrees (south southeast)</span>
+<span class='no'>filter1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Custom filter on wind direction,\n43 - 223 degrees"</span>,
+         <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter1</span>)</div><div class='img'><img src='windrose-10.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Example 2:</span>
+<span class='co'># - Plot windrose for all observations where the wind</span>
+<span class='co'>#   speed was &gt; 5 meters per second.</span>
+<span class='no'>filter2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ff</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> <span class='kw'>&gt;</span> <span class='fl'>10</span>)
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Custom filter on wind speed\nonly observations where ff &gt; 5"</span>,
+         <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter2</span>)</div><div class='img'><img src='windrose-11.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Example 3:</span>
+<span class='co'># - Plot windrose for specific months (create new variable</span>
+<span class='co'>#   'month' in advance):</span>
+<span class='no'>data</span>$<span class='no'>month</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXlt</a></span>(<span class='fu'>index</span>(<span class='no'>data</span>))$<span class='no'>mon</span> + <span class='fl'>1</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Wind rose for January"</span>,
+         <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>month</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> <span class='kw'>==</span> <span class='fl'>1</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Wind rose for July"</span>,
+         <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>month</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> <span class='kw'>==</span> <span class='fl'>7</span>))</div><div class='img'><img src='windrose-12.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Example 4:</span>
+<span class='co'># Similar to example 3, but for </span>
+<span class='no'>data</span>$<span class='no'>hour</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXlt</a></span>(<span class='fu'>index</span>(<span class='no'>data</span>))$<span class='no'>hour</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Wind rose for midnight (00 UTC)"</span>,
+         <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>hour</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> <span class='kw'>==</span> <span class='fl'>0</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Wind rose for noon (12 UTC)"</span>,
+         <span class='kw'>filter</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>hour</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> <span class='kw'>==</span> <span class='fl'>12</span>))</div><div class='img'><img src='windrose-13.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Example 5:</span>
+<span class='co'># A more complex filter: midnight, winter (Dez/Jan/Feb)</span>
+<span class='co'># for wind speeds exceeding 5 meters per second.</span>
+<span class='no'>filter5</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span>$<span class='no'>month</span> <span class='kw'>%in%</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>12</span>, <span class='fl'>1</span>, <span class='fl'>2</span>) <span class='kw'>&amp;</span> <span class='no'>x</span>$<span class='no'>hour</span> <span class='kw'>==</span> <span class='fl'>0</span> <span class='kw'>&amp;</span> <span class='no'>x</span>$<span class='no'>ff</span> <span class='kw'>&gt;</span> <span class='fl'>5</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"DJF 12 UTC (ff &gt; 5)\nComplex Filter"</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter5</span>)
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"DJF 12 UTC (ff &gt; 5)\nComplex Filter"</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='no'>filter5</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hist"</span>)</div><div class='img'><img src='windrose-14.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Highlighting wind sectors</span>
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>)),
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nUnnamed Wind Sector"</span>)
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>),
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nUnnamed Wind Sector"</span>)</div><div class='img'><img src='windrose-15.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='fl'>43</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='fl'>223</span>),
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nUnnamed Wind Sector"</span>)
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>160</span>), <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>310</span>, <span class='fl'>10</span>)),
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nNamed Wind Sector"</span>)</div><div class='img'><img src='windrose-16.png' alt='' width='700' height='433' /></div><div class='input'><span class='no'>sectors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>160</span>, <span class='fl'>310</span>, <span class='fl'>10</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                  <span class='kw'>dimnames</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Down"</span>, <span class='st'>"Up"</span>), <span class='kw'>NULL</span>))
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='no'>sectors</span>,
+         <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nUnnamed Wind Sector"</span>)
+<span class='no'>sectors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq</a></span>(<span class='fl'>0</span>, <span class='fl'>350</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>10</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>windrose</span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='no'>sectors</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Yey"</span>)</div><div class='img'><img src='windrose-17.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

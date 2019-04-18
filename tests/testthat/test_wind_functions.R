@@ -3,10 +3,10 @@
 library("testthat")
 library("foehnix")
 
-# Testing wind function uv2ddff 
-test_that("Testing uv2ddff foehnix wind conversion support functions", {
+# Testing wind function uv2ddff (data.frame)
+test_that("Testing uv2ddff foehnix wind conversion support functions (data.frame)", {
 
-    # Testing uv -> ddff
+    # Testing uv -> ddff, data.frame
     uv <- data.frame(u = c(-1, 0, 1, 0), v = c(0, 1, 0, -1))
     expect_silent(ddff <- uv2ddff(uv))
     expect_is(ddff, "data.frame")
@@ -18,11 +18,10 @@ test_that("Testing uv2ddff foehnix wind conversion support functions", {
     expect_error(uv2ddff(c(1,2,3), c(1,2)))
     expect_error(uv2ddff(c(1,2), c(1,2,3)))
 
-    # Input as vector, data.frame, or zoo
+    # Input as vector, or data.frame
     expect_identical(uv2ddff(as.numeric(uv$u), as.numeric(uv$v)),         ddff)
     expect_identical(uv2ddff(u = as.numeric(uv$u), v = as.numeric(uv$v)), ddff)
     expect_identical(uv2ddff(v = as.numeric(uv$v), u = as.numeric(uv$u)), ddff)
-    expect_identical(uv2ddff(zoo::zoo(uv)), zoo::zoo(ddff))
 
     # Unnamed matrix
     tmp <- as.matrix(uv); colnames(tmp) <- NULL
@@ -49,6 +48,25 @@ test_that("Testing uv2ddff foehnix wind conversion support functions", {
     expect_equal(ddff$ff, rep(1, 4))
 
 })
+
+# Testing wind function uv2ddff (zoo)
+test_that("Testing uv2ddff foehnix wind conversion support functions (zoo)", {
+
+    # Testing uv -> ddff, data.frame
+    uv <- zoo(data.frame(u = c(-1, 0, 1, 0), v = c(0, 1, 0, -1)), 11:14)
+    expect_silent(ddff <- uv2ddff(uv))
+    expect_is(ddff, "zoo")
+    expect_identical(names(ddff), c("dd", "ff"))
+
+    # Capture some errors
+    expect_warning(uv2ddff(uv, v = c(1, 2, 3, 4)))
+    expect_error(uv2ddff(uv$u, uv$v))
+    tmp <- uv; names(tmp)[1L] <- "foo"
+    expect_error(uv2ddff(tmp))
+    expect_identical(uv2ddff(zoo::zoo(uv)), ddff)
+
+})
+
 
 # Testing wind function uv2ddff 
 test_that("Testing ddff2uv foehnix wind conversion support functions", {
@@ -90,5 +108,23 @@ test_that("Testing ddff2uv foehnix wind conversion support functions", {
     # Checking return
     expect_equal(uv$u, c(0, -1, 0, 1, 0))
     expect_equal(uv$v, c(-1, 0, 1, 0, -1))
+
+})
+
+# Testing wind function uv2ddff (zoo)
+test_that("Testing ddff2uv foehnix wind conversion support functions (zoo)", {
+
+    # Testing uv -> ddff, data.frame
+    ddff <- zoo(data.frame(dd = c(0, 90, 180, 270, 360), ff = rep(1, 5)), 11:15)
+    expect_silent(uv <- ddff2uv(ddff))
+    expect_is(uv, "zoo")
+    expect_identical(names(uv), c("u", "v", "rad"))
+
+    # Capture some errors
+    expect_error(ddff2uv(uv, dd = c(1, 2, 3, 4)))
+    expect_error(ddff2uv(uv$u, uv$v))
+    tmp <- uv; names(tmp)[1L] <- "foo"
+    expect_error(uv2ddff(tmp))
+    expect_identical(ddff2uv(zoo::zoo(ddff)), uv)
 
 })

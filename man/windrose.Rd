@@ -13,14 +13,14 @@ windrose(x, ...)
 
 \method{windrose}{default}(x, ff, interval = 10, type = "density",
   windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5,
-  ..., dd = NULL)
+  ..., dd = NULL, filter = NULL, var.ff = "ff", var.dd = "dd")
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}} if the windrose plot is applied
 to a model, or a vector of wind directions for \code{windrose.default}
 (see 'Details' section).}
 
-\item{...}{forwarded to the windrose methods.}
+\item{...}{forwarded to \code{\link{windrose.default}}.}
 
 \item{type}{\code{NULL} or character, one of \code{density} or \code{histogram}.
 If \code{NULL} both types will be plotted.}
@@ -45,7 +45,8 @@ page the script loops trough.}
 \code{interval} without a rest the script will stop. Interval
 for the segments along the wind direction \code{dd}. Default \code{10}.}
 
-\item{windsector}{TODO: currently unused.}
+\item{windsector}{list, matrix, or data frame for highlighting one or multiple
+wind sectors. See 'Examples' ('Highlighting wind sectors').}
 
 \item{main}{character, title. If no title is set a default one will be shown.}
 
@@ -56,11 +57,25 @@ used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
 \item{power}{numeric \code{>0}, power parameter for the alpha channel if 
 \code{type = "histogram"}. If \code{1} the alpha channel is linear
 for the whole range of \code{ff}, values \code{!= 1} change the
-alpha behaviour.}
+alpha behavior.}
 
-\item{dd}{zoo object or a numeric vector with meteorological wind directions
-(\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
-180 'wind from south', and 270 'wind from west'.}
+\item{dd}{can be used if univariate objects or vectors are provided for
+wind speed and meteorological wind direction (see 'Details' section).}
+
+\item{filter}{a custom set of filter rules (see \code{\link{foehnix_filter}}).}
+
+\item{var.ff}{string, custom name of the wind speed variable in \code{x}
+if \code{x} is a multivariate object (see 'Details' section).}
+
+\item{var.dd}{string, custom name of the wind direction variable in \code{x}
+if \code{x} is a multivariate object (see 'Details' section).}
+
+\item{x}{either an univariate object (\code{numeric} vector or \code{zoo})
+containing meteorological wind directions or a multivariate \code{zoo} or
+\code{data.frame} object containing both, wind speed and wind
+meteorological wind direction. More details provided in the 'Details' section.}
+
+\item{...}{currently unused.}
 }
 \description{
 foehnix Mixture Model Windrose Plot
@@ -102,6 +117,40 @@ By default (\code{type = NULL}, \code{which = NULL}) all combinations will be pl
 
 If \code{dd} and \code{ff} are set only the \code{type} argument is available
 (\code{type = "histogram"} or \code{type = "density"}).
+
+The \code{\link{windrose}} function can be used in different ways.
+The main purpose is to plot (conditional) wind roses for
+\code{\link{foehnix}} objects (uses \code{windrose.foehnix}), but there is
+this generic \code{\link{windrose.default}} method which can be used to
+create wind roses on non-foehnix objects.
+
+\code{\link{windrose.default}} can either with called with two univariate
+inputs for wind direction and wind speed, or with a multivariate \code{zoo}
+object or \code{data.frame} which provides both, wind speed and wind
+direction. Moreover, additional variables which can be used in combination
+with the \code{filter} option. Examples are provided in the example section.
+
+Univariate inputs/vectors: the \code{\link{windrose.default}} function requires both,
+wind direction and wind speed. If univariate objects/vectors are used at least
+the two inputs \code{dd} (identical to \code{x}) and \code{ff} have to be specified.
+\code{dd} (\code{x}) is the meteorological wind direction in degrees
+(\code{]0, 360[}, 0/360 is 'wind from north', 90 'wind from east',
+180 'wind from south', and 270 'wind from west').
+\code{ff} has to be of the same length as \code{dd} containing the corresponding
+wind speed.
+
+Multivariate input: rather than providing \code{dd} (\code{x}) and \code{ff}
+a multivariate \code{zoo} object or \code{data.frame} can be provided when
+calling the function containing (at least) wind direction and wind speed. By
+default, the method expects the wind direction variable to be named
+\code{"dd"}, the wind speed named \code{"ff"}.  Custom names can be
+specified using the two input arguments \code{var.ff} and \code{var.dd}.
+       
+Custom filter: the optional \code{filter} input can be used if input
+\code{x} is a multivariate object and provides a convenient
+way to subset/filter the data. A detailed description how to define
+the filter rules can be found on the documentation page of 
+the \code{\link{foehnix_filter}} method.
 }
 \examples{
 # Loading combined demo data set
@@ -146,6 +195,101 @@ mod2 <- foehnix(diff_t ~ windspd + rh, data = data2,
 
 windrose(mod2, type = "density", which = "foehn",
          ddvar = "winddir", ffvar = "windspd")
+
+# Loading observation data for station Ellboegen.
+# The object returned is a zoo time series object
+# containing (see ?ellboegen).
+data <- demodata("Ellboegen")
+class(data)
+head(data)
+
+# Extract dd/ff and create a windrose,
+# using two vectors as input:
+dd <- as.vector(data$dd)
+ff <- as.vector(data$ff)
+windrose(dd, ff,
+         main = "Demo Windrose\\nUse vector inputs")
+windrose(dd = dd, ff = ff,
+         main = "Demo Windrose\\nUse vector inputs")
+
+# Additional wind sector highlighting
+windrose(dd = dd, ff = ff, sector =  ...,
+         main = "Demo Windrose\\nUse vector inputs")
+
+# Using univariate zoo objects as input:
+windrose(dd = data$dd, ff = data$ff,
+         main = "Demo Windrose\\nUnivariate zoo objects as inputs")
+
+# Or specify a multivariate zoo object or data.frame
+# object on input x:
+windrose(data,
+         main = "Demo Windrose\\nUse multivariate zoo object")
+windrose(as.data.frame(data),
+         main = "Demo Windrose\\nUse multivariate data.frame object")
+
+# Custom names for ff/dd
+copy <- data
+names(copy)[1:2] <- c("wind_dir", "wind_spd")
+windrose(copy, main = "Demo Windrose\\nMultivariate zoo, custom names",
+         var.dd = "wind_dir", var.ff = "wind_spd")
+
+# Custom filter: for details, see ?foehnix_filter
+# Example 1:
+# - Plot windrose for all observations where the wind
+#   direction was within 43-233 degrees (south southeast)
+filter1 <- list(dd = c(43, 223))
+windrose(data, main = "Custom filter on wind direction,\\n43 - 223 degrees",
+         type = "hist", filter = filter1)
+
+# Example 2:
+# - Plot windrose for all observations where the wind
+#   speed was > 5 meters per second.
+filter2 <- list(ff = function(x) x > 10)
+windrose(data, main = "Custom filter on wind speed\\nonly observations where ff > 5",
+         type = "hist", filter = filter2)
+
+# Example 3:
+# - Plot windrose for specific months (create new variable
+#   'month' in advance):
+data$month <- as.POSIXlt(index(data))$mon + 1
+par(mfrow = c(1,2))
+windrose(data, main = "Wind rose for January",
+         filter = list(month = function(x) x == 1))
+windrose(data, main = "Wind rose for July",
+         filter = list(month = function(x) x == 7))
+
+# Example 4:
+# Similar to example 3, but for 
+data$hour <- as.POSIXlt(index(data))$hour
+par(mfrow = c(1,2))
+windrose(data, main = "Wind rose for midnight (00 UTC)",
+         filter = list(hour = function(x) x == 0))
+windrose(data, main = "Wind rose for noon (12 UTC)",
+         filter = list(hour = function(x) x == 12))
+
+# Example 5:
+# A more complex filter: midnight, winter (Dez/Jan/Feb)
+# for wind speeds exceeding 5 meters per second.
+filter5 <- function(x) x$month \%in\% c(12, 1, 2) & x$hour == 0 & x$ff > 5
+par(mfrow = c(1,2))
+windrose(data, main = "DJF 12 UTC (ff > 5)\\nComplex Filter", filter = filter5)
+windrose(data, main = "DJF 12 UTC (ff > 5)\\nComplex Filter", filter = filter5, type = "hist")
+
+# Highlighting wind sectors
+windrose(data, windsector = list(c(43, 223)),
+         main = "Windrose\\nUnnamed Wind Sector")
+windrose(data, windsector = matrix(c(43, 223), nrow = 1),
+         main = "Windrose\\nUnnamed Wind Sector")
+windrose(data, windsector = data.frame(from = 43, to = 223),
+         main = "Windrose\\nUnnamed Wind Sector")
+windrose(data, windsector = list(A = c(100, 160), B = c(310, 10)),
+         main = "Windrose\\nNamed Wind Sector")
+sectors <- matrix(c(100, 160, 310, 10), nrow = 2, byrow = TRUE,
+                  dimnames = list(c("Down", "Up"), NULL))
+windrose(data, windsector = sectors, 
+         main = "Windrose\\nUnnamed Wind Sector")
+sectors <- matrix(seq(0, 350, by = 10), ncol = 2, byrow = TRUE)
+windrose(data, windsector = sectors, main = "Yey")
 
 }
 \author{

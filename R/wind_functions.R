@@ -6,7 +6,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-21, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-04-15 14:51 on marvin
+# - L@ST MODIFIED: 2019-04-16 15:47 on marvin
 # -------------------------------------------------------------------
 
 #' Convert U and V Wind Components to Wind Speed and Direction
@@ -18,7 +18,7 @@
 #'    \code{data.frame} or \code{zoo} object containing
 #'    a column named \code{u} and a column named \code{v}.
 #' @param v \code{NULL} (default) or \code{numeric} vector.
-#'    Iv input \code{u} is a single vector \code{v} has to be given.
+#'    If input \code{u} is a single vector \code{v} has to be specified.
 #' @param rad \code{logical}, default is \code{FALSE}. Returns wind
 #'    direction in radiant rather than in degrees.
 #'
@@ -74,6 +74,11 @@ uv2ddff <- function(u, v = NULL, rad = FALSE){
       if (inherits(u, "zoo")) zoo_index <- index(u)
       if (!all(c("u", "v") %in% names(u)))
         stop("necessary colums \"u\" and/or \"v\" missing")
+      # If "v" is set in addition: warn
+      if (!is.null(v)) {
+          warning(sprintf("input \"u\" to uv2ddff is \"%s\":", class(u)),
+                          "\"v\" specified as well but will be ignored!")
+      }
       v = as.numeric(u$v)
       u = as.numeric(u$u)
    # if u has 2 columns the second column is taken as v
@@ -179,6 +184,11 @@ ddff2uv <- function(dd, ff = NULL){
    if (inherits(dd, c("zoo", "data.frame"))) {
      if (sum(! c('ff','dd') %in% names(dd) ) > 0)
        stop('necessary colums "ff" and/or "dd" missing')
+     # If "ff" is set in addition: warn
+     if (!is.null(ff)) {
+         warning(sprintf("input \"dd\" to uv2ddff is \"%s\":", class(u)),
+                         "\"ff\" specified as well but will be ignored!")
+     }
      if (inherits(dd, "zoo")) zoo_index <- index(dd)
      ff = as.numeric(dd$ff)
      dd = as.numeric(dd$dd)

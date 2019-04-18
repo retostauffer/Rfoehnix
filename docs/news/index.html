@@ -62,7 +62,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -144,16 +144,28 @@
       <small>Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="foehnix-0-0-10-upcoming" class="section level1">
+    <div id="foehnix-0-1-1-april-2019" class="section level1">
 <h1 class="page-header">
-<a href="#foehnix-0-0-10-upcoming" class="anchor"></a>foehnix 0.0-10 (upcoming)</h1>
+<a href="#foehnix-0-1-1-april-2019" class="anchor"></a>foehnix 0.1-1 (April 2019)</h1>
+<ul>
+<li>
+<code>uv2ddff</code> and <code>ff2dduv</code> now return a <code>zoo</code> object if the input is a single <code>zoo</code> object (<code><a href="../reference/uv2ddff.html">uv2ddff(data)</a></code> or <code><a href="../reference/ddff2uv.html">ddff2uv(data)</a></code> where <code>data</code> is of class <code>zoo</code>).</li>
+<li>Checking for constant values: new check on main variable (after applying the filter). The check for multiple constants for the concomitant model is now performed on the <code>logitX</code> model.matrix.</li>
+<li>Removed custom LASSO option (<code>lambda</code>) from the <code>foehnix</code> interface. <code>iwls_logit</code> would, technically, allow for iterative penalized estimates but is rather slow. Thus, an experimental control argument for regularized estimates based on the <code>glmnet</code> package has been implemented (see \code{\link{foehnix.control}}/\code{\link{glmnet.control}}).</li>
+<li>
+<code>windrose.default</code> allows for custom data filters (using the foehnix filter method) and custom variable names for wind direction and wind speed (<code>var.dd</code>/<code>var.ff</code>). Default <code>var.dd = "dd"</code> and <code>var.ff = "ff"</code>. Custom filters only allowed with multivariate objects (zoo or data.frame).</li>
+</ul>
+</div>
+    <div id="foehnix-0-1-0-january-2019" class="section level1">
+<h1 class="page-header">
+<a href="#foehnix-0-1-0-january-2019" class="anchor"></a>foehnix 0.1-0 (January 2019)</h1>
 <ul>
 <li>
 <code>windrose</code> allows to specify custom names.</li>
 <li>
 <code>tsplot</code> allows to specify custom variable names (rename defaults). Requires some more testing.</li>
 <li>
-<code>foehnix</code> objects (returned by <code>foehnix</code>) contain a new element <code>nobs</code>, the number of elements used for classification. Could also be computed from the filter ‘good’ and ‘ugly’. This is just for convenience.</li>
+<code>foehnix</code> objects (returned by <code>foehnix</code>) contain a new element <code>nobs</code>, the number of elements used for classification. Note that this is <em>not</em> the same information as provided by the <code>good</code>, the <code>bad</code>, and the <code>ugly</code> from the foehnix filter (the <code>filter_obj</code> only contains information based on the variables used with the filter, not on the covariates used for the <code>foehnix</code> model).</li>
 </ul>
 </div>
     <div id="foehnix-0-0-9" class="section level1">
@@ -166,7 +178,7 @@
 <li>Added inflation handling. foehnix tries to inflate the time series object provided by the user to create a strictly regular time series object. If the inflation ratio exceeds 2 (the data set would be inflated by a factor of 2 or more) the script will STOP! foehnix.control provides an option (force.inflate) to overrule this check, however, might cause memory issues.</li>
 <li>summary.foehnix shows “inflation” count.</li>
 <li>foehnix will stop if the data set is not regular (note: regular is not “strictly regular”, but is one requirement to create a strictly regular time series (inflate feature).</li>
-<li>Fixed an issue with foehnix_filter where observations (rows) where not all elements have been NA have been treated as “outside wind sector” rather than “not all observations available” (FALSE has been returned instead of NA; now an NA will be returned by if multiple filters are used and at least one element is missing).</li>
+<li>Fixed an issue with <code>foehnix_filter</code> where observations (rows) where not all elements have been NA have been treated as “outside wind sector” rather than “not all observations available” (FALSE has been returned instead of NA; now an NA will be returned by if multiple filters are used and at least one element is missing).</li>
 <li>Fixed a bug where <code>N_inflated</code> was missing when no inflation was needed.</li>
 </ul>
 </div>
@@ -238,7 +250,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#foehnix-0-0-10-upcoming">0.0-10</a></li>
+        <li><a href="#foehnix-0-1-1-april-2019">0.1-1</a></li>
+        <li><a href="#foehnix-0-1-0-january-2019">0.1-0</a></li>
         <li><a href="#foehnix-0-0-9">0.0-9</a></li>
         <li><a href="#foehnix-0-0-8">0.0-8</a></li>
         <li><a href="#foehnix-0-0-5">0.0-5</a></li>

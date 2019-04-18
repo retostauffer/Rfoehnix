@@ -12,7 +12,7 @@ uv2ddff(u, v = NULL, rad = FALSE)
 a column named \code{u} and a column named \code{v}.}
 
 \item{v}{\code{NULL} (default) or \code{numeric} vector.
-Iv input \code{u} is a single vector \code{v} has to be given.}
+If input \code{u} is a single vector \code{v} has to be specified.}
 
 \item{rad}{\code{logical}, default is \code{FALSE}. Returns wind
 direction in radiant rather than in degrees.}

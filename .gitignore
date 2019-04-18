@@ -2,3 +2,5 @@
 # Ignore modules and shared object files
 src/*.o
 src/*.so
+src/*.gcda
+src/*.gcno

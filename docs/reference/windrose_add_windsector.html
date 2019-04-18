@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check if Matrix is Standardized — is.standardized • foehnix</title>
+<title>Adding Wind Sector for Windrose Plots — windrose_add_windsector • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,10 +32,11 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Check if Matrix is Standardized — is.standardized" />
+<meta property="og:title" content="Adding Wind Sector for Windrose Plots — windrose_add_windsector" />
 
-<meta property="og:description" content="Helper function for foehnix. Returns TRUE
-if input x is a standardized matrix, else FALSE." />
+<meta property="og:description" content="The windrose plot allows to specify one or multiple
+segments to be highlighted on the plot. This is a
+helper function to place the segments." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -144,36 +145,41 @@ if input x is a standardized matrix, else FALSE." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check if Matrix is Standardized</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
-    <div class="hidden name"><code>is.standardized.Rd</code></div>
+    <h1>Adding Wind Sector for Windrose Plots</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/windrose.R'><code>R/windrose.R</code></a></small>
+    <div class="hidden name"><code>windrose_add_windsector.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Helper function for <code>foehnix</code>. Returns <code>TRUE</code>
-if input <code>x</code> is a standardized matrix, else <code>FALSE</code>.</p>
+    <p>The windrose plot allows to specify one or multiple
+segments to be highlighted on the plot. This is a
+helper function to place the segments.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>is.standardized</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>windrose_add_windsector</span>(<span class='no'>x</span>, <span class='no'>ff</span>, <span class='kw'>offset</span> <span class='kw'>=</span> <span class='fl'>0.02</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a matrix or standardized matrix.</p></td>
+      <td><p>list containing vectors of length 2 or a matrix with two
+rows. If the list is named, or the matrix has row names,
+the names will be used to label the segments.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>ignored.</p></td>
+      <th>ff</th>
+      <td><p>wind speed (in case of plot type "density", or density in 
+case of plot type "histogram". Used to draw the polygon and
+to plot the labels (if needed).</p></td>
+    </tr>
+    <tr>
+      <th>offset</th>
+      <td><p>offset for text adjustment.</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='standardize.html'>standardize</a></code>.</p></div>
     
 
   </div>
@@ -181,10 +187,10 @@ if input <code>x</code> is a standardized matrix, else <code>FALSE</code>.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#see-also">See also</a></li>
-          </ul>
+                </ul>
 
+    <h2>Author</h2>
+    <p>Reto Stauffer</p>
   </div>
 </div>
 

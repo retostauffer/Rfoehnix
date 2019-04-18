@@ -66,7 +66,7 @@ zonal (u) und meridional (v) wind components." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -183,9 +183,10 @@ be used for computation) named 'ff' and 'dd'.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a data.frame containing the <code>u</code> and <code>v</code> components
-        of the data. In addition, <code>rad</code> (mathematical representation
-        of wind direction in radiant) is returned.</p>
+    <p>Returns a data.frame or zoo object (depending on input <code>ff</code>)
+containing the <code>u</code> and <code>v</code> components
+of the data. In addition, <code>rad</code> (mathematical representation
+of wind direction in radiant) is returned.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -233,7 +234,28 @@ be used for computation) named 'ff' and 'dd'.</p></td>
 #&gt; 4 -58.00736 -272.9032 4.502949
 #&gt; 5 -13.67227 -195.5226 4.642576
 #&gt; 6 -48.65798 -181.5941 4.450590</div><div class='input'>
-</div></pre>
+<span class='co'>## Use with zoo</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"zoo"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>100</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.setenv'>Sys.setenv</a></span>(<span class='st'>"TZ"</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>)
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/zoo/topics/zoo'>zoo</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='fl'>20</span>, <span class='fl'>0</span>, <span class='fl'>360</span>), <span class='kw'>ff</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Normal'>rnorm</a></span>(<span class='fl'>20</span>, <span class='fl'>.2</span>, <span class='fl'>2</span>)^<span class='fl'>2</span>),
+            <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.POSIXlt'>as.POSIXct</a></span>(<span class='st'>"2019-01-01 12:00"</span>) + <span class='fl'>0</span>:<span class='fl'>19</span> * <span class='fl'>3600</span>)
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>round</a></span>(<span class='no'>data</span>,<span class='fl'>2</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>data</span>)</div><div class='output co'>#&gt;                         dd   ff
+#&gt; 2019-01-01 12:00:00 110.80 0.14
+#&gt; 2019-01-01 13:00:00  92.76 0.15
+#&gt; 2019-01-01 14:00:00 198.84 0.04
+#&gt; 2019-01-01 15:00:00  20.30 2.82
+#&gt; 2019-01-01 16:00:00 168.68 0.20
+#&gt; 2019-01-01 17:00:00 174.16 0.02</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/class'>class</a></span>(<span class='no'>data</span>)</div><div class='output co'>#&gt; [1] "zoo"</div><div class='input'><span class='co'>## Calculate dd/ff</span>
+<span class='no'>uv</span> <span class='kw'>&lt;-</span> <span class='fu'>ddff2uv</span>(<span class='no'>data</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>uv</span>)</div><div class='output co'>#&gt;                                u            v      rad
+#&gt; 2019-01-01 12:00:00 -0.130875595  0.049714975 2.778564
+#&gt; 2019-01-01 13:00:00 -0.149826000  0.007222869 3.093422
+#&gt; 2019-01-01 14:00:00  0.012917060  0.037856962 1.241976
+#&gt; 2019-01-01 15:00:00 -0.978358537 -2.644846796 4.358087
+#&gt; 2019-01-01 16:00:00 -0.039257686  0.196109240 1.768368
+#&gt; 2019-01-01 17:00:00 -0.002035017  0.019896198 1.672724</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/class'>class</a></span>(<span class='no'>uv</span>)</div><div class='output co'>#&gt; [1] "zoo"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -250,7 +272,7 @@ be used for computation) named 'ff' and 'dd'.</p></td>
     </ul>
 
     <h2>Author</h2>
-    <p>Jakob Messner</p>
+    <p>Jakob Messner, Reto Stauffer</p>
   </div>
 </div>
 

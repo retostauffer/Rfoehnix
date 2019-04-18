@@ -68,7 +68,7 @@ is a Hovmoeller diagram." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -326,16 +326,7 @@ following condition is used:</p><ul>
           <code>data$dd &gt;= windsector[1L]</code> <code>|</code> <code>data$dd &lt;= windsector[2L]</code>
           (e.g., <code>windsector = c(270, 90)</code> for north wind sector).</p></li>
 </ul>
-    <p>TODO: Details for lambda. If <code>"auto"</code> the default is <code>"loglik"</code>
-except that the correlation between two or more covariates used in
-<code>formula</code> exceeds <code>0.75</code> (both positive or negative). In this case
-<code>lambda.min = "AIC"</code> will be used automatically with additional
-regularization.  If <code>lambda.min = "loglik"</code> an unpenalized estimate
-will be returned.  If <code>lambda.min</code> is either AIC or BIC a ridge penalty
-(L2 penalty) is used. A fixed set of penalties will be tested. The one
-minimising either the AIC or BIC criteria will be used for the foehn
-classification model.</p>
-<p>Plotting a Hovmoeller diagram based on the <code>zoo</code> time
+    <p>Plotting a Hovmoeller diagram based on the <code>zoo</code> time
 series object of the <code>foehnix</code> classification. Different plot
 types are available. The default functions (see list below) use <code>na.rm = TRUE</code>.</p>
 <p>Input <code>FUN</code> can be one of the following character strings:</p><ul>
