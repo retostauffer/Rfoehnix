@@ -154,6 +154,8 @@
 <li>Removed custom LASSO option (<code>lambda</code>) from the <code>foehnix</code> interface. <code>iwls_logit</code> would, technically, allow for iterative penalized estimates but is rather slow. Thus, an experimental control argument for regularized estimates based on the <code>glmnet</code> package has been implemented (see \code{\link{foehnix.control}}/\code{\link{glmnet.control}}).</li>
 <li>
 <code>windrose.default</code> allows for custom data filters (using the foehnix filter method) and custom variable names for wind direction and wind speed (<code>var.dd</code>/<code>var.ff</code>). Default <code>var.dd = "dd"</code> and <code>var.ff = "ff"</code>. Custom filters only allowed with multivariate objects (zoo or data.frame).</li>
+<li>windrose now allows to highlight specific wind sectors.</li>
+<li>Fixed tsplot: observed temperature is now on top, fixed the issue with the gray boxes (periods with a probability &gt;= 0.5).</li>
 </ul>
 </div>
     <div id="foehnix-0-1-0-january-2019" class="section level1">

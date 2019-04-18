@@ -53,6 +53,7 @@ reference:
         - image.foehnix
         - windrose
         - windrose.foehnix
+        - windrose.default
         - tsplot
         - tsplot.control
         - add_polygon

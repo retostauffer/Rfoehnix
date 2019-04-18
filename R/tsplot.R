@@ -337,37 +337,42 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         "prob"        = TRUE
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
-    #if ( Nplots == 0 )
-    #    stop(sprintf(paste("Cannot find any of the required variables!",
-    #         "One reason: your variable names do not match any of",
-    #         "the default variable names (%s).",
-    #         "The 'varnames' input argument allows you to",
-    #         "change these names (please see ?tsplot manual page)."),
-    #         paste(names(vars), collapse = ", ")))
 
     # Helper function to add the gray boxes (background)
-    add_boxes <- function(x, col = "gray90") {
-        dx  <- as.numeric(diff(index(x)[1:2]), unit = "secs") / 2
-        up   <- which(diff(x >= .5) == 1) + 1
-        down <- which(diff(x >= .5) == -1)
-        if ( length(up) == 0 | length(down) == 0 ) return();
-        if ( min(down) < min(up) ) up <- c(1, up)
-        isna <- which(is.na(x))
-        if ( length(up) > 0 & length(down) > 0 ) {
+    add_boxes <- function(col = "gray90") {
+        # Loaded from parent env
+        if ( length(prob_boxes$up) > 0 ) {
             y <- par()$usr[3:4]
-            for ( i in seq(1, length(up))) {
-                if ( length(isna) > 0 ) {
-                    if ( any(isna > up[i]) ) {
-                        to <- min(min(isna[isna > up[i]]), down[i])
-                    } else { to <- down[i]; }
-                } else {
-                    to <- down[i]
-                }
-                if ( is.na(to) ) to <- nrow(tmp)
-                rect(index(x)[up[i]] - dx, y[1L], index(x)[to] + dx, y[2L],
+            for ( i in seq_along(prob_boxes$up) ) {
+                to <- which(prob_boxes$down >= prob_boxes$up[i])
+                to <- ifelse(length(to) == 0, length(prob_boxes$index), prob_boxes$down[to[1L]])
+                rect(prob_boxes$index[prob_boxes$up[i]] - prob_boxes$dx, y[1L],
+                     prob_boxes$index[to] + prob_boxes$dx, y[2L],
                      col = col, border = NA)
             }
         }
+    }
+
+    # Calculate boxes
+    calc_boxes <- function(x) {
+        tmp <- as.vector(x > 0.5)
+        tmp[is.na(tmp)] <- FALSE
+        res <- list(index = index(x), dx = deltat(x) / 2, up = c(), down = c())
+        for (i in seq_along(tmp)) {
+            # Initial value
+            if (i == 1) {
+                if (tmp[i]) res$up <- append(res$up, i)
+                next
+            }
+            # Going up
+            if (!tmp[i - 1L] & tmp[i]) {
+                res$up <- append(res$up, i)
+            # Going down
+            } else if (!tmp[i] & tmp[i - 1L] | is.na(tmp[i])) {
+                res$down <- append(res$down, i - 1)
+            }
+        }
+        return(res)
     }
 
     # Helper function to add the vertical lines
@@ -440,7 +445,12 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4),
             xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
 
+        # Pick subset to plot
         tmp <- window(data, start = start[k], end = end[k])
+
+        # Calculate the limits for the gray boxes (where prob >= .5)
+        prob_boxes <- calc_boxes(tmp$prob)
+
         # No data, or only missing data?
         if ( nrow(tmp) == 0 | sum(!is.na(tmp)) == 0 ) {
             tmp <- paste("No data (or only missing values) for the time period",
@@ -455,32 +465,39 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             # If temperature is in the data set: plot temperature,
             # if not, set up an empty plot (required to be able to
             # add relative humidity and temperature differences).
-            param <- get(control, "t", "name")
-            if ( param %in% names(tmp) ) {
-                plot(tmp[,param], type = "n", ylab = NA, xaxt = "n", bty = "n")
-                add_boxes(tmp$prob); add_midnight_lines(tmp)
-                lines(tmp[,param], lwd = 2,
-                      col = get(control, "t", "color"))
+            param_t <- get(control, "t", "name")
+            if ( param_t %in% names(tmp) ) {
+                plot(tmp[,param_t], type = "n", ylab = NA, xaxt = "n", bty = "n")
+                add_boxes(); add_midnight_lines(tmp)
                 mtext(side = 2, line = 3, get(control, "t", "label"))
                 box()
             }
     
             # Relative humidity
-            param <- get(control, "rh", "name")
-            if ( param %in% names(tmp) ) {
+            param_rh <- get(control, "rh", "name")
+            if ( param_rh %in% names(tmp) ) {
                 if ( get(control, "t", "name") %in% names(tmp) )
                     par(new = TRUE)
                 # Plotting relative humidity data
-                plot(tmp[,param], type = "n", lwd = 2, yaxt = "n",
+                plot(tmp[,param_rh], type = "n", lwd = 2, yaxt = "n",
                      ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-                add_boxes(tmp$prob); add_midnight_lines(tmp)
-                add_polygon(tmp[,param], col = get(control, "rh", "color"))
+                add_boxes(); add_midnight_lines(tmp)
+                add_polygon(tmp[,param_rh], col = get(control, "rh", "color"))
                 abline(h = seq(20, 100, by = 20), lty = 3,
                        col = sprintf("%s50", get(control, "rh", "color")))
                 axis(side = 4, at = seq(20, 100, by = 20))
                 mtext(side = 4, line = 3, get(control, "rh", "label"))
                 box()
             }
+
+            # After relative humidity has been added (optionally:
+            # add temperature observation.
+            if ( param_t %in% names(tmp) ) {
+                par(new = TRUE)
+                plot(tmp[,param_t], lwd = 2, col = get(control, "t", "color"),
+                     xaxt = "n", yaxt = "n", main = NA)
+            }
+
         }
     
         # Plotting temperature difference
@@ -489,7 +506,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             param <- get(control, "diff_t", "name")
             if ( param %in% names(tmp) ) {
                 plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
-                add_boxes(tmp$prob); add_midnight_lines(tmp)
+                add_boxes(); add_midnight_lines(tmp)
                 lines(tmp[,param], lwd = 2,
                       col = get(control, "diff_t", "color"))
                 abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
@@ -503,7 +520,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         if ( doplot$wind ) {
             plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
                      ylim = c(0, 360), yaxt = "n", bty = "n")
-            add_boxes(tmp$prob); add_midnight_lines(tmp)
+            add_boxes(); add_midnight_lines(tmp)
             param <- get(control, "dd", "name")
             if ( param %in% names(tmp) ) {
                 points(tmp[,param], col = "black", pch = 19, cex = 0.5)
@@ -549,7 +566,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         plot(NA, type = "n", xlim = xlim, xaxt = "n",
              ylab = NA, ylim = c(-4,104), yaxs = "i") 
         axis(side = 1, at = pretty(xlim), strftime(pretty(xlim), "%Y-%m-%d %H:%M"))
-        add_boxes(tmp$prob); add_midnight_lines(tmp)
+        add_boxes(); add_midnight_lines(tmp)
 
         # Adding additional foehn probs
         if ( ! is.null(xtra) ) {

@@ -243,6 +243,8 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' @param interval numeric, a fraction of 360. If 360 cannot be devided by
 #'        \code{interval} without a rest the script will stop. Interval
 #'        for the segments along the wind direction \code{dd}. Default \code{10}.
+#' @param type \code{NULL} or character, one of \code{density} or \code{histogram}.
+#'        If \code{NULL} both types will be plotted.
 #' @param windsector list, matrix, or data frame for highlighting one or multiple
 #'        wind sectors. See 'Examples' ('Highlighting wind sectors').
 #' @param main character, title. If no title is set a default one will be shown.
@@ -312,10 +314,6 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #'          main = "Demo Windrose\nUse vector inputs")
 #' windrose(dd = dd, ff = ff,
 #'          main = "Demo Windrose\nUse vector inputs")
-#'
-#' # Additional wind sector highlighting
-#' windrose(dd = dd, ff = ff, sector =  ...,
-#'          main = "Demo Windrose\nUse vector inputs")
 #' 
 #' # Using univariate zoo objects as input:
 #' windrose(dd = data$dd, ff = data$ff,
@@ -333,6 +331,22 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' names(copy)[1:2] <- c("wind_dir", "wind_spd")
 #' windrose(copy, main = "Demo Windrose\nMultivariate zoo, custom names",
 #'          var.dd = "wind_dir", var.ff = "wind_spd")
+#'
+#' # Highlighting wind sectors
+#' windrose(data, windsector = list(c(43, 223)),
+#'          main = "Windrose\nUnnamed Wind Sector")
+#' windrose(data, windsector = matrix(c(43, 223), nrow = 1),
+#'          main = "Windrose\nUnnamed Wind Sector")
+#' windrose(data, windsector = data.frame(from = 43, to = 223),
+#'          main = "Windrose\nUnnamed Wind Sector")
+#' windrose(data, windsector = list(A = c(100, 160), B = c(310, 10)),
+#'          main = "Windrose\nNamed Wind Sector")
+#' sectors <- matrix(c(100, 160, 310, 10), nrow = 2, byrow = TRUE,
+#'                   dimnames = list(c("Down", "Up"), NULL))
+#' windrose(data, windsector = sectors, 
+#'          main = "Windrose\nUnnamed Wind Sector")
+#' sectors <- matrix(seq(0, 350, by = 10), ncol = 2, byrow = TRUE)
+#' windrose(data, windsector = sectors, main = "Yey")
 #' 
 #' # Custom filter: for details, see ?foehnix_filter
 #' # Example 1:
@@ -376,23 +390,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' windrose(data, main = "DJF 12 UTC (ff > 5)\nComplex Filter", filter = filter5)
 #' windrose(data, main = "DJF 12 UTC (ff > 5)\nComplex Filter", filter = filter5, type = "hist")
 #'
-#' # Highlighting wind sectors
-#' windrose(data, windsector = list(c(43, 223)),
-#'          main = "Windrose\nUnnamed Wind Sector")
-#' windrose(data, windsector = matrix(c(43, 223), nrow = 1),
-#'          main = "Windrose\nUnnamed Wind Sector")
-#' windrose(data, windsector = data.frame(from = 43, to = 223),
-#'          main = "Windrose\nUnnamed Wind Sector")
-#' windrose(data, windsector = list(A = c(100, 160), B = c(310, 10)),
-#'          main = "Windrose\nNamed Wind Sector")
-#' sectors <- matrix(c(100, 160, 310, 10), nrow = 2, byrow = TRUE,
-#'                   dimnames = list(c("Down", "Up"), NULL))
-#' windrose(data, windsector = sectors, 
-#'          main = "Windrose\nUnnamed Wind Sector")
-#' sectors <- matrix(seq(0, 350, by = 10), ncol = 2, byrow = TRUE)
-#' windrose(data, windsector = sectors, main = "Yey")
-#'
-#' @rdname windrose
+#' @rdname windrose.default
 #' @export
 
 #TODO: Merge docstring of windrose and windrose.default and windrose.foehnix,

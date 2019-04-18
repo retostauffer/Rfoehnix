@@ -26,6 +26,9 @@
     method) and custom variable names for wind direction and wind speed
     (`var.dd`/`var.ff`). Default `var.dd = "dd"` and `var.ff = "ff"`.
     Custom filters only allowed with multivariate objects (zoo or data.frame).
+* windrose now allows to highlight specific wind sectors.
+* Fixed tsplot: observed temperature is now on top, fixed the issue with the
+    gray boxes (periods with a probability >= 0.5).
 
 # foehnix 0.1-0 (January 2019)
 
