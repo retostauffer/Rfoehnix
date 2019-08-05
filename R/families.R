@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-24 21:26 on marvin
+# - L@ST MODIFIED: 2019-08-05 12:03 on marvin
 # -------------------------------------------------------------------
 
 
@@ -197,6 +197,7 @@ foehnix_logistic <- function() {
 # -------------------------------------------------------------------
 # Censored logistic foehnix mixture model family.
 # -------------------------------------------------------------------
+
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -307,6 +308,7 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
 # -------------------------------------------------------------------
 # Truncated logistic foehnix mixture model family.
 # -------------------------------------------------------------------
+
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -421,6 +423,7 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
 # -------------------------------------------------------------------
 # Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
+
 #' @rdname foehnix.family
 #' @import stats
 foehnix_gaussian <- function() {
@@ -495,6 +498,7 @@ foehnix_gaussian <- function() {
 # -------------------------------------------------------------------
 # Censored Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
+
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -606,6 +610,7 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
 # -------------------------------------------------------------------
 # Truncated Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
+
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
