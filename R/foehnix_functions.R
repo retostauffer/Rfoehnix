@@ -9,8 +9,6 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-04-18 17:11 on marvin
-# -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
 
@@ -473,7 +471,7 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
         # Labels with full integers (required to extract the data again)
         labels.time <- sprintf("(%d,%d]", breaks.time[-length(breaks.time)], breaks.time[-1])
 
-        res <- data.frame(hash_time = cut(time, breaks.time, labels = labels.time),
+        res <- data.frame(hash_time = cut(time, breaks.time, include.lowest = TRUE, labels = labels.time),
                           hash_date = cut(yday, breaks.date, include.lowest = TRUE))
         res$hash <- sprintf("%s_%s", res$hash_date, res$hash_time)
         return(res)
@@ -481,13 +479,12 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
 
 
     breaks.time <- seq(0, 86400, by = deltat)
-    breaks.date <- unique(pmax(0, c(seq(-1, 364, by = deltad), 364)))
+    breaks.date <- unique(c(seq(0, 364, by = deltad), 364))
     data <- cbind(as.data.frame(x), longform(x, breaks.time, breaks.date))
 
     # Aggregate information
     agg <- aggregate(data$prob, by = list(data$hash), FUN = FUN)
     names(agg) <- c("hash", "value")
-
 
     # Helper function to extract time/date information. We have reduced
     # the date and time information to a string which looks somehow as follows:
@@ -564,8 +561,8 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     # 0 - 354 (0 based Julian day) along the x-axis, and
     # 0 - 86400 (one full day in seconds) along the y-axis.
     plot(NA, bty = "n",
-         xlim = c(-0.5, 364.5), xaxt = "n", xaxs = "i",
-         ylim = c(0, 86400),    yaxt = "n", yaxs = "i",
+         xlim = c(0, 364),   xaxt = "n", xaxs = "i",
+         ylim = c(0, 86400), yaxt = "n", yaxs = "i",
          xlab = NA, ylab = NA, main = NA)
     mtext(side = 1, line = 3.0, arg$xlab)
     mtext(side = 2, line = 3.3, arg$ylab)
@@ -589,74 +586,39 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     # If the user wants to have contour lines: draw contours.
     if ( contours ) {
 
-        # ------------------------------------------
-        # expand_agg is used to expand the aggregated
-        # data values, matrix like, as follows:
-        #  1  |  2  |  3
-        # ---------------
-        #  4  |  5  |  6
-        # ---------------
-        #  7  |  8  |  9 
-        # This is necessary to get cyclic data when
-        # drawing the contour lines.
-        # ------------------------------------------
-        expand_agg <- function(x) {
-
-            x <- subset(x, select = c(time_mid, yday_mid, value))
-
-            res <- list(); for ( i in 1:9 ) res[[i]] <- x
-            # North West
-            res[[1]]$time_mid <- res[[1]]$time_mid + 86400
-            res[[1]]$yday_mid <- res[[1]]$yday_mid - 364
-            # North
-            res[[2]]$time_mid <- res[[2]]$time_mid + 86400
-            # North East
-            res[[3]]$time_mid <- res[[3]]$time_mid + 86400
-            res[[3]]$yday_mid <- res[[3]]$yday_mid + 364
-            # West
-            res[[4]]$yday_mid <- res[[4]]$yday_mid - 364
-            # East
-            res[[6]]$yday_mid <- res[[6]]$yday_mid + 364
-            # South West
-            res[[7]]$time_mid <- res[[7]]$time_mid - 86400
-            res[[7]]$yday_mid <- res[[7]]$yday_mid - 364
-            # South
-            res[[8]]$time_mid <- res[[8]]$time_mid - 86400
-            # South East
-            res[[9]]$time_mid <- res[[9]]$time_mid - 86400
-            res[[9]]$yday_mid <- res[[9]]$yday_mid + 364
-
-            # Combine the data
-            res <- return(do.call(rbind, res))
-
-            #TODO This never happens so far ...
-            ### And shrink them. We don't need 9 times the data,
-            ### cut the parts to far off the plotted area.
-            ##res <- subset(res, time_mid > -3600 &
-            ##                   time_mid < (86400 + 3600) &
-            ##                   yday_mid > -10 &
-            ##                   yday_mid < (364 + 10))
-            ##return(res)
+        # Replicates the matrix 'x' on a 3x3 extended tile.
+        # Used later on, required to create cyclic boundaries for the
+        # contour plot.
+        extend_matrix <- function(x) {
+            x <- do.call(rbind, replicate(3, x, simplify = FALSE))
+            x <- do.call(cbind, replicate(3, x, simplify = FALSE))
+            return(x)
         }
 
-        # Expand the data set to get  cyclic bounds
-        expagg <- expand_agg(agg)
+        # Intervals along x/y
+        ival <- list(x = data.frame(from = sort(unique(agg$yday_from)),
+                                    mid  = sort(unique(agg$yday_mid)),
+                                    to   = sort(unique(agg$yday_to))),
+                     y = data.frame(from = sort(unique(agg$time_from)),
+                                    mid  = sort(unique(agg$time_mid)),
+                                    to   = sort(unique(agg$time_to))))
+        
+        # Value matrix
+        vmat <- matrix(as.numeric(NA),   nrow = nrow(ival$y), ncol = nrow(ival$x))
+        # Fill in data
+        for (i in 1:nrow(agg)) {
+            # Matrix indices
+            mi <- match(agg$time_from[i], ival$y$from)
+            mj <- match(agg$yday_from[i], ival$x$from)
+            vmat[mi, mj] <- agg$value[i]
+        }
 
-        # Manual grid. Step 1: setting up the dimension names of the new matrix
-        cont <- list(sprintf("%.0f", sort(unique(expagg$time_mid))),
-                     sprintf("%.0f", sort(unique(expagg$yday_mid))))
-        # Step 2: create a matrix with these dimensions
-        cont <- matrix(NA, nrow = length(cont[[1]]), ncol = length(cont[[2]]),
-                       dimnames = cont)
-
-        # Step 3: mapping data
-        tmpcolname <- sprintf("%.0f", expagg$yday_mid)
-        tmprowname <- sprintf("%.0f", expagg$time_mid)
-        idx <- cbind(match(tmprowname, rownames(cont)), match(tmpcolname, colnames(cont)))
-        cont[idx] <- expagg$val
+        # Extend data and dimensions for countour plot
+        tmpx <- c(ival$x$mid -   364, ival$x$mid, ival$x$mid +   364)
+        tmpy <- c(ival$y$mid - 86400, ival$y$mid, ival$y$mid + 86400)
 
         # Adding contour plot
-        contour(x = as.numeric(colnames(cont)), y = as.numeric(rownames(cont)), z = t(cont),
+        contour(x = tmpx, y = tmpy, z = t(extend_matrix(vmat)),
                 add = TRUE, col = contour.col, ...)
     }
 
@@ -692,6 +654,7 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     # That's the end, my friend ...
     # Return some properties (insisibile), mainly for testing.
     invisible(list(agg = agg,
+                   vmat = vmat,
                    xlab = xlab,
                    ylab = ylab,
                    zlim = arg$zlim,
