@@ -54,9 +54,14 @@ test_that("Foehnix functions: destandardize coefficients", {
     # Check if conversion works: both standardized with an
     # offset of 20 and a scale of 2. The mean is meaningless
     # for the coefficients except for '(Intercept)'. 
-    beta <- structure(matrix(c(2, -5, -5), ncol = 1), rownames = c("(Intercept)", "A", "B"))
+    beta <- structure(matrix(c(2, -5, -5), ncol = 1), dimnames = list(c("(Intercept)", "A", "B"), NULL))
     expect_silent(beta2 <- destandardize_coefficients(beta, S))
-    expect_equal(as.vector(beta2), as.vector(beta) / as.vector(scale(S)))
+    # Manually de-scaling. 
+    beta3 <- vector("numeric", length(beta))
+    beta3[2:3] <- as.vector(beta[2:3]) / attr(S, "scaled:scale")[2:3]
+    beta3[1]   <- beta[1] - sum(beta[2:3] / attr(S, "scaled:scale")[2:3] * attr(S, "scaled:center")[2:3])
+    # Compare
+    expect_equal(as.vector(beta2), as.vector(beta3))
 
 })
 
