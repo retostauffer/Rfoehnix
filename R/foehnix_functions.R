@@ -583,8 +583,32 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     axis(side = 1, at = xat$yday, labels = strftime(xat, "%b"), tick = FALSE,
          las = ifelse(par()$pin[1L] < 6, 2, 1))
 
+
+
+    # Intervals along x/y
+    ival <- list(x = data.frame(from = sort(unique(agg$yday_from)),
+                                mid  = sort(unique(agg$yday_mid)),
+                                to   = sort(unique(agg$yday_to))),
+                 y = data.frame(from = sort(unique(agg$time_from)),
+                                mid  = sort(unique(agg$time_mid)),
+                                to   = sort(unique(agg$time_to))))
+    
+    # Value matrix
+    vmat <- matrix(as.numeric(NA),   nrow = nrow(ival$y), ncol = nrow(ival$x))
+    # Fill in data
+    for (i in 1:nrow(agg)) {
+        # Matrix indices
+        mi <- match(agg$time_from[i], ival$y$from)
+        mj <- match(agg$yday_from[i], ival$x$from)
+        vmat[mi, mj] <- agg$value[i]
+    }
+
     # If the user wants to have contour lines: draw contours.
-    if ( contours ) {
+    if (contours) {
+
+        # Extend data and dimensions for countour plot
+        tmpx <- c(ival$x$mid -   364, ival$x$mid, ival$x$mid +   364)
+        tmpy <- c(ival$y$mid - 86400, ival$y$mid, ival$y$mid + 86400)
 
         # Replicates the matrix 'x' on a 3x3 extended tile.
         # Used later on, required to create cyclic boundaries for the
@@ -594,28 +618,6 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
             x <- do.call(cbind, replicate(3, x, simplify = FALSE))
             return(x)
         }
-
-        # Intervals along x/y
-        ival <- list(x = data.frame(from = sort(unique(agg$yday_from)),
-                                    mid  = sort(unique(agg$yday_mid)),
-                                    to   = sort(unique(agg$yday_to))),
-                     y = data.frame(from = sort(unique(agg$time_from)),
-                                    mid  = sort(unique(agg$time_mid)),
-                                    to   = sort(unique(agg$time_to))))
-        
-        # Value matrix
-        vmat <- matrix(as.numeric(NA),   nrow = nrow(ival$y), ncol = nrow(ival$x))
-        # Fill in data
-        for (i in 1:nrow(agg)) {
-            # Matrix indices
-            mi <- match(agg$time_from[i], ival$y$from)
-            mj <- match(agg$yday_from[i], ival$x$from)
-            vmat[mi, mj] <- agg$value[i]
-        }
-
-        # Extend data and dimensions for countour plot
-        tmpx <- c(ival$x$mid -   364, ival$x$mid, ival$x$mid +   364)
-        tmpy <- c(ival$y$mid - 86400, ival$y$mid, ival$y$mid + 86400)
 
         # Adding contour plot
         contour(x = tmpx, y = tmpy, z = t(extend_matrix(vmat)),

@@ -19,10 +19,10 @@ utils::globalVariables("vars")
 #'
 #' @param ... a set of named inputs to overwrite the defaults.
 #'     see 'Details' section.
-#' @param var used when calling the \code{\link[foehnix]{get.tsplot.control}}
+#' @param var used when calling the \code{\link[foehnix]{tsplot_get_control}}
 #'     function. Name of the (original!) variable name
 #' @param property the property which should be returned by
-#'     \code{\link[foehnix]{get.tsplot.control}}.
+#'     \code{\link[foehnix]{tsplot_get_control}}.
 #' @param x a \code{\link[foehnix]{tsplot.control}} object.
 #'
 #' @details By default the \code{\link[foehnix]{tsplot}} function
@@ -64,35 +64,38 @@ utils::globalVariables("vars")
 #' @author Reto Stauffer
 tsplot.control <- function(...) {
     def <- "
-    var;    name;    color;   label
-    t;      t;       #FF0000; air temperature [C]
-    rh;     rh;      #009900; relative humidity [%]
-    diff_t; diff_t;  orange;  temperature difference [C]
-    dd;     dd;      black;   wind direction [deg]
-    ff;     ff;      #005ce6; wind speed [m/s]
-    ffx;    ffx;     #5c00e6; gust speed [m/s]
-    prob;   ----;    #FF6666; probability"
+    var;    type; pch; cex; lwd; lty; name;    col;     ylab
+    t;      l;    1;   1.0; 2;   1;   t;       #FF0000; air temperature [C]
+    rh;     l;    1;   1.0; 1;   1;   rh;      #009900; relative humidity [%]
+    diff_t; l;    1;   1.0; 2;   1;   diff_t;  orange;  temperature difference [C]
+    dd;     l;    1;   0.5; 1;   1;   dd;      black;   wind direction [deg]
+    ff;     l;    1;   1.0; 2;   1;   ff;      #005ce6; wind speed [m/s]
+    ffx;    l;    1;   1.0; 1;   1;   ffx;     #5c00e6; gust speed [m/s]
+    prob;   l;    1;   1.0; 1;   1;   ----;    #FF6666; probability"
     # Reading data.frame definition from the string above.
     def <- read.table(textConnection(def), sep = ";",
                       header = TRUE,
                       strip.white = TRUE, comment.char = "",
-                      colClasses = rep("character", 3))
+                      colClasses = rep(c("character", "integer", "numeric", "integer", "character"),
+                                       times = c(2, 1, 1, 2, 3)))
+
+    # Convert definition to list
+    def <- lapply(setNames(def$var, def$var),
+                  function(x, df) as.list(subset(df, var == x, -var)), df = def)
 
     # User arguments
     arg <- list(...)
-    for ( n in names(arg) ) {
-        idx <- which(def$var == n)
-        if ( length(idx) == 0 ) next
+    for (var in names(arg)) {
+        if (!var %in% names(def)) next
         # Else modify the definition.
         # If input is a character: modify name
-        if ( inherits(arg[[n]], "character") ) {
-            def[idx,"name"] <- arg[[n]]
+        if (inherits(arg[[var]], "character")) {
+            def[[var]]$name <- arg[[var]]
         # If input is a list: modify the elements we have
         # in the definition above.
-        } else if ( inherits(arg[[n]], "list") ) {
-            for ( m in names(arg[[n]]) ) {
-                m <- match.arg(m, names(def))
-                if ( m %in% names(def) ) def[idx,m] <- arg[[n]][[m]]
+        } else if (inherits(arg[[var]], "list")) {
+            for (m in names(arg[[var]])) {
+                def[[var]][[m]] <- arg[[var]][[m]]
             }
         } else {
             warning("Got unexpected input on 'tsplot.control'. Will be ignored.")
@@ -101,27 +104,39 @@ tsplot.control <- function(...) {
 
     # Polygons use hex + alpha. Thus, we do have to convert
     # all colors to hex.
-    tmp  <- grDevices::col2rgb(def$color) / 255
-    def$color <- colorspace::hex(colorspace::sRGB(tmp[1,], tmp[2,], tmp[3,]))
+    for (var in names(def)) {
+        tmp  <- grDevices::col2rgb(def[[var]]$col) / 255
+        def[[var]]$col <- colorspace::hex(colorspace::sRGB(tmp[1,], tmp[2,], tmp[3,]))
+    }
 
     # Add custom class and return
-    class(def) <- c("tsplot.control", "data.frame")
+    class(def) <- c("tsplot.control", class(def))
     return(def)
 }
 
 #' @rdname tsplot.control
-get.tsplot.control <- function(x, var, property) {
-    # Check if we have the property (match.arg)
-    property <- match.arg(property, names(x))
-    # Try to find the variable (match.arg)
-    var <- match.arg(var, x$var)
-    # Return
-    return(x[which(x$var == var), property])
+tsplot_get_control <- function(x, var, property, args = list()) {
+    # Return parameters for the plot
+    allowed <- list(args_plot    = c("type", "lty", "lwd", "col", "pch", "cex"),
+                    args_lines   = c("type", "lty", "lwd", "col", "pch", "cex"),
+                    args_points  = c("col", "pch", "cex", "bg"),
+                    args_polygon = c("col", "border"))
+    if (grepl("^args_.*", property)) {
+        res <- args
+        for (n in names(x[[var]])) {
+            if (!n %in% allowed[[property]]) next
+            res[[n]] <- x[[var]][[n]]
+        }
+    # Return the value of this property
+    } else {
+        res <- x[[var]][[property]]
+    }
+    return(res)
 }
 
 #' Time Series Plot of foehnix Models
 #' 
-#' Development time series plots of estimated \code{\link{foehnix}}
+#' Development time series plots of estimated \code{\link[foehnix]{foehnix}}
 #' models. TODO: they are very specific at the moment!
 #' 
 #' @param x object of type \code{foehnix} or a list with \code{foehnix} and
@@ -139,12 +154,12 @@ get.tsplot.control <- function(x, var, property) {
 #' @details Development method to access plausability of the estimated foehn
 #' proabilities.  For software release this method should either be removed or
 #' made much more general. At the moment the method heavily depends on the
-#' names of the data used as input for \code{\link{foehnix}}.
+#' names of the data used as input for \code{\link[foehnix]{foehnix}}.
 #'
 #' This time series plotting function creates a relatively specific plot
 #' and also expects, by default, a set of default variables and variable
 #' names. This function uses the data set provided on the \code{data}
-#' input argument when calling the \code{\link{foehnix}} method.
+#' input argument when calling the \code{\link[foehnix]{foehnix}} method.
 #' As they might differ from the \code{foehnix} defaults the
 #' \code{varnames} input argument allows to specify custom names.
 #' The ones expected:
@@ -264,7 +279,6 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     if(inherits(ndays, "numeric")) ndays <- as.integer(ndays)
     if(ndays <= 0) stop("invalid argument for \"ndays\"")
 
-
     # The function allows that 'x' is either a single
     # foehnix object or a list of foehnix objects (or zoo).
     # The first element in the list has to be a foehnix model,
@@ -279,15 +293,15 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     #     and contain values within [0,1]. If not, stop.
     #   - store x[[2]], x[[3]], ... on "xtra", store x[[1]] as x.
     #   - keep names, if there are any (on xtra_names)
-    if ( inherits(x, "list") && length(x) == 1 ) x <- x[[1]]
-    if ( inherits(x, "foehnix") ) {
+    if (inherits(x, "list") && length(x) == 1 ) x <- x[[1]]
+    if (inherits(x, "foehnix")) {
         xtra <- NULL; xtra_names <- NULL
     } else {
-        if ( ! inherits(x[[1]], "foehnix") )
+        if (! inherits(x[[1]], "foehnix"))
             stop("the first element on \"x\" has to be of class \"foehnix\"")
         # Take xtra objects.
         xtra <- list()
-        for ( i in 2:length(x) ) {
+        for (i in 2:length(x)) {
             if ( ! inherits(x[[i]], c("zoo", "foehnix")) )
                 stop(sprintf("input object %d is neither a zoo object nor a foehnix object", i))
             if ( inherits(x[[i]], "zoo") ) {
@@ -327,8 +341,8 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     # Check available data. This allows us to check
     # which of the default subplots can be drawn.
     check <- function(available, control, check) {
-        control <- subset(control, var %in% check)
-        return(sum(control$name %in% available) > 0)
+        x <- names(control[which(names(control) %in% available)])
+        return(sum(check %in% x) > 0)
     }
     doplot <- list(
         "temp"        = check(names(x$data), control, c("t", "rh")),
@@ -338,23 +352,8 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
 
-    # Helper function to add the gray boxes (background)
-    add_boxes <- function(col = "gray90") {
-        # Loaded from parent env
-        if ( length(prob_boxes$up) > 0 ) {
-            y <- par()$usr[3:4]
-            for ( i in seq_along(prob_boxes$up) ) {
-                to <- which(prob_boxes$down >= prob_boxes$up[i])
-                to <- ifelse(length(to) == 0, length(prob_boxes$index), prob_boxes$down[to[1L]])
-                rect(prob_boxes$index[prob_boxes$up[i]] - prob_boxes$dx, y[1L],
-                     prob_boxes$index[to] + prob_boxes$dx, y[2L],
-                     col = col, border = NA)
-            }
-        }
-    }
-
     # Calculate boxes
-    calc_boxes <- function(x) {
+    calc_prob_boxes <- function(x) {
         tmp <- as.vector(x > 0.5)
         tmp[is.na(tmp)] <- FALSE
         res <- list(index = index(x), dx = deltat(x) / 2, up = c(), down = c())
@@ -375,24 +374,15 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         return(res)
     }
 
-    # Helper function to add the vertical lines
-    add_midnight_lines <- function(x) {
-        ndays <- as.numeric(diff(range(index(x))), unit = "days")
-        if ( ndays < 50 ) {
-            at <- as.POSIXct(unique(as.Date(index(x))))
-            abline(v = at, col = 1)
-        }
-    }
-
     # Convert start/end to POSIXct
-    if ( ! is.null(start) ) {
-        start <- try(as.POSIXct(start))
-        if ( inherits(start, "try-error") )
+    if (! is.null(start)) {
+        start <- try(as.POSIXct(start), silent = TRUE)
+        if (inherits(start, "try-error"))
             stop("Invalid input for \"start\". Cannot be converted to POSIXt.")
     }
-    if ( ! is.null(end) ) {
-        end <- try(as.POSIXct(end))
-        if ( inherits(end, "try-error") )
+    if (! is.null(end)) {
+        end <- try(as.POSIXct(end), silent = TRUE)
+        if (inherits(end, "try-error"))
             stop("Invalid input for \"end\". Cannot be converted to POSIXt.")
     }
 
@@ -436,7 +426,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     names(data)[1L] <- "prob"
 
     # For convenience:
-    get <- get.tsplot.control
+    get <- tsplot_get_control
 
     # Looping over the different periods we have to plot
     for ( k in seq_along(start) ) {
@@ -449,10 +439,10 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         tmp <- window(data, start = start[k], end = end[k])
 
         # Calculate the limits for the gray boxes (where prob >= .5)
-        prob_boxes <- calc_boxes(tmp$prob)
+        prob_boxes <- calc_prob_boxes(tmp$prob)
 
         # No data, or only missing data?
-        if ( nrow(tmp) == 0 | sum(!is.na(tmp)) == 0 ) {
+        if (nrow(tmp) == 0 | sum(!is.na(tmp)) == 0) {
             tmp <- paste("No data (or only missing values) for the time period",
                          strftime(start[k], "%Y-%m-%d %H:%M"), "to",
                          strftime(end[k], "%Y-%m-%d %H:%M"))
@@ -461,154 +451,229 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         }
 
         # Air temperature
-        if ( doplot$temp ) {
-            # If temperature is in the data set: plot temperature,
-            # if not, set up an empty plot (required to be able to
-            # add relative humidity and temperature differences).
-            param_t <- get(control, "t", "name")
-            if ( param_t %in% names(tmp) ) {
-                plot(tmp[,param_t], type = "n", ylab = NA, xaxt = "n", bty = "n")
-                add_boxes(); add_midnight_lines(tmp)
-                mtext(side = 2, line = 3, get(control, "t", "label"))
-                box()
-            }
-    
-            # Relative humidity
-            param_rh <- get(control, "rh", "name")
-            if ( param_rh %in% names(tmp) ) {
-                if ( get(control, "t", "name") %in% names(tmp) )
-                    par(new = TRUE)
-                # Plotting relative humidity data
-                plot(tmp[,param_rh], type = "n", lwd = 2, yaxt = "n",
-                     ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
-                add_boxes(); add_midnight_lines(tmp)
-                add_polygon(tmp[,param_rh], col = get(control, "rh", "color"))
-                abline(h = seq(20, 100, by = 20), lty = 3,
-                       col = sprintf("%s50", get(control, "rh", "color")))
-                axis(side = 4, at = seq(20, 100, by = 20))
-                mtext(side = 4, line = 3, get(control, "rh", "label"))
-                box()
-            }
-
-            # After relative humidity has been added (optionally:
-            # add temperature observation.
-            if ( param_t %in% names(tmp) ) {
-                par(new = TRUE)
-                plot(tmp[,param_t], lwd = 2, col = get(control, "t", "color"),
-                     xaxt = "n", yaxt = "n", main = NA)
-            }
-
-        }
+        if (doplot$temp)       tsplot_add_temp(tmp, control, prob_boxes)
     
         # Plotting temperature difference
-        if ( doplot$tempdiff ) {
-            # Temperature difference
-            param <- get(control, "diff_t", "name")
-            if ( param %in% names(tmp) ) {
-                plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
-                add_boxes(); add_midnight_lines(tmp)
-                lines(tmp[,param], lwd = 2,
-                      col = get(control, "diff_t", "color"))
-                abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
-                abline(h = 0, col = 1)
-                mtext(side = 2, line = 3, get(control, "diff_t", "label"))
-                box()
-            }
-        }
+        if ( doplot$tempdiff ) tsplot_add_tempdiff(tmp, control, prob_boxes)
     
         # Plotting wind direction and wind speed
-        if ( doplot$wind ) {
-            plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
-                     ylim = c(0, 360), yaxt = "n", bty = "n")
-            add_boxes(); add_midnight_lines(tmp)
-            param <- get(control, "dd", "name")
-            if ( param %in% names(tmp) ) {
-                points(tmp[,param], col = "black", pch = 19, cex = 0.5)
-                axis(side = 2, at = seq(90, 360 - 90, by = 90))
-                mtext(side = 2, line = 3, get(control, "dd", "label"))
-                box()
-            }
-        
-            # Adding wind speed
-            pff  <- get(control, "ff", "name")
-            pffx <- get(control, "ffx", "name")
-            if ( any(c(pff, pffx) %in% names(tmp)) ) {
-                # Get y limits
-                if ( all(c(pff, pffx) %in% names(tmp)) ) {
-                    ymax <- max(max(tmp[,pff], na.rm = TRUE), max(tmp[,pffx], na.rm = TRUE))
-                    ylab <- sprintf("%s\n%s", get(control, "ffx", "label"), get(control, "ff", "label"))
-                } else if ( pff %in% names(tmp) ) {
-                    ymax <- max(tmp[,pff], na.rm = TRUE)
-                    ylab <- get(control, "ff", "label")
-                } else {
-                    ymax <- max(tmp[,pffx], na.rm = TRUE)
-                    ylab <- get(control, "ffx", "label")
-                }
-                ylim <- c(0, ymax*1.05)
-                # Plotting an empty sub-figure
-                par(new = TRUE)
-                plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
-                     xlim = range(index(tmp)), ylim = ylim)
-                # Adding ffx if existing
-                if ( pffx %in% names(tmp) )
-                    lines(tmp[, pffx], col = get(control, "ffx", "color"))
-                # Adding ff if existing
-                if ( pff %in% names(tmp) )
-                    add_polygon(tmp[, pff], col = get(control, "ff", "color"))
-                axis(side = 4, at = pretty(c(0, ymax)))
-                mtext(side = 4, line = 3, ylab)
-                box()
-            }
-        }
+        if ( doplot$wind ) tsplot_add_wind(tmp, control, prob_boxes)
 
         # Foehn prob (main object 'x')
-        xlim <- range(index(tmp))
-        plot(NA, type = "n", xlim = xlim, xaxt = "n",
-             ylab = NA, ylim = c(-4,104), yaxs = "i") 
-        axis(side = 1, at = pretty(xlim), strftime(pretty(xlim), "%Y-%m-%d %H:%M"))
-        add_boxes(); add_midnight_lines(tmp)
-
-        # Adding additional foehn probs
-        if ( ! is.null(xtra) ) {
-            for ( i in seq_along(xtra) ) {
-                tmp_xtra <- if ( inherits(xtra[[i]], "foehnix") ) xtra[[i]]$prob$prob else xtra[[i]]
-                lines(100 * window(tmp_xtra, start = min(index(tmp)), end = max(index(tmp))),
-                      col = "black", lty = i + 1)
-            }
-        }
-        abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
-        mtext(side = 2, line = 3, get(control, "prob", "label"))
-        add_polygon(tmp$prob * 100, col = get(control, "prob", "color"), lower.limit = -4)
-
-        # Adding RUG
-        at <- index(tmp$prob)[which(tmp$prob >= .5)]
-        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA,
-                                   col = get(control, "prob", "color"))
-
-        # Adding "missing data" RUG
-        at <- index(tmp$prob)[which(is.na(tmp$prob))]
-        if ( length(at) > 0 ) axis(side = 1, at = at, labels = NA, col = "gray50")
-        box()
-
-        # Adding extra probabilities
-        if ( ! is.null(xtra) ) {
-            if ( is.null(xtra_names) )
-                xtra_names <- c("foehnix", sprintf("extra %d", seq(1, length(xtra))))
-            cols <- c(get(control, "prob", "color"), rep("gray50", length(xtra)))
-            ltys <- c(1, seq_along(xtra) + 1)
-            legend("left", bg = "white", col = cols, lty = ltys, legend = xtra_names)
-        }
-    
-        # Adding a title to the plot
-        title <- sprintf("Foehn Diagnosis %s to %s", start[k], end[k])
-        mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
+        tsplot_add_foehn(tmp, control, prob_boxes, xtra, xtra_names)
 
         # If multiple periods have to be plotted: set ask = TRUE
         if ( ask & k < length(start) ) readline("Press Enter for next plot> ")
 
     } # End of loop over start/end (loop index k)
 
+}
 
+#' Helper function to add the gray boxes (background)
+tsplot_add_boxes <- function(x, col = "gray90") {
+    # Loaded from parent env
+    if ( length(x$up) > 0 ) {
+        y <- par()$usr[3:4]
+        for ( i in seq_along(x$up) ) {
+            to <- which(x$down >= x$up[i])
+            to <- ifelse(length(to) == 0, length(x$index), x$down[to[1L]])
+            rect(x$index[x$up[i]] - x$dx, y[1L],
+                 x$index[to] + x$dx, y[2L],
+                 col = col, border = NA)
+        }
+    }
+}
+
+#' Helper function to add vertical lines (midnight)
+tsplot_add_midnight_lines <- function(x) {
+    ndays <- as.numeric(diff(range(index(x))), unit = "days")
+    if ( ndays < 50 ) {
+        at <- as.POSIXct(unique(as.Date(index(x))))
+        abline(v = at, col = 1)
+    }
+}
+
+
+#' Helper functions to add data to time series plots
+#'
+#' Used inside \code{\link[foehnix]{tsplot}}.
+#'
+#' @param x \code{zoo} object with the data
+#' @param control \code{\link[foehnix]{tsplot.control}} object
+#' @param prob_boxes object as returned from calc_prob_boxes
+#'
+#' @rdname tsplot_add
+#' @author Reto Stauffer
+tsplot_add_temp <- function(x, control, prob_boxes) {
+    get <- tsplot_get_control # For convenience
+    # If temperature is in the data set: plot temperature,
+    # if not, set up an empty plot (required to be able to
+    # add relative humidity and temperature differences).
+    param_t <- get(control, "t", "name")
+    if (param_t %in% names(x)) {
+        plot(x[, param_t], type = "n", ylab = NA, xaxt = "n", bty = "n")
+        tsplot_add_boxes(prob_boxes)
+        tsplot_add_midnight_lines(x)
+        mtext(side = 2, line = 3, get(control, "t", "ylab"))
+        box()
+    }
+
+    # Relative humidity
+    param_rh <- get(control, "rh", "name")
+    if (param_rh %in% names(x) ) {
+        if (get(control, "t", "name") %in% names(x)) par(new = TRUE)
+        # Plotting relative humidity data
+        plot(x[, param_rh], type = "n", lwd = 2, yaxt = "n",
+             ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
+        tsplot_add_boxes(prob_boxes)
+        tsplot_add_midnight_lines(x)
+        # Arguments for the polygon
+        do.call(add_polygon, get(control, "rh", "args_polygon", list(x = x[, param_rh])))
+        # Adding horizontal lines
+        abline(h = seq(20, 100, by = 20), lty = 3,
+               col = sprintf("%s50", get(control, "rh", "col")))
+        # Labeling
+        axis(side = 4, at = seq(20, 100, by = 20))
+        mtext(side = 4, line = 3, get(control, "rh", "ylab"))
+        box()
+    }
+
+    # After relative humidity has been added (optionally:
+    # add temperature observation.
+    if ( param_t %in% names(x) ) {
+        par(new = TRUE)
+        args <- get(control, "t", "args_plot", list(x = x[, param_t],
+                                                    xaxt = "n", yaxt = "n", main = NA))
+        do.call(plot, args)
+    }
+
+}
+
+
+#' @rdname tsplot_add
+#' @author Reto Stauffer
+tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
+    get <- tsplot_get_control # For convenience
+    # Temperature difference
+    param <- get(control, "diff_t", "name")
+    if (param %in% names(tmp)) {
+        plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
+        tsplot_add_boxes(prob_boxes)
+        tsplot_add_midnight_lines(tmp)
+        # Call the line plot
+        args <- get(control, "diff_t", "args_lines", list(x = tmp[, param]))
+        do.call(lines, args)
+        # Adding horizontal grid
+        abline(h = seq(-20,20, by = 1), col = "gray80", lty = 3)
+        abline(h = 0, col = 1)
+        # Labeling
+        mtext(side = 2, line = 3, get(control, "diff_t", "ylab"))
+        box()
+    }
+}
+
+
+#' @rdname tsplot_add
+#' @author Reto Stauffer
+tsplot_add_wind <- function(tmp, control, prob_boxes) {
+    get <- tsplot_get_control # For convenience
+    # Plot empty frame
+    plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
+             ylim = c(0, 360), yaxt = "n", bty = "n")
+    tsplot_add_boxes(prob_boxes)
+    tsplot_add_midnight_lines(tmp)
+    # Adding wind direction
+    param <- get(control, "dd", "name")
+    if (param %in% names(tmp)) {
+        #points(tmp[,param], col = "black", pch = 19, cex = 0.5)
+        do.call(points, get(control, "dd", "args_points", list(x = tmp[, param])))
+        axis(side = 2, at = seq(90, 360 - 90, by = 90))
+        mtext(side = 2, line = 3, get(control, "dd", "ylab"))
+        box()
+    }
+    
+    # Adding wind speed
+    pff  <- get(control, "ff", "name")
+    pffx <- get(control, "ffx", "name")
+    if ( any(c(pff, pffx) %in% names(tmp)) ) {
+        # Get y limits
+        if ( all(c(pff, pffx) %in% names(tmp)) ) {
+            ymax <- max(max(tmp[,pff], na.rm = TRUE), max(tmp[,pffx], na.rm = TRUE))
+            ylab <- sprintf("%s\n%s", get(control, "ffx", "ylab"), get(control, "ff", "ylab"))
+        } else if ( pff %in% names(tmp) ) {
+            ymax <- max(tmp[,pff], na.rm = TRUE)
+            ylab <- get(control, "ff", "ylab")
+        } else {
+            ymax <- max(tmp[,pffx], na.rm = TRUE)
+            ylab <- get(control, "ffx", "ylab")
+        }
+        ylim <- c(0, ymax*1.05)
+        # Plotting an empty sub-figure
+        par(new = TRUE)
+        plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
+             xlim = range(index(tmp)), ylim = ylim)
+        # Adding ffx if existing
+        if (pffx %in% names(tmp))
+            do.call(lines, get(control, "ffx", "args_lines", list(x = tmp[, pffx])))
+        # Adding ff if existing
+        if (pff %in% names(tmp))
+            do.call(add_polygon, get(control, "ff", "args_polygon", list(x = tmp[, pff])))
+        # Adding labels
+        axis(side = 4, at = pretty(c(0, ymax)))
+        mtext(side = 4, line = 3, ylab)
+        box()
+    }
+}
+
+
+#' Add foehn probabilities to time series plot
+tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = NULL, ...) {
+
+    get <- tsplot_get_control # For convenience
+
+    # Limits
+    xlim <- range(index(x))
+    plot(NA, type = "n", xlim = xlim, xaxt = "n",
+         ylab = NA, ylim = c(-4,104), yaxs = "i") 
+    axis(side = 1, at = pretty(xlim), strftime(pretty(xlim), "%Y-%m-%d %H:%M"))
+    tsplot_add_boxes(prob_boxes)
+    tsplot_add_midnight_lines(x)
+
+    # Adding additional foehn probs
+    if (! is.null(xtra)) {
+        for (i in seq_along(xtra)) {
+            tmp_xtra <- if (inherits(xtra[[i]], "foehnix")) xtra[[i]]$prob$prob else xtra[[i]]
+            lines(100 * window(tmp_xtra, start = min(index(x)), end = max(index(x))),
+                  col = "black", lty = i + 1)
+        }
+    }
+    abline(h = seq(0, 100, by = 20), col = "gray", lty = 3)
+    mtext(side = 2, line = 3, get(control, "prob", "ylab"))
+    do.call(add_polygon, get(control, "prob", "args_polygon", list(x = x$prob * 100,
+                                                                   lower.limit = -4)))
+
+    # Adding RUG
+    at <- index(x$prob)[which(x$prob >= .5)]
+    if (length(at) > 0) axis(side = 1, at = at, labels = NA,
+                               col = get(control, "prob", "col"))
+
+    # Adding "missing data" RUG
+    at <- index(x$prob)[which(is.na(x$prob))]
+    if (length(at) > 0) axis(side = 1, at = at, labels = NA, col = "gray50")
+
+    # Adding extra probabilities
+    if (!is.null(xtra)) {
+        if (is.null(xtra_names))
+            xtra_names <- c("foehnix", sprintf("extra %d", seq(1, length(xtra))))
+        cols <- c(get(control, "prob", "col"), rep("gray50", length(xtra)))
+        ltys <- c(1, seq_along(xtra) + 1)
+        legend("left", bg = "white", col = cols, lty = ltys, legend = xtra_names)
+    }
+
+    # Adding a title to the plot
+    title <- sprintf("Foehn Diagnosis %s to %s", xlim[1L], xlim[2L])
+    mtext(side = 3, outer = TRUE, title, font = 2, cex = 1.2, line = 0.5)
+    box()
 }
 
 
@@ -665,7 +730,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
 #' @import graphics
 #' @author Reto Stauffer
 #' @export
-add_polygon <- function( x, col = "#ff0000", lower.limit = 0, lwd = 1 ) {
+add_polygon <- function(x, col = "#ff0000", lower.limit = 0, lwd = 1) {
     # Need hex color
     if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
     # All elements NA?
