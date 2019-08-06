@@ -28,14 +28,25 @@ utils::globalVariables("vars")
 #' @details By default the \code{\link[foehnix]{tsplot}} function
 #'     expects that the variable names are called
 #' \itemize{
-#'      \item \code{t}: dry air temperature (degrees Celsuis)
-#'      \item \code{rh}: relative humidity in percent
+#'      \item \code{t}: dry air temperature (degrees Celsius)
+#'      \item \code{crest_t}: dry air temperature crest (degrees Celsius)
+#'      \item \code{rh}: relative humidity (percent)
+#'      \item \code{crest_rh}: relative humidity crest (percent)
 #'      \item \code{diff_t}: temperature difference to a nearby
 #'             crest station
-#'      \item \code{dd}: wind direction in (meteorological) degrees
-#'      \item \code{ff}: wind speed in meters per second
-#'      \item \code{ffx}: gust speed in meters per second
+#'      \item \code{dd}: wind direction (meteorological degrees)
+#'      \item \code{dd}: wind direction crest (meteorological degrees)
+#'      \item \code{ff}: wind speed (meters per second)
+#'      \item \code{crest_ff}: wind speed crest (meters per second)
+#'      \item \code{ffx}: gust speed (meters per second)
+#'      \item \code{crest_ffx}: gust speed crest (meters per second)
 #' }
+#'
+#' Can be set to \code{NULL} to be disabled. If the variable exists in the
+#' data set but was (manually) set to \code{NULL} it will be neglected during
+#' plotting. E.g., \code{tsplot(mod, crest_ff = NULL, crest_ffx = NULL)} to
+#' disable crest station wind speed and gust speed (on plot).
+#'
 #' If \code{\link[foehnix]{tsplot}} can find these variables,
 #' it will plot the corresponding observations, label the plots,
 #' and uses a set of default colors.
@@ -64,20 +75,25 @@ utils::globalVariables("vars")
 #' @author Reto Stauffer
 tsplot.control <- function(...) {
     def <- "
-    var;    type; pch; cex; lwd; lty; name;    col;     ylab
-    t;      l;    1;   1.0; 2;   1;   t;       #FF0000; air temperature [C]
-    rh;     l;    1;   1.0; 1;   1;   rh;      #009900; relative humidity [%]
-    diff_t; l;    1;   1.0; 2;   1;   diff_t;  orange;  temperature difference [C]
-    dd;     l;    1;   0.5; 1;   1;   dd;      black;   wind direction [deg]
-    ff;     l;    1;   1.0; 2;   1;   ff;      #005ce6; wind speed [m/s]
-    ffx;    l;    1;   1.0; 1;   1;   ffx;     #5c00e6; gust speed [m/s]
-    prob;   l;    1;   1.0; 1;   1;   ----;    #FF6666; probability"
+    var;       type; pch; cex; lwd; lty; name;       col;       ylab
+    t;         l;    NA;  1.0; 2.0;   1;   t;         #FF0000;   air temperature [C]
+    crest_t;   o;    17;  1.0; 1.0;   1;   crest_t;   #FF0000;   air temperature crest [C]
+    rh;        l;    NA;  1.0; 1.0;   1;   rh;        #009900;   relative humidity [%]
+    crest_rh;  o;    17;  1.0; 1.0;   1;   crest_rh;  #009900;   relative humidity crest [%]
+    diff_t;    l;    NA;  1.0; 2.0;   1;   diff_t;    orange;    temperature difference [C]
+    dd;        p;    19;  0.7; 1.0;   1;   dd;        black;     wind direction [deg]
+    crest_dd;  p;    17;  1.0; 0.0;   0;   crest_dd;  gray;      wind direction crest [deg]
+    ff;        l;    NA;  1.0; 2.0;   1;   ff;        #005ce6;   wind speed [m/s]
+    crest_ff;  o;    17;  1.0; 1.0;   1;   crest_ff;  #005ce6;   wind speed crest [m/s]
+    ffx;       l;    NA;  1.0; 1.0;   1;   ffx;       #5c00e6;   gust speed [m/s]
+    crest_ffx; o;    17;  1.0; 0.5;   1;   crest_ffx; #5c00e6;   gust speed crest [m/s]
+    prob;      l;    NA;  1.0; 2.0;   1;   ----;      #FF6666;   probability"
     # Reading data.frame definition from the string above.
     def <- read.table(textConnection(def), sep = ";",
                       header = TRUE,
                       strip.white = TRUE, comment.char = "",
                       colClasses = rep(c("character", "integer", "numeric", "integer", "character"),
-                                       times = c(2, 1, 1, 2, 3)))
+                                       times = c(2, 1, 2, 1, 3)))
 
     # Convert definition to list
     def <- lapply(setNames(def$var, def$var),
@@ -87,6 +103,8 @@ tsplot.control <- function(...) {
     arg <- list(...)
     for (var in names(arg)) {
         if (!var %in% names(def)) next
+        # Drop from 'def' - will not be considered during plotting.
+        if (is.null(arg[[var]])) { def[[var]] <- NULL; next }
         # Else modify the definition.
         # If input is a character: modify name
         if (inherits(arg[[var]], "character")) {
@@ -116,11 +134,11 @@ tsplot.control <- function(...) {
 
 #' @rdname tsplot.control
 tsplot_get_control <- function(x, var, property, args = list()) {
+    if (!var %in% names(x)) return(NA) # Not available
     # Return parameters for the plot
     allowed <- list(args_plot    = c("type", "lty", "lwd", "col", "pch", "cex"),
                     args_lines   = c("type", "lty", "lwd", "col", "pch", "cex"),
-                    args_points  = c("col", "pch", "cex", "bg"),
-                    args_polygon = c("col", "border"))
+                    args_polygon = c("col", "border", "lwd"))
     if (grepl("^args_.*", property)) {
         res <- args
         for (n in names(x[[var]])) {
@@ -166,7 +184,9 @@ tsplot_get_control <- function(x, var, property, args = list()) {
 #' 
 #' \itemize{
 #'      \item \code{t}: dry air temperature
+#'      \item \code{crest_t}: dry air temperature crest
 #'      \item \code{rh}: relative humidity (in percent)
+#'      \item \code{crest_rh}: relative humidity crest (in percent)
 #'      \item \code{diff_t}: temperature difference between the
 #'            crest and the valley station
 #'      \item \code{dd}: meteorological wind direction (\code{[0, 360]})
@@ -257,11 +277,11 @@ tsplot_get_control <- function(x, var, property, args = list()) {
 #' # - 'color': color used for plotting
 #' # - 'label': label for the axis on the plot
 #' # See also ?tsplot.control for more information.
-#' tsplot(mod3, dd = list(name = "winddir", color = "cyan", label = "WIND DIRECTION LABEL"),
-#'              ff = list(name = "windspd", color = "#FF00FF", label = "WIND SPEED LABEL"),
-#'              rh = list(color = 4, label = "RELHUM LABEL"),
-#'              t  = list(color = 5, label = "TEMPERATURE LABEL"),
-#'              prob = list(color = "yellow", label = "PROBABILITY LABEL"),
+#' tsplot(mod3, dd = list(name = "winddir", col = "cyan",    ylab = "WIND DIRECTION LABEL"),
+#'              ff = list(name = "windspd", col = "#FF00FF", ylab = "WIND SPEED LABEL"),
+#'              rh = list(col = 4, ylab = "RELHUM LABEL"),
+#'              t  = list(col = 5, ylab = "TEMPERATURE LABEL"),
+#'              prob = list(col = "yellow", ylab = "PROBABILITY LABEL"),
 #'              start = "2018-03-01", end = "2018-03-10")
 #'
 #' @seealso \code{\link[foehnix]{tsplot.control}}.
@@ -345,7 +365,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         return(sum(check %in% x) > 0)
     }
     doplot <- list(
-        "temp"        = check(names(x$data), control, c("t", "rh")),
+        "temp"        = check(names(x$data), control, c("t", "crest_t", "rh")),
         "tempdiff"    = check(names(x$data), control, c("diff_t")),
         "wind"        = check(names(x$data), control, c("dd", "ff", "ffx")),
         "prob"        = TRUE
@@ -451,13 +471,13 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         }
 
         # Air temperature
-        if (doplot$temp)       tsplot_add_temp(tmp, control, prob_boxes)
+        if (doplot$temp)     tsplot_add_temp(tmp, control, prob_boxes)
     
         # Plotting temperature difference
-        if ( doplot$tempdiff ) tsplot_add_tempdiff(tmp, control, prob_boxes)
+        if (doplot$tempdiff) tsplot_add_tempdiff(tmp, control, prob_boxes)
     
         # Plotting wind direction and wind speed
-        if ( doplot$wind ) tsplot_add_wind(tmp, control, prob_boxes)
+        if (doplot$wind)     tsplot_add_wind(tmp, control, prob_boxes)
 
         # Foehn prob (main object 'x')
         tsplot_add_foehn(tmp, control, prob_boxes, xtra, xtra_names)
@@ -494,6 +514,16 @@ tsplot_add_midnight_lines <- function(x) {
 }
 
 
+tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("at station", "crest")) {
+    get <- tsplot_get_control
+    legend(pos, ncol = 2, legend = legend, bty = "n",
+           col = c(get(control, x, "col"), get(control, crest_x, "col")),
+           lty = c(get(control, x, "lty"), get(control, crest_x, "lty")),
+           lwd = c(get(control, x, "lwd"), get(control, crest_x, "lwd")),
+           pch = c(get(control, x, "pch"), get(control, crest_x, "pch")))
+}
+
+
 #' Helper functions to add data to time series plots
 #'
 #' Used inside \code{\link[foehnix]{tsplot}}.
@@ -509,43 +539,65 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
     # If temperature is in the data set: plot temperature,
     # if not, set up an empty plot (required to be able to
     # add relative humidity and temperature differences).
-    param_t <- get(control, "t", "name")
-    if (param_t %in% names(x)) {
-        plot(x[, param_t], type = "n", ylab = NA, xaxt = "n", bty = "n")
+    param_t       <- get(control, "t", "name")
+    param_crest_t <- get(control, "crest_t", "name")
+    if (any(c(param_t, param_crest_t) %in% names(x))) {
+        idx    <- grep(sprintf("^(%s)$", paste(param_t, param_crest_t, sep = "|")), names(x))
+        # ylimits for temperatures - will be use once more later on
+        ylim_t <- range(x[, idx], na.rm = TRUE)
+        plot(NA, ylim = ylim_t, xlim = range(index(x)),
+             type = "n", ylab = NA, xaxt = "n", bty = "n")
         tsplot_add_boxes(prob_boxes)
         tsplot_add_midnight_lines(x)
-        mtext(side = 2, line = 3, get(control, "t", "ylab"))
+        mtext(side = 2, line = 3, get(control, names(x)[idx[1L]], "ylab"))
         box()
     }
 
     # Relative humidity
-    param_rh <- get(control, "rh", "name")
-    if (param_rh %in% names(x) ) {
-        if (get(control, "t", "name") %in% names(x)) par(new = TRUE)
+    param_rh       <- get(control, "rh", "name")
+    param_crest_rh <- get(control, "crest_rh", "name")
+    if (any(c(param_rh, param_crest_rh) %in% names(x))) {
+        if (any(c(param_t, param_crest_t) %in% names(x))) par(new = TRUE)
         # Plotting relative humidity data
-        plot(x[, param_rh], type = "n", lwd = 2, yaxt = "n",
-             ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
+        plot(NA, type = "n", lwd = 2, yaxt = "n",
+             xlim = range(index(x)), ylim = c(0,150), yaxs = "i", xaxt = "n", bty = "n")
         tsplot_add_boxes(prob_boxes)
         tsplot_add_midnight_lines(x)
         # Arguments for the polygon
-        do.call(add_polygon, get(control, "rh", "args_polygon", list(x = x[, param_rh])))
+        if (param_crest_rh %in% names(x))
+            do.call(lines, get(control, "crest_rh", "args_lines", list(x = x[, param_crest_rh])))
+        if (param_rh %in% names(x))
+            do.call(add_polygon, get(control, "rh", "args_polygon", list(x = x[, param_rh])))
         # Adding horizontal lines
         abline(h = seq(20, 100, by = 20), lty = 3,
                col = sprintf("%s50", get(control, "rh", "col")))
         # Labeling
         axis(side = 4, at = seq(20, 100, by = 20))
-        mtext(side = 4, line = 3, get(control, "rh", "ylab"))
+        tmp <- ifelse(param_rh %in% names(x), param_rh, param_crest_rh)
+        mtext(side = 4, line = 3, get(control, tmp, "ylab"))
         box()
     }
 
-    # After relative humidity has been added (optionally:
-    # add temperature observation.
-    if ( param_t %in% names(x) ) {
+    # After relative humidity has been added (optionally)
+    # add temperature observation. Either both (temperature at the
+    # target station and at the crest) or only one of both.
+    if (all(c(param_t, param_crest_t) %in% names(x))) {
         par(new = TRUE)
-        args <- get(control, "t", "args_plot", list(x = x[, param_t],
-                                                    xaxt = "n", yaxt = "n", main = NA))
-        do.call(plot, args)
+        do.call(plot, get(control, "t", "args_plot", list(x = x[, param_t], ylim = ylim_t,
+                                                          xaxt = "n", yaxt = "n", main = NA)))
+        do.call(lines, get(control, "crest_t", "args_lines", list(x = x[, param_crest_t])))
+        tsplot_add_legend("topright", control, param_t, param_crest_t)
+    } else if (any(c(param_t, param_crest_t) %in% names(x))) {
+        # Check which one has to be plotted
+        tmp <- names(x)[names(x) %in% c(param_t, param_crest_t)]
+        par(new = TRUE)
+        do.call(plot, get(control, tmp, "args_plot", list(x = x[, tmp], ylim = ylim_t,
+                                                          xaxt = "n", yaxt = "n", main = NA)))
     }
+
+    # Adding legend for relative humidity
+    if (all(c(param_rh, param_crest_rh) %in% names(x)))
+        tsplot_add_legend("bottomright", control, param_rh, param_crest_rh)
 
 }
 
@@ -575,52 +627,83 @@ tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
 
 #' @rdname tsplot_add
 #' @author Reto Stauffer
-tsplot_add_wind <- function(tmp, control, prob_boxes) {
+tsplot_add_wind <- function(x, control, prob_boxes) {
     get <- tsplot_get_control # For convenience
     # Plot empty frame
-    plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(tmp)),
+    plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(x)),
              ylim = c(0, 360), yaxt = "n", bty = "n")
     tsplot_add_boxes(prob_boxes)
-    tsplot_add_midnight_lines(tmp)
+    tsplot_add_midnight_lines(x)
     # Adding wind direction
-    param <- get(control, "dd", "name")
-    if (param %in% names(tmp)) {
-        #points(tmp[,param], col = "black", pch = 19, cex = 0.5)
-        do.call(points, get(control, "dd", "args_points", list(x = tmp[, param])))
+    param_dd       <- get(control, "dd", "name")
+    param_crest_dd <- get(control, "crest_dd", "name")
+
+    # Adding wind direction
+    if (param_crest_dd %in% names(x))
+        do.call(lines, get(control, "crest_dd", "args_lines", list(x = x[, param_crest_dd])))
+    if (param_dd %in% names(x))
+        do.call(lines, get(control, "dd", "args_lines", list(x = x[, param_dd])))
+    # Wind direction label
+    if (all(c(param_dd, param_crest_dd) %in% names(x))) {
         axis(side = 2, at = seq(90, 360 - 90, by = 90))
         mtext(side = 2, line = 3, get(control, "dd", "ylab"))
-        box()
+    } else {
+        tmp <- names(x)[names(x) %in% c(param_dd, param_crest_dd)]
+        axis(side = 2, at = seq(90, 360 - 90, by = 90))
+        mtext(side = 2, line = 3, get(control, tmp, "ylab"))
     }
     
     # Adding wind speed
-    pff  <- get(control, "ff", "name")
-    pffx <- get(control, "ffx", "name")
-    if ( any(c(pff, pffx) %in% names(tmp)) ) {
+    param_ff        <- get(control, "ff", "name")
+    param_crest_ff  <- get(control, "crest_ff", "name")
+    param_ffx       <- get(control, "ffx", "name")
+    param_crest_ffx <- get(control, "crest_ffx", "name")
+    # For convenience
+    params <- c(param_ff, param_crest_ff, param_ffx, param_crest_ffx)
+    if (any(params %in% names(x))) {
         # Get y limits
-        if ( all(c(pff, pffx) %in% names(tmp)) ) {
-            ymax <- max(max(tmp[,pff], na.rm = TRUE), max(tmp[,pffx], na.rm = TRUE))
-            ylab <- sprintf("%s\n%s", get(control, "ffx", "ylab"), get(control, "ff", "ylab"))
-        } else if ( pff %in% names(tmp) ) {
-            ymax <- max(tmp[,pff], na.rm = TRUE)
-            ylab <- get(control, "ff", "ylab")
+        idx <- grep(sprintf("^(%s)$", paste(params, collapse = "|")), names(x))
+        ylim_ff <- max(x[, idx], na.rm = TRUE) * c(0, 1.05)
+        if (any(is.na(ylim_ff))) invisible(NULL)
+
+        # Label on y-axis is a bit tricky as we can
+        # have up to four parameters. Thus, simply
+        # take those of ff and ffx.
+        if (any(params[1:2] %in% names(x)) & any(params[3:4] %in% names(x))) {
+            ylab <- sprintf("%s\n%s", get(control, param_ff, "ylab"),
+                            get(control, param_ffx, "ylab"))
+        } else if (any(params[1:2] %in% names(x))) {
+            ylab <- get(control, param_ff, "ylab")
         } else {
-            ymax <- max(tmp[,pffx], na.rm = TRUE)
-            ylab <- get(control, "ffx", "ylab")
+            ylab <- get(control, param_ffx, "ylab")
         }
-        ylim <- c(0, ymax*1.05)
+
         # Plotting an empty sub-figure
         par(new = TRUE)
         plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
-             xlim = range(index(tmp)), ylim = ylim)
-        # Adding ffx if existing
-        if (pffx %in% names(tmp))
-            do.call(lines, get(control, "ffx", "args_lines", list(x = tmp[, pffx])))
-        # Adding ff if existing
-        if (pff %in% names(tmp))
-            do.call(add_polygon, get(control, "ff", "args_polygon", list(x = tmp[, pff])))
+             xlim = range(index(x)), ylim = ylim_ff)
+        # Crest station - if existing
+        if (param_crest_ffx %in% names(x))
+            do.call(lines,       get(control, param_crest_ffx, "args_lines",
+                                     list(x = x[, param_crest_ffx])))
+        if (param_crest_ff %in% names(x))
+            do.call(lines,       get(control, param_crest_ff, "args_lines",
+                                     list(x = x[, param_crest_ff])))
+        # Valley station
+        if (param_ffx %in% names(x))
+            do.call(lines,       get(control, param_ffx, "args_lines", list(x = x[, param_ffx])))
+        if (param_ff %in% names(x))
+            do.call(add_polygon, get(control, param_ff, "args_polygon", list(x = x[, param_ff])))
         # Adding labels
-        axis(side = 4, at = pretty(c(0, ymax)))
+        axis(side = 4, at = pretty(ylim_ff))
         mtext(side = 4, line = 3, ylab)
+
+        # Legend
+        if (all(params[3:4] %in% names(x)))
+            tsplot_add_legend("topright", control, param_ffx, param_crest_ffx)
+        if (all(params[1:2] %in% names(x)))
+            tsplot_add_legend("bottomright", control, param_ff, param_crest_ff)
+
         box()
     }
 }
@@ -732,23 +815,23 @@ tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = N
 #' @export
 add_polygon <- function(x, col = "#ff0000", lower.limit = 0, lwd = 1) {
     # Need hex color
-    if ( ! grepl("^#[A-Za-z0-9]{6}$",col) ) stop("Sorry, need hex color definition for polygon plots.")
+    if (!grepl("^#[A-Za-z0-9]{6}$", col)) stop("Sorry, need hex color definition for polygon plots.")
     # All elements NA?
-    if ( all( is.na(x) ) ) return(invisible(NULL))
+    if (all(is.na(x))) return(invisible(NULL))
     # Else find valid blocks and plot them. Start with 1
     i <- 1
-    while ( i <= length(x) ) {
-        if ( all(is.na(x)) ) break
+    while (i <= length(x)) {
+        if (all(is.na(x))) break
         i1 <- min( which( !is.na(x) ) )
-        if ( i1 > 1 ) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
+        if (i1 > 1) { x <- x[-c(seq(1,i1-1))]; i1 <- 1 }
         # Else check first NA
-        if ( ! any(is.na(x)) ) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
+        if (!any(is.na(x))) { i2 <- length(x) } else { i2 <- min( which( is.na(x) ) ) - 1 }
         # Create x/y coordinate vectors for the polygon function
         p_x <- as.numeric(zoo::index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
         p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
         # Plotting
-        graphics::polygon( p_x, p_y, col = sprintf("%s20",col), border = NA )
-        graphics::lines( x[i1:i2],   col = col, lwd = lwd )
+        graphics::polygon(p_x, p_y, col = sprintf("%s20",col), border = NA)
+        graphics::lines(x[i1:i2],   col = col, lwd = lwd)
         # Remove plotted data from time series and continue
         x <- x[-c(i1:i2)]
     }

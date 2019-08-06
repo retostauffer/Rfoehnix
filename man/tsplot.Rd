@@ -27,26 +27,28 @@ plot. Please see 'Examples' and the manual of the function
 \item{ask}{logical, default is \code{TRUE}.}
 }
 \description{
-Development time series plots of estimated \code{\link{foehnix}}
+Development time series plots of estimated \code{\link[foehnix]{foehnix}}
 models. TODO: they are very specific at the moment!
 }
 \details{
 Development method to access plausability of the estimated foehn
 proabilities.  For software release this method should either be removed or
 made much more general. At the moment the method heavily depends on the
-names of the data used as input for \code{\link{foehnix}}.
+names of the data used as input for \code{\link[foehnix]{foehnix}}.
 
 This time series plotting function creates a relatively specific plot
 and also expects, by default, a set of default variables and variable
 names. This function uses the data set provided on the \code{data}
-input argument when calling the \code{\link{foehnix}} method.
+input argument when calling the \code{\link[foehnix]{foehnix}} method.
 As they might differ from the \code{foehnix} defaults the
 \code{varnames} input argument allows to specify custom names.
 The ones expected:
 
 \itemize{
      \item \code{t}: dry air temperature
+     \item \code{crest_t}: dry air temperature crest
      \item \code{rh}: relative humidity (in percent)
+     \item \code{crest_rh}: relative humidity crest (in percent)
      \item \code{diff_t}: temperature difference between the
            crest and the valley station
      \item \code{dd}: meteorological wind direction (\code{[0, 360]})
@@ -137,11 +139,11 @@ tsplot(mod3, dd = "winddir", ff = "windspd", start = "2018-03-01", end = "2018-0
 # - 'color': color used for plotting
 # - 'label': label for the axis on the plot
 # See also ?tsplot.control for more information.
-tsplot(mod3, dd = list(name = "winddir", color = "cyan", label = "WIND DIRECTION LABEL"),
-             ff = list(name = "windspd", color = "#FF00FF", label = "WIND SPEED LABEL"),
-             rh = list(color = 4, label = "RELHUM LABEL"),
-             t  = list(color = 5, label = "TEMPERATURE LABEL"),
-             prob = list(color = "yellow", label = "PROBABILITY LABEL"),
+tsplot(mod3, dd = list(name = "winddir", col = "cyan",    ylab = "WIND DIRECTION LABEL"),
+             ff = list(name = "windspd", col = "#FF00FF", ylab = "WIND SPEED LABEL"),
+             rh = list(col = 4, ylab = "RELHUM LABEL"),
+             t  = list(col = 5, ylab = "TEMPERATURE LABEL"),
+             prob = list(col = "yellow", ylab = "PROBABILITY LABEL"),
              start = "2018-03-01", end = "2018-03-10")
 
 }

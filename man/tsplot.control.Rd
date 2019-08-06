@@ -2,12 +2,12 @@
 % Please edit documentation in R/tsplot.R
 \name{tsplot.control}
 \alias{tsplot.control}
-\alias{get.tsplot.control}
+\alias{tsplot_get_control}
 \title{foehnix Time Series Plot Config}
 \usage{
 tsplot.control(...)
 
-get.tsplot.control(x, var, property)
+tsplot_get_control(x, var, property, args = list())
 }
 \arguments{
 \item{...}{a set of named inputs to overwrite the defaults.
@@ -15,11 +15,11 @@ see 'Details' section.}
 
 \item{x}{a \code{\link[foehnix]{tsplot.control}} object.}
 
-\item{var}{used when calling the \code{\link[foehnix]{get.tsplot.control}}
+\item{var}{used when calling the \code{\link[foehnix]{tsplot_get_control}}
 function. Name of the (original!) variable name}
 
 \item{property}{the property which should be returned by
-\code{\link[foehnix]{get.tsplot.control}}.}
+\code{\link[foehnix]{tsplot_get_control}}.}
 }
 \value{
 Returns an object of class \code{c("tsplot.control", "data.frame")}
@@ -41,14 +41,25 @@ a control object for the time series plots for customization.
 By default the \code{\link[foehnix]{tsplot}} function
     expects that the variable names are called
 \itemize{
-     \item \code{t}: dry air temperature (degrees Celsuis)
-     \item \code{rh}: relative humidity in percent
+     \item \code{t}: dry air temperature (degrees Celsius)
+     \item \code{crest_t}: dry air temperature crest (degrees Celsius)
+     \item \code{rh}: relative humidity (percent)
+     \item \code{crest_rh}: relative humidity crest (percent)
      \item \code{diff_t}: temperature difference to a nearby
             crest station
-     \item \code{dd}: wind direction in (meteorological) degrees
-     \item \code{ff}: wind speed in meters per second
-     \item \code{ffx}: gust speed in meters per second
+     \item \code{dd}: wind direction (meteorological degrees)
+     \item \code{dd}: wind direction crest (meteorological degrees)
+     \item \code{ff}: wind speed (meters per second)
+     \item \code{crest_ff}: wind speed crest (meters per second)
+     \item \code{ffx}: gust speed (meters per second)
+     \item \code{crest_ffx}: gust speed crest (meters per second)
 }
+
+Can be set to \code{NULL} to be disabled. If the variable exists in the
+data set but was (manually) set to \code{NULL} it will be neglected during
+plotting. E.g., \code{tsplot(mod, crest_ff = NULL, crest_ffx = NULL)} to
+disable crest station wind speed and gust speed (on plot).
+
 If \code{\link[foehnix]{tsplot}} can find these variables,
 it will plot the corresponding observations, label the plots,
 and uses a set of default colors.
