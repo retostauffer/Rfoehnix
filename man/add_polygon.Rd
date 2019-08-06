@@ -4,7 +4,7 @@
 \alias{add_polygon}
 \title{Add Polygon to Plot}
 \usage{
-add_polygon(x, col = "#ff0000", lower.limit = 0, lwd = 1)
+add_polygon(x, col = "#ff0000", lower.limit = 0, ...)
 }
 \arguments{
 \item{x}{an univariate \code{zoo} time series object.}

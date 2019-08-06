@@ -150,11 +150,14 @@ tsplot_get_control <- function(x, var, property, args = list()) {
     # Return parameters for the plot
     allowed <- list(args_plot    = c("type", "lty", "lwd", "col", "pch", "cex"),
                     args_lines   = c("type", "lty", "lwd", "col", "pch", "cex"),
-                    args_polygon = c("col", "border", "lwd"))
+                    args_polygon = c("type", "lty", "lwd", "col", "pch", "cex", "border"))
+
+    # If asking for "arguments for a specific plot type":
+    # Create arguments list used with do.call
     if (grepl("^args_.*", property)) {
         res <- args
         for (n in names(x[[var]])) {
-            if (!n %in% allowed[[property]]) next
+            if (!n %in% allowed[[property]] | n %in% names(res)) next
             res[[n]] <- x[[var]][[n]]
         }
     # Return the value of this property
@@ -380,31 +383,10 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         "temp"        = check(names(x$data), control, c("t", "crest_t", "rh")),
         "tempdiff"    = check(names(x$data), control, c("diff_t")),
         "wind"        = check(names(x$data), control, c("dd", "ff", "ffx")),
+        "crest_wind"  = check(names(x$data), control, c("crest_dd", "crest_ff", "crest_ffx")),
         "prob"        = TRUE
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
-
-    # Calculate boxes
-    calc_prob_boxes <- function(x) {
-        tmp <- as.vector(x > 0.5)
-        tmp[is.na(tmp)] <- FALSE
-        res <- list(index = index(x), dx = deltat(x) / 2, up = c(), down = c())
-        for (i in seq_along(tmp)) {
-            # Initial value
-            if (i == 1) {
-                if (tmp[i]) res$up <- append(res$up, i)
-                next
-            }
-            # Going up
-            if (!tmp[i - 1L] & tmp[i]) {
-                res$up <- append(res$up, i)
-            # Going down
-            } else if (!tmp[i] & tmp[i - 1L] | is.na(tmp[i])) {
-                res$down <- append(res$down, i - 1)
-            }
-        }
-        return(res)
-    }
 
     # Convert start/end to POSIXct
     if (! is.null(start)) {
@@ -473,7 +455,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         tmp <- window(data, start = start[k], end = end[k])
 
         # Calculate the limits for the gray boxes (where prob >= .5)
-        prob_boxes <- calc_prob_boxes(tmp$prob)
+        prob_boxes <- tsplot_calc_prob_boxes(tmp$prob)
 
         # No data, or only missing data?
         if (nrow(tmp) == 0 | sum(!is.na(tmp)) == 0) {
@@ -491,7 +473,8 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         if (doplot$tempdiff) tsplot_add_tempdiff(tmp, control, prob_boxes)
     
         # Plotting wind direction and wind speed
-        if (doplot$wind)     tsplot_add_wind(tmp, control, prob_boxes)
+        if (doplot$wind)         tsplot_add_wind(tmp, control, prob_boxes, FALSE)
+        if (doplot$crest_wind)   tsplot_add_wind(tmp, control, prob_boxes, TRUE)
 
         # Foehn prob (main object 'x')
         tsplot_add_foehn(tmp, control, prob_boxes, xtra, xtra_names)
@@ -518,13 +501,37 @@ tsplot_add_boxes <- function(x, col = "gray90") {
     }
 }
 
-#' Helper function to add vertical lines (midnight)
+# Helper function to add vertical lines (midnight)
 tsplot_add_midnight_lines <- function(x) {
     ndays <- as.numeric(diff(range(index(x))), unit = "days")
     if ( ndays < 50 ) {
         at <- as.POSIXct(unique(as.Date(index(x))))
         abline(v = at, col = 1)
     }
+}
+
+
+# Calculate the bounds for the gray boxes
+# (probability of foehn >= .5)
+tsplot_calc_prob_boxes <- function(x) {
+    tmp <- as.vector(x > 0.5)
+    tmp[is.na(tmp)] <- FALSE
+    res <- list(index = index(x), dx = deltat(x) / 2, up = c(), down = c())
+    for (i in seq_along(tmp)) {
+        # Initial value
+        if (i == 1) {
+            if (tmp[i]) res$up <- append(res$up, i)
+            next
+        }
+        # Going up
+        if (!tmp[i - 1L] & tmp[i]) {
+            res$up <- append(res$up, i)
+        # Going down
+        } else if (!tmp[i] & tmp[i - 1L] | is.na(tmp[i])) {
+            res$down <- append(res$down, i - 1)
+        }
+    }
+    return(res)
 }
 
 
@@ -544,7 +551,7 @@ tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("at station",
 #'
 #' @param x \code{zoo} object with the data
 #' @param control \code{\link[foehnix]{tsplot.control}} object
-#' @param prob_boxes object as returned from calc_prob_boxes
+#' @param prob_boxes object as returned from \code{tsplot_calc_prob_boxes}
 #'
 #' @rdname tsplot_add
 #' @author Reto Stauffer
@@ -641,22 +648,33 @@ tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
 
 #' @rdname tsplot_add
 #' @author Reto Stauffer
-tsplot_add_wind <- function(x, control, prob_boxes) {
+tsplot_add_wind <- function(x, control, prob_boxes, crest = FALSE) {
     get <- tsplot_get_control # For convenience
     # Plot empty frame
     plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(x)),
              ylim = c(0, 360), yaxt = "n", bty = "n")
 
-    # Find the wind direction parameters in the data set
-    param_dd       <- get(control, "dd", "name")
-    param_crest_dd <- get(control, "crest_dd", "name")
-
     # Adding windsector highlights if there are any.
     tsplot_add_boxes(prob_boxes)
+
+    # Find the wind direction parameters in the data set
+    var_dd         <- ifelse(crest, "crest_dd",  "dd")
+    var_ff         <- ifelse(crest, "crest_ff",  "ff")
+    var_ffx        <- ifelse(crest, "crest_ffx", "ffx")
+    # Adding wind speed
+    param_dd       <- get(control, var_dd,  "name")
+    param_ff       <- get(control, var_ff,  "name")
+    param_ffx      <- get(control, var_ffx, "name")
+
+    # Plotting wind direction and wind sectors (if set).
+    # Sectors are only plotted for the station (not crest station)
     if (param_dd %in% names(x)) {
-        ws <- get(control, "foehnix_windsector", "data")
-        if (!is.null(ws)) {
+        ws     <- get(control, "foehnix_windsector", "data")
+        cex    <- get(control, var_dd, "cex")
+        cex_dd <- rep(cex, nrow(x))
+        if (!is.null(ws) & !crest) {
             for (i in seq_along(ws)) {
+                cex_dd[x[, param_dd] >= ws[[i]][1L] & x[, param_dd] <= ws[[i]][2L]] <- cex * 2
                 rect(min(index(x)), ws[[i]][1L], max(index(x)), ws[[i]][2L],
                      col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
                      border = get(control, "foehnix_windsector", "lty"))
@@ -665,77 +683,58 @@ tsplot_add_wind <- function(x, control, prob_boxes) {
                          max(ws[[i]]), names(ws)[i], adj = c(0, 1.5))
             }
         }
-        do.call(lines, get(control, "dd", "args_lines", list(x = x[, param_dd])))
+        args <- get(control, var_dd, "args_lines", list(x = x[, param_dd], cex = cex_dd))
+#        args$cex <- cex_dd
+        do.call(lines, args)
+
+        #do.call(lines, get(control, var_dd, "args_lines", list(x = x[, param_dd], cex = cex_dd)))
     }
+
+    # Adding vertical lines
     tsplot_add_midnight_lines(x)
 
     # Adding wind direction
-    if (param_crest_dd %in% names(x))
-        do.call(lines, get(control, "crest_dd", "args_lines", list(x = x[, param_crest_dd])))
-    if (param_dd %in% names(x))
-        do.call(lines, get(control, "dd", "args_lines", list(x = x[, param_dd])))
-    # Wind direction label
-    if (all(c(param_dd, param_crest_dd) %in% names(x))) {
+    if (param_dd %in% names(x)) {
+        do.call(lines, get(control, var_dd, "args_lines", list(x = x[, param_dd])))
         axis(side = 2, at = seq(90, 360 - 90, by = 90))
-        mtext(side = 2, line = 3, get(control, "dd", "ylab"))
-    } else if (any(c(param_dd, param_crest_dd) %in% names(x))) {
-        tmp <- names(x)[names(x) %in% c(param_dd, param_crest_dd)]
-        axis(side = 2, at = seq(90, 360 - 90, by = 90))
-        mtext(side = 2, line = 3, get(control, tmp, "ylab"))
+        mtext(side = 2, line = 3, get(control, var_dd, "ylab"))
     }
     
-    # Adding wind speed
-    param_ff        <- get(control, "ff", "name")
-    param_crest_ff  <- get(control, "crest_ff", "name")
-    param_ffx       <- get(control, "ffx", "name")
-    param_crest_ffx <- get(control, "crest_ffx", "name")
     # For convenience
-    params <- c(param_ff, param_crest_ff, param_ffx, param_crest_ffx)
-    if (any(params %in% names(x))) {
+    if (any(c(param_ff, param_ffx) %in% names(x))) {
+
         # Get y limits
-        idx <- grep(sprintf("^(%s)$", paste(params, collapse = "|")), names(x))
+        idx <- grep(sprintf("^(%s)$", paste(param_ff, param_ffx, sep = "|")), names(x))
         ylim_ff <- max(x[, idx], na.rm = TRUE) * c(0, 1.05)
-        if (any(is.na(ylim_ff))) invisible(NULL)
 
-        # Label on y-axis is a bit tricky as we can
-        # have up to four parameters. Thus, simply
-        # take those of ff and ffx.
-        if (any(params[1:2] %in% names(x)) & any(params[3:4] %in% names(x))) {
-            ylab <- sprintf("%s\n%s", get(control, param_ff, "ylab"),
-                            get(control, param_ffx, "ylab"))
-        } else if (any(params[1:2] %in% names(x))) {
-            ylab <- get(control, param_ff, "ylab")
-        } else {
-            ylab <- get(control, param_ffx, "ylab")
-        }
-
-        # Plotting an empty sub-figure
-        par(new = TRUE)
-        plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
-             xlim = range(index(x)), ylim = ylim_ff)
-        # Crest station - if existing
-        if (param_crest_ffx %in% names(x))
-            do.call(lines,       get(control, param_crest_ffx, "args_lines",
-                                     list(x = x[, param_crest_ffx])))
-        if (param_crest_ff %in% names(x))
-            do.call(lines,       get(control, param_crest_ff, "args_lines",
-                                     list(x = x[, param_crest_ff])))
-        # Valley station
-        if (param_ffx %in% names(x))
-            do.call(lines,       get(control, param_ffx, "args_lines", list(x = x[, param_ffx])))
-        if (param_ff %in% names(x))
-            do.call(add_polygon, get(control, param_ff, "args_polygon", list(x = x[, param_ff])))
-        # Adding labels
-        axis(side = 4, at = pretty(ylim_ff))
-        mtext(side = 4, line = 3, ylab)
-
-        # Legend
-        if (all(params[3:4] %in% names(x)))
-            tsplot_add_legend("topright", control, param_ffx, param_crest_ffx)
-        if (all(params[1:2] %in% names(x)))
-            tsplot_add_legend("bottomright", control, param_ff, param_crest_ff)
-
-        box()
+        # Valid limits?
+        if (all(is.finite(ylim_ff))) {
+            # y-axis labels
+            ylab <- c()
+            for (var in c(var_ff, var_ffx)) ylab <- append(ylab, get(control, var, "ylab"))
+            ylab <- paste(ylab, collapse = "\n")
+    
+            # Plotting an empty sub-figure
+            par(new = TRUE)
+            plot(NA, type = "n", yaxs = "i", yaxt = "n", xaxt = "n",
+                 xlim = range(index(x)), ylim = ylim_ff)
+    
+            # Adding horizontal lines
+            abline(h = pretty(ylim_ff), lty = 3,
+                   col = sprintf("%s50", get(control, var_ff, "col")))
+    
+            # Plotting wind gusts (first), and wind speed (second)
+            if (param_ffx %in% names(x))
+                do.call(lines,       get(control, var_ffx, "args_lines", list(x = x[, param_ffx])))
+            if (param_ff %in% names(x))
+                do.call(add_polygon, get(control, var_ff,  "args_polygon", list(x = x[, param_ff])))
+    
+            # Adding labels
+            axis(side = 4, at = pretty(ylim_ff))
+            mtext(side = 4, line = ifelse(grep("\n", ylab), 4, 3), ylab)
+    
+            box()
+        } # End "is.finite"
     }
 }
 
@@ -844,7 +843,7 @@ tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = N
 #' @import graphics
 #' @author Reto Stauffer
 #' @export
-add_polygon <- function(x, col = "#ff0000", lower.limit = 0, lwd = 1) {
+add_polygon <- function(x, col = "#ff0000", lower.limit = 0, ...) {
     # Need hex color
     if (!grepl("^#[A-Za-z0-9]{6}$", col)) stop("Sorry, need hex color definition for polygon plots.")
     # All elements NA?
@@ -861,8 +860,8 @@ add_polygon <- function(x, col = "#ff0000", lower.limit = 0, lwd = 1) {
         p_x <- as.numeric(zoo::index(x[i1:i2])); p_x <- c(p_x,max(p_x),min(p_x))
         p_y <- c(as.numeric(x[i1:i2]),lower.limit, lower.limit )
         # Plotting
-        graphics::polygon(p_x, p_y, col = sprintf("%s20",col), border = NA)
-        graphics::lines(x[i1:i2],   col = col, lwd = lwd)
+        polygon(p_x, p_y, col = sprintf("%s20",col), border = NA)
+        lines(x[i1:i2],   col = col, ...)
         # Remove plotted data from time series and continue
         x <- x[-c(i1:i2)]
     }

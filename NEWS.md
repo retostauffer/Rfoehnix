@@ -9,6 +9,16 @@
   Similar for `foehnix` models given the user-defined `dd`, `ff`
   names.
 
+# foehnix 0.1-2 (August 2019)
+
+* Mainly a development release.
+* Revamped the structure of the time series plot (`tsplot`)
+* Added new features to `tsplot`: wind sectors, styles, better customization options
+    (`tsplot.control`).
+* Fixed few tests.
+* Fixed a but in the Hovmoeller routine (`image.foehnix`); further adjustments
+    required.
+
 # foehnix 0.1-1 (April 2019)
 
 * `uv2ddff` and `ff2dduv` now return a `zoo` object if the input
