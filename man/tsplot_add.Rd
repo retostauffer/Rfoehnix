@@ -10,14 +10,14 @@ tsplot_add_temp(x, control, prob_boxes)
 
 tsplot_add_tempdiff(tmp, control, prob_boxes)
 
-tsplot_add_wind(x, control, prob_boxes)
+tsplot_add_wind(x, control, prob_boxes, crest = FALSE)
 }
 \arguments{
 \item{x}{\code{zoo} object with the data}
 
 \item{control}{\code{\link[foehnix]{tsplot.control}} object}
 
-\item{prob_boxes}{object as returned from calc_prob_boxes}
+\item{prob_boxes}{object as returned from \code{tsplot_calc_prob_boxes}}
 }
 \description{
 Used inside \code{\link[foehnix]{tsplot}}.
