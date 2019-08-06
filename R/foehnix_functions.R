@@ -368,6 +368,58 @@ print.summary.foehnix <- function(x, ...) {
     }
 }
 
+
+#' Convert input "windsector" to list if needed.
+#'
+#' Converts user inputs to list. Wind sector information is used
+#' to highlight specific wind sectors on the plots (e.g.,
+#' \code{\link[foehnix]{tsplot}}, \code{\link[foehnix]{windrose}}).
+#'
+#' @param x \code{NULL}, \code{list}, \code{matrix}, or \code{data.frame}.
+#'      see 'Details' for more information.
+#' @return Returns a \code{list} object with the windsector information as used
+#' by the different functions and methods of the \code{foehnix} package.
+#'
+#' @details 
+#'
+#'
+#' @examples
+#' # No wind sector (NULL) simply returns NULL
+#' foehnix:::windsector_convert(NULL)
+#'
+#' # Input can also be:
+#' # - unnamed list
+#' # - a matrix
+#' # - a data.frame without row names
+#' foehnix:::windsector_convert(matrix(c(10, 30, 90, 140), byrow = TRUE, ncol = 2))
+#' foehnix:::windsector_convert(list(c(10, 30), c(90, 140)))
+#' foehnix:::windsector_convert(data.frame(from = c(30, 90), to = c(30, 140)))
+#'
+#' # Or named objects can be used
+#' # - named list
+#' # - matrix with rownames
+#' # - data.frame with rownames
+#' # If names are set these names will be used to label the
+#' # highlighted wind sectors.
+#' foehnix:::windsector_convert(matrix(c(10, 30, 90, 140), byrow = TRUE, ncol = 2,
+#'                          dimnames = list(c("A", "B"), c("from", "to"))))
+#' foehnix:::windsector_convert(list(A = c(10, 30), B = c(90, 140)))
+#' foehnix:::windsector_convert(structure(data.frame(from = c(30, 90), to = c(30, 140)),
+#'                                        row.names = c("foo", "bar")))
+#' 
+#' @author Reto Stauffer
+windsector_convert <- function(x) {
+    # Check input
+    stopifnot(inherits(x, c("NULL", "list", "matrix", "data.frame")))
+    if (inherits(x, c("NULL", "list"))) return(x)
+    # If matrix convert to list
+    if (inherits(x, "data.frame")) x <- as.matrix(x)
+    hadnames <- !is.null(rownames(x))
+    x <- as.list(as.data.frame(t(x)))
+    if (!hadnames) names(x) <- NULL
+    return(x)
+}
+
 #' foehnix Image Plot - Hovmoeller Diagram
 #'
 #' The default \code{\link{image}} plot of a \code{\link{foehnix}} object

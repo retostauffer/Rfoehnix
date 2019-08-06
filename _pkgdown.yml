@@ -13,6 +13,8 @@ navbar:
               href: articles/foehnix.html
             - text: "Plotting Functions"
               href: articles/plotting.html
+            - text: "Time Series Plot"
+              href: articles/tsplot.html
             - text: "Simulation Examples"
               href: articles/simulation.html
         - text: "Advanced"

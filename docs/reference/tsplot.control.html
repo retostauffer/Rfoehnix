@@ -74,7 +74,7 @@ a control object for the time series plots for customization." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -95,6 +95,9 @@ a control object for the time series plots for customization." />
     </li>
     <li>
       <a href="../articles/plotting.html">Plotting Functions</a>
+    </li>
+    <li>
+      <a href="../articles/tsplot.html">Time Series Plot</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -172,13 +175,23 @@ a control object for the time series plots for customization.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>tsplot.control</span>(<span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>tsplot.control</span>(<span class='kw'>style</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"default"</span>, <span class='st'>"bw"</span>, <span class='st'>"advanced"</span>),
+  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
-<span class='fu'>get.tsplot.control</span>(<span class='no'>x</span>, <span class='no'>var</span>, <span class='no'>property</span>)</pre>
+<span class='fu'>tsplot_get_control</span>(<span class='no'>x</span>, <span class='no'>var</span>, <span class='no'>property</span>, <span class='kw'>args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>style</th>
+      <td><p>character, name of the style template (colors, line types, ...)</p></td>
+    </tr>
+    <tr>
+      <th>windsector</th>
+      <td><p>vector or list to highlight specific wind sectors.
+See <code>foehnix:::windsector_convert</code> for details</p></td>
+    </tr>
     <tr>
       <th>...</th>
       <td><p>a set of named inputs to overwrite the defaults.
@@ -190,13 +203,18 @@ see 'Details' section.</p></td>
     </tr>
     <tr>
       <th>var</th>
-      <td><p>used when calling the <code>get.tsplot.control</code>
+      <td><p>used when calling the <code>tsplot_get_control</code>
 function. Name of the (original!) variable name</p></td>
     </tr>
     <tr>
       <th>property</th>
       <td><p>the property which should be returned by
-<code>get.tsplot.control</code>.</p></td>
+<code>tsplot_get_control</code></p></td>
+    </tr>
+    <tr>
+      <th>args</th>
+      <td><p>list of named arguments used when calling
+<code>tsplot_get_control</code></p></td>
     </tr>
     </table>
     
@@ -209,14 +227,28 @@ with the specification for the time series plot.</p>
 
     <p>By default the <code><a href='tsplot.html'>tsplot</a></code> function
     expects that the variable names are called</p><ul>
-<li><p><code>t</code>: dry air temperature (degrees Celsuis)</p></li>
-<li><p><code>rh</code>: relative humidity in percent</p></li>
+<li><p><code>t</code>: dry air temperature (degrees Celsius)</p></li>
+<li><p><code>crest_t</code>: dry air temperature crest (degrees Celsius)</p></li>
+<li><p><code>rh</code>: relative humidity (percent)</p></li>
+<li><p><code>crest_rh</code>: relative humidity crest (percent)</p></li>
 <li><p><code>diff_t</code>: temperature difference to a nearby
             crest station</p></li>
-<li><p><code>dd</code>: wind direction in (meteorological) degrees</p></li>
-<li><p><code>ff</code>: wind speed in meters per second</p></li>
-<li><p><code>ffx</code>: gust speed in meters per second</p></li>
-</ul><p>If <code><a href='tsplot.html'>tsplot</a></code> can find these variables,
+<li><p><code>dd</code>: wind direction (meteorological degrees)</p></li>
+<li><p><code>dd</code>: wind direction crest (meteorological degrees)</p></li>
+<li><p><code>ff</code>: wind speed (meters per second)</p></li>
+<li><p><code>crest_ff</code>: wind speed crest (meters per second)</p></li>
+<li><p><code>ffx</code>: gust speed (meters per second)</p></li>
+<li><p><code>crest_ffx</code>: gust speed crest (meters per second)</p></li>
+</ul>
+    <p>Different <code>style</code> presets are available. Styles can be accessed using
+the <code>style</code> input argument. Different styles also enable/disable 
+specific observations (e.g., the <code>"default"</code> style supresses the plotting
+of crest-station observations, even if present).</p>
+<p>Can be set to <code>NULL</code> to be disabled. If the variable exists in the
+data set but was (manually) set to <code>NULL</code> it will be neglected during
+plotting. E.g., <code><a href='tsplot.html'>tsplot(mod, crest_ff = NULL, crest_ffx = NULL)</a></code> to
+disable crest station wind speed and gust speed (on plot).</p>
+<p>If <code><a href='tsplot.html'>tsplot</a></code> can find these variables,
 it will plot the corresponding observations, label the plots,
 and uses a set of default colors.
 The <code>tsplot.control</code> function allows

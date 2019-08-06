@@ -66,7 +66,7 @@ models. TODO: they are very specific at the moment!" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -87,6 +87,9 @@ models. TODO: they are very specific at the moment!" />
     </li>
     <li>
       <a href="../articles/plotting.html">Plotting Functions</a>
+    </li>
+    <li>
+      <a href="../articles/tsplot.html">Time Series Plot</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -211,7 +214,9 @@ As they might differ from the <code>foehnix</code> defaults the
 The ones expected:</p>
 <ul>
 <li><p><code>t</code>: dry air temperature</p></li>
+<li><p><code>crest_t</code>: dry air temperature crest</p></li>
 <li><p><code>rh</code>: relative humidity (in percent)</p></li>
+<li><p><code>crest_rh</code>: relative humidity crest (in percent)</p></li>
 <li><p><code>diff_t</code>: temperature difference between the
            crest and the valley station</p></li>
 <li><p><code>dd</code>: meteorological wind direction (<code>[0, 360]</code>)</p></li>
@@ -297,11 +302,11 @@ data are available at all.</p>
 <span class='co'># - 'color': color used for plotting</span>
 <span class='co'># - 'label': label for the axis on the plot</span>
 <span class='co'># See also ?tsplot.control for more information.</span>
-<span class='fu'>tsplot</span>(<span class='no'>mod3</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"cyan"</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"WIND DIRECTION LABEL"</span>),
-             <span class='kw'>ff</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"#FF00FF"</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"WIND SPEED LABEL"</span>),
-             <span class='kw'>rh</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"RELHUM LABEL"</span>),
-             <span class='kw'>t</span>  <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"TEMPERATURE LABEL"</span>),
-             <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"yellow"</span>, <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"PROBABILITY LABEL"</span>),
+<span class='fu'>tsplot</span>(<span class='no'>mod3</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"cyan"</span>,    <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"WIND DIRECTION LABEL"</span>),
+             <span class='kw'>ff</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"#FF00FF"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"WIND SPEED LABEL"</span>),
+             <span class='kw'>rh</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"RELHUM LABEL"</span>),
+             <span class='kw'>t</span>  <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"TEMPERATURE LABEL"</span>),
+             <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"yellow"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"PROBABILITY LABEL"</span>),
              <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-7.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>

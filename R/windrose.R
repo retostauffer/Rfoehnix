@@ -425,18 +425,6 @@ windrose.default <- function(x, ff,
         filter_obj <- NULL
     }
 
-    # Convert input "windsector" to list if needed.
-    windsector_convert <- function(x) {
-        if (inherits(x, c("NULL", "list"))) return(x)
-        # If matrix convert to list
-        if (inherits(x, "data.frame")) x <- as.matrix(x)
-        hadnames <- !is.null(rownames(x))
-        x <- as.list(as.data.frame(t(x)))
-        if (!hadnames) names(x) <- NULL
-        return(x)
-    }
-    if (!inherits(windsector, c("NULL", "list", "matrix", "data.frame")))
-        stop("input \"windsector\" of unexpected class. Stop.")
     windsector <- windsector_convert(windsector)
 
     # If ff is missing but x is of class zoo or data.frame with

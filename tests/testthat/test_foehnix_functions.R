@@ -3,6 +3,26 @@
 library("testthat")
 library("foehnix")
 
+
+test_that("Convert windsector information", {
+
+    # Allowed: NULL, matrix, list, data.frame
+    expect_is(foehnix:::windsector_convert(NULL), "NULL")
+    expect_is(foehnix:::windsector_convert(matrix(c(10, 30, 90, 140), byrow = TRUE, ncol = 2)), "list")
+    expect_is(foehnix:::windsector_convert(matrix(c(10, 30, 90, 140), byrow = TRUE, ncol = 2,
+                                        dimnames = list(c("A", "B"), c("from", "to")))), "list")
+    expect_is(foehnix:::windsector_convert(list(c(10, 30), c(90, 140))), "list")
+    expect_is(foehnix:::windsector_convert(list(A = c(10, 30), B = c(90, 140))), "list")
+    expect_is(foehnix:::windsector_convert(data.frame(from = c(30, 90), to = c(30, 140))), "list")
+    expect_is(foehnix:::windsector_convert(structure(data.frame(from = c(30, 90), to = c(30, 140)),
+                                           row.names = c("foo", "bar"))), "list")
+
+    # Not allowed
+    expect_error(foehnix:::windsector_convert(c(0, 100)))
+    expect_error(foehnix:::windsector_convert(100, 200))
+})
+
+
 test_that("Foehnix functions: standardize/destandardize", {
 
     # Wrong inputs

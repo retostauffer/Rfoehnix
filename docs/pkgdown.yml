@@ -10,4 +10,5 @@ articles:
   mixedmodel: mixedmodel.html
   plotting: plotting.html
   simulation: simulation.html
+  tsplot: tsplot.html
 

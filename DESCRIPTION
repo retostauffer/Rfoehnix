@@ -1,8 +1,8 @@
 Package: foehnix
 Type: Package
 Title: Objectiv Foehn Diagnosis
-Version: 0.1.1
-Date: 2019-04-15
+Version: 0.1.2
+Date: 2019-08-07
 Authors@R: c(person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
                     email = "Reto.Stauffer@uibk.ac.at", comment = c(ORCID = "0000-0002-3798-5507")),
              person(given = "Matthias", family = "Dusch", role = "ctb",
@@ -10,7 +10,9 @@ Authors@R: c(person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
              person(given = "Georg J.", family = "Mayr", role = "ctb",
                     email = "Georg.Mayr@uibk.ac.at"),
              person(given = "Fabien", family = "Maussion", role = "ctb",
-                    email = "Fabien.Maussion@uibk.ac.at", comment = c(ORCHID = "0000-0002-3211-506X"))
+                    email = "Fabien.Maussion@uibk.ac.at", comment = c(ORCHID = "0000-0002-3211-506X")),
+             person(given = "Detka", family = "Deborah", role = "ctb",
+                    email = "Deborah.Detka@uibk.ac.at")
              )
 Description: A package providing tools to perform objective probabilistic foehn
              wind diagnosis and methods based on Gaussian mixture models with optional
@@ -20,6 +22,6 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/retostauffer/Rfoehnix
 BugReports: https://github.com/retostauffer/Rfoehnix/issues
-Depends: R (>= 3.0.0), zoo, stats, graphics, testthat
+Depends: R (>= 3.5.0), zoo, stats, graphics, testthat
 Suggests: colorspace, glmnet, shiny
 RoxygenNote: 6.1.1

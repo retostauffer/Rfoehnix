@@ -19,11 +19,16 @@ utils::globalVariables("vars")
 #'
 #' @param ... a set of named inputs to overwrite the defaults.
 #'     see 'Details' section.
+#' @param style character, name of the style template (colors, line types, ...)
+#' @param windsector vector or list to highlight specific wind sectors.
+#'      See \code{\link[foehnix]{foehnix:::windsector_convert}} for details
 #' @param var used when calling the \code{\link[foehnix]{tsplot_get_control}}
 #'     function. Name of the (original!) variable name
 #' @param property the property which should be returned by
-#'     \code{\link[foehnix]{tsplot_get_control}}.
+#'     \code{\link[foehnix]{tsplot_get_control}}
 #' @param x a \code{\link[foehnix]{tsplot.control}} object.
+#' @param args list of named arguments used when calling
+#'      \code{tsplot_get_control}
 #'
 #' @details By default the \code{\link[foehnix]{tsplot}} function
 #'     expects that the variable names are called
@@ -41,6 +46,11 @@ utils::globalVariables("vars")
 #'      \item \code{ffx}: gust speed (meters per second)
 #'      \item \code{crest_ffx}: gust speed crest (meters per second)
 #' }
+#'
+#' Different \code{style} presets are available. Styles can be accessed using
+#' the \code{style} input argument. Different styles also enable/disable 
+#' specific observations (e.g., the \code{"default"} style supresses the plotting
+#' of crest-station observations, even if present).
 #'
 #' Can be set to \code{NULL} to be disabled. If the variable exists in the
 #' data set but was (manually) set to \code{NULL} it will be neglected during
@@ -73,28 +83,27 @@ utils::globalVariables("vars")
 #'
 #' @export
 #' @author Reto Stauffer
-tsplot.control <- function(...) {
-    def <- "
-    var;       type; pch; cex; lwd; lty; name;       col;       ylab
-    t;         l;    NA;  1.0; 2.0;   1;   t;         #FF0000;   air temperature [C]
-    crest_t;   o;    17;  1.0; 1.0;   1;   crest_t;   #FF0000;   air temperature crest [C]
-    rh;        l;    NA;  1.0; 1.0;   1;   rh;        #009900;   relative humidity [%]
-    crest_rh;  o;    17;  1.0; 1.0;   1;   crest_rh;  #009900;   relative humidity crest [%]
-    diff_t;    l;    NA;  1.0; 2.0;   1;   diff_t;    orange;    temperature difference [C]
-    dd;        p;    19;  0.7; 1.0;   1;   dd;        black;     wind direction [deg]
-    crest_dd;  p;    17;  1.0; 0.0;   0;   crest_dd;  gray;      wind direction crest [deg]
-    ff;        l;    NA;  1.0; 2.0;   1;   ff;        #005ce6;   wind speed [m/s]
-    crest_ff;  o;    17;  1.0; 1.0;   1;   crest_ff;  #005ce6;   wind speed crest [m/s]
-    ffx;       l;    NA;  1.0; 1.0;   1;   ffx;       #5c00e6;   gust speed [m/s]
-    crest_ffx; o;    17;  1.0; 0.5;   1;   crest_ffx; #5c00e6;   gust speed crest [m/s]
-    prob;      l;    NA;  1.0; 2.0;   1;   ----;      #FF6666;   probability"
-    # Reading data.frame definition from the string above.
-    def <- read.table(textConnection(def), sep = ";",
-                      header = TRUE,
-                      strip.white = TRUE, comment.char = "",
-                      colClasses = rep(c("character", "integer", "numeric", "integer", "character"),
-                                       times = c(2, 1, 2, 1, 3)))
+tsplot.control <- function(style = c("default", "bw", "advanced"),
+                           windsector = NULL, ...) {
 
+    # Evaluate template
+    style <- match.arg(style)
+
+    # Package path
+    style_file <- paste(installed.packages()["foehnix", "LibPath"],
+                           "foehnix/tsplot.control",
+                           sprintf("%s.csv", style),
+                           sep = "/")
+    stopifnot(file.exists(style_file))
+
+    # Reading data.frame definition from the string above.
+    def <- read.table(style_file, sep = ";", header = TRUE,
+                      strip.white = TRUE, comment.char = "",
+                      colClasses = rep(c("logical", "character", "integer",
+                                         "numeric", "integer", "character"),
+                                       times = c(1, 2, 1, 2, 1, 3)))
+    # Remove disabled elements
+    def <- subset(def, enabled)
     # Convert definition to list
     def <- lapply(setNames(def$var, def$var),
                   function(x, df) as.list(subset(df, var == x, -var)), df = def)
@@ -126,6 +135,9 @@ tsplot.control <- function(...) {
         tmp  <- grDevices::col2rgb(def[[var]]$col) / 255
         def[[var]]$col <- colorspace::hex(colorspace::sRGB(tmp[1,], tmp[2,], tmp[3,]))
     }
+
+    # Append wind sector definition (if set)
+    if (!is.null(windsector)) def$foehnix_windsector$data <- windsector_convert(windsector)
 
     # Add custom class and return
     class(def) <- c("tsplot.control", class(def))
@@ -449,12 +461,14 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     get <- tsplot_get_control
 
     # Looping over the different periods we have to plot
-    for ( k in seq_along(start) ) {
+    for (k in seq_along(start)) {
 
         # Parameters of the graphical output device
-        par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4),
-            xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
-
+        #par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4),
+        #    xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
+        par(ask = FALSE, mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
+        hgt <- ifelse(names(doplot)[unlist(doplot)] == "tempdiff", 1, 2)
+        layout(matrix(1:Nplots, ncol = 1), heights = hgt)
         # Pick subset to plot
         tmp <- window(data, start = start[k], end = end[k])
 
@@ -483,7 +497,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
         tsplot_add_foehn(tmp, control, prob_boxes, xtra, xtra_names)
 
         # If multiple periods have to be plotted: set ask = TRUE
-        if ( ask & k < length(start) ) readline("Press Enter for next plot> ")
+        if (ask & k < length(start)) readline("Press Enter for next plot> ")
 
     } # End of loop over start/end (loop index k)
 
@@ -632,11 +646,28 @@ tsplot_add_wind <- function(x, control, prob_boxes) {
     # Plot empty frame
     plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(x)),
              ylim = c(0, 360), yaxt = "n", bty = "n")
-    tsplot_add_boxes(prob_boxes)
-    tsplot_add_midnight_lines(x)
-    # Adding wind direction
+
+    # Find the wind direction parameters in the data set
     param_dd       <- get(control, "dd", "name")
     param_crest_dd <- get(control, "crest_dd", "name")
+
+    # Adding windsector highlights if there are any.
+    tsplot_add_boxes(prob_boxes)
+    if (param_dd %in% names(x)) {
+        ws <- get(control, "foehnix_windsector", "data")
+        if (!is.null(ws)) {
+            for (i in seq_along(ws)) {
+                rect(min(index(x)), ws[[i]][1L], max(index(x)), ws[[i]][2L],
+                     col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
+                     border = get(control, "foehnix_windsector", "lty"))
+                if (!is.null(names(ws)[i]))
+                    text(min(index(x)) + 0.01 * diff(range(index(x))),
+                         max(ws[[i]]), names(ws)[i], adj = c(0, 1.5))
+            }
+        }
+        do.call(lines, get(control, "dd", "args_lines", list(x = x[, param_dd])))
+    }
+    tsplot_add_midnight_lines(x)
 
     # Adding wind direction
     if (param_crest_dd %in% names(x))
@@ -647,7 +678,7 @@ tsplot_add_wind <- function(x, control, prob_boxes) {
     if (all(c(param_dd, param_crest_dd) %in% names(x))) {
         axis(side = 2, at = seq(90, 360 - 90, by = 90))
         mtext(side = 2, line = 3, get(control, "dd", "ylab"))
-    } else {
+    } else if (any(c(param_dd, param_crest_dd) %in% names(x))) {
         tmp <- names(x)[names(x) %in% c(param_dd, param_crest_dd)]
         axis(side = 2, at = seq(90, 360 - 90, by = 90))
         mtext(side = 2, line = 3, get(control, tmp, "ylab"))

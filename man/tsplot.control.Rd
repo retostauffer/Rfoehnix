@@ -5,11 +5,17 @@
 \alias{tsplot_get_control}
 \title{foehnix Time Series Plot Config}
 \usage{
-tsplot.control(...)
+tsplot.control(style = c("default", "bw", "advanced"),
+  windsector = NULL, ...)
 
 tsplot_get_control(x, var, property, args = list())
 }
 \arguments{
+\item{style}{character, name of the style template (colors, line types, ...)}
+
+\item{windsector}{vector or list to highlight specific wind sectors.
+See \code{\link[foehnix]{foehnix:::windsector_convert}} for details}
+
 \item{...}{a set of named inputs to overwrite the defaults.
 see 'Details' section.}
 
@@ -19,7 +25,10 @@ see 'Details' section.}
 function. Name of the (original!) variable name}
 
 \item{property}{the property which should be returned by
-\code{\link[foehnix]{tsplot_get_control}}.}
+\code{\link[foehnix]{tsplot_get_control}}}
+
+\item{args}{list of named arguments used when calling
+\code{tsplot_get_control}}
 }
 \value{
 Returns an object of class \code{c("tsplot.control", "data.frame")}
@@ -54,6 +63,11 @@ By default the \code{\link[foehnix]{tsplot}} function
      \item \code{ffx}: gust speed (meters per second)
      \item \code{crest_ffx}: gust speed crest (meters per second)
 }
+
+Different \code{style} presets are available. Styles can be accessed using
+the \code{style} input argument. Different styles also enable/disable 
+specific observations (e.g., the \code{"default"} style supresses the plotting
+of crest-station observations, even if present).
 
 Can be set to \code{NULL} to be disabled. If the variable exists in the
 data set but was (manually) set to \code{NULL} it will be neglected during

@@ -210,9 +210,6 @@ test_that("Testing tsplot.foehnix function", {
     modX <- mod0; modX$prob$prob <- NA
     expect_silent(tsplotfun(modX, start = start, end = end, t = "myt", rh = "myrh",
               diff_t = "mydiff_t", dd = "mydd", ff = "myff", prob = "myprob", ask = FALSE))
-    tsplot(modX, start = start, end = end, t = "myt", rh = "myrh",
-              diff_t = "mydiff_t", dd = "mydd", ff = "myff", prob = "myprob", ask = FALSE)
-
     # Should result in an error as probabilities out of range
     modX$prob$prob <- 10
     expect_error(tsplotfun(modX, start = start, end = end, t = "myt", rh = "myrh",
