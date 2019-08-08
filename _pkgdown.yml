@@ -52,7 +52,6 @@ reference:
         - ellboegen
         - sattelberg
         - viejas
-        - luckyfive
     - title: "Support functions"
       contents:
         - iwls_logit

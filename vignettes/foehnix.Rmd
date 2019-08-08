@@ -29,16 +29,16 @@ the north side of the Alps.
 
 To perform the classification we first of all have to prepare our data sets.
 `foehnix(...)` expects the input to be of class `zoo` (zoo time series object;
-based on the \emph{R} `zoo` package). Thus, after loading our example data
-sets, we first have to convert the `data.frame`s into valid `zoo` objects:
+based on the \emph{R} `zoo` package). 
+The data sets included in this package (`ellboegen`, `sattelberg`, ...; see
+[`demodata`](references/demodata.html)) are already zoo objects. Thus, we only
+have to load the meteorological observations for Ellbögen (valley station) and
+Sattelberg (crest station):
 
 ```{r}
-# Loading observations (data.frame), convert to zoo
-data("ellboegen", package = "foehnix")
+# Load demo data sets (zoo time series objects)
+data("ellboegen",  package = "foehnix")
 data("sattelberg", package = "foehnix")
-timefun    <- function(x) as.POSIXct(x,  origin = "1970-01-01", tz = "UTC")
-ellboegen  <- zoo(ellboegen[,-1],  timefun(ellboegen$timestamp))
-sattelberg <- zoo(sattelberg[,-1], timefun(sattelberg$timestamp))
 ```
 
 As we want to use information from both stations: rename the variables of the

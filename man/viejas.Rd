@@ -76,9 +76,6 @@ next to the Viejas Casino and Resort located in Alpine, CA (valley station),
 the second station called 'Lucky Five Ranch' is located 22km (14mi)
 northwest of the Viejas Casino close to the main ridge of the Sierra Nevada
 mountain range and is used as the crest station.
-
-Reto Stauffer, Georg J. Mayr
 }
 \keyword{data}
-\keyword{luckyfive}
 \keyword{viejas}

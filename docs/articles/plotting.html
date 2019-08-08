@@ -54,7 +54,10 @@
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -136,7 +139,7 @@
 <a href="#windrose-plot-for-observation-data" class="anchor"></a>Windrose Plot for Observation Data</h3>
 <p>The <a href="../references/windrose.html"><code>windrose</code></a> function can be called with a set of (observed) wind direction and wind speed values. Wind direction has to be the meteorological wind direction in degrees (<code>[0, 360]</code>, <code>0</code> and <code>360</code> corresponds to wind coming from North, <code>90</code> for wind from East, <code>180</code> for wind from South, and <code>270</code> from West).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"Ellboegen"</span>)
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"ellboegen"</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
 <pre><code>##                      dd  ff  rh    t
 ## 2006-01-01 01:00:00 171 0.6  90 -0.4
@@ -155,8 +158,8 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 <h3 class="hasAnchor">
 <a href="#windrose-plot-for-foehnix-models" class="anchor"></a>Windrose Plot for foehnix Models</h3>
 <p>Windrose plots can also be created for <code>foehnix</code> foehn classification models if wind speed and wind direction information has been provided to the <a href="../references/foehnix.html"><code>foehnix</code></a> function when estimating the classification model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for Tyrol (Ellboegen and Innsbruck)</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
 <pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
 ## 2006-01-01 01:00:00 171 0.6  90 -0.4      180     10.8      100    -7.8
@@ -181,8 +184,8 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod)</code></pre></div>
 <p><img src="plotting_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
 <p>By default, <code>windrose</code> expects that the parameters are called <code>dd</code> (wind direction) and <code>ff</code> (wind speed), however, custom names can also be used.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen and Sattelberg (combined)</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"dd$"</span>, <span class="st">"winddir"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"ff$"</span>, <span class="st">"windspd"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
@@ -214,8 +217,8 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <h2 class="hasAnchor">
 <a href="#default-time-series-plot" class="anchor"></a>Default Time Series Plot</h2>
 <p>TODO: Write vignette.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen and Sattelberg (combined)</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)

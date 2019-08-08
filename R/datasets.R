@@ -166,7 +166,6 @@ NULL
 #'          \code{\link{viejas}}, \code{\link{luckyfive}}.
 #'
 #' @name luckyfive
-#' @docType data
-#' @keywords data luckyfive
-#' @author Reto Stauffer, Georg J. Mayr
 NULL
+
+

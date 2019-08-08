@@ -54,7 +54,10 @@
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -114,7 +117,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/tsplot.Rmd"><code>vignettes/tsplot.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/tsplot.Rmd"><code>../vignettes/tsplot.Rmd</code></a></small>
       <div class="hidden name"><code>tsplot.Rmd</code></div>
 
     </div>
@@ -125,8 +128,8 @@
 <h2 class="hasAnchor">
 <a href="#time-series-plot" class="anchor"></a>Time Series Plot</h2>
 <p>TODO: Explain the default plot.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for Tyrol</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
 <span class="co"># Faking ffx (wind gusts) as we don't have them in the data set.</span>
 data<span class="op">$</span>ffx       &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(data), <span class="fl">1.4</span>, <span class="fl">1.7</span>) <span class="op">*</span><span class="st"> </span>data<span class="op">$</span>ff
 data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(data), <span class="fl">1.5</span>, <span class="fl">2.5</span>) <span class="op">*</span><span class="st"> </span>data<span class="op">$</span>crest_ff
@@ -137,18 +140,16 @@ data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
 ## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
 ##                     diff_t       ffx crest_ffx
-## 2006-01-01 01:00:00   2.87 0.9781511  18.21406
-## 2006-01-01 02:00:00   4.07 0.4626287  23.46652
-## 2006-01-01 03:00:00   1.97 8.1602644  17.33938</code></pre>
+## 2006-01-01 01:00:00   2.87 0.8908713  21.22119
+## 2006-01-01 02:00:00   4.07 0.4726949  27.08669
+## 2006-01-01 03:00:00   1.97 7.8616180  19.00348</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
 <span class="co"># Alternative model. Does not use data from the crest station Sattelberg</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
-<pre><code>## Loading foehnix</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alt_filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>))
+alt_filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>))
 alt_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> alt_filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
 
