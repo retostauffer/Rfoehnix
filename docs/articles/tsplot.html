@@ -140,9 +140,9 @@ data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
 ## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
 ##                     diff_t       ffx crest_ffx
-## 2006-01-01 01:00:00   2.87 0.8908713  21.22119
-## 2006-01-01 02:00:00   4.07 0.4726949  27.08669
-## 2006-01-01 03:00:00   1.97 7.8616180  19.00348</code></pre>
+## 2006-01-01 01:00:00   2.87 0.9158477  19.63286
+## 2006-01-01 02:00:00   4.07 0.4955873  31.16146
+## 2006-01-01 03:00:00   1.97 7.4401285  17.14238</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
