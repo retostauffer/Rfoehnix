@@ -8,8 +8,8 @@ suppressPackageStartupMessages(library("foehnix"))
 TODO: Explain the default plot.
 
 ```{r tsplot default, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-# Loading the demo data set
-data <- demodata()
+# Loading the demo data set for Tyrol
+data <- demodata("tyrol")
 # Faking ffx (wind gusts) as we don't have them in the data set.
 data$ffx       <- runif(nrow(data), 1.4, 1.7) * data$ff
 data$crest_ffx <- runif(nrow(data), 1.5, 2.5) * data$crest_ff
@@ -21,8 +21,13 @@ filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 mod <- foehnix(diff_t ~ ff + rh, data = data, filter = filter,
                switch = TRUE, verbose = FALSE)
 
+# Alternative model. Does not use data from the crest station Sattelberg
+alt_filter <- list(dd = c(43, 223))
+alt_mod <- foehnix(ff ~ rh, data = data, filter = alt_filter, verbose = FALSE)
+
+
 # Plotting windroses
-tsplot(mod, start = "2015-05-01", end = "2015-05-10")
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod), start = "2015-05-01", end = "2015-05-10")
 ```
 
 ## Different Styles
@@ -32,12 +37,14 @@ different styles provided by the foehnix package. The styles can be modified
 by the user (see next section).
 
 ```{r tsplot advanced, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-tsplot(mod, start = "2015-05-01", end = "2015-05-10",
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
+       start = "2015-05-01", end = "2015-05-10",
        style = "advanced")
 ```
 
 ```{r tsplot bw, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-tsplot(mod, start = "2015-05-01", end = "2015-05-10",
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
+       start = "2015-05-01", end = "2015-05-10",
        style = "bw")
 ```
 
@@ -51,7 +58,8 @@ As an example we change the appearance of the observed air temperature (`t`)
 and disable two parameters (`crest_t` and `diff_t`) by setting them to `NULL`.
 
 ```{r tsplot customized advanced, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-tsplot(mod, start = "2015-05-01", end = "2015-05-10",
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
+       start = "2015-05-01", end = "2015-05-10",
        t       = list(col = "blue", lty = 3, lwd = 4),
        crest_t = NULL, # Disable crest temperature
        diff_t  = NULL, # Disable temperature difference
@@ -61,7 +69,8 @@ tsplot(mod, start = "2015-05-01", end = "2015-05-10",
 The same can, of course, be done with the black and white style:
 
 ```{r tsplot customized bw, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-tsplot(mod, start = "2015-05-01", end = "2015-05-10",
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
+       start = "2015-05-01", end = "2015-05-10",
        t = list(col = "orange", type = "o", pch = 18),
        style = "bw")
 ```
@@ -72,7 +81,8 @@ TODO: Wind sectors (as for the windrose plot) can be used to set specific highli
 This optional argument is also forwarded to `tsplot.control`.
 
 ```{r tsplot windsector, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
-tsplot(mod, start = "2015-05-01", end = "2015-05-10",
+tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
+       start = "2015-05-01", end = "2015-05-10",
        windsector = list("Sector A" = c(30, 120), "Sector B" = c(200, 260)),
        foehnix_windsector = list(col = "orange"), # Custom color
        style = "bw")

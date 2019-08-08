@@ -13,8 +13,10 @@ navbar:
               href: articles/foehnix.html
             - text: "Plotting Functions"
               href: articles/plotting.html
-            - text: "Time Series Plot"
+            - text: "[Plot] Time Series"
               href: articles/tsplot.html
+            - text: "[Plot] Hovmöller Diagram"
+              href: articles/image.html
             - text: "Simulation Examples"
               href: articles/simulation.html
         - text: "Advanced"
@@ -49,6 +51,8 @@ reference:
         - demodata
         - ellboegen
         - sattelberg
+        - viejas
+        - luckyfive
     - title: "Support functions"
       contents:
         - iwls_logit

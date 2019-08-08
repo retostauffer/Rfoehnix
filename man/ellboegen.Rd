@@ -15,7 +15,7 @@ data("ellboegen")
 }
 \description{
 The \code{\link{foehnix}} package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
+observations for two sites in Tyrol, Austria.  One station is located near
 Ellboegen, a small town close to Innsbruck, the second station (Sattelberg)
 is located south of Ellboegen close to the border between Austria and Italy
 on top of a mountain close to the crest of the European Alps and is used as
@@ -28,12 +28,12 @@ Ellboegen:
     \item Altitude: 1080 meters above mean sea level
 }
 
-Variable description (columns):
+\code{zoo} time series object with an hourly temporal resolution (time zone: UTC)
+including the following variables:
 \itemize{
-   \item \code{timestamp}: UNIX time stamp, seconds since 1970-01-01 00:00:00
    \item \code{dd}: wind direction in degrees, meteorological format
        (0/360 correspond to 'wind from north', 90 to 'wind from east',
-       180 'wind from south', and 270 'wind from west'
+       180 'wind from south', and 270 'wind from west')
    \item \code{ff}: wind speed in meters per second
    \item \code{p}: station pressure in hectopascal
    \item \code{rh}: relative humidity in percent
@@ -41,10 +41,11 @@ Variable description (columns):
 }
 }
 \seealso{
-\code{\link{sattelberg}}, \code{\link{demodata}}.
+\code{\link{sattelberg}}, \code{\link{demodata}},
+         \code{\link{viejas}}, \code{\link{luckyfive}}.
 }
 \author{
-Reto Stauffer
+Reto Stauffer, Deborah Detka
 }
 \keyword{data}
 \keyword{ellboegen}

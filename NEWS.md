@@ -5,9 +5,26 @@
 * There is one import ":::" (cgaussian family) in one of the
   examples -> illegal!
 * A separate `windrose` vignette might be nice.
+* ... started a separate vignette for `tsplot`, implement separate
+    vignettes for `windrose` and `image`.
 * Allow to add a wind sector when using `windrose.default`, 
   Similar for `foehnix` models given the user-defined `dd`, `ff`
   names.
+* Added second demo data set "Viejas and Lucky Five Ranch (CA, USA)";
+    modified the `demodata(...)` function to be able to handle both
+    (multiple) demo data sets.
+* Data sets (`ellboegen`, `sattelberg`, `viejas`, `luckyfive`) now stored
+    as binary time series objects (`.rda`; `zoo`).
+
+# foehnix 0.1-2 (August 2019; development stage)
+
+* Additional functionality added to `image.foehnix` (custom `xlim` and `ylim`,
+    allow for custom `style` files).
+* Revamped/simplified internal structure of `image.foehnix`.
+* Updated the demo data sets (Ellboegen and Sattelberg); quality-controlled
+    updated extended data set (by Deborah Detka). Moved from csv to rda
+    using `usethis`; reduces package size; added data/scripts in `data-raw`.
+* Moved generic `image` function (`image.foehnix`) to `R/image.R`.
 
 # foehnix 0.1-2 (August 2019)
 

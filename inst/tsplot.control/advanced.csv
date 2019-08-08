@@ -7,8 +7,8 @@ TRUE;    diff_t;    l;    NA;  1.0; 2.0;   1;   diff_t;    orange;    temperatur
 TRUE;    dd;        p;    19;  0.7; 1.0;   1;   dd;        black;     wind direction [deg]
 TRUE;    crest_dd;  p;    17;  1.0; 0.0;   0;   crest_dd;  black;     wind direction crest [deg]
 TRUE;    ff;        l;    NA;  1.0; 2.0;   1;   ff;        #005ce6;   wind speed [m/s]
-TRUE;    crest_ff;  o;    17;  1.0; 2.0;   1;   crest_ff;  #005ce6;   wind speed crest [m/s]
+TRUE;    crest_ff;  o;    17;  1.0; 2.0;   1;   crest_ff;  #8C9ADC;   wind speed crest [m/s]
 TRUE;    ffx;       l;    NA;  1.0; 1.0;   1;   ffx;       #5c00e6;   gust speed [m/s]
-TRUE;    crest_ffx; o;    17;  1.0; 0.5;   1;   crest_ffx; #5c00e6;   gust speed crest [m/s]
+TRUE;    crest_ffx; o;    17;  1.0; 1.0;   1;   crest_ffx; #7D6FBA;   gust speed crest [m/s]
 TRUE;    prob;      l;    NA;  1.0; 2.0;   1;   ----;      #FF6666;   probability
 TRUE;    foehnix_windsector; n;    NA;   NA;  NA;  NA; "---"; #FFD700; wind sector overlay

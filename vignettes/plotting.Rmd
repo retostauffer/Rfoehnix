@@ -25,7 +25,7 @@ West).
 
 ```{r, echo = TRUE, figure = TRUE, fig.width = 10, fig.height = 5}
 # Loading the demo data set for station Ellboegen
-data <- demodata("Ellboegen")
+data <- demodata("ellboegen")
 print(head(data))
 
 # Plotting windrose
@@ -41,8 +41,8 @@ to the [`foehnix`](../references/foehnix.html) function when estimating
 the classification model.
 
 ```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
-# Loading the demo data set
-data <- demodata()
+# Loading the demo data set for Tyrol (Ellboegen and Innsbruck)
+data <- demodata("tyrol") # default
 print(head(data))
 
 # Estimate a foehnix classification model
@@ -58,8 +58,8 @@ By default, `windrose` expects that the parameters are called `dd` (wind directi
 and `ff` (wind speed), however, custom names can also be used.
 
 ```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
-# Loading the demo data set for station Ellboegen
-data <- demodata()
+# Loading the demo data set for station Ellboegen and Sattelberg (combined)
+data <- demodata("tyrol") # default
 names(data) <- gsub("dd$", "winddir", names(data))
 names(data) <- gsub("ff$", "windspd", names(data))
 print(head(data))
@@ -79,8 +79,8 @@ windrose(mod, ddvar = "winddir", ffvar = "windspd")
 TODO: Write vignette.
 
 ```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 8}
-# Loading the demo data set for station Ellboegen
-data <- demodata()
+# Loading the demo data set for station Ellboegen and Sattelberg (combined)
+data <- demodata("tyrol")
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 mod <- foehnix(diff_t ~ ff + rh, data = data, filter = filter,
                switch = TRUE, verbose = FALSE)

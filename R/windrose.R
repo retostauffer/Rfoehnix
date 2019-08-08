@@ -60,7 +60,7 @@ utils::globalVariables(c("prob", "maxpp"))
 #'
 #' @examples
 #' # Loading combined demo data set
-#' data <- demodata()
+#' data <- demodata("tyrol") # default
 #'
 #' # Before estimating a model: plot a wind rose for all observations
 #' windrose(data$dd, data$ff, type = "histogram")
@@ -302,7 +302,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' # Loading observation data for station Ellboegen.
 #' # The object returned is a zoo time series object
 #' # containing (see ?ellboegen).
-#' data <- demodata("Ellboegen")
+#' data <- demodata("ellboegen")
 #' class(data)
 #' head(data)
 #' 

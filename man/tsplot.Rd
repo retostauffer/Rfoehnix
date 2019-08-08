@@ -71,8 +71,8 @@ data are available at all.
 TODO: describe input 'x'
 }
 \examples{
-# Loading demo data
-data <- demodata()
+# Loading demo data for Tyrol (Ellboegen and Sattelberg)
+data <- demodata("tyrol")
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 
 # Create foehnix foehn classification model, provide full data
@@ -121,7 +121,7 @@ tsplot(list("full model" = mod1, "zoo" = probs), start = "2018-03-01", end = "20
 # following names:
 # - winddir: wind direction
 # - windspd: wind speed
-data <- demodata("Ellboegen")
+data <- demodata("ellboegen")
 names(data)[which(names(data) == "dd")] <- "winddir"
 names(data)[which(names(data) == "ff")] <- "windspd"
 

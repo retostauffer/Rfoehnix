@@ -15,7 +15,7 @@ can be found [on the getting started](foehnix.html) manual page.
 
 ```{r, echo = FALSE}
 # Loading combined demo data set
-data <- demodata()
+data <- demodata("tyrol") # default
 ```
 
 ```{r, echo = TRUE, results = "hide"}

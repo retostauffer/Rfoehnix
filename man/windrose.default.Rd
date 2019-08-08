@@ -93,7 +93,7 @@ the \code{\link{foehnix_filter}} method.
 # Loading observation data for station Ellboegen.
 # The object returned is a zoo time series object
 # containing (see ?ellboegen).
-data <- demodata("Ellboegen")
+data <- demodata("ellboegen")
 class(data)
 head(data)
 

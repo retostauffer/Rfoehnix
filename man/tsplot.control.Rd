@@ -11,7 +11,8 @@ tsplot.control(style = c("default", "bw", "advanced"),
 tsplot_get_control(x, var, property, args = list())
 }
 \arguments{
-\item{style}{character, name of the style template (colors, line types, ...)}
+\item{style}{character, name of the style template (\code{default}, \code{advanced},
+\code{bw}) or path to a file containing the required information.}
 
 \item{windsector}{vector or list to highlight specific wind sectors.
 See \code{\link[foehnix]{foehnix:::windsector_convert}} for details}

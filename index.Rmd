@@ -38,6 +38,8 @@ windrose(mod, type = "histogram", mfcol = 3)
 
 ```{r, echo = FALSE, fig = TRUE, results = 'hide', fig.width = 12, fig.height = 6.5}
 col <- rev(colorspace::sequential_hcl(21, h = c(-50, 120), c. = c(80, 10)))
+devtools::load_all()
+image(mod)
 image(mod, FUN = "freq", deltad = 7L,
       col = col, contours = TRUE, drawlabels = FALSE,
       main = "Hourly foehn Frequency Diagram, Weekly Aggregation")

@@ -35,7 +35,7 @@
 <meta property="og:title" content="Meteorological Observation Data, Station Sattelberg — sattelberg" />
 
 <meta property="og:description" content="The foehnix package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
+observations for two sites in Tyrol, Austria.  One station is located near
 Ellboegen (see ellboegen), a small town close to Innsbruck,
 the second station (Sattelberg) is located south of Ellboegen close to the
 border between Austria and Italy on top of a mountain close to the crest of
@@ -93,7 +93,10 @@ the European Alps and is used as 'crest station'." />
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -159,7 +162,7 @@ the European Alps and is used as 'crest station'." />
     <div class="ref-description">
     
     <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located nearby
+observations for two sites in Tyrol, Austria.  One station is located near
 Ellboegen (see <code><a href='ellboegen.html'>ellboegen</a></code>), a small town close to Innsbruck,
 the second station (Sattelberg) is located south of Ellboegen close to the
 border between Austria and Italy on top of a mountain close to the crest of
@@ -182,11 +185,11 @@ The data is available under the
 <li><p>Location: 11.47889 E/47.01083 N</p></li>
 <li><p>Altitude: 2107 meters above mean sea level</p></li>
 </ul>
-    <p>Variable description (columns):</p><ul>
-<li><p><code>timestamp</code>: UNIX time stamp, seconds since 1970-01-01 00:00:00</p></li>
+    <p><code>zoo</code> time series object with an hourly temporal resolution (time zone: UTC)
+including the following variables:</p><ul>
 <li><p><code>dd</code>: wind direction in degrees, meteorological format
        (0/360 correspond to 'wind from north', 90 to 'wind from east',
-       180 'wind from south', and 270 'wind from west'</p></li>
+       180 'wind from south', and 270 'wind from west')</p></li>
 <li><p><code>ff</code>: wind speed in meters per second</p></li>
 <li><p><code>p</code>: station pressure in hectopascal</p></li>
 <li><p><code>rh</code>: relative humidity in percent</p></li>
@@ -195,7 +198,8 @@ The data is available under the
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='ellboegen.html'>ellboegen</a></code>, <code><a href='demodata.html'>demodata</a></code>.</p></div>
+    <div class='dont-index'><p><code>sattelberg</code>, <code><a href='demodata.html'>demodata</a></code>,
+         <code><a href='viejas.html'>viejas</a></code>, <code><a href='luckyfive.html'>luckyfive</a></code>.</p></div>
     
 
   </div>

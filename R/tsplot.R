@@ -19,7 +19,8 @@ utils::globalVariables("vars")
 #'
 #' @param ... a set of named inputs to overwrite the defaults.
 #'     see 'Details' section.
-#' @param style character, name of the style template (colors, line types, ...)
+#' @param style character, name of the style template (\code{default}, \code{advanced},
+#'      \code{bw}) or path to a file containing the required information.
 #' @param windsector vector or list to highlight specific wind sectors.
 #'      See \code{\link[foehnix]{foehnix:::windsector_convert}} for details
 #' @param var used when calling the \code{\link[foehnix]{tsplot_get_control}}
@@ -86,22 +87,27 @@ utils::globalVariables("vars")
 tsplot.control <- function(style = c("default", "bw", "advanced"),
                            windsector = NULL, ...) {
 
-    # Evaluate template
-    style <- match.arg(style)
-
-    # Package path
-    style_file <- paste(installed.packages()["foehnix", "LibPath"],
-                           "foehnix/tsplot.control",
-                           sprintf("%s.csv", style),
-                           sep = "/")
+    # Evaluate template. Check if "style" is a file name (containing a ".").
+    # If so, check if file exists. Else use standard evaluation (one of the
+    # characters mentioned above).
+    if (length(style) == 1L && grepl(".*\\..*", style)) {
+        style_file <- style
+    } else {
+        style      <- match.arg(style)
+        style_file <- system.file(sprintf("tsplot.control/%s.csv", style), package = "foehnix")
+    }
     stopifnot(file.exists(style_file))
 
     # Reading data.frame definition from the string above.
-    def <- read.table(style_file, sep = ";", header = TRUE,
-                      strip.white = TRUE, comment.char = "",
-                      colClasses = rep(c("logical", "character", "integer",
-                                         "numeric", "integer", "character"),
-                                       times = c(1, 2, 1, 2, 1, 3)))
+    def <- try(read.table(style_file, sep = ";", header = TRUE,
+                          strip.white = TRUE, comment.char = "",
+                          colClasses = rep(c("logical", "character", "integer",
+                                             "numeric", "integer", "character"),
+                                           times = c(1, 2, 1, 2, 1, 3))), silent = TRUE)
+    if (inherits(def, "try-error"))
+        stop(sprintf("Problems reading style file \"%s\": unexpected content.",
+                     style_file))
+
     # Remove disabled elements
     def <- subset(def, enabled)
     # Convert definition to list
@@ -224,8 +230,8 @@ tsplot_get_control <- function(x, var, property, args = list()) {
 #' TODO: describe input 'x' 
 #'
 #' @examples
-#' # Loading demo data
-#' data <- demodata()
+#' # Loading demo data for Tyrol (Ellboegen and Sattelberg)
+#' data <- demodata("tyrol")
 #' filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 #' 
 #' # Create foehnix foehn classification model, provide full data
@@ -274,7 +280,7 @@ tsplot_get_control <- function(x, var, property, args = list()) {
 #' # following names:
 #' # - winddir: wind direction
 #' # - windspd: wind speed
-#' data <- demodata("Ellboegen")
+#' data <- demodata("ellboegen")
 #' names(data)[which(names(data) == "dd")] <- "winddir"
 #' names(data)[which(names(data) == "ff")] <- "windspd"
 #' 
@@ -373,17 +379,24 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
                          paste(which(tmp), collapse = ", ")))
     }
 
+
     # Check available data. This allows us to check
     # which of the default subplots can be drawn.
     check <- function(available, control, check) {
-        x <- names(control[which(names(control) %in% available)])
-        return(sum(check %in% x) > 0)
+        idx <- which(names(control) %in% check)
+        if (length(idx) == 0) return(FALSE)
+        # Check if we can find $name
+        x <- sapply(control[idx], function(x) x$name)
+        return(any(x %in% available))
     }
+    # List with logicals whether or not we have to plot the panels.
+    # Note that the order is important for the calculation of the
+    # panel height for layout(...).
     doplot <- list(
+        "crest_wind"  = check(names(x$data), control, c("crest_dd", "crest_ff", "crest_ffx")),
         "temp"        = check(names(x$data), control, c("t", "crest_t", "rh")),
         "tempdiff"    = check(names(x$data), control, c("diff_t")),
         "wind"        = check(names(x$data), control, c("dd", "ff", "ffx")),
-        "crest_wind"  = check(names(x$data), control, c("crest_dd", "crest_ff", "crest_ffx")),
         "prob"        = TRUE
     )
     Nplots <- sum(sapply(doplot, function(x) return(x)))
@@ -466,15 +479,17 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
             next
         }
 
+        # Crest wind - if required
+        if (doplot$crest_wind)  tsplot_add_wind(tmp, control, prob_boxes, TRUE)
+
         # Air temperature
-        if (doplot$temp)     tsplot_add_temp(tmp, control, prob_boxes)
+        if (doplot$temp)        tsplot_add_temp(tmp, control, prob_boxes)
     
         # Plotting temperature difference
-        if (doplot$tempdiff) tsplot_add_tempdiff(tmp, control, prob_boxes)
+        if (doplot$tempdiff)    tsplot_add_tempdiff(tmp, control, prob_boxes)
     
         # Plotting wind direction and wind speed
-        if (doplot$wind)         tsplot_add_wind(tmp, control, prob_boxes, FALSE)
-        if (doplot$crest_wind)   tsplot_add_wind(tmp, control, prob_boxes, TRUE)
+        if (doplot$wind)        tsplot_add_wind(tmp, control, prob_boxes, FALSE)
 
         # Foehn prob (main object 'x')
         tsplot_add_foehn(tmp, control, prob_boxes, xtra, xtra_names)
@@ -535,7 +550,7 @@ tsplot_calc_prob_boxes <- function(x) {
 }
 
 
-tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("at station", "crest")) {
+tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("station", "crest")) {
     get <- tsplot_get_control
     legend(pos, ncol = 2, legend = legend, bty = "n",
            col = c(get(control, x, "col"), get(control, crest_x, "col")),
@@ -610,9 +625,10 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
         tsplot_add_legend("topright", control, param_t, param_crest_t)
     } else if (any(c(param_t, param_crest_t) %in% names(x))) {
         # Check which one has to be plotted
-        tmp <- names(x)[names(x) %in% c(param_t, param_crest_t)]
+        param <- ifelse(param_t %in% names(x), param_t, param_crest_t)
+        tmp   <- ifelse(param_t %in% names(x), "t", "crest_t")
         par(new = TRUE)
-        do.call(plot, get(control, tmp, "args_plot", list(x = x[, tmp], ylim = ylim_t,
+        do.call(plot, get(control, tmp, "args_plot", list(x = x[, param], ylim = ylim_t,
                                                           xaxt = "n", yaxt = "n", main = NA)))
     }
 
@@ -844,6 +860,8 @@ tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = N
 #' @author Reto Stauffer
 #' @export
 add_polygon <- function(x, col = "#ff0000", lower.limit = 0, ...) {
+    # lower.limit is either a vector or a single numeric
+    stopifnot(length(lower.limit) == 1 & is.finite(lower.limit))
     # Need hex color
     if (!grepl("^#[A-Za-z0-9]{6}$", col)) stop("Sorry, need hex color definition for polygon plots.")
     # All elements NA?

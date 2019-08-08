@@ -97,7 +97,10 @@ filters (foehnix_filter)." />
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -175,67 +178,101 @@ filters (<code><a href='foehnix_filter.html'>foehnix_filter</a></code>).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"combined"</span>)</pre>
+    <pre class="usage"><span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tyrol"</span>, <span class='st'>"ellboegen"</span>, <span class='st'>"sattelberg"</span>, <span class='st'>"california"</span>,
+  <span class='st'>"viejas"</span>, <span class='st'>"luckyfive"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>which</th>
-      <td><p>either <code>"combined"</code> (returns a combined data set),
-<code>"sattelberg"</code> (only observations from station Sattelberg),
-or <code>"ellboegen"</code> (only observations rom station Ellboegen).</p></td>
+      <td><p>the <code>foehnix</code> package comes with two demo data sets.
+Each consists of meteorological observations of two stations (one
+in the valley; target station) and one near the crest upstream of
+typical foehn direction (crest station).
+<code>which = "tyrol"</code> returns the tyrolean data set (A),
+<code>which = "california"</code> the californian data set (USA), a time series
+object which contains measurements from both stations (valley/crest).
+The function can also be used to get the demo data sets for specific sites
+(see 'Examples').</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Station operated by the Department of Atmospheric and Cryospheric
+    <p>Ellboegen and Sattelberg:
+Operated by the Department of Atmospheric and Cryospheric
 Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
 The data is available under the
 <a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
+<p>Viejas and the Lucky Five Ranch:
+Operated by #TODO add correct source (GM).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='ellboegen.html'>ellboegen</a></code>, <code><a href='sattelberg.html'>sattelberg</a></code></p></div>
+    <div class='dont-index'><p><code><a href='ellboegen.html'>ellboegen</a></code>, <code><a href='sattelberg.html'>sattelberg</a></code>,
+         <code><a href='viejas.html'>viejas</a></code>, <code><a href='luckyfive.html'>luckyfive</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Loading the combined demo data set. Variables starting with</span>
-<span class='co'># "crest_" are observations from station Sattelberg.</span>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>()
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                      dd  ff     p rh    t crest_dd crest_ff crest_p crest_rh
-#&gt; 2010-01-18 09:00:00 338 1.2 899.8 75 -0.9        3      5.6   787.7       93
-#&gt; 2010-01-18 10:00:00  18 0.1 899.9 66  0.2      344      5.3   787.9       90
-#&gt; 2010-01-18 11:00:00 344 0.8 899.1 63  0.7      360      6.0   787.3       80
-#&gt; 2010-01-18 12:00:00 303 2.4 898.8 60  0.7      357      6.5   786.8       77
-#&gt; 2010-01-18 13:00:00 292 2.8 898.5 57  1.9      358      8.7   786.6       78
-#&gt; 2010-01-18 14:00:00 316 1.6 898.6 70  0.3      352      7.6   786.8       80
-#&gt;                     crest_t diff_t
-#&gt; 2010-01-18 09:00:00    -8.7   2.47
-#&gt; 2010-01-18 10:00:00    -8.0   2.07
-#&gt; 2010-01-18 11:00:00    -7.7   1.87
-#&gt; 2010-01-18 12:00:00    -7.3   2.27
-#&gt; 2010-01-18 13:00:00    -7.2   1.17
-#&gt; 2010-01-18 14:00:00    -7.2   2.77</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='co'># Loading the combined demo data set for "Tyrol (A)".</span>
+<span class='co'># Stations: Ellboegen (valley station) and Sattelberg (crest station).</span>
+<span class='co'># Variables starting with "crest_" are observations from station Sattelberg,</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='error'>Error in match.arg(which): 'arg' must be NULL or a character vector</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; <span class='error'>Error in head(x): object 'x' not found</span></div><div class='input'>
+<span class='co'># Loading the combined demo data set for "California (USA)".</span>
+<span class='co'># Stations: Viejas (valley station) and 'Lucky Five Ranch' (crest station).</span>
+<span class='co'># Variables starting with "crest_" are observations from station 'Lucky Five Ranch'.</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='error'>Error in match.arg(which): 'arg' must be NULL or a character vector</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; <span class='error'>Error in head(x): object 'x' not found</span></div><div class='input'>
 <span class='co'># Sattelberg only</span>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='st'>"sattelberg"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                      dd  ff     p rh    t
-#&gt; 2010-01-18 09:00:00   3 5.6 787.7 93 -8.7
-#&gt; 2010-01-18 10:00:00 344 5.3 787.9 90 -8.0
-#&gt; 2010-01-18 11:00:00 360 6.0 787.3 80 -7.7
-#&gt; 2010-01-18 12:00:00 357 6.5 786.8 77 -7.3
-#&gt; 2010-01-18 13:00:00 358 8.7 786.6 78 -7.2
-#&gt; 2010-01-18 14:00:00 352 7.6 786.8 80 -7.2</div><div class='input'>
-<span class='co'># Ellboegen only</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                      dd   ff  rh    t
+#&gt; 2006-01-01 01:00:00 180 10.8 100 -7.8
+#&gt; 2006-01-01 02:00:00 186 12.5 100 -8.0
+#&gt; 2006-01-01 03:00:00 181 11.3 100 -7.4
+#&gt; 2006-01-01 04:00:00 178 13.3 100 -7.5
+#&gt; 2006-01-01 05:00:00 176 13.1 100 -7.1
+#&gt; 2006-01-01 06:00:00 184 10.0 100 -6.9</div><div class='input'>
+<span class='co'># Solely Ellboegen</span>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='st'>"ellboegen"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                      dd  ff     p rh    t
-#&gt; 2010-01-18 09:00:00 338 1.2 899.8 75 -0.9
-#&gt; 2010-01-18 10:00:00  18 0.1 899.9 66  0.2
-#&gt; 2010-01-18 11:00:00 344 0.8 899.1 63  0.7
-#&gt; 2010-01-18 12:00:00 303 2.4 898.8 60  0.7
-#&gt; 2010-01-18 13:00:00 292 2.8 898.5 57  1.9
-#&gt; 2010-01-18 14:00:00 316 1.6 898.6 70  0.3</div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                      dd  ff  rh    t
+#&gt; 2006-01-01 01:00:00 171 0.6  90 -0.4
+#&gt; 2006-01-01 02:00:00 268 0.3 100 -1.8
+#&gt; 2006-01-01 03:00:00 115 5.2  79  0.9
+#&gt; 2006-01-01 04:00:00 152 2.1  88 -0.6
+#&gt; 2006-01-01 05:00:00 319 0.7 100 -2.6
+#&gt; 2006-01-01 06:00:00  36 0.1  99 -1.7</div><div class='input'>
+<span class='co'># Viejas</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='st'>"viejas"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                     air_temp relative_humidity wind_speed wind_direction
+#&gt; 2012-01-01 00:00:00    23.89                25       1.34            227
+#&gt; 2012-01-01 01:00:00    20.00                22       2.68             43
+#&gt; 2012-01-01 02:00:00    19.44                15       4.02             35
+#&gt; 2012-01-01 03:00:00    20.00                13       3.58             16
+#&gt; 2012-01-01 04:00:00    20.00                12       3.58            350
+#&gt; 2012-01-01 05:00:00    18.89                13       2.68            339
+#&gt;                     wind_gust
+#&gt; 2012-01-01 00:00:00      2.68
+#&gt; 2012-01-01 01:00:00      4.02
+#&gt; 2012-01-01 02:00:00      6.70
+#&gt; 2012-01-01 03:00:00      5.81
+#&gt; 2012-01-01 04:00:00      4.47
+#&gt; 2012-01-01 05:00:00      4.47</div><div class='input'>
+<span class='co'># Lucky Five Ranch</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>demodata</span>(<span class='st'>"luckyfive"</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;                     air_temp relative_humidity wind_speed wind_direction
+#&gt; 2012-01-01 00:00:00    16.67                17       5.81             91
+#&gt; 2012-01-01 01:00:00    14.44                21       0.90             49
+#&gt; 2012-01-01 02:00:00    13.89                20       0.90            154
+#&gt; 2012-01-01 03:00:00    13.89                19       3.13             84
+#&gt; 2012-01-01 04:00:00    13.89                18       8.05             86
+#&gt; 2012-01-01 05:00:00    13.89                19       8.05             91
+#&gt;                     wind_gust
+#&gt; 2012-01-01 00:00:00      8.94
+#&gt; 2012-01-01 01:00:00      2.68
+#&gt; 2012-01-01 02:00:00      2.68
+#&gt; 2012-01-01 03:00:00      6.26
+#&gt; 2012-01-01 04:00:00     10.73
+#&gt; 2012-01-01 05:00:00     11.62</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

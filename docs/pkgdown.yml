@@ -5,6 +5,7 @@ articles:
   advanced_simulation: advanced_simulation.html
   families: families.html
   foehnix: foehnix.html
+  image: image.html
   inference: inference.html
   logisticregression: logisticregression.html
   mixedmodel: mixedmodel.html

@@ -6,7 +6,7 @@ library("testthat")
 # Prepare the models in the "global env" such that we only have
 # to run the model estimation twice for all kinds of plots!
 # Loading test data
-data <- demodata()
+data <- demodata("tyrol")
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
 
 # Model: model will be added to the global 

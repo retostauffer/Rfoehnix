@@ -4,18 +4,29 @@
 \alias{demodata}
 \title{foehnix Demo Data Set}
 \source{
-Station operated by the Department of Atmospheric and Cryospheric
+Ellboegen and Sattelberg:
+Operated by the Department of Atmospheric and Cryospheric
 Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.
 The data is available under the
 \href{https://creativecommons.org/licenses/by-sa/4.0/}{CC BY-SA 4.0 license}.
+
+Viejas and the Lucky Five Ranch:
+Operated by #TODO add correct source (GM).
 }
 \usage{
-demodata(which = "combined")
+demodata(which = c("tyrol", "ellboegen", "sattelberg", "california",
+  "viejas", "luckyfive"))
 }
 \arguments{
-\item{which}{either \code{"combined"} (returns a combined data set),
-\code{"sattelberg"} (only observations from station Sattelberg),
-or \code{"ellboegen"} (only observations rom station Ellboegen).}
+\item{which}{the \code{foehnix} package comes with two demo data sets.
+Each consists of meteorological observations of two stations (one
+in the valley; target station) and one near the crest upstream of
+typical foehn direction (crest station).
+\code{which = "tyrol"} returns the tyrolean data set (A),
+\code{which = "california"} the californian data set (USA), a time series
+object which contains measurements from both stations (valley/crest).
+The function can also be used to get the demo data sets for specific sites
+(see 'Examples').}
 }
 \description{
 The foehnix package comes with two demo data sets containing
@@ -30,22 +41,38 @@ crest station as concomitant variables and for custom wind
 filters (\code{\link{foehnix_filter}}).
 }
 \examples{
-# Loading the combined demo data set. Variables starting with
-# "crest_" are observations from station Sattelberg.
-x <- demodata()
+# Loading the combined demo data set for "Tyrol (A)".
+# Stations: Ellboegen (valley station) and Sattelberg (crest station).
+# Variables starting with "crest_" are observations from station Sattelberg,
+x <- demodata("tyrol") # Default
+print(head(x))
+
+# Loading the combined demo data set for "California (USA)".
+# Stations: Viejas (valley station) and 'Lucky Five Ranch' (crest station).
+# Variables starting with "crest_" are observations from station 'Lucky Five Ranch'.
+x <- demodata("california")
 print(head(x))
 
 # Sattelberg only
 x <- demodata("sattelberg")
 print(head(x))
 
-# Ellboegen only
+# Solely Ellboegen
 x <- demodata("ellboegen")
+print(head(x))
+
+# Viejas
+x <- demodata("viejas")
+print(head(x))
+
+# Lucky Five Ranch
+x <- demodata("luckyfive")
 print(head(x))
 
 }
 \seealso{
-\code{\link{ellboegen}}, \code{\link{sattelberg}}
+\code{\link{ellboegen}}, \code{\link{sattelberg}},
+         \code{\link{viejas}}, \code{\link{luckyfive}}
 }
 \author{
 Reto Stauffer

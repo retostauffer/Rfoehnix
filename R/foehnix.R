@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-04-18 17:11 on marvin
+# - L@ST MODIFIED: 2019-08-07 16:39 on marvin
 # -------------------------------------------------------------------
 
 
@@ -773,7 +773,6 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # outside the user defined sector. These will not be considered in the
     # statistical models.
     filter_obj <- foehnix_filter(data, filter)
-
 
     # Take all elements which are not NA and where the
     # foehnix_filter routine returned an index on "good" (not

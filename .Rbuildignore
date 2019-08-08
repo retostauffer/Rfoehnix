@@ -1,5 +1,7 @@
 
 
+# Raw data folder
+^data-raw$
 
 # Ignore git, travis, and pkgdown
 ^\.git$

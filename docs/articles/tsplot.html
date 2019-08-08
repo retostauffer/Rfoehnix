@@ -114,7 +114,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/tsplot.Rmd"><code>../vignettes/tsplot.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/tsplot.Rmd"><code>vignettes/tsplot.Rmd</code></a></small>
       <div class="hidden name"><code>tsplot.Rmd</code></div>
 
     </div>
@@ -132,31 +132,40 @@ data<span class="op">$</span>ffx       &lt;-<span class="st"> </span><span class
 data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(data), <span class="fl">1.5</span>, <span class="fl">2.5</span>) <span class="op">*</span><span class="st"> </span>data<span class="op">$</span>crest_ff
 <span class="co"># Show data set </span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
-<pre><code>##                      dd  ff     p rh    t crest_dd crest_ff crest_p
-## 2010-01-18 09:00:00 338 1.2 899.8 75 -0.9        3      5.6   787.7
-## 2010-01-18 10:00:00  18 0.1 899.9 66  0.2      344      5.3   787.9
-## 2010-01-18 11:00:00 344 0.8 899.1 63  0.7      360      6.0   787.3
-##                     crest_rh crest_t diff_t       ffx crest_ffx
-## 2010-01-18 09:00:00       93    -8.7   2.47 1.7298664  8.806758
-## 2010-01-18 10:00:00       90    -8.0   2.07 0.1568915  8.411833
-## 2010-01-18 11:00:00       80    -7.7   1.87 1.1752344 10.776819</code></pre>
+<pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
+## 2006-01-01 01:00:00 171 0.6  90 -0.4      180     10.8      100    -7.8
+## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
+## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
+##                     diff_t       ffx crest_ffx
+## 2006-01-01 01:00:00   2.87 0.9781511  18.21406
+## 2006-01-01 02:00:00   4.07 0.4626287  23.46652
+## 2006-01-01 03:00:00   1.97 8.1602644  17.33938</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
+<span class="co"># Alternative model. Does not use data from the crest station Sattelberg</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<pre><code>## Loading foehnix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alt_filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>))
+alt_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> alt_filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+
+
 <span class="co"># Plotting windroses</span>
-<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>)</code></pre></div>
+<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod), <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>)</code></pre></div>
 <p><img src="tsplot_files/figure-html/tsplot%20default-1.png" width="1440"></p>
 </div>
 <div id="different-styles" class="section level2">
 <h2 class="hasAnchor">
 <a href="#different-styles" class="anchor"></a>Different Styles</h2>
 <p>TODO: The <code>style</code> argument (input to <code>tsplot.control</code>) allows to change between different styles provided by the foehnix package. The styles can be modified by the user (see next section).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
+       <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
        <span class="dt">style =</span> <span class="st">"advanced"</span>)</code></pre></div>
 <p><img src="tsplot_files/figure-html/tsplot%20advanced-1.png" width="1440"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
+       <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
        <span class="dt">style =</span> <span class="st">"bw"</span>)</code></pre></div>
 <p><img src="tsplot_files/figure-html/tsplot%20bw-1.png" width="1440"></p>
 </div>
@@ -165,14 +174,16 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <a href="#modify-styles" class="anchor"></a>Modify styles</h2>
 <p>TODO: No matter which style one takes, one is always allowd to overwrite specific properties of such as line type, color, …. This allows for high customization of the plots.</p>
 <p>As an example we change the appearance of the observed air temperature (<code>t</code>) and disable two parameters (<code>crest_t</code> and <code>diff_t</code>) by setting them to <code>NULL</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
+       <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
        <span class="dt">t       =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">col =</span> <span class="st">"blue"</span>, <span class="dt">lty =</span> <span class="dv">3</span>, <span class="dt">lwd =</span> <span class="dv">4</span>),
        <span class="dt">crest_t =</span> <span class="ot">NULL</span>, <span class="co"># Disable crest temperature</span>
        <span class="dt">diff_t  =</span> <span class="ot">NULL</span>, <span class="co"># Disable temperature difference</span>
        <span class="dt">style =</span> <span class="st">"advanced"</span>)</code></pre></div>
 <p><img src="tsplot_files/figure-html/tsplot%20customized%20advanced-1.png" width="1440"></p>
 <p>The same can, of course, be done with the black and white style:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
+       <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
        <span class="dt">t =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">col =</span> <span class="st">"orange"</span>, <span class="dt">type =</span> <span class="st">"o"</span>, <span class="dt">pch =</span> <span class="dv">18</span>),
        <span class="dt">style =</span> <span class="st">"bw"</span>)</code></pre></div>
 <p><img src="tsplot_files/figure-html/tsplot%20customized%20bw-1.png" width="1440"></p>
@@ -181,7 +192,8 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <h2 class="hasAnchor">
 <a href="#highlight-wind-sectors" class="anchor"></a>Highlight Wind Sectors</h2>
 <p>TODO: Wind sectors (as for the windrose plot) can be used to set specific highlights. This optional argument is also forwarded to <code>tsplot.control</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
+       <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
        <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Sector A"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">30</span>, <span class="dv">120</span>), <span class="st">"Sector B"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">200</span>, <span class="dv">260</span>)),
        <span class="dt">foehnix_windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">col =</span> <span class="st">"orange"</span>), <span class="co"># Custom color</span>
        <span class="dt">style =</span> <span class="st">"bw"</span>)</code></pre></div>

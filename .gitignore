@@ -4,3 +4,9 @@ src/*.o
 src/*.so
 src/*.gcda
 src/*.gcno
+
+# Ignore packed files (usethis::use_data)
+data/ellboegen.rda
+data/sattelberg.rda
+data/viejas.rda
+data/luckyfive.rda

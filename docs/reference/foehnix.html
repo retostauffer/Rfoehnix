@@ -91,7 +91,10 @@ is a Hovmoeller diagram." />
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -150,7 +153,7 @@ is a Hovmoeller diagram." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Foehn Classification Based on a Two-Component Mixture Model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a>, <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a>, <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a>, <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/image.R'><code>R/image.R</code></a></small>
     <div class="hidden name"><code>foehnix.Rd</code></div>
     </div>
 
@@ -194,7 +197,7 @@ is a Hovmoeller diagram.</p>
 <span class='co'># S3 method for foehnix</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/image'>image</a></span>(<span class='no'>x</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='st'>"freq"</span>, <span class='kw'>deltat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>deltad</span> <span class='kw'>=</span> <span class='fl'>7L</span>,
   <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rev'>rev</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/gray.colors'>gray.colors</a></span>(<span class='fl'>20</span>)), <span class='kw'>contours</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>contour.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>contour.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>364</span>), <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>86400</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -282,6 +285,12 @@ concours should be added.</p></td>
       <th>contour.col</th>
       <td><p>color for the contour lines, only used if <code>contours = TRUE</code>.</p></td>
     </tr>
+    <tr>
+      <th>xlim</th>
+      <td><p>limits of the x-axis, vector of length two. The limits have to lie
+within <code>0</code> and <code>365</code> (Julian day). Can be decreasing
+(e.g., <code>xlim = c(300, 100)</code>) to plot a period over new years eve.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -333,10 +342,10 @@ following condition is used:</p><ul>
 series object of the <code>foehnix</code> classification. Different plot
 types are available. The default functions (see list below) use <code>na.rm = TRUE</code>.</p>
 <p>Input <code>FUN</code> can be one of the following character strings:</p><ul>
+<li><p><code>freq</code>: plotting frequencies (default).</p></li>
 <li><p><code>mean</code>: mean probability.</p></li>
-<li><p><code>freq</code>: plotting frequencies.</p></li>
-<li><p><code>occ</code>: plotting occurance of foehn (where probability <code>&gt;= 0.5</code>).</p></li>
-<li><p><code>noocc</code>: contrary to <code>occ</code>: occurance of no foehn (probability <code>&lt; 0.5</code>).</p></li>
+<li><p><code>occ</code>: plotting occurrence of foehn (where probability <code>&gt;= 0.5</code>).</p></li>
+<li><p><code>noocc</code>: contrary to <code>occ</code>: occurrence of no foehn (probability <code>&lt; 0.5</code>).</p></li>
 </ul>
     <p><code>FUN</code> can also be a custom function used for time series aggregation
 (see <code>aggregate.zoo</code>).</p>

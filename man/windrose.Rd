@@ -74,7 +74,7 @@ If \code{dd} and \code{ff} are set only the \code{type} argument is available
 }
 \examples{
 # Loading combined demo data set
-data <- demodata()
+data <- demodata("tyrol") # default
 
 # Before estimating a model: plot a wind rose for all observations
 windrose(data$dd, data$ff, type = "histogram")

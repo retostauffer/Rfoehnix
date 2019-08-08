@@ -32,7 +32,7 @@ test_that("Testing wind rose plot functionality (basic type)", {
     expect_error(windrosefun(dd = c(10,180), ff = c(-3,1)))
 
     # Loading some data
-    expect_silent(data <- demodata("Ellboegen"))
+    expect_silent(data <- demodata("ellboegen"))
 
     # -------------------------------
     # Testing the two basic types
@@ -70,7 +70,7 @@ test_that("Testing wind rose plot functionality (basic type)", {
 # Testing windrose plot on foehnix object.
 test_that("Testing foehnix plot on windrose object", {
 
-    expect_silent(data <- head(demodata("Ellboegen"), 10000))
+    expect_silent(data <- head(demodata("ellboegen"), 10000))
     expect_silent(filter <- list(dd = c(43, 223)))
     expect_silent(mod <- foehnix(ff ~ rh, data = data,
                                  filter = filter, verbose = FALSE))
@@ -130,7 +130,7 @@ test_that("Testing foehnix plot on windrose object", {
 test_that("Testing wind sector highlighting", {
 
     # Loading some data
-    expect_silent(data <- head(demodata("Ellboegen"), 1000))
+    expect_silent(data <- head(demodata("ellboegen"), 1000))
 
     # Expect error
     expect_error(windrosefun(data, windsector = c(1, 2, 3)))
@@ -161,7 +161,7 @@ test_that("Testing wind sector highlighting", {
 test_that("Testing custom filters for windrose", {
 
     # Loading some data
-    expect_silent(data <- head(demodata("Ellboegen"), 5000))
+    expect_silent(data <- head(demodata("ellboegen"), 5000))
 
     # Custom filter: for details, see ?foehnix_filter
     # Example 1:

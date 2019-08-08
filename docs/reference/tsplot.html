@@ -89,7 +89,10 @@ models. TODO: they are very specific at the moment!" />
       <a href="../articles/plotting.html">Plotting Functions</a>
     </li>
     <li>
-      <a href="../articles/tsplot.html">Time Series Plot</a>
+      <a href="../articles/tsplot.html">[Plot] Time Series</a>
+    </li>
+    <li>
+      <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
       <a href="../articles/simulation.html">Simulation Examples</a>
@@ -256,26 +259,31 @@ data are available at all.</p>
                 <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='co'># Plotting the time series of the a period in 2018</span>
-<span class='fu'>tsplot</span>(<span class='no'>mod1</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='no'>mod1</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># The same for the second model which is based on a subset</span>
 <span class='co'># of the observation data and only includes 'ff' (wind speed)</span>
 <span class='co'># 'dd' (wind direction), and 'rh' (relative humitity) of the</span>
 <span class='co'># target station. Thus, only a subset of all subplots will be shown.</span>
-<span class='fu'>tsplot</span>(<span class='no'>mod2</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='no'>mod2</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE      FALSE       TRUE       TRUE </div><div class='img'><img src='tsplot-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># To compare the estimated foehn probabilities of both models,</span>
 <span class='co'># both 'foehnix' objects can be provided as a list. The plots</span>
 <span class='co'># are based on the data of the first object (mod1), the probabilities</span>
 <span class='co'># of the second 'foehnix' model will be added in the last subplot.</span>
-<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>mod1</span>, <span class='no'>mod2</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='no'>mod1</span>, <span class='no'>mod2</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># If the input is a named list, the names are used for the legend</span>
-<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"full model"</span> <span class='kw'>=</span> <span class='no'>mod1</span>, <span class='st'>"subset model"</span> <span class='kw'>=</span> <span class='no'>mod2</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-4.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"full model"</span> <span class='kw'>=</span> <span class='no'>mod1</span>, <span class='st'>"subset model"</span> <span class='kw'>=</span> <span class='no'>mod2</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># The first element in the list has to be a 'foehnix' object,</span>
 <span class='co'># but as additional inputs univariate time series with probabilities</span>
 <span class='co'># (in the range [0,1]) can be provided. This allows to compare</span>
 <span class='co'># 'foehnix' classification against other classification algorithms,</span>
 <span class='co'># if available.</span>
 <span class='no'>probs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/fitted.values'>fitted</a></span>(<span class='no'>mod2</span>) <span class='co'># Time series of probabilities of 'mod2'</span>
-<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"full model"</span> <span class='kw'>=</span> <span class='no'>mod1</span>, <span class='st'>"zoo"</span> <span class='kw'>=</span> <span class='no'>probs</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-5.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>"full model"</span> <span class='kw'>=</span> <span class='no'>mod1</span>, <span class='st'>"zoo"</span> <span class='kw'>=</span> <span class='no'>probs</span>), <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-5.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Additional arguments can be provided to</span>
 <span class='co'># - use differt names in the time series plots</span>
 <span class='co'># - change the look of the plot.</span>
@@ -285,8 +293,7 @@ data are available at all.</p>
 <span class='co'># following names:</span>
 <span class='co'># - winddir: wind direction</span>
 <span class='co'># - windspd: wind speed</span>
-<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"Ellboegen"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>) <span class='kw'>==</span> <span class='st'>"dd"</span>)] <span class='kw'>&lt;-</span> <span class='st'>"winddir"</span>
+<span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"Ellboegen"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in match.arg(which): 'arg' should be one of “tyrol”, “ellboegen”, “sattelberg”, “california”, “viejas”, “luckyfive”</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>) <span class='kw'>==</span> <span class='st'>"dd"</span>)] <span class='kw'>&lt;-</span> <span class='st'>"winddir"</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/which'>which</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>data</span>) <span class='kw'>==</span> <span class='st'>"ff"</span>)] <span class='kw'>&lt;-</span> <span class='st'>"windspd"</span>
 
 <span class='co'># Estimate a foehnix model</span>
@@ -296,7 +303,8 @@ data are available at all.</p>
 <span class='co'># to be called 'dd' and 'ff', but they can be renamed. If only</span>
 <span class='co'># a string is provided (e.g., dd = "winddir") this specifies</span>
 <span class='co'># the name of the variable in the data set ('data').</span>
-<span class='fu'>tsplot</span>(<span class='no'>mod3</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-6.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>tsplot</span>(<span class='no'>mod3</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='st'>"winddir"</span>, <span class='kw'>ff</span> <span class='kw'>=</span> <span class='st'>"windspd"</span>, <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-6.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># For each element a list can be provided:</span>
 <span class='co'># - 'name': new name of the variable</span>
 <span class='co'># - 'color': color used for plotting</span>
@@ -307,7 +315,8 @@ data are available at all.</p>
              <span class='kw'>rh</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"RELHUM LABEL"</span>),
              <span class='kw'>t</span>  <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"TEMPERATURE LABEL"</span>),
              <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"yellow"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"PROBABILITY LABEL"</span>),
-             <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='img'><img src='tsplot-7.png' alt='' width='700' height='433' /></div><div class='input'>
+             <span class='kw'>start</span> <span class='kw'>=</span> <span class='st'>"2018-03-01"</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='st'>"2018-03-10"</span>)</div><div class='output co'>#&gt; crest_wind       temp   tempdiff       wind       prob 
+#&gt;      FALSE       TRUE       TRUE       TRUE       TRUE </div><div class='img'><img src='tsplot-7.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
