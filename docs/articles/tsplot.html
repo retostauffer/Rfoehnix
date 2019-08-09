@@ -42,6 +42,21 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Demos
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">Viejas (California, USA)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -140,9 +155,9 @@ data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
 ## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
 ##                     diff_t       ffx crest_ffx
-## 2006-01-01 01:00:00   2.87 0.9522934  21.31862
-## 2006-01-01 02:00:00   4.07 0.4471756  23.19544
-## 2006-01-01 03:00:00   1.97 8.0538335  18.03297</code></pre>
+## 2006-01-01 01:00:00   2.87 0.9080881  24.47751
+## 2006-01-01 02:00:00   4.07 0.4367170  21.68063
+## 2006-01-01 03:00:00   1.97 7.4744034  17.93889</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,

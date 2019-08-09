@@ -7,6 +7,12 @@ navbar:
     left:
         - text: "Getting started"
           href: articles/foehnix.html
+        - text: "Demos"
+          menu:
+            - text: "Ellbögen (Tyrol, A)"
+              href: articles/ellboegen.html
+            - text: "Viejas (California, USA)"
+              href: articles/viejas.html
         - text: "Articles"
           menu:
             - text: "Foehnix Demo"

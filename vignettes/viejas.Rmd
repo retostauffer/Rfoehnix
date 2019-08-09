@@ -1,0 +1,30 @@
+
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library("foehnix"))
+```
+
+
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 5}
+library("leaflet")
+library("sp")
+
+stations <- data.frame(lon  = c(-116.70437, -116.528),
+                       lat  = c(32.84559, 32.9331),
+                       alt  = c(715, 1445),
+                       name = c("Viejas", "Lucky Five Ranch"),
+                       stringsAsFactors = FALSE)
+
+b <- list(x0 = min(stations$lon) - .2, x1 = max(stations$lon) + .2,
+          y0 = max(stations$lat) + .2, y1 = max(stations$lat) + .2)
+
+m <- leaflet() %>% addTiles() %>% fitBounds(b$x0, b$y0, b$x1, b$x2)
+m <- setView(m, mean(stations$lon), mean(stations$lat), zoom = 10.5)
+for (i in 1:nrow(stations)) {
+    m <- addPopups(m, stations$lon[i], stations$lat[i],
+                   sprintf("Station %s, %d m a.m.s.l.", stations$name[i],
+                           stations$alt[i]))
+}
+m <- addProviderTiles(m, "OpenTopoMap")
+m
+```
