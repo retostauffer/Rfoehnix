@@ -76,19 +76,20 @@ The Californian demo data set has non-standard variable names (by purpose).
 Thus, when calling `tsplot` (time series plot) we do have to manually specify
 these names.
 
-```{r, fig = TRUE, fig.width = 12, fig.height = 8}
+```{r, fig = TRUE, fig.width = 12, fig.height = 15}
 # Some smaller quality issues in the data (should not be a big deal)
-start <- as.POSIXct("2012-01-01")
-end   <- as.POSIXct("2012-01-15")
+start <- as.POSIXct("2012-03-01")
+end   <- as.POSIXct("2012-03-12")
 
 # As we dont have the standard names: re-specify the
 # names for this plot (new feature).
 tsplot(mod, style = "advanced", diff_t = "diff_temp",
-       t   = "air_temp",   crest_t   = "crest_air_temp",
-       dd  = "wind_dir",   crest_dd  = "crest_wind_dir",
-       ff  = "wind_speed", crest_ff  = "crest_wind_speed",
-       ffx = "wind_gust",  crest_ffx = "crest_wind_gust",
+       t   = "air_temp",         crest_t   = "crest_air_temp",
+       dd  = "wind_direction",   crest_dd  = "crest_wind_direction",
+       ff  = "wind_speed",       crest_ff  = "crest_wind_speed",
+       ffx = "wind_gust",        crest_ffx = "crest_wind_gust",
        rh = "relative_humidity",
+       windsector = list(wind_direction = c(305, 160)),
        start = start, end = end)
 ```
 

@@ -142,8 +142,8 @@
 
     
     
-<div id="htmlwidget-4932f27c4b1dd532d8c4" style="width:960px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4932f27c4b1dd532d8c4">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script><div id="loading-the-data-set" class="section level1">
+<div id="htmlwidget-e16b50d89d7aa2b13efe" style="width:960px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e16b50d89d7aa2b13efe">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script><div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
 <a href="#loading-the-data-set" class="anchor"></a>Loading the Data Set</h1>
 <p><a href="references/demodata"><code><a href="../reference/demodata.html">demodata("california")</a></code></a> returns a data set which combines hourly meteorological observations for the two sites “Viejas Casino and Resort” and “Lucky Five Ranch” which serves as the crest station.</p>
@@ -196,7 +196,7 @@
 ## 
 ## Log-likelihood: -86157.2, 6 effective degrees of freedom
 ## Corresponding AIC = 172326.5, BIC = 172376.6
-## Time required for model estimation: 7.0 seconds
+## Time required for model estimation: 6.9 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 </div>
@@ -205,18 +205,20 @@
 <a href="#time-series-plot" class="anchor"></a>Time Series Plot</h1>
 <p>The Californian demo data set has non-standard variable names (by purpose). Thus, when calling <code>tsplot</code> (time series plot) we do have to manually specify these names.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Some smaller quality issues in the data (should not be a big deal)</span>
-start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-01-01"</span>)
-end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-01-15"</span>)
+start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-03-01"</span>)
+end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-03-12"</span>)
 
 <span class="co"># As we dont have the standard names: re-specify the</span>
 <span class="co"># names for this plot (new feature).</span>
 <span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">style =</span> <span class="st">"advanced"</span>, <span class="dt">diff_t =</span> <span class="st">"diff_temp"</span>,
-       <span class="dt">t   =</span> <span class="st">"air_temp"</span>,   <span class="dt">crest_t   =</span> <span class="st">"crest_air_temp"</span>,
-       <span class="dt">dd  =</span> <span class="st">"wind_dir"</span>,   <span class="dt">crest_dd  =</span> <span class="st">"crest_wind_dir"</span>,
-       <span class="dt">ff  =</span> <span class="st">"wind_speed"</span>, <span class="dt">crest_ff  =</span> <span class="st">"crest_wind_speed"</span>,
-       <span class="dt">ffx =</span> <span class="st">"wind_gust"</span>,  <span class="dt">crest_ffx =</span> <span class="st">"crest_wind_gust"</span>,
+       <span class="dt">t   =</span> <span class="st">"air_temp"</span>,         <span class="dt">crest_t   =</span> <span class="st">"crest_air_temp"</span>,
+       <span class="dt">dd  =</span> <span class="st">"wind_direction"</span>,   <span class="dt">crest_dd  =</span> <span class="st">"crest_wind_direction"</span>,
+       <span class="dt">ff  =</span> <span class="st">"wind_speed"</span>,       <span class="dt">crest_ff  =</span> <span class="st">"crest_wind_speed"</span>,
+       <span class="dt">ffx =</span> <span class="st">"wind_gust"</span>,        <span class="dt">crest_ffx =</span> <span class="st">"crest_wind_gust"</span>,
        <span class="dt">rh =</span> <span class="st">"relative_humidity"</span>,
+       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
        <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
+<pre><code>## [1] 305 160</code></pre>
 <p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" width="1152"></p>
 <div id="model-coefficients" class="section level3">
 <h3 class="hasAnchor">

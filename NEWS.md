@@ -17,7 +17,7 @@
     as binary time series objects (`.rda`; `zoo`).
 * Remove xlim and ylim from image and make it, as for zlim, an optional
     argument documented in the 'Details' section.
-* A Tyrolean and a Californian demo vignette?
+* A Tyrolean and a Californian demo vignette? - draft added.
 
 # foehnix 0.1-2 (August 2019; development stage)
 
