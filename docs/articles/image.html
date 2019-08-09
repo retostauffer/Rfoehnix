@@ -51,7 +51,7 @@
       <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="../articles/plotting.html">Plotting Functions</a>
+      <a href="../articles/windrose.html">[Plot] Wind Rose</a>
     </li>
     <li>
       <a href="../articles/tsplot.html">[Plot] Time Series</a>
@@ -137,7 +137,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
 <span class="co"># Create plot</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod)</code></pre></div>
+<span class="kw"><a href="../reference/image.html">image</a></span>(mod)</code></pre></div>
 <p><img src="image_files/figure-html/image_default-1.png" width="1152"></p>
 <p>By default, the Hovmöller diagram shows the frequency occurrence (estimated probability <span class="math inline">\(\pi \ge 0.5\)</span>) aggregated over 7 days (abscissa) on the same temporal resolution (ordinate) as the original data set. The <a href="reference/image.html"><code>image</code></a> function allows for a high degree of customization. This page contains some of the main features - details are provided on the corresponding <a href="references/image.html">manual page</a>.</p>
 </div>
@@ -145,7 +145,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <h2 class="hasAnchor">
 <a href="#colors-contours-and-limits" class="anchor"></a>Colors, Contours, and Limits</h2>
 <p>The plot can be customized by providing a vector of custom HEX colors (<code>col</code>), specify custom limits on the abscissa (<code>xlim</code> <span class="math inline">\(\in [0, 365]\)</span>), the ordinate (<code>ylim</code> <span class="math inline">\(\in [0, 86400]\)</span>), and for the range (<code>zlim</code>). In addition, <code>contours = TRUE</code> allows to add contour lines. In addition, the two input arguments <code>deltat</code> and <code>deltad</code> can be used to change the aggregation intervals.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod,
       <span class="dt">deltat =</span> <span class="dv">3</span> <span class="op">*</span><span class="st"> </span><span class="dv">3600</span>,      <span class="co"># aggregation (time of the day): 3 hourly intervals</span>
       <span class="dt">deltad =</span> <span class="dv">14</span>,            <span class="co"># aggregation (day of the year): two-week intervals</span>
       <span class="dt">col =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">21</span>, <span class="st">"BuPu"</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>), <span class="co"># custom colors</span>
@@ -154,7 +154,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
       <span class="dt">main =</span> <span class="st">"Custom Colors and Contours"</span>)</code></pre></div>
 <p><img src="image_files/figure-html/image_colors_contours_limits-1.png" width="1152"></p>
 <p>The limits can be used to adjust the area to be plotted.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod,
       <span class="dt">col =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">21</span>, <span class="st">"BuPu"</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>),
       <span class="dt">contours =</span> <span class="ot">TRUE</span>,
       <span class="dt">contour.col =</span> <span class="st">"white"</span>,
@@ -177,7 +177,7 @@ mod_subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/
 
 <span class="co"># Plotting "mod1" with custom x-limits</span>
 xlim &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXlt</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/range">range</a></span>(<span class="kw">index</span>(data_subset)))<span class="op">$</span>yday
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod_subset, <span class="dt">xlim =</span> xlim,
+<span class="kw"><a href="../reference/image.html">image</a></span>(mod_subset, <span class="dt">xlim =</span> xlim,
       <span class="dt">main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"Custom x limits from %d - %d (Julian day)"</span>, xlim[1L], xlim[2L]))</code></pre></div>
 <p><img src="image_files/figure-html/image_custom_data1-1.png" width="960"></p>
 <p><strong>Note</strong> that our data subset contains observations from September 2015 trough April 2016 (one winter; over new years eve). If decreasing x-limits are provided the <a href="references/image.html"><code>image</code></a> function adjusts itself to show one continuous period over new years eve (here: autumn over winter to spring).</p>
@@ -197,7 +197,7 @@ xlim &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocume
 <code>"noocc"</code>: the inverse to <code>"occ"</code> (absolute number; <span class="math inline">\(\#\{pi_i &lt; 0.5\}\)</span>).</li>
 </ul>
 <p>Some examples:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/grDevices/topics/palettes">rainbow</a></span>(<span class="dv">10</span>), <span class="dt">main =</span> <span class="st">"foo"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/grDevices/topics/palettes">rainbow</a></span>(<span class="dv">10</span>), <span class="dt">main =</span> <span class="st">"foo"</span>)</code></pre></div>
 <p><img src="image_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 </div>
   </div>

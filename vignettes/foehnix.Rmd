@@ -18,14 +18,14 @@ head(ellboegen);   head(sattelberg)
 ```
 
 This example shows how to perform foehn classification for
-[Ellboegen](reference/ellboegen.html) using the information of the
+[Ellbögen](reference/ellboegen.html) using the information of the
 [Sattelberg](reference/sattelberg.html) station as additional source of
 information.  The [Sattelberg](reference/sattelberg.html) station is located
-south of [Ellboegen](reference/ellboegen.html) close to the alpine crest and
+south of [Ellbögen](reference/ellboegen.html) close to the alpine crest and
 thus, during foehn events, measuring the upstream air mass descending down on
 the north side of the Alps.
 
-### South Foehn Classification for Ellboegen
+### South Foehn Classification for Ellbögen
 
 To perform the classification we first of all have to prepare our data sets.
 `foehnix(...)` expects the input to be of class `zoo` (zoo time series object;
@@ -73,7 +73,7 @@ between the two stations is 1027 meters which yields:
 train$diff_t <- train$crest_t + 10.27 - train$t
 ```
 
-South foehn flow at the valley station in [Ellboegen](reference/ellboegen.html)
+South foehn flow at the valley station in [Ellbögen](reference/ellboegen.html)
 has a wind direction of about 133 degrees. We are using a (relatively weak)
 wind direction filter with a wind sector of +/-90 degrees around 133 degrees.
 For the classification only observations/times are used where the corresponding
@@ -83,7 +83,7 @@ the crest station ([Sattelberg](reference/sattelberg.html)) in several ways:
 
 1. We use the temperature difference between the two
    stations as main variable for the classification (`diff_t`).
-2. define wind sector filter at the target station ([Ellboegen](reference/ellboegen.html)).
+2. define wind sector filter at the target station ([Ellbögen](reference/ellboegen.html)).
    Only use observations with a wind direction (`dd`) inside the
    wind sector of `>=43` and `<=223` degrees for classification
    (`dd = c(43, 223)`).
@@ -182,7 +182,7 @@ Last but not least the `which = "hist"` plot shows the conditional histograms
 of the two clusters. Two histograms are shown given the main covariate of the
 `foehnix` mixture model, in this case (model `mod`) it is `delta_t`, the
 potential temperature difference between the valley station
-[Ellboegen](reference/ellboegen.html) and the crest station
+[Ellbögen](reference/ellboegen.html) and the crest station
 [Sattelberg](reference/sattelberg.html).  The left panel corresponds to the "no
 foehn" component or cluster, the right one to the "foehn" component. If a
 `filter` rule is used: only the data which have been used for classification
@@ -299,7 +299,7 @@ This can, for example, be used to retrieve foehn probabilities for new observati
 in an operational context.
 
 Assume we have estimated a `foehnix` mixture model and a set of new observations
-from our two stations ([Ellboegen](reference/ellboegen.html) and [Sattelberg](reference/sattelberg.htlm))
+from our two stations ([Ellbögen](reference/ellboegen.html) and [Sattelberg](reference/sattelberg.htlm))
 have become available. We would like to get foehn probabilities this new data set.
 Luckily we put aside 10 observations earlier (the `test` data set):
 

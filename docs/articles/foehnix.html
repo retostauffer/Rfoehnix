@@ -51,7 +51,7 @@
       <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="../articles/plotting.html">Plotting Functions</a>
+      <a href="../articles/windrose.html">[Plot] Wind Rose</a>
     </li>
     <li>
       <a href="../articles/tsplot.html">[Plot] Time Series</a>
@@ -144,10 +144,10 @@
 ## 2006-01-01 04:00:00 178 13.3 100 -7.5
 ## 2006-01-01 05:00:00 176 13.1 100 -7.1
 ## 2006-01-01 06:00:00 184 10.0 100 -6.9</code></pre>
-<p>This example shows how to perform foehn classification for <a href="reference/ellboegen.html">Ellboegen</a> using the information of the <a href="reference/sattelberg.html">Sattelberg</a> station as additional source of information. The <a href="reference/sattelberg.html">Sattelberg</a> station is located south of <a href="reference/ellboegen.html">Ellboegen</a> close to the alpine crest and thus, during foehn events, measuring the upstream air mass descending down on the north side of the Alps.</p>
-<div id="south-foehn-classification-for-ellboegen" class="section level3">
+<p>This example shows how to perform foehn classification for <a href="reference/ellboegen.html">Ellbögen</a> using the information of the <a href="reference/sattelberg.html">Sattelberg</a> station as additional source of information. The <a href="reference/sattelberg.html">Sattelberg</a> station is located south of <a href="reference/ellboegen.html">Ellbögen</a> close to the alpine crest and thus, during foehn events, measuring the upstream air mass descending down on the north side of the Alps.</p>
+<div id="south-foehn-classification-for-ellbogen" class="section level3">
 <h3 class="hasAnchor">
-<a href="#south-foehn-classification-for-ellboegen" class="anchor"></a>South Foehn Classification for Ellboegen</h3>
+<a href="#south-foehn-classification-for-ellbogen" class="anchor"></a>South Foehn Classification for Ellbögen</h3>
 <p>To perform the classification we first of all have to prepare our data sets. <code><a href="../reference/foehnix.html">foehnix(...)</a></code> expects the input to be of class <code>zoo</code> (zoo time series object; based on the  <code>zoo</code> package). The data sets included in this package (<code>ellboegen</code>, <code>sattelberg</code>, …; see <a href="references/demodata.html"><code>demodata</code></a>) are already zoo objects. Thus, we only have to load the meteorological observations for Ellbögen (valley station) and Sattelberg (crest station):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load demo data sets (zoo time series objects)</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"ellboegen"</span>,  <span class="dt">package =</span> <span class="st">"foehnix"</span>)
@@ -171,10 +171,10 @@ test  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <span class="co"># Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by</span>
 <span class="co"># 1027/10 degrees.</span>
 train<span class="op">$</span>diff_t &lt;-<span class="st"> </span>train<span class="op">$</span>crest_t <span class="op">+</span><span class="st"> </span><span class="fl">10.27</span> <span class="op">-</span><span class="st"> </span>train<span class="op">$</span>t</code></pre></div>
-<p>South foehn flow at the valley station in <a href="reference/ellboegen.html">Ellboegen</a> has a wind direction of about 133 degrees. We are using a (relatively weak) wind direction filter with a wind sector of +/-90 degrees around 133 degrees. For the classification only observations/times are used where the corresponding wind direction (<code>dd</code>) lies within the wind sector <code>&gt;=43</code> and <code>&lt;= 223</code> (180 degrees sector). In addition we can make use of the information provided by the crest station (<a href="reference/sattelberg.html">Sattelberg</a>) in several ways:</p>
+<p>South foehn flow at the valley station in <a href="reference/ellboegen.html">Ellbögen</a> has a wind direction of about 133 degrees. We are using a (relatively weak) wind direction filter with a wind sector of +/-90 degrees around 133 degrees. For the classification only observations/times are used where the corresponding wind direction (<code>dd</code>) lies within the wind sector <code>&gt;=43</code> and <code>&lt;= 223</code> (180 degrees sector). In addition we can make use of the information provided by the crest station (<a href="reference/sattelberg.html">Sattelberg</a>) in several ways:</p>
 <ol style="list-style-type: decimal">
 <li>We use the temperature difference between the two stations as main variable for the classification (<code>diff_t</code>).</li>
-<li>define wind sector filter at the target station (<a href="reference/ellboegen.html">Ellboegen</a>). Only use observations with a wind direction (<code>dd</code>) inside the wind sector of <code>&gt;=43</code> and <code>&lt;=223</code> degrees for classification (<code>dd = c(43, 223)</code>).</li>
+<li>define wind sector filter at the target station (<a href="reference/ellboegen.html">Ellbögen</a>). Only use observations with a wind direction (<code>dd</code>) inside the wind sector of <code>&gt;=43</code> and <code>&lt;=223</code> degrees for classification (<code>dd = c(43, 223)</code>).</li>
 <li>specify a second filter such that only observations are used for classification where the crest station shows a southerly flow (wind direction within <code>&gt;= 90</code> and <code>&lt;= 270</code>, <code>sat_dd = c(90, 270)</code>).</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify our wind filter rule(s)</span>
@@ -214,7 +214,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 2.1 seconds
+## Time required for model estimation: 2.5 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
@@ -249,7 +249,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 2.1 seconds
+## Time required for model estimation: 2.5 seconds
 ## 
 ## ---------------------------------
 ## 
@@ -280,7 +280,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p>Similar to the plots above we can also check the paths of the coefficients trough the iterations of the EM algorithm with <code>which = "coef"</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"coef"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
-<p>Last but not least the <code>which = "hist"</code> plot shows the conditional histograms of the two clusters. Two histograms are shown given the main covariate of the <code>foehnix</code> mixture model, in this case (model <code>mod</code>) it is <code>delta_t</code>, the potential temperature difference between the valley station <a href="reference/ellboegen.html">Ellboegen</a> and the crest station <a href="reference/sattelberg.html">Sattelberg</a>. The left panel corresponds to the “no foehn” component or cluster, the right one to the “foehn” component. If a <code>filter</code> rule is used: only the data which have been used for classification will be shown. Observations with a higher probability to be in the left component are sown left, observations with a higher probability to be a member of the second component are shown right. On top (line) the estimated density of the two components is shown.</p>
+<p>Last but not least the <code>which = "hist"</code> plot shows the conditional histograms of the two clusters. Two histograms are shown given the main covariate of the <code>foehnix</code> mixture model, in this case (model <code>mod</code>) it is <code>delta_t</code>, the potential temperature difference between the valley station <a href="reference/ellboegen.html">Ellbögen</a> and the crest station <a href="reference/sattelberg.html">Sattelberg</a>. The left panel corresponds to the “no foehn” component or cluster, the right one to the “foehn” component. If a <code>filter</code> rule is used: only the data which have been used for classification will be shown. Observations with a higher probability to be in the left component are sown left, observations with a higher probability to be a member of the second component are shown right. On top (line) the estimated density of the two components is shown.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-14-1.png" width="960"></p>
 <p>Fitted probabilities (the probabilities obtained by the model based on the training data set) can be accessed by calling <code>fitted</code>:</p>
@@ -351,11 +351,11 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 </li>
 </ul>
 <p><strong>Example 1</strong>: Default plot, no aggregation on the time axis (<code>deltat = NULL</code>; takes increments of the underlying data), weekly aggregation along the time of the year axis (<code>deltad = 7L</code>), the frequency (<code>FUN = "freq"</code>) is plotted without contours.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"freq"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"freq"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
 <p><strong>Example 2</strong>: Aggregated to three-hourly intervals (<code>deltat = 3600 * 3</code>), two-week mean values (<code>deltad = 14L</code>), occurrance of foehn (<code>FUN = "occ"</code>), with custom colors and contours (without labels).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="dt">h =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">120</span>), <span class="dt">c. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">80</span>, <span class="dv">10</span>)))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> col,
+<span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> col,
       <span class="dt">deltat =</span> <span class="dv">3</span> <span class="op">*</span><span class="st"> </span><span class="dv">3600</span>, <span class="dt">deltad =</span> 14L,
       <span class="dt">contours =</span> <span class="ot">TRUE</span>, <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">drawlabels =</span> <span class="ot">FALSE</span>,
       <span class="dt">main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,
@@ -367,7 +367,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <a href="#predictions" class="anchor"></a>Predictions</h2>
 <p>A last important method is <code>predict</code>. The term predict refers to statistical prediction, applying a statistical model to a data set which has never been seen by the model (not included in the training data set).</p>
 <p>As <code>foehnix</code> is a statistical classification method a prediction in this context is not a forecast (like a weather forecast), but a classification to new data. This can, for example, be used to retrieve foehn probabilities for new observation in an operational context.</p>
-<p>Assume we have estimated a <code>foehnix</code> mixture model and a set of new observations from our two stations (<a href="reference/ellboegen.html">Ellboegen</a> and <a href="reference/sattelberg.htlm">Sattelberg</a>) have become available. We would like to get foehn probabilities this new data set. Luckily we put aside 10 observations earlier (the <code>test</code> data set):</p>
+<p>Assume we have estimated a <code>foehnix</code> mixture model and a set of new observations from our two stations (<a href="reference/ellboegen.html">Ellbögen</a> and <a href="reference/sattelberg.htlm">Sattelberg</a>) have become available. We would like to get foehn probabilities this new data set. Luckily we put aside 10 observations earlier (the <code>test</code> data set):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate potential temperature difference (as we did above)</span>
 test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span class="op">$</span>crest_t <span class="op">+</span><span class="st"> </span><span class="fl">10.27</span> <span class="op">-</span><span class="st"> </span>test<span class="op">$</span>t
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(test)</code></pre></div>

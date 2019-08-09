@@ -34,16 +34,15 @@
   <script src="../extra.js"></script>
 <meta property="og:title" content="foehnix Demo Data Set — demodata" />
 
-<meta property="og:description" content="The foehnix package comes with two demo data sets containing
-observations from two automated weather stations in Tyrol,
-Austria. One station (Sattelberg) is located close to the main
-alpine ridge and is used as 'crest' station. The second station
-(Ellboegen) is located in the Wipp valley.
-The package demos and examples will estimate automated foehn
-classification models (foehnix models) for 
-station Ellboegen using additional information from the
-crest station as concomitant variables and for custom wind
-filters (foehnix_filter)." />
+<meta property="og:description" content="The foehnix package comes with two sets of meteorological
+observations one for Tyrol, Austria, and one for Southern California, USA.
+Each region comes with observations from two stations, one valley station
+(or target station) and one station further upstream of the main wind direction
+(crest station) used to filter the data (see foehnix_filter).
+For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
+(crest) are included, the Californian data set consists of the crest station
+'Lucky Five Ranch' and the valley station 'Viejas Casino and Resort'.
+More details are provided in the 'Details' section." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -94,7 +93,7 @@ filters (foehnix_filter)." />
       <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="../articles/plotting.html">Plotting Functions</a>
+      <a href="../articles/windrose.html">[Plot] Wind Rose</a>
     </li>
     <li>
       <a href="../articles/tsplot.html">[Plot] Time Series</a>
@@ -159,26 +158,50 @@ filters (foehnix_filter)." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>foehnix Demo Data Set</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/demodata.R'><code>R/demodata.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/datasets.R'><code>R/datasets.R</code></a>, <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/demodata.R'><code>R/demodata.R</code></a></small>
     <div class="hidden name"><code>demodata.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The foehnix package comes with two demo data sets containing
-observations from two automated weather stations in Tyrol,
-Austria. One station (Sattelberg) is located close to the main
-alpine ridge and is used as 'crest' station. The second station
-(Ellboegen) is located in the Wipp valley.
-The package demos and examples will estimate automated foehn
-classification models (<code><a href='foehnix.html'>foehnix</a></code> models) for 
-station Ellboegen using additional information from the
-crest station as concomitant variables and for custom wind
-filters (<code><a href='foehnix_filter.html'>foehnix_filter</a></code>).</p>
+    <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two sets of meteorological
+observations one for Tyrol, Austria, and one for Southern California, USA.
+Each region comes with observations from two stations, one valley station
+(or target station) and one station further upstream of the main wind direction
+(crest station) used to filter the data (see <code><a href='foehnix_filter.html'>foehnix_filter</a></code>).
+For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
+(crest) are included, the Californian data set consists of the crest station
+'Lucky Five Ranch' and the valley station 'Viejas Casino and Resort'.
+More details are provided in the 'Details' section.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tyrol"</span>, <span class='st'>"ellboegen"</span>, <span class='st'>"sattelberg"</span>, <span class='st'>"california"</span>,
+    <pre class="usage"><span class='co'># Combined data set Tyrol (A).</span>
+<span class='co'># Valley station: Ellbögen; crest station: Sattelberg</span>
+<span class='fu'>demodata</span>()
+<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"tyrol"</span>)
+
+<span class='co'># Combined data set California (CA, USA).</span>
+<span class='co'># Valley station: Viejas; crest station: Lucky Five Ranch</span>
+<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"california"</span>)
+
+<span class='co'># Hourly observations station Ellögen (Tyrol, Austria).</span>
+<span class='co'># Serves as "valley" or "target" station for the "tyrol" data set.</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"ellboegen"</span>)
+
+<span class='co'># Hourly observations station Sattelberg (Tyrol, Austria).</span>
+<span class='co'># Serves as "crest" station for the "tyrol" data set.</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"sattelberg"</span>)
+
+<span class='co'># Hourly observations station Viejas Casino and Resort (California, U.S.A.).</span>
+<span class='co'># Serves as "valley" or "target" station for the "california data set.</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"viejas"</span>)
+
+<span class='co'># Hourly observations station Lucky Five Ranch (California, U.S.A.).</span>
+<span class='co'># Serves as "crest" station for the "california" data set.</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"luckyfive"</span>)
+
+<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tyrol"</span>, <span class='st'>"ellboegen"</span>, <span class='st'>"sattelberg"</span>, <span class='st'>"california"</span>,
   <span class='st'>"viejas"</span>, <span class='st'>"luckyfive"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -186,32 +209,73 @@ filters (<code><a href='foehnix_filter.html'>foehnix_filter</a></code>).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>which</th>
-      <td><p>the <code>foehnix</code> package comes with two demo data sets.
-Each consists of meteorological observations of two stations (one
-in the valley; target station) and one near the crest upstream of
-typical foehn direction (crest station).
-<code>which = "tyrol"</code> returns the tyrolean data set (A),
-<code>which = "california"</code> the californian data set (USA), a time series
+      <td><p><code>which = "tyrol"</code> returns the combined tyrolean data set (A) and
+<code>which = "california"</code> the combined californian data set (USA), a time series
 object which contains measurements from both stations (valley/crest).
 The function can also be used to get the demo data sets for specific sites
-(see 'Examples').</p></td>
+(see 'Examples'/'Usage').</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Ellboegen and Sattelberg:
-Operated by the Department of Atmospheric and Cryospheric
+    <p>Station Ellögen operated by the Department of Atmospheric and Cryospheric
 Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
 The data is available under the
 <a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
-<p>Viejas and the Lucky Five Ranch:
-Operated by #TODO add correct source (GM).</p>
+<p>Station Sattelberg operated by the Department of Atmospheric and Cryospheric
+Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
+The data is available under the
+<a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
+<p>Station Viejas Casino and Resort operated by San Diego Gas and Electric and made freely
+publicly available through Synoptic PBC at <a href='https://synopticdata.com/'>https://synopticdata.com/</a>.</p>
+<p>Station Lucky Five Ranch operated by San Diego Gas and Electric and made freely
+publicly available through Synoptic PBC at <a href='https://synopticdata.com/'>https://synopticdata.com/</a>.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The Tyrolean data set consists of station
+Elbögen located in the Wipp valley, an area well known for south foehn
+events. The second station called Sattelberg is
+located 18km (11.5mi) south of Ellbögen close to the main
+alpine ridge and is used as upstream crest station.</p>
+<ul>
+<li><p>Ellbögen: 11.42889 E/47.18694 N, 1080 meters above mean sea level</p></li>
+<li><p>Sattelberg: 11.47889 E/47.01083 N, 2107 meters above mean sea level</p></li>
+</ul>
+    <p>Hourly time series objects (class `zoo`; UTC) including the following variables:</p><ul>
+<li><p><code>dd</code>: wind direction in degrees, meteorological format
+       (0/360 correspond to 'wind from north', 90 to 'wind from east',
+       180 'wind from south', and 270 'wind from west')</p></li>
+<li><p><code>ff</code>: wind speed in meters per second</p></li>
+<li><p><code>p</code>: station pressure in hectopascal</p></li>
+<li><p><code>rh</code>: relative humidity in percent</p></li>
+<li><p><code>t</code>: dry air temperature in degrees Celsius</p></li>
+</ul>
+    <p>The Californian data sets consist of two stations located in the southern
+part of the state.  Station 'Viejas' is installed next to the Viejas Casino
+and Resort located in Alpine, CA (valley station), the station 'Lucky Five
+Ranch' is located 22km (14mi) northwest of the Viejas Casino close to the
+main ridge of the Sierra Nevada mountain range and is used as the upstream
+crest station.</p>
+<ul>
+<li><p>Viejas Casino and Resort: -116.70437 E/32.84559 N, 715 meters above mean sea level</p></li>
+<li><p>Lucky Five Ranch: -116.528 E/32.9331 N, 1445 meters above mean sea level</p></li>
+</ul>
+    <p>Hourly time series objects (class `zoo`; UTC) including the following variables:</p><ul>
+<li><p><code>air_temp</code>: dry air temperature in degrees Celsius</p></li>
+<li><p><code>relative_humidity</code>: relative humidity in percent</p></li>
+<li><p><code>wind_speed</code>: wind speed in meters per second</p></li>
+<li><p><code>wind_direction</code>: wind direction in degrees, meteorological format
+       (0/360 correspond to 'wind from north', 90 to 'wind from east',
+       180 'wind from south', and 270 'wind from west')</p></li>
+<li><p><code>wind_gust</code>: wind gust speed in meters per second</p></li>
+</ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='demodatasets.html'>ellboegen</a></code>, <code><a href='demodatasets.html'>sattelberg</a></code>,
-         <code><a href='demodatasets.html'>viejas</a></code>, <code><a href='demodatasets.html'>luckyfive</a></code></p></div>
+    <div class='dont-index'><p><code>ellboegen</code>, <code>sattelberg</code>,
+         <code>viejas</code>, <code>luckyfive</code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -317,13 +381,16 @@ Operated by #TODO add correct source (GM).</p>
       
       <li><a href="#source">Source</a></li>
 
+      <li><a href="#details">Details</a></li>
+
       <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Reto Stauffer</p>
+    <p>Reto Stauffer, Deborah Detka</p>
+<p>Reto Stauffer</p>
   </div>
 </div>
 

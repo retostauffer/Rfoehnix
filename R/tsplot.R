@@ -1,7 +1,7 @@
 
 
 # Some global variable(s) to make R CMD check happy
-utils::globalVariables("vars")
+utils::globalVariables(c("vars", "enabled"))
 
 
 #' foehnix Time Series Plot Config
@@ -22,7 +22,7 @@ utils::globalVariables("vars")
 #' @param style character, name of the style template (\code{default}, \code{advanced},
 #'      \code{bw}) or path to a file containing the required information.
 #' @param windsector vector or list to highlight specific wind sectors.
-#'      See \code{\link[foehnix]{foehnix:::windsector_convert}} for details
+#'      See \code{foehnix:::windsector_convert} for details
 #' @param var used when calling the \code{\link[foehnix]{tsplot_get_control}}
 #'     function. Name of the (original!) variable name
 #' @param property the property which should be returned by
@@ -459,12 +459,11 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
     for (k in seq_along(start)) {
 
         # Parameters of the graphical output device
-        #par(mfrow = c(Nplots, 1), ask = FALSE, mar = rep(0.1, 4),
-        #    xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
-        par(ask = FALSE, mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 4.1, 2, 5.1))
+        par(ask = FALSE, mar = rep(0.1, 4), xaxs = "i", oma = c(4.1, 5.1, 2.6, 5.1))
         hgt <- ifelse(names(doplot)[unlist(doplot)] == "tempdiff", 1, 2)
         layout(matrix(1:Nplots, ncol = 1), heights = hgt)
-        # Pick subset to plot
+
+        # Pick data subset to plot
         tmp <- window(data, start = start[k], end = end[k])
 
         # Calculate the limits for the gray boxes (where prob >= .5)
@@ -501,7 +500,7 @@ tsplot <- function(x, start = NULL, end = NULL, ndays = 10,
 
 }
 
-#' Helper function to add the gray boxes (background)
+# Helper function to add the gray boxes (background)
 tsplot_add_boxes <- function(x, col = "gray90") {
     # Loaded from parent env
     if ( length(x$up) > 0 ) {
@@ -550,6 +549,7 @@ tsplot_calc_prob_boxes <- function(x) {
 }
 
 
+# Add legend to time series plot (tsplot)
 tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("station", "crest")) {
     get <- tsplot_get_control
     legend(pos, ncol = 2, legend = legend, bty = "n",
@@ -560,16 +560,7 @@ tsplot_add_legend <- function(pos, control, x, crest_x, legend = c("station", "c
 }
 
 
-#' Helper functions to add data to time series plots
-#'
-#' Used inside \code{\link[foehnix]{tsplot}}.
-#'
-#' @param x \code{zoo} object with the data
-#' @param control \code{\link[foehnix]{tsplot.control}} object
-#' @param prob_boxes object as returned from \code{tsplot_calc_prob_boxes}
-#'
-#' @rdname tsplot_add
-#' @author Reto Stauffer
+# Add temperature to time series plot (tsplot)
 tsplot_add_temp <- function(x, control, prob_boxes) {
     get <- tsplot_get_control # For convenience
     # If temperature is in the data set: plot temperature,
@@ -639,8 +630,7 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
 }
 
 
-#' @rdname tsplot_add
-#' @author Reto Stauffer
+# Add temperature difference to time series plot (tsplot)
 tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
     get <- tsplot_get_control # For convenience
     # Temperature difference
@@ -661,14 +651,12 @@ tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
     }
 }
 
-
-#' @rdname tsplot_add
-#' @author Reto Stauffer
+# Add wind information to time series plot (tsplot)
 tsplot_add_wind <- function(x, control, prob_boxes, crest = FALSE) {
     get <- tsplot_get_control # For convenience
     # Plot empty frame
     plot(NA, type = "n", xaxt = "n", ylab = "", xlim = range(index(x)),
-             ylim = c(0, 360), yaxt = "n", bty = "n")
+             ylim = c(0, 360), yaxs = "i", yaxt = "n", bty = "n")
 
     # Adding windsector highlights if there are any.
     tsplot_add_boxes(prob_boxes)
@@ -690,20 +678,41 @@ tsplot_add_wind <- function(x, control, prob_boxes, crest = FALSE) {
         cex_dd <- rep(cex, nrow(x))
         if (!is.null(ws) & !crest) {
             for (i in seq_along(ws)) {
-                cex_dd[x[, param_dd] >= ws[[i]][1L] & x[, param_dd] <= ws[[i]][2L]] <- cex * 2
-                rect(min(index(x)), ws[[i]][1L], max(index(x)), ws[[i]][2L],
-                     col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
-                     border = get(control, "foehnix_windsector", "lty"))
-                if (!is.null(names(ws)[i]))
-                    text(min(index(x)) + 0.01 * diff(range(index(x))),
-                         max(ws[[i]]), names(ws)[i], adj = c(0, 1.5))
+                # If wind sector definition is increasing (e.g., c(100, 200)):
+                if (diff(ws[[i]]) > 0) {
+                # Else (decreasing, e.g., c(300, 100))
+                    # Increase point size (cex) for "dd" observations within wind sector
+                    cex_dd[x[, param_dd] >= ws[[i]][1L] & x[, param_dd] <= ws[[i]][2L]] <- cex * 2
+                    rect(min(index(x)), ws[[i]][1L], max(index(x)), ws[[i]][2L],
+                         col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
+                         border = get(control, "foehnix_windsector", "lty"))
+                    if (!is.null(names(ws)[i])) {
+                        text(min(index(x)) + 0.01 * diff(range(index(x))),
+                             max(ws[[i]]), names(ws)[i], adj = c(0, 1.5))
+                    }
+                } else {
+                    # Increase point size (cex) for "dd" observations within wind sector
+                    print(ws[[i]])
+                    cex_dd[x[, param_dd] >= ws[[i]][1L] | x[, param_dd] <= ws[[i]][2L]] <- cex * 2
+                    # Upper rectangle
+                    rect(min(index(x)), ws[[i]][1L], max(index(x)), 360,
+                         col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
+                         border = get(control, "foehnix_windsector", "lty"))
+                    # Lower rectangle
+                    rect(min(index(x)), 0, max(index(x)), ws[[i]][2L],
+                         col    = sprintf("%s30", get(control, "foehnix_windsector", "col")),
+                         border = get(control, "foehnix_windsector", "lty"))
+                    if (!is.null(names(ws)[i])) {
+                        text(min(index(x)) + 0.01 * diff(range(index(x))),
+                             0, names(ws)[i], adj = c(0, -0.5))
+                        text(min(index(x)) + 0.01 * diff(range(index(x))),
+                             360, names(ws)[i], adj = c(0, 1.5))
+                    }
+                }
             }
         }
         args <- get(control, var_dd, "args_lines", list(x = x[, param_dd], cex = cex_dd))
-#        args$cex <- cex_dd
         do.call(lines, args)
-
-        #do.call(lines, get(control, var_dd, "args_lines", list(x = x[, param_dd], cex = cex_dd)))
     }
 
     # Adding vertical lines
@@ -755,7 +764,7 @@ tsplot_add_wind <- function(x, control, prob_boxes, crest = FALSE) {
 }
 
 
-#' Add foehn probabilities to time series plot
+# Add foehn probabilities to time series plot (tsplot)
 tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = NULL, ...) {
 
     get <- tsplot_get_control # For convenience
@@ -815,7 +824,7 @@ tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = N
 #' @param col character, a hex color. Default is \code{"#ff0000"} (red).
 #' @param lower.limit numeric, the lower limit used to plot the polygon.
 #'        default is \code{0}.
-#' @param lwd line width argument.
+#' @param ... additional arguments forwarded to \code{lines}.
 #'
 #' @examples
 #' library("zoo")

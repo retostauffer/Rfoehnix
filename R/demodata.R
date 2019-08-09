@@ -1,37 +1,22 @@
 
 #' foehnix Demo Data Set
 #'
-#' The foehnix package comes with two demo data sets containing
-#' observations from two automated weather stations in Tyrol,
-#' Austria. One station (Sattelberg) is located close to the main
-#' alpine ridge and is used as 'crest' station. The second station
-#' (Ellboegen) is located in the Wipp valley.
-#' The package demos and examples will estimate automated foehn
-#' classification models (\code{\link{foehnix}} models) for 
-#' station Ellboegen using additional information from the
-#' crest station as concomitant variables and for custom wind
-#' filters (\code{\link{foehnix_filter}}).
+#' The \code{\link{foehnix}} package comes with two sets of meteorological
+#' observations one for Tyrol, Austria, and one for Southern California, USA.
+#' Each region comes with observations from two stations, one valley station
+#' (or target station) and one station further upstream of the main wind direction
+#' (crest station) used to filter the data (see \code{\link{foehnix_filter}}).
+#' For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
+#' (crest) are included, the Californian data set consists of the crest station
+#' 'Lucky Five Ranch' and the valley station 'Viejas Casino and Resort'.
+#' More details are provided in the 'Details' section.
 #'
-#' @param which the \code{foehnix} package comes with two demo data sets.
-#'      Each consists of meteorological observations of two stations (one
-#'      in the valley; target station) and one near the crest upstream of
-#'      typical foehn direction (crest station).
-#'      \code{which = "tyrol"} returns the tyrolean data set (A),
-#'      \code{which = "california"} the californian data set (USA), a time series
+#' @param which \code{which = "tyrol"} returns the combined tyrolean data set (A) and
+#'      \code{which = "california"} the combined californian data set (USA), a time series
 #'      object which contains measurements from both stations (valley/crest).
 #'      The function can also be used to get the demo data sets for specific sites
-#'      (see 'Examples').
+#'      (see 'Examples'/'Usage').
 #'
-#' @source
-#' Ellboegen and Sattelberg:
-#' Operated by the Department of Atmospheric and Cryospheric
-#' Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.
-#' The data is available under the
-#' \href{https://creativecommons.org/licenses/by-sa/4.0/}{CC BY-SA 4.0 license}.
-#'
-#' Viejas and the Lucky Five Ranch:
-#' Operated by #TODO add correct source (GM).
-#' 
 #' @examples
 #' # Loading the combined demo data set for "Tyrol (A)".
 #' # Stations: Ellboegen (valley station) and Sattelberg (crest station).

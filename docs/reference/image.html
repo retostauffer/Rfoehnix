@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meteorological Observation Data, Station Ellboegen — demodatasets • foehnix</title>
+<title>foehnix Image Plot - Hovmoeller Diagram — image • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,14 +32,10 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Meteorological Observation Data, Station Ellboegen — demodatasets" />
+<meta property="og:title" content="foehnix Image Plot - Hovmoeller Diagram — image" />
 
-<meta property="og:description" content="The foehnix package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located near
-Ellboegen, a small town close to Innsbruck, the second station (Sattelberg)
-is located south of Ellboegen close to the border between Austria and Italy
-on top of a mountain close to the crest of the European Alps and is used as
-'crest station' (see sattelberg)." />
+<meta property="og:description" content="The default image plot of a foehnix object
+is a Hovmoeller diagram." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -90,7 +86,7 @@ on top of a mountain close to the crest of the European Alps and is used as
       <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="../articles/plotting.html">Plotting Functions</a>
+      <a href="../articles/windrose.html">[Plot] Wind Rose</a>
     </li>
     <li>
       <a href="../articles/tsplot.html">[Plot] Time Series</a>
@@ -154,100 +150,98 @@ on top of a mountain close to the crest of the European Alps and is used as
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Meteorological Observation Data, Station Ellboegen</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/datasets.R'><code>R/datasets.R</code></a></small>
-    <div class="hidden name"><code>demodatasets.Rd</code></div>
+    <h1>foehnix Image Plot - Hovmoeller Diagram</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/image.R'><code>R/image.R</code></a></small>
+    <div class="hidden name"><code>image.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two data sets of meteorological
-observations for two sites in Tyrol, Austria.  One station is located near
-Ellboegen, a small town close to Innsbruck, the second station (Sattelberg)
-is located south of Ellboegen close to the border between Austria and Italy
-on top of a mountain close to the crest of the European Alps and is used as
-'crest station' (see <code>sattelberg</code>).</p>
+    <p>The default <code>image</code> plot of a <code><a href='foehnix.html'>foehnix</a></code> object
+is a Hovmoeller diagram.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># Combined data set Tyrol (A).</span>
-<span class='co'># Valley station: Ellbögen; crest station: Sattelberg</span>
-<span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"tyrol"</span>)
-
-<span class='co'># Combined data set California (CA, USA).</span>
-<span class='co'># Valley station: Viejas; crest station: Lucky Five Ranch</span>
-<span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"tyrol"</span>)
-
-<span class='co'># Hourly observations station Ellögen (Tyrol, Austria).</span>
-<span class='co'># Serves as "valley" or "target" station for the "tyrol" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"ellboegen"</span>)
-
-<span class='co'># Hourly observations station Sattelberg (Tyrol, Austria).</span>
-<span class='co'># Serves as "crest" station for the "tyrol" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"sattelberg"</span>)
-
-<span class='co'># Hourly observations station Viejas Casino and Resort (California, U.S.A.).</span>
-<span class='co'># Serves as "valley" or "target" station for the "california data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"viejas"</span>)
-
-<span class='co'># Hourly observations station Lucky Five Ranch (California, U.S.A.).</span>
-<span class='co'># Serves as "crest" station for the "california" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='st'>"luckyfive"</span>)</pre>
-        
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p>Station Ellögen operated by the Department of Atmospheric and Cryospheric
-Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
-The data is available under the
-<a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
-<p>Station Sattelberg operated by the Department of Atmospheric and Cryospheric
-Sciences (<a href='http://acinn.uibk.ac.at'>http://acinn.uibk.ac.at</a>) of the University of Innsbruck.
-The data is available under the
-<a href='https://creativecommons.org/licenses/by-sa/4.0/'>CC BY-SA 4.0 license</a>.</p>
-<p>Station Viejas Casino and Resort operated by San Diego Gas and Electric and made freely
-publicly available through Synoptic PBC at <a href='https://synopticdata.com/'>https://synopticdata.com/</a>.</p>
-<p>Station Lucky Five Ranch operated by San Diego Gas and Electric and made freely
-publicly available through Synoptic PBC at <a href='https://synopticdata.com/'>https://synopticdata.com/</a>.</p>
+    <pre class="usage"><span class='co'># S3 method for foehnix</span>
+<span class='fu'>image</span>(<span class='no'>x</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='st'>"freq"</span>, <span class='kw'>deltat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>deltad</span> <span class='kw'>=</span> <span class='fl'>7L</span>,
+  <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rev'>rev</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/gray.colors'>gray.colors</a></span>(<span class='fl'>20</span>)), <span class='kw'>contours</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>contour.col</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>object of class <code><a href='foehnix.html'>foehnix</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>FUN</th>
+      <td><p>character string or a custom aggregation function. See 'Details'
+section for more information.</p></td>
+    </tr>
+    <tr>
+      <th>deltat</th>
+      <td><p>integer, interval in seconds for the time of day axis. Has to be
+a fraction of 86400 (24 hours in seconds). It <code>NuLL</code> (default) the
+interval of the time series object will be used.</p></td>
+    </tr>
+    <tr>
+      <th>deltad</th>
+      <td><p>integer, similar to <code>deltat</code>, the interval in days for the
+grid on the x-axis. Default is <code>7L</code> (aggregate to weekly values).</p></td>
+    </tr>
+    <tr>
+      <th>col</th>
+      <td><p>vector of colors forwarded to <code>image.default</code>. By default
+a gray scale color map is used.</p></td>
+    </tr>
+    <tr>
+      <th>contours</th>
+      <td><p>logical <code>TRUE</code> or <code>FALSE</code>, whether or not the
+concours should be added.</p></td>
+    </tr>
+    <tr>
+      <th>contour.col</th>
+      <td><p>color for the contour lines, only used if <code>contours = TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments (see 'Details' section).</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>#TODO migrate the descriptions (commented, see below) into this combined
-manual page.</p>
-    <p>Ellboegen:</p><ul>
-<li><p>Location: 11.42889 E/47.18694 N</p></li>
-<li><p>Altitude: 1080 meters above mean sea level</p></li>
+    <p>Plotting a Hovmoeller diagram based on the <code>zoo</code> time
+series object of the <code><a href='foehnix.html'>foehnix</a></code> classification. Different plot
+types are available. The default functions (see list below) use <code>na.rm = TRUE</code>.</p>
+<p>Input <code>FUN</code> can be one of the following character strings:</p><ul>
+<li><p><code>freq</code>: plotting frequencies (default).</p></li>
+<li><p><code>mean</code>: mean probability.</p></li>
+<li><p><code>occ</code>: plotting occurrence of foehn (where probability <code>&gt;= 0.5</code>).</p></li>
+<li><p><code>noocc</code>: contrary to <code>occ</code>: occurrence of no foehn (probability <code>&lt; 0.5</code>).</p></li>
 </ul>
-    <p><code>zoo</code> time series object with an hourly temporal resolution (time zone: UTC)
-including the following variables:</p><ul>
-<li><p><code>dd</code>: wind direction in degrees, meteorological format
-       (0/360 correspond to 'wind from north', 90 to 'wind from east',
-       180 'wind from south', and 270 'wind from west')</p></li>
-<li><p><code>ff</code>: wind speed in meters per second</p></li>
-<li><p><code>p</code>: station pressure in hectopascal</p></li>
-<li><p><code>rh</code>: relative humidity in percent</p></li>
-<li><p><code>t</code>: dry air temperature in degrees Celsius</p></li>
+    <p><code>FUN</code> can also be a custom function used for time series aggregation
+(see <code>aggregate.zoo</code>).</p>
+<p>Additional arguments which can be set:</p><ul>
+<li><p><code>xlim</code>: limits of abscissa. Numeric vector of length 2 with
+           Julian days (0 - 365). If the values are decreasing (e.g., <code>xlim = c(300, 100)</code>)
+           the abscissa will be adjusted to show continuous data around new years eve.</p></li>
+<li><p><code>ylim</code>: limits of ordinate. Numeric vector of length 2 with
+           seconds (seconds of the day; 0 = 00:00:00 UTC, 86400 = 24:00:00 UTC).</p></li>
+<li><p><code>xlab</code>, <code>ylab</code>, <code>main</code>: axis labels and title of the plot.</p></li>
 </ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code>sattelberg</code>, <code><a href='demodata.html'>demodata</a></code>,
-         <code>viejas</code>, <code>luckyfive</code>.</p></div>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#source">Source</a></li>
-
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
-    <h2>Author</h2>
-    <p>Reto Stauffer, Deborah Detka</p>
   </div>
 </div>
 

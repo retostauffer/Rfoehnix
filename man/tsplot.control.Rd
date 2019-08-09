@@ -15,7 +15,7 @@ tsplot_get_control(x, var, property, args = list())
 \code{bw}) or path to a file containing the required information.}
 
 \item{windsector}{vector or list to highlight specific wind sectors.
-See \code{\link[foehnix]{foehnix:::windsector_convert}} for details}
+See \code{foehnix:::windsector_convert} for details}
 
 \item{...}{a set of named inputs to overwrite the defaults.
 see 'Details' section.}

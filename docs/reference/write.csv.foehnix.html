@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fitting Unregularized foehnix Mixture Model With Concomitant Model. — foehnix.unreg.fit • foehnix</title>
+<title>Write Estimated Probabilities to CSV File — write.csv.foehnix • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,11 +32,11 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Fitting Unregularized foehnix Mixture Model With Concomitant Model. — foehnix.unreg.fit" />
+<meta property="og:title" content="Write Estimated Probabilities to CSV File — write.csv.foehnix" />
 
-<meta property="og:description" content="Fitting method for two-component foehnix mixture model with
-additional concomitants.
-Typically not called directly, interfaced via foehnix." />
+<meta property="og:description" content="Write the results of a foehnix model into a CSV
+text file. Custom date/time information can be specified using the
+input argument format. By default UNIX timestamp will be used." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -151,79 +151,53 @@ Typically not called directly, interfaced via foehnix." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fitting Unregularized foehnix Mixture Model With Concomitant Model.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix.R'><code>R/foehnix.R</code></a></small>
-    <div class="hidden name"><code>foehnix.unreg.fit.Rd</code></div>
+    <h1>Write Estimated Probabilities to CSV File</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
+    <div class="hidden name"><code>write.csv.foehnix.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Fitting method for two-component foehnix mixture model with
-additional concomitants.
-Typically not called directly, interfaced via <code><a href='foehnix.html'>foehnix</a></code>.</p>
+    <p>Write the results of a <code><a href='foehnix.html'>foehnix</a></code> model into a CSV
+text file. Custom date/time information can be specified using the
+input argument <code>format</code>. By default UNIX timestamp will be used.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>foehnix.unreg.fit</span>(<span class='no'>y</span>, <span class='no'>logitX</span>, <span class='no'>family</span>, <span class='kw'>switch</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>maxit</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-05</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/write.table'>write.csv</a></span>(<span class='no'>x</span>, <span class='no'>file</span>, <span class='kw'>info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>y</th>
-      <td><p>numeric vector, covariate for the components of the
-mixture model, dimension <code>N</code>.</p></td>
+      <th>x</th>
+      <td><p>a <code><a href='foehnix.html'>foehnix</a></code> object</p></td>
     </tr>
     <tr>
-      <th>logitX</th>
-      <td><p>numeric matrix of dimension <code>N x P</code>, covariates
-for the concomitant model (logistic regression model matrix).</p></td>
+      <th>file</th>
+      <td><p>character, name of the target file</p></td>
     </tr>
     <tr>
-      <th>family</th>
-      <td><p>object of class <code><a href='foehnix.family.html'>foehnix.family</a></code>.</p></td>
+      <th>info</th>
+      <td><p>logical, whether or not header information
+should be written</p></td>
     </tr>
     <tr>
-      <th>switch</th>
-      <td><p>logical whether or not the two components should be switched.
-By default (<code>switch = FALSE</code>) the component which shows
-higher values of <code>y</code> is assumed to be the foehn cluster!
-Depending on what your covariate is you might need to switch
-the clusters (by setting <code>switch = TRUE</code>).</p></td>
-    </tr>
-    <tr>
-      <th>maxit</th>
-      <td><p>positive integer, or vector of length 2 with positive
-integer values. Maximum number of iterations of the EM algorithm
-and the concomitant model.
-Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
-    </tr>
-    <tr>
-      <th>tol</th>
-      <td><p>numeric, or vector of length 2 containing numeric values.
-Tolerance for the optimization (EM algorithm and concomitant model).
-Check manual of <code><a href='foehnix.control.html'>foehnix.control</a></code> for more details.</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>logical, default <code>TRUE</code>. If set to <code>FALSE</code>
-verbose output will be suppressed.</p></td>
+      <th>format</th>
+      <td><p>NULL or a character to specify the format in which the
+date/time information should be written to the <code>file</code> (forwarded to
+<code>strftime</code>)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>currently unused.</p></td>
+      <td><p>currently ignored</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p><code><a href='foehnix.family.html'>foehnix.family</a></code>,
-<code><a href='foehnix.html'>foehnix</a></code>,
-<code><a href='foehnix.control.html'>foehnix.control</a></code>,
-<code><a href='foehnix.noconcomitant.fit.html'>foehnix.noconcomitant.fit</a></code>,
-<code><a href='foehnix.reg.fit.html'>foehnix.reg.fit</a></code>,
-<code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
+    <p>Invisible return of the data.frame written to the output file.</p>
     
 
   </div>
@@ -232,7 +206,7 @@ verbose output will be suppressed.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
 
     <h2>Author</h2>

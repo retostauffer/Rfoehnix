@@ -83,7 +83,7 @@ This optional argument is also forwarded to `tsplot.control`.
 ```{r tsplot windsector, echo = TRUE, figure = TRUE, fig.width = 15, fig.height = 9}
 tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
        start = "2015-05-01", end = "2015-05-10",
-       windsector = list("Sector A" = c(30, 120), "Sector B" = c(200, 260)),
+       windsector = list("Sector A" = c(88, 178), "Test Sector" = c(340, 20)),
        foehnix_windsector = list(col = "orange"), # Custom color
        style = "bw")
 ```

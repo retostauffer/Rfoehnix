@@ -14,7 +14,7 @@ add_polygon(x, col = "#ff0000", lower.limit = 0, ...)
 \item{lower.limit}{numeric, the lower limit used to plot the polygon.
 default is \code{0}.}
 
-\item{lwd}{line width argument.}
+\item{...}{additional arguments forwarded to \code{lines}.}
 }
 \description{
 Helper function to plot a filled polygon based on a \code{zoo}

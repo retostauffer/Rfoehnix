@@ -37,7 +37,7 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 \item{verbose}{logical, default \code{TRUE}. If set to \code{FALSE}
 verbose output will be suppressed.}
 
-\item{...}{additional arguments, unused.}
+\item{...}{currently unused.}
 }
 \description{
 Fitting method for two-component foehnix mixture model with regularization.

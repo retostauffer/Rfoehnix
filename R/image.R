@@ -17,9 +17,7 @@
 #' @param contours logical \code{TRUE} or \code{FALSE}, whether or not the
 #'        concours should be added.
 #' @param contour.col color for the contour lines, only used if \code{contours = TRUE}.
-#' @param xlim limits of the x-axis, vector of length two. The limits have to lie
-#'          within \code{0} and \code{365} (Julian day). Can be decreasing
-#'          (e.g., \code{xlim = c(300, 100)}) to plot a period over new years eve.
+#' @param ... additional arguments (see 'Details' section).
 #'
 #' @details Plotting a Hovmoeller diagram based on the \code{\link{zoo}} time
 #' series object of the \code{\link{foehnix}} classification. Different plot
@@ -35,28 +33,45 @@
 #'
 #' \code{FUN} can also be a custom function used for time series aggregation
 #' (see \code{\link{aggregate.zoo}}).
+#'
+#' Additional arguments which can be set:
+#' \itemize{
+#'      \item \code{xlim}: limits of abscissa. Numeric vector of length 2 with
+#'            Julian days (0 - 365). If the values are decreasing (e.g., \code{xlim = c(300, 100)})
+#'            the abscissa will be adjusted to show continuous data around new years eve.
+#'      \item \code{ylim}: limits of ordinate. Numeric vector of length 2 with
+#'            seconds (seconds of the day; 0 = 00:00:00 UTC, 86400 = 24:00:00 UTC).
+#'      \item \code{xlab}, \code{ylab}, \code{main}: axis labels and title of the plot.
+#' }
 #' 
 #' @importFrom grDevices gray.colors
-#' @rdname foehnix
+#' @name image
 #' @export
 image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
                           col = rev(gray.colors(20)), contours = FALSE,
-                          contour.col = "black", xlim = c(0, 364),
-                          ylim = c(0, 86400), ...) {
+                          contour.col = "black", ...) {
 
     stopifnot(inherits(x, "foehnix"))
 
+    # Some arguments for the plot
+    arg <- list(...)
+    xlab = if (!"xlab" %in% names(arg)) arg$xlab <- "time of the year"
+    ylab = if (!"ylab" %in% names(arg)) arg$ylab <- "time of the day"
+    main = if (!"main" %in% names(arg)) arg$main <- "foehnix Hovmoeller Diagram"
+    xlim = if (!"xlim" %in% names(arg)) arg$xlim <- c(0, 364)
+    ylim = if (!"ylim" %in% names(arg)) arg$ylim <- c(0, 86400)
+
     # Checking x limits
-    stopifnot(is.numeric(xlim) & is.finite(xlim) & length(xlim) == 2L)
-    if (any(xlim < 0 | xlim >= 365))
+    stopifnot(is.numeric(arg$xlim) & is.finite(arg$xlim) & length(arg$xlim) == 2L)
+    if (any(arg$xlim < 0 | arg$xlim >= 365))
         stop(sprintf("\"xlim\" need to be within %d to %d", 0, 365))
-    if (any(ylim < 0 | ylim > 86400))
+    if (any(arg$ylim < 0 | arg$ylim > 86400))
         stop(sprintf("\"ylim\" need to be within %d to %d", 0, 86400))
 
     # If "reversed" (e.g., xlim = c(300, 100)) we fix this by
     # setting the limits to c(300 - 364, 100) (to the left)
-    xlim <- pmin(364, xlim) # set 365 to 364
-    if (diff(xlim) < 0) xlim <- c(xlim[2L], xlim[1L] - 364) # "Revert"
+    arg$xlim <- pmin(364, arg$xlim) # set 365 to 364
+    if (diff(arg$xlim) < 0) arg$xlim <- c(arg$xlim[2L], arg$xlim[1L] - 364) # "Revert"
 
     # Extend zoo object if needed (inflation)
     x <- x$prob
@@ -64,20 +79,20 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     index(x) <- as.POSIXct(index(x))
 
     # Checking deltat argument
-    if ( is.null(deltat) ) {
+    if (is.null(deltat)) {
         deltat <- as.numeric(diff(index(x)[1:2]), unit = "secs")
     } else {
         stopifnot(is.finite(deltat))
         stopifnot(deltat > 0)
     }
-    if ( ! round(86400 / deltat) * deltat == 86400 )
+    if (!round(86400 / deltat) * deltat == 86400)
         stop(sprintf("deltat = %d is not a fraction of 86400 (one day in seconds).", deltat))
 
     # Checking deltad
     stopifnot(inherits(deltad, c("integer", "numeric")))
     stopifnot(deltad <= 365)
     deltad <- as.integer(deltad)
-    if ( deltad < 1 ) stop("\"deltad\" has to be a positive integer.")
+    if (deltad < 1) stop("\"deltad\" has to be a positive integer.")
 
     # Checking colors
     stopifnot(inherits(col, "character"))
@@ -85,18 +100,18 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
 
     # Aggregation function
     FUN_allowed <- c("freq", "mean", "occ", "noocc")
-    if ( is.character(FUN) ) {
+    if (is.character(FUN)) {
         FUN <- match.arg(FUN, FUN_allowed)
         if ( FUN == "mean" ) {
             FUN <- function(x) mean(x, na.rm = TRUE)
-        } else if ( FUN == "occ" ) {
+        } else if (FUN == "occ") {
             FUN <- function(x) sum(x >= 0.5, na.rm = TRUE)
-        } else if ( FUN == "noocc" ) {
+        } else if (FUN == "noocc") {
             FUN <- function(x) sum(x <  0.5, na.rm = TRUE)
-        } else if ( FUN == "freq" ) {
+        } else if (FUN == "freq") {
             FUN <- function(x) sum(x >= 0.5, na.rm = TRUE) / sum(!is.na(x))
         }
-    } else if ( ! is.function(FUN) ) {
+    } else if (!is.function(FUN)) {
         stop("input \"FUN\" has to be a function or a character, one of ",
              paste(FUN_allowed, collapse = ", "))
     }
@@ -142,12 +157,6 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
                                               stringsAsFactors = FALSE),
                                 names = c("hash_date", "hash_time")))
 
-    # Some arguments for the plot
-    arg <- list(...)
-    xlab = if (!"xlab" %in% names(arg)) arg$xlab <- "time of the year"
-    ylab = if (!"ylab" %in% names(arg)) arg$ylab <- "time of the day"
-    main = if (!"main" %in% names(arg)) arg$main <- "foehnix Hovmoeller Diagram"
-
     # Convert values to colors for the plot.
     get_color <- function(x, col, zlim = NULL) {
         # Calculate color ID
@@ -182,8 +191,8 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     # 0 - 354 (0 based Julian day) along the x-axis, and
     # 0 - 86400 (one full day in seconds) along the y-axis.
     plot(NA, bty = "n",
-         xlim = xlim, xaxt = "n", xaxs = "i",
-         ylim = ylim, yaxt = "n", yaxs = "i",
+         xlim = arg$xlim, xaxt = "n", xaxs = "i",
+         ylim = arg$ylim, yaxt = "n", yaxs = "i",
          xlab = NA, ylab = NA, main = NA)
     mtext(side = 1, line = 3.0, arg$xlab)
     mtext(side = 2, line = 3.3, arg$ylab)
@@ -242,7 +251,7 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     x    <- matrix_to_df(vmat, cmat)
 
     rect(x$df$xmin, x$df$ymin, x$df$xmax, x$df$ymax, border = NA, col = x$df$color)
-    if (min(xlim) < 0)
+    if (min(arg$xlim) < 0)
         rect(x$df$xmin - 364, x$df$ymin, x$df$xmax - 364, x$df$ymax, border = NA, col = x$df$color)
 
     # Adding y-axis (time)
@@ -332,6 +341,7 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
                                   contour.col = contour.col)))
 
 }
+
 
 
 

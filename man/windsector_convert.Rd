@@ -2,7 +2,7 @@
 % Please edit documentation in R/foehnix_functions.R
 \name{windsector_convert}
 \alias{windsector_convert}
-\title{Convert input "windsector" to list if needed.}
+\title{Convert input "windsector" to list if needed}
 \usage{
 windsector_convert(x)
 }
@@ -13,6 +13,10 @@ see 'Details' for more information.}
 \value{
 Returns a \code{list} object with the windsector information as used
 by the different functions and methods of the \code{foehnix} package.
+
+Returns \code{NULL} (if input was \code{NULL}) or a named or unnamed
+with one or multiple entries. Each entry is a numeric vector of length two
+and specifies a wind sector.
 }
 \description{
 Converts user inputs to list. Wind sector information is used
@@ -20,7 +24,11 @@ to highlight specific wind sectors on the plots (e.g.,
 \code{\link[foehnix]{tsplot}}, \code{\link[foehnix]{windrose}}).
 }
 \details{
-
+Some foehnix functions allow to specify custom wind sectors. This
+function is a convenience function which takes inputs in different formats
+(e.g., as \code{matrix}, \code{data.frame}, ...) and converts the
+information in the format the foehnix functions expect wind sector
+definitions.
 }
 \examples{
 # No wind sector (NULL) simply returns NULL

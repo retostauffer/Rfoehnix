@@ -11,8 +11,8 @@ navbar:
           menu:
             - text: "Foehnix Demo"
               href: articles/foehnix.html
-            - text: "Plotting Functions"
-              href: articles/plotting.html
+            - text: "[Plot] Wind Rose"
+              href: articles/windrose.html
             - text: "[Plot] Time Series"
               href: articles/tsplot.html
             - text: "[Plot] Hovmöller Diagram"

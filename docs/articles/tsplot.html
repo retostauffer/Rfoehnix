@@ -51,7 +51,7 @@
       <a href="../articles/foehnix.html">Foehnix Demo</a>
     </li>
     <li>
-      <a href="../articles/plotting.html">Plotting Functions</a>
+      <a href="../articles/windrose.html">[Plot] Wind Rose</a>
     </li>
     <li>
       <a href="../articles/tsplot.html">[Plot] Time Series</a>
@@ -140,9 +140,9 @@ data<span class="op">$</span>crest_ffx &lt;-<span class="st"> </span><span class
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
 ## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
 ##                     diff_t       ffx crest_ffx
-## 2006-01-01 01:00:00   2.87 0.9158477  19.63286
-## 2006-01-01 02:00:00   4.07 0.4955873  31.16146
-## 2006-01-01 03:00:00   1.97 7.4401285  17.14238</code></pre>
+## 2006-01-01 01:00:00   2.87 0.9522934  21.31862
+## 2006-01-01 02:00:00   4.07 0.4471756  23.19544
+## 2006-01-01 03:00:00   1.97 8.0538335  18.03297</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
@@ -195,9 +195,10 @@ alt_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foe
 <p>TODO: Wind sectors (as for the windrose plot) can be used to set specific highlights. This optional argument is also forwarded to <code>tsplot.control</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Enhanced"</span> =<span class="st"> </span>mod, <span class="st">"Alternative (basic)"</span> =<span class="st"> </span>alt_mod),
        <span class="dt">start =</span> <span class="st">"2015-05-01"</span>, <span class="dt">end =</span> <span class="st">"2015-05-10"</span>,
-       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Sector A"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">30</span>, <span class="dv">120</span>), <span class="st">"Sector B"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">200</span>, <span class="dv">260</span>)),
+       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"Sector A"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">88</span>, <span class="dv">178</span>), <span class="st">"Test Sector"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">340</span>, <span class="dv">20</span>)),
        <span class="dt">foehnix_windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">col =</span> <span class="st">"orange"</span>), <span class="co"># Custom color</span>
        <span class="dt">style =</span> <span class="st">"bw"</span>)</code></pre></div>
+<pre><code>## [1] 340  20</code></pre>
 <p><img src="tsplot_files/figure-html/tsplot%20windsector-1.png" width="1440"></p>
 </div>
   </div>

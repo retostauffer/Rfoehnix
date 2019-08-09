@@ -30,8 +30,7 @@ Check manual of \code{\link{foehnix.control}} for more details.}
 \item{verbose}{logical, default \code{TRUE}. If set to \code{FALSE}
 verbose output will be suppressed.}
 
-\item{\dots}{additional arguments used when calling \code{image.foehnix},
-forwarded to \code{image} and \code{contour}.}
+\item{...}{currently unused.}
 }
 \description{
 Fitting method for two-component foehnix mixture model without

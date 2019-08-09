@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-07 16:39 on marvin
+# - L@ST MODIFIED: 2019-08-09 16:36 on marvin
 # -------------------------------------------------------------------
 
 
@@ -37,8 +37,7 @@
 #'        Check manual of \code{\link{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param \dots additional arguments used when calling \code{image.foehnix},
-#'        forwarded to \code{image} and \code{contour}.
+#' @param ... currently unused.
 #'
 #' @seealso
 #' \code{\link{foehnix.family}},
@@ -168,7 +167,7 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #'        Check manual of \code{\link{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param ... additional arguments, unused.
+#' @param ... currently unused.
 #'
 #' @seealso
 #' \code{\link{foehnix.family}},
@@ -182,8 +181,7 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #' @import stats
 #' @import utils
 foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
-                    maxit = 100L, tol = 1e-5, verbose = TRUE,
-                    ...) {
+                    maxit = 100L, tol = 1e-5, verbose = TRUE, ...) {
 
     # Lists to trace log-likelihood path and the development of
     # the coefficients during EM optimization.
@@ -307,7 +305,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #'        containing the arguments for the glmnet function.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
-#' @param ... additional arguments, unused.
+#' @param ... currently unused.
 #'
 #' @seealso \code{\link{foehnix}}, \code{\link{foehnix.control}},
 #' \code{\link{foehnix.noconcomitant.fit}}, \code{\link{foehnix.reg.fit}},
@@ -413,6 +411,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
 #' foehnix Two-Component Mixture-Model Control Object
 #'
 #' Used to control the \code{\link{foehnix}} mixture models.
+#'
 #' @param family character specifying the distribution of the components in the
 #'        mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.  For
 #'        experts: custom \code{foehnix.family} objects can be provided as well.
@@ -579,10 +578,10 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @param family character (at the moment \code{"gaussian"} or \code{"logistic"})
 #'        or an object of class \code{foehnix.family}.
 #' @param control additional control arguments, see \code{\link{foehnix.control}}.
-#' @param ... forwarded to \code{\link{foehnix.control}}
 #' @param object a \code{foehnix} object (input to S3 methods)
 #' @param detailed boolean, default FALSE. If set to true, additional information
 #'        will be printed.
+#' @param ... forwarded to \code{\link{foehnix.control}}
 #'
 #' @return Returns an object of class \code{foehnix}.
 #'
@@ -908,6 +907,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 #' Predict Method for foehnix Mixture Models
 #'
 #' Some details.
+#'
 #' @param object a \code{\link{foehnix}} mixture model object.
 #' @param newdata if \code{NULL} (default) the prediction of the
 #'        underlying training data set will be returned
@@ -918,6 +918,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 #' @param type character, one of \code{"response"} (default),
 #'        \code{"all"}.
 #' @param ... additional arguments, ignored.
+#'
 #' @return Returns a \code{zoo} object with foehn probabilities
 #' and (if \code{type = "all"}) additional information. See 'Details'
 #' section for more information.
@@ -1025,6 +1026,7 @@ nobs.foehnix <- function(object, ...) return(object$nobs)
 #'        \code{"probability"} or \code{"flag"}, or \code{"both"}.
 #'        Alternatively integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).
 #' @param ... additional arguments, ignored.
+#'
 #' @return Returns a univariate or multivariate \code{zoo} object.
 #'
 #' @author Reto Stauffer

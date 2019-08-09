@@ -186,6 +186,94 @@ edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names =
 print.foehnix <- function(x, ...) print(summary(x, ...))
 
 
+#' Write Estimated Probabilities to CSV File
+#'
+#' Write the results of a \code{\link{foehnix}} model into a CSV
+#' text file. Custom date/time information can be specified using the
+#' input argument \code{format}. By default UNIX timestamp will be used.
+#'
+#' @param x a \code{\link{foehnix}} object
+#' @param file character, name of the target file
+#' @param info logical, whether or not header information
+#'      should be written
+#' @param format NULL or a character to specify the format in which the
+#'      date/time information should be written to the \code{file} (forwarded to
+#'      \code{strftime})
+#' @param ... currently ignored
+#'
+#' @return Invisible return of the data.frame written to the output file.
+#' @author Reto Stauffer
+#' @export
+write.csv.foehnix <- function(x, file, info = TRUE, format = NULL, ...) {
+
+    # Prepare the data set
+    if (is.null(format)) {
+        datetime <- data.frame(timestamp = as.numeric(index(x$prob)))
+        fmt_data <- "%10d; %6.4f; %4d"
+        fmt_head <- "%10s; %6s; %4s"
+    } else {
+        datetime <- data.frame(datetime = strftime(index(x$prob), format), 
+                               stringsAsFactors = FALSE)
+        nmax <- max(nchar(datetime$datetime), na.rm = TRUE)
+        fmt_data <- paste0("%", nmax, "s; %6.4f; %4d")
+        fmt_head <- paste0("%", nmax, "s; %6s; %4s")
+        if (anyDuplicated(datetime$datetime))
+            warning(sprintf("Custom format \"%s\" results in non-unique datetime information.",
+                    format))
+    }
+    # Combine
+    data <- cbind(datetime, as.data.frame(x$prob, row.names = 1:nrow(x$prob)))
+
+    # Custom information
+    if (info) {
+        formula_to_str <- function(x)
+            sprintf("%s ~ %s", as.character(x)[2L], as.character(x)[3L])
+        info <- list(
+             paste(rep("-", 70), collapse = ""),
+             "Results from foehnix classification model",
+             sprintf("Object name:     %s", deparse(substitute(x))),
+             sprintf("Model formula:   %s", formula_to_str(formula(x))),
+             sprintf("Output created:  %s", Sys.time()),
+             "Description:",
+             sprintf(" - %s: date time information", names(data)[1L]),
+             " - prob: estimated foehn probability",
+             " - flag: (1) within or (0) outside defined wind secor,",
+             "         (NA) not possible to provide probabilities due to missing data",
+             paste(rep("-", 70), collapse = "")
+           )
+        info <- sprintf("# %s", unlist(info))
+    }
+
+    # Format output
+    fmtfun <- function(x, idx, fmt, con) {
+        writeLines(do.call(sprintf, c(as.list(x[idx, ]), list(fmt = fmt))),
+                   con = con)
+    }
+
+    # Remove file
+    if (file.exists(file)) file.remove(file)
+    # Open text connection
+    fid = file(file, open = "a")
+    # Write info
+    if (is.character(info)) writeLines(info, con = fid)
+    # Write header
+    writeLines(do.call(sprintf, c(as.list(names(data)), fmt = fmt_head)), con = fid)
+    # Write data
+    dead_end <- sapply(1:nrow(data), fmtfun, x = data, fmt = fmt_data, con = fid)
+    # Close file connection
+    close(fid)
+
+    # Invisible return of the data.frame written to the text connection
+    invisible(x)
+}
+
+#' @export
+write.csv <- function(...) UseMethod("write.csv")
+
+#' @export
+write.csv.default <- function(...) utils::write.csv(...)
+
+
 #' Get Estimated Mixture Model Coefficients
 #'
 #' Returns the estimated coefficients of a \code{\link{foehnix}} mixture model
@@ -369,7 +457,7 @@ print.summary.foehnix <- function(x, ...) {
 }
 
 
-#' Convert input "windsector" to list if needed.
+#' Convert input "windsector" to list if needed
 #'
 #' Converts user inputs to list. Wind sector information is used
 #' to highlight specific wind sectors on the plots (e.g.,
@@ -380,8 +468,15 @@ print.summary.foehnix <- function(x, ...) {
 #' @return Returns a \code{list} object with the windsector information as used
 #' by the different functions and methods of the \code{foehnix} package.
 #'
-#' @details 
+#' @details Some foehnix functions allow to specify custom wind sectors. This
+#' function is a convenience function which takes inputs in different formats
+#' (e.g., as \code{matrix}, \code{data.frame}, ...) and converts the
+#' information in the format the foehnix functions expect wind sector
+#' definitions.
 #'
+#' @return Returns \code{NULL} (if input was \code{NULL}) or a named or unnamed
+#' with one or multiple entries. Each entry is a numeric vector of length two
+#' and specifies a wind sector.
 #'
 #' @examples
 #' # No wind sector (NULL) simply returns NULL

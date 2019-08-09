@@ -17,6 +17,7 @@
     as binary time series objects (`.rda`; `zoo`).
 * Remove xlim and ylim from image and make it, as for zlim, an optional
     argument documented in the 'Details' section.
+* A Tyrolean and a Californian demo vignette?
 
 # foehnix 0.1-2 (August 2019; development stage)
 
@@ -27,6 +28,10 @@
     updated extended data set (by Deborah Detka). Moved from csv to rda
     using `usethis`; reduces package size; added data/scripts in `data-raw`.
 * Moved generic `image` function (`image.foehnix`) to `R/image.R`.
+* Added generic `write.csv` method to save estimated probabilities to a CSV file.
+    Will be ued to test output (and compare _R_/python implementation).
+* New vignettes (currently in draft stage): each plotting routine gets its own
+    vignette.
 
 # foehnix 0.1-2 (August 2019)
 
