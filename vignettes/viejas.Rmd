@@ -28,3 +28,117 @@ for (i in 1:nrow(stations)) {
 m <- addProviderTiles(m, "OpenTopoMap")
 m
 ```
+
+# Loading the Data Set
+
+[`demodata("california")`](references/demodata) returns a data set which
+combines hourly meteorological observations for the two sites
+"Viejas Casino and Resort" and "Lucky Five Ranch" which serves as the
+crest station.
+
+In addition, the potential temperature difference between the two stations
+is calculated by reducing the dry air temperature from "Lucky Five Ranch"
+to the height of "Viejas" (dry adiabatic lapse rate of 1K per 100m;
+stored on `diff_t`).
+
+```{r load_california}
+data <- demodata("california")
+head(data, n = 3)
+```
+
+# Estimate `foehnix` Model for Foehn Classification
+
+We will use the following model assumptions:
+
+* Main variable to separate "foehn" and "no foehn" cases: `diff_t` (potential temperature difference).
+* Concomitant variable: `wind_speed` (wind speed at target station Viejas).
+* Wind filter: the `wind_direction` at station Viejas has to lie within
+    305 and 160 degrees (easterly wind direction; downslope).
+* Option `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
+
+```{r estimate_model, results = "hide"}
+mod    <- foehnix(diff_temp ~ wind_speed,
+                  data   = data, switch = TRUE,
+                  filter = list(wind_direction = c(305, 160)))
+
+```
+
+Which gives us the following model:
+
+```{r}
+mod
+```
+
+
+# Time Series Plot
+
+The Californian demo data set has non-standard variable names (by purpose).
+Thus, when calling `tsplot` (time series plot) we do have to manually specify
+these names.
+
+```{r, fig = TRUE, fig.width = 12, fig.height = 8}
+# Some smaller quality issues in the data (should not be a big deal)
+start <- as.POSIXct("2012-01-01")
+end   <- as.POSIXct("2012-01-15")
+
+# As we dont have the standard names: re-specify the
+# names for this plot (new feature).
+tsplot(mod, style = "advanced", diff_t = "diff_temp",
+       t   = "air_temp",   crest_t   = "crest_air_temp",
+       dd  = "wind_dir",   crest_dd  = "crest_wind_dir",
+       ff  = "wind_speed", crest_ff  = "crest_wind_speed",
+       ffx = "wind_gust",  crest_ffx = "crest_wind_gust",
+       rh = "relative_humidity",
+       start = start, end = end)
+```
+
+### Model coefficients
+
+```{r}
+coef(mod)
+```
+
+
+# Graphical Model Assessment
+
+```{r plot_mod, fig = TRUE, fig.width = 12, fig.height = 6}
+# Log-likelihood contribution
+plot(mod, which = 2L)
+# Coefficient path
+plot(mod, which = 3L)
+# Histogram
+plot(mod, which = 4L)
+```
+
+# Wind Rose Plot
+
+```{r windrose}
+windrose(mod, dd = "wind_direction", ff = "wind_speed",
+         type = "hist", which = c("foehn", "nofoehn"),
+         windsector = list(c(305, 160)))
+```
+
+# Hovmöler Diagram
+
+
+```{r image_1, fig = TRUE, fig.width = 12, fig.height = 6}
+# Default plot
+image(mod)
+```
+
+Customized plot which shows the "foehn frequency" for the
+interesting time period from August to April with custom
+colors and additional contour lines and custom
+aggregation period (two-weeks, 3-hourly).
+
+
+```{r image_2, fig = TRUE, fig.width = 12, fig.height = 6}
+image(mod, deltad = 14L, deltat = 3*3600, contours = TRUE,
+      contour.col = "white", lwd = 2, labcex = 1.5,
+      col = colorspace::sequential_hcl(51, "Purple-Yellow", rev = TRUE),
+      xlim = c(212, 119), zlim = c(0, 0.4))
+```
+
+
+
+
