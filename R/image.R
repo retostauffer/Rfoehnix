@@ -191,8 +191,8 @@ image.foehnix <- function(x, FUN = "freq", deltat = NULL, deltad = 7L,
     # 0 - 354 (0 based Julian day) along the x-axis, and
     # 0 - 86400 (one full day in seconds) along the y-axis.
     plot(NA, bty = "n",
-         xlim = arg$xlim, xaxt = "n", xaxs = "i",
-         ylim = arg$ylim, yaxt = "n", yaxs = "i",
+         xlim = sort(arg$xlim), xaxt = "n", xaxs = "i",
+         ylim = arg$ylim,       yaxt = "n", yaxs = "i",
          xlab = NA, ylab = NA, main = NA)
     mtext(side = 1, line = 3.0, arg$xlab)
     mtext(side = 2, line = 3.3, arg$ylab)

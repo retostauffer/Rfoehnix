@@ -3,6 +3,16 @@
 suppressPackageStartupMessages(library("foehnix"))
 ```
 
+# Data Set Description
+
+The "Californian" data set consists of hourly meteorological observations
+from station "Viejas Casino and Ranch" and station "Lucky Five Ranch"
+located in South California. 
+
+Viejas is located at the foot of the westerly slope of the Sierra Nevada
+mountain range and exhibits strong easterly winds during downslope wind
+situations. The Lucky Five Ranch is located northeast of and provides
+information about the upstream air mass for the classification algorithm.
 
 
 ```{r, echo = FALSE, fig.width = 10, fig.height = 5}
@@ -18,7 +28,7 @@ stations <- data.frame(lon  = c(-116.70437, -116.528),
 b <- list(x0 = min(stations$lon) - .2, x1 = max(stations$lon) + .2,
           y0 = max(stations$lat) + .2, y1 = max(stations$lat) + .2)
 
-m <- leaflet() %>% addTiles() %>% fitBounds(b$x0, b$y0, b$x1, b$x2)
+m <- leaflet(width = "100%") %>% addTiles() %>% fitBounds(b$x0, b$y0, b$x1, b$x2)
 m <- setView(m, mean(stations$lon), mean(stations$lat), zoom = 10.5)
 for (i in 1:nrow(stations)) {
     m <- addPopups(m, stations$lon[i], stations$lat[i],
@@ -29,45 +39,168 @@ m <- addProviderTiles(m, "OpenTopoMap")
 m
 ```
 
+
 # Loading the Data Set
 
 [`demodata("california")`](references/demodata) returns a data set which
-combines hourly meteorological observations for the two sites
-"Viejas Casino and Resort" and "Lucky Five Ranch" which serves as the
-crest station.
-
+combines hourly meteorological observations of both sites (Viejas; Lucky Five).
 In addition, the potential temperature difference between the two stations
 is calculated by reducing the dry air temperature from "Lucky Five Ranch"
 to the height of "Viejas" (dry adiabatic lapse rate of 1K per 100m;
-stored on `diff_t`).
+stored on `diff_temp`).
+For details see [`demodata`](references/demodata.html).
 
 ```{r load_california}
 data <- demodata("california")
 head(data, n = 3)
 ```
 
+```{r, fig = TRUE, fig.width = 12, fig.height = 6}
+par(mfrow = c(1,2))
+# Observed wind speed/wind direction "Viejas"
+windrose(data, ddvar = "wind_direction", ffvar = "wind_speed",
+         main = "Windrose\nViejas Casino and Resort",
+         breaks = seq(0, 22, by = 2))
+# Observed wind speed/wind direction "Lucky Five"
+windrose(data, ddvar = "crest_wind_direction", ffvar = "crest_wind_speed",
+         main = "Windrose\nLucky Five Ranch", hue = 270,
+         breaks = seq(0, 22, by = 2))
+```
+
+Given the plots above we define the `foehn` wind direction
+at Viejas between 305 and 160 degrees (a `r 360 - (305 - 160)` degree
+wind sector centered northeast). This wind sector can be chosen
+rather wide, but should exclude non-foehn wind directions to exclude
+upslope winds.
+
+```{r, fig = TRUE, fig.width = 8, fig.height = 8}
+windrose(data, ddvar = "wind_direction", ffvar = "wind_speed",
+         main = "Windrose Viejas with Custom foehn Wind Sector",
+         breaks = seq(0, 16, by = 2),
+         windsector = list(wind_direction = c(305, 160)))
+```
+
+For the [`windrose`](references/windrose.html) plot the `windsector`
+is solely used for visual justification, the same restriction will
+be used in the following step when estimating the [`foehnix`](references/foehnix.html)
+classification model.
+
+
 # Estimate `foehnix` Model for Foehn Classification
 
-We will use the following model assumptions:
+The following model assumptions are used:
 
-* Main variable to separate "foehn" and "no foehn" cases: `diff_t` (potential temperature difference).
+* Main variable to separate "foehn" and "no foehn" cases: `diff_temp` (potential temperature difference).
 * Concomitant variable: `wind_speed` (wind speed at target station Viejas).
 * Wind filter: the `wind_direction` at station Viejas has to lie within
-    305 and 160 degrees (easterly wind direction; downslope).
+    305 and 160 degrees (northeasterly wind direction; see above).
 * Option `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
 
 ```{r estimate_model, results = "hide"}
 mod    <- foehnix(diff_temp ~ wind_speed,
-                  data   = data, switch = TRUE,
+                  data   = data,
+                  switch = TRUE,
                   filter = list(wind_direction = c(305, 160)))
 
 ```
 
-Which gives us the following model:
+### Model Summary
 
-```{r}
+```{r, echo = FALSE}
 mod
 ```
+
+The full data set contains `N = `r nrow(mod$data)`` rows, 
+`r nrow(data)` from the data set (`data`) and 
+`r mod$inflated` due to inflation (create strictly regular time series object).
+Thereof, `r length(mod$filter_obj$ugly)` are not considered
+due to missing data, `r length(mod$filter_obj$bad)` as they do not fulfil the filter constraint
+(`wind_direction` outside defined wind sector), wherefore the final
+model is based on `r length(mod$filter_obj$good)` observations (or rows).
+
+
+### Model coefficients
+
+The following parameters are estimated for the two `r mod$control$family$name` clusters:
+
+* No-foehn cluster: $\mu_1 = `r round(coef(mod)["mu1"], 2)`$,
+                    $\sigma_1 = `r round(coef(mod)["sigma1"], 2)`$ (parameter scale)
+* Foehn cluster: $\mu_2 = `r round(coef(mod)["mu2"], 2)`$,
+                    $\sigma_2 = `r round(coef(mod)["sigma2"], 2)`$ (parameter scale)
+* Concomitant model: `r ifelse(sign(coef(mod)["wind_speed"]), "positive", "negative")`
+    `wind_speed` effect, `r sprintf("%+.1f", exp(coef(mod)["wind_speed"]) - 1)` percent per
+    $m~s^{-1}$
+
+```{r}
+coef(mod)
+```
+
+Visual justification of the estimated clusters:
+
+```{r plot_mod_hist, fig = TRUE, fig.width = 8, fig.height = 3.5}
+plot(mod, which = "hist")
+```
+
+<div class="hide-Rinput">
+
+```{r plot_mod_2d, fig = TRUE, fig.width = 8, fig.height = 6}
+# Grid definition for 2-D plot
+tmp <- list(diff_temp      = seq(-5, +12, by = .5),
+            wind_speed     = seq(0, 12, by = .5),
+            wind_direction = 45)
+# Expand grid to create 'newdata' data.frame
+grd  <- do.call(expand.grid, tmp)
+mat  <- matrix(grd$diff_temp, nrow = length(tmp$diff_temp))
+# Predict probabilities
+pred <- matrix(predict(mod, newdata = grd)$prob, nrow = length(tmp$diff_temp))
+# Create plot
+cols <- colorspace::diverging_hcl(51, p1 = 5)
+par(mar = rep(.5, 4), oma = c(3.1, 3.1, 2.1, 3.1))
+layout(matrix(1:2, nrow = 1L), widths = c(10, 1))
+image(x = tmp$diff_temp, y = tmp$wind_speed, z = pred, col = cols, zlim = c(0,1))
+mtext(side = 1, line = 2.5, "diff_temp")
+mtext(side = 2, line = 2.5, "wind_speed")
+image(matrix(seq(0, 1, length = 51), nrow = 1),
+      col = cols, yaxt = "n", xaxt = "n")
+mtext(side = 4, line = 2.5, "probability")
+mtext(side = 3, outer = TRUE, font = 2, cex = 1,
+      "Predicted Probability | Wind Direction = 45")
+axis(side = 4, at = seq(0, 1, by = .1))
+```
+
+</div>
+
+
+
+# Graphical Model Assessment
+
+A [`foehnix`](references/foehnix.html) object comes with generic plots for graphical model
+assessment. The following figure shows the
+'log-likelihood contribution' of
+
+* the main **component** (left hand side of formula),
+* the **concomitant** model (right hand side of formula),
+* and the **full** log-likelihood sum which is maximised by
+  the optimization algorithm.
+
+The abscissa shows the logarithm of the iterations during 
+optimization. 
+
+```{r plot_mod1, fig = TRUE, fig.width = 12, fig.height = 6}
+# Log-likelihood contribution
+plot(mod, which = "loglikcontribution")
+```
+
+Alternatively the coefficient paths can be plotted:
+
+```{r plot_mod2, fig = TRUE, fig.width = 12, fig.height = 6}
+# Coefficient path
+plot(mod, which = 3L)
+```
+
+The left plot shows the parameters of the two components
+($\mu_1$, $\log(\sigma_1)$, $\mu_2$, $\log(\sigma_2)$), the
+right one the standardized coefficients of the concomitant model.
 
 
 # Time Series Plot
@@ -93,23 +226,6 @@ tsplot(mod, style = "advanced", diff_t = "diff_temp",
        start = start, end = end)
 ```
 
-### Model coefficients
-
-```{r}
-coef(mod)
-```
-
-
-# Graphical Model Assessment
-
-```{r plot_mod, fig = TRUE, fig.width = 12, fig.height = 6}
-# Log-likelihood contribution
-plot(mod, which = 2L)
-# Coefficient path
-plot(mod, which = 3L)
-# Histogram
-plot(mod, which = 4L)
-```
 
 # Wind Rose Plot
 

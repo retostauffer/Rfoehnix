@@ -8,7 +8,8 @@
 windrose(x, ...)
 
 \method{windrose}{foehnix}(x, type = NULL, which = NULL,
-  ddvar = "dd", ffvar = "ff", mfcol = 2L, maxpp = Inf, ...)
+  ddvar = "dd", ffvar = "ff", breaks = NULL, mfcol = 2L,
+  maxpp = Inf, ...)
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}} if the windrose plot is applied
@@ -28,6 +29,8 @@ the wind direction information.}
 
 \item{ffvar}{character, name of the column in the training data set which contains
 the wind speed (or gust speed) data.}
+
+\item{breaks}{\code{NULL} or a numeric vector to define the wind speed (\code{ff}) breaks.}
 
 \item{mfcol}{integer, number of columns of subplots.}
 

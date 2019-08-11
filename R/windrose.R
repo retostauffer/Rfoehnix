@@ -22,6 +22,7 @@ utils::globalVariables(c("prob", "maxpp"))
 #'        the wind direction information.
 #' @param ffvar character, name of the column in the training data set which contains
 #'        the wind speed (or gust speed) data.
+#' @param breaks \code{NULL} or a numeric vector to define the wind speed (\code{ff}) breaks.
 #' @param mfcol integer, number of columns of subplots.
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
@@ -109,7 +110,7 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' @rdname windrose
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
-                             mfcol = 2L, maxpp = Inf, ...) {
+                             breaks = NULL, mfcol = 2L, maxpp = Inf, ...) {
 
     # Just to be on the very safe side.
     stopifnot(inherits(x, "foehnix"))
@@ -169,7 +170,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
                        "For more information please read see ?windrose.foehnix."))
         } else {
             # Else picking ff from x$data
-            ff <- x$data[,ffvar]
+            ff <- x$data[, ffvar]
         }
     } else if ( ! inherits(ddvar, "zoo") ) {
         stop("Input ddvar has to be of class 'zoo' or 'character'.")
@@ -259,9 +260,9 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' @param dd can be used if univariate objects or vectors are provided for
 #'        wind speed and meteorological wind direction (see 'Details' section).
 #' @param filter a custom set of filter rules (see \code{\link{foehnix_filter}}).
-#' @param var.dd string, custom name of the wind direction variable in \code{x}
+#' @param ddvar string, custom name of the wind direction variable in \code{x}
 #'        if \code{x} is a multivariate object (see 'Details' section).
-#' @param var.ff string, custom name of the wind speed variable in \code{x}
+#' @param ffvar string, custom name of the wind speed variable in \code{x}
 #'        if \code{x} is a multivariate object (see 'Details' section).
 #'
 #' @details The \code{\link{windrose}} function can be used in different ways.
@@ -290,7 +291,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' calling the function containing (at least) wind direction and wind speed. By
 #' default, the method expects the wind direction variable to be named
 #' \code{"dd"}, the wind speed named \code{"ff"}.  Custom names can be
-#' specified using the two input arguments \code{var.ff} and \code{var.dd}.
+#' specified using the two input arguments \code{ffvar} and \code{ddvar}.
 #'        
 #' Custom filter: the optional \code{filter} input can be used if input
 #' \code{x} is a multivariate object and provides a convenient
@@ -330,7 +331,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' copy <- data
 #' names(copy)[1:2] <- c("wind_dir", "wind_spd")
 #' windrose(copy, main = "Demo Windrose\nMultivariate zoo, custom names",
-#'          var.dd = "wind_dir", var.ff = "wind_spd")
+#'          ddvar = "wind_dir", ffvar = "wind_spd")
 #'
 #' # Highlighting wind sectors
 #' windrose(data, windsector = list(c(43, 223)),
@@ -399,7 +400,7 @@ windrose.default <- function(x, ff,
                              interval = 10, type = "density", 
                              windsector = NULL, main = NULL, hue = c(10,100),
                              power = .5, ..., dd = NULL, filter = NULL,
-                             var.ff = "ff", var.dd = "dd") {
+                             ffvar = "ff", ddvar = "dd", breaks = NULL) {
 
     # If "x" is missing we need "dd"
     if (missing(x)) x <- dd
@@ -431,16 +432,16 @@ windrose.default <- function(x, ff,
     # at least two columns: try to find the corresponding variables
     # needed on object 'x'
     if (NCOL(x) > 1) {
-        if (!var.ff %in% names(x)) {
-            stop(sprintf("input \"x\" is a multi-column object, but cannot find var.ff = \"%s\"",
-                         var.ff))
-        } else if (!var.dd %in% names(x)) {
-            stop(sprintf("input \"x\" is a multi-column object, but cannot find var.dd = \"%s\"",
-                         var.dd))
+        if (!ffvar %in% names(x)) {
+            stop(sprintf("input \"x\" is a multi-column object, but cannot find ffvar = \"%s\"",
+                         ffvar))
+        } else if (!ddvar %in% names(x)) {
+            stop(sprintf("input \"x\" is a multi-column object, but cannot find ddvar = \"%s\"",
+                         ddvar))
         }
         # Overwrite dd/ff
-        dd <- x[, var.dd]
-        ff <- x[, var.ff]
+        dd <- x[, ddvar]
+        ff <- x[, ffvar]
     }
 
     # Check "dd" values
@@ -484,11 +485,16 @@ windrose.default <- function(x, ff,
 
     # Breaks for classification
     dd.breaks <- seq(-interval / 2, 360, by=interval)
-    ff.breaks <- pretty(ff)
+    ff.breaks <- if (!is.null(breaks)) breaks else pretty(ff)
 
     # Picking some colors
-    cols <- rev(colorspace::heat_hcl(length(ff.breaks) - 1, h= hue, c. = c(60, 10),
+    cols <- rev(colorspace::heat_hcl(length(ff.breaks) - 1, h = hue, c. = c(60, 10),
                                      l = c(25, 95), power = c(0.7,2)))
+
+    # Check ff.breaks and wind speed data
+    if (min(data$ff, na.rm = TRUE) < min(ff.breaks, na.rm = TRUE) |
+        max(data$ff, na.rm = TRUE) > max(ff.breaks, na.rm = TRUE))
+        warning("breaks on \"ff\" do not span the full range of the data!")
 
     # ----------------
     # Prepare data for the plots

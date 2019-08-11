@@ -6,7 +6,8 @@
 \usage{
 \method{windrose}{default}(x, ff, interval = 10, type = "density",
   windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5,
-  ..., dd = NULL, filter = NULL, var.ff = "ff", var.dd = "dd")
+  ..., dd = NULL, filter = NULL, ffvar = "ff", ddvar = "dd",
+  breaks = NULL)
 }
 \arguments{
 \item{x}{either an univariate object (\code{numeric} vector or \code{zoo})
@@ -44,10 +45,10 @@ wind speed and meteorological wind direction (see 'Details' section).}
 
 \item{filter}{a custom set of filter rules (see \code{\link{foehnix_filter}}).}
 
-\item{var.ff}{string, custom name of the wind speed variable in \code{x}
+\item{ffvar}{string, custom name of the wind speed variable in \code{x}
 if \code{x} is a multivariate object (see 'Details' section).}
 
-\item{var.dd}{string, custom name of the wind direction variable in \code{x}
+\item{ddvar}{string, custom name of the wind direction variable in \code{x}
 if \code{x} is a multivariate object (see 'Details' section).}
 }
 \description{
@@ -81,7 +82,7 @@ a multivariate \code{zoo} object or \code{data.frame} can be provided when
 calling the function containing (at least) wind direction and wind speed. By
 default, the method expects the wind direction variable to be named
 \code{"dd"}, the wind speed named \code{"ff"}.  Custom names can be
-specified using the two input arguments \code{var.ff} and \code{var.dd}.
+specified using the two input arguments \code{ffvar} and \code{ddvar}.
        
 Custom filter: the optional \code{filter} input can be used if input
 \code{x} is a multivariate object and provides a convenient
@@ -121,7 +122,7 @@ windrose(as.data.frame(data),
 copy <- data
 names(copy)[1:2] <- c("wind_dir", "wind_spd")
 windrose(copy, main = "Demo Windrose\\nMultivariate zoo, custom names",
-         var.dd = "wind_dir", var.ff = "wind_spd")
+         ddvar = "wind_dir", ffvar = "wind_spd")
 
 # Highlighting wind sectors
 windrose(data, windsector = list(c(43, 223)),

@@ -142,12 +142,18 @@
 
     
     
-<div id="htmlwidget-e16b50d89d7aa2b13efe" style="width:960px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e16b50d89d7aa2b13efe">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script><div id="loading-the-data-set" class="section level1">
+<div id="data-set-description" class="section level1">
+<h1 class="hasAnchor">
+<a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
+<p>The “Californian” data set consists of hourly meteorological observations from station “Viejas Casino and Ranch” and station “Lucky Five Ranch” located in South California.</p>
+<p>Viejas is located at the foot of the westerly slope of the Sierra Nevada mountain range and exhibits strong easterly winds during downslope wind situations. The Lucky Five Ranch is located northeast of and provides information about the upstream air mass for the classification algorithm.</p>
+<div id="htmlwidget-0e985551339a312d9cd7" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0e985551339a312d9cd7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
 <a href="#loading-the-data-set" class="anchor"></a>Loading the Data Set</h1>
-<p><a href="references/demodata"><code><a href="../reference/demodata.html">demodata("california")</a></code></a> returns a data set which combines hourly meteorological observations for the two sites “Viejas Casino and Resort” and “Lucky Five Ranch” which serves as the crest station.</p>
-<p>In addition, the potential temperature difference between the two stations is calculated by reducing the dry air temperature from “Lucky Five Ranch” to the height of “Viejas” (dry adiabatic lapse rate of 1K per 100m; stored on <code>diff_t</code>).</p>
+<p><a href="references/demodata"><code><a href="../reference/demodata.html">demodata("california")</a></code></a> returns a data set which combines hourly meteorological observations of both sites (Viejas; Lucky Five). In addition, the potential temperature difference between the two stations is calculated by reducing the dry air temperature from “Lucky Five Ranch” to the height of “Viejas” (dry adiabatic lapse rate of 1K per 100m; stored on <code>diff_temp</code>). For details see <a href="references/demodata.html"><code>demodata</code></a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"california"</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
 <pre><code>##                     air_temp relative_humidity wind_speed wind_direction
@@ -166,22 +172,41 @@
 ## 2012-01-01 00:00:00      0.08
 ## 2012-01-01 01:00:00      1.74
 ## 2012-01-01 02:00:00      1.75</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="co"># Observed wind speed/wind direction "Viejas"</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"wind_speed"</span>,
+         <span class="dt">main =</span> <span class="st">"Windrose</span><span class="ch">\n</span><span class="st">Viejas Casino and Resort"</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))
+<span class="co"># Observed wind speed/wind direction "Lucky Five"</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"crest_wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"crest_wind_speed"</span>,
+         <span class="dt">main =</span> <span class="st">"Windrose</span><span class="ch">\n</span><span class="st">Lucky Five Ranch"</span>, <span class="dt">hue =</span> <span class="dv">270</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
+<p><img src="viejas_files/figure-html/unnamed-chunk-3-1.png" width="1152"></p>
+<p>Given the plots above we define the <code>foehn</code> wind direction at Viejas between 305 and 160 degrees (a 215 degree wind sector centered northeast). This wind sector can be chosen rather wide, but should exclude non-foehn wind directions to exclude upslope winds.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"wind_speed"</span>,
+         <span class="dt">main =</span> <span class="st">"Windrose Viejas with Custom foehn Wind Sector"</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dt">by =</span> <span class="dv">2</span>),
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)))</code></pre></div>
+<p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
+<p>For the <a href="references/windrose.html"><code>windrose</code></a> plot the <code>windsector</code> is solely used for visual justification, the same restriction will be used in the following step when estimating the <a href="references/foehnix.html"><code>foehnix</code></a> classification model.</p>
 </div>
 <div id="estimate-foehnix-model-for-foehn-classification" class="section level1">
 <h1 class="hasAnchor">
 <a href="#estimate-foehnix-model-for-foehn-classification" class="anchor"></a>Estimate <code>foehnix</code> Model for Foehn Classification</h1>
-<p>We will use the following model assumptions:</p>
+<p>The following model assumptions are used:</p>
 <ul>
-<li>Main variable to separate “foehn” and “no foehn” cases: <code>diff_t</code> (potential temperature difference).</li>
+<li>Main variable to separate “foehn” and “no foehn” cases: <code>diff_temp</code> (potential temperature difference).</li>
 <li>Concomitant variable: <code>wind_speed</code> (wind speed at target station Viejas).</li>
-<li>Wind filter: the <code>wind_direction</code> at station Viejas has to lie within 305 and 160 degrees (easterly wind direction; downslope).</li>
+<li>Wind filter: the <code>wind_direction</code> at station Viejas has to lie within 305 and 160 degrees (northeasterly wind direction; see above).</li>
 <li>Option <code>switch = TRUE</code> as high <code>diff_temp</code> indicate stable stratification (no foehn).</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod    &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_temp <span class="op">~</span><span class="st"> </span>wind_speed,
-                  <span class="dt">data   =</span> data, <span class="dt">switch =</span> <span class="ot">TRUE</span>,
+                  <span class="dt">data   =</span> data,
+                  <span class="dt">switch =</span> <span class="ot">TRUE</span>,
                   <span class="dt">filter =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)))</code></pre></div>
-<p>Which gives us the following model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod</code></pre></div>
+<div id="model-summary" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-summary" class="anchor"></a>Model Summary</h3>
 <pre><code>## 
 ## Call: foehnix(formula = diff_temp ~ wind_speed, data = data, switch = TRUE, 
 ##     filter = list(wind_direction = c(305, 160)))
@@ -196,9 +221,77 @@
 ## 
 ## Log-likelihood: -86157.2, 6 effective degrees of freedom
 ## Corresponding AIC = 172326.5, BIC = 172376.6
-## Time required for model estimation: 6.9 seconds
+## Time required for model estimation: 7.1 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
+<p>The full data set contains <code>N = 61368</code> rows, 61184 from the data set (<code>data</code>) and 184 due to inflation (create strictly regular time series object). Thereof, 1374 are not considered due to missing data, 27905 as they do not fulfil the filter constraint (<code>wind_direction</code> outside defined wind sector), wherefore the final model is based on 32089 observations (or rows).</p>
+</div>
+<div id="model-coefficients" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-coefficients" class="anchor"></a>Model coefficients</h3>
+<p>The following parameters are estimated for the two Gaussian clusters:</p>
+<ul>
+<li>No-foehn cluster: <span class="math inline">\(\mu_1 = 9.13\)</span>, <span class="math inline">\(\sigma_1 = 4.08\)</span> (parameter scale)</li>
+<li>Foehn cluster: <span class="math inline">\(\mu_2 = 0.22\)</span>, <span class="math inline">\(\sigma_2 = 1.42\)</span> (parameter scale)</li>
+<li>Concomitant model: positive <code>wind_speed</code> effect, +28.2 percent per <span class="math inline">\(m~s^{-1}\)</span>
+</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
+<pre><code>## Coefficients of foehnix model
+## Model formula:           diff_temp ~ wind_speed
+## foehnix family of class: Gaussian
+## 
+## Coefficients
+##         mu1      sigma1         mu2      sigma2 (Intercept)  wind_speed 
+##   9.1263349   4.0800074   0.2234891   1.4175373  -7.8449992   3.3753179</code></pre>
+<p>Visual justification of the estimated clusters:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
+<p><img src="viejas_files/figure-html/plot_mod_hist-1.png" width="768"></p>
+<div class="hide-Rinput">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Grid definition for 2-D plot</span>
+tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">diff_temp      =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">5</span>, <span class="op">+</span><span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
+            <span class="dt">wind_speed     =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
+            <span class="dt">wind_direction =</span> <span class="dv">45</span>)
+<span class="co"># Expand grid to create 'newdata' data.frame</span>
+grd  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span>(expand.grid, tmp)
+mat  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(grd<span class="op">$</span>diff_temp, <span class="dt">nrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(tmp<span class="op">$</span>diff_temp))
+<span class="co"># Predict probabilities</span>
+pred &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(mod, <span class="dt">newdata =</span> grd)<span class="op">$</span>prob, <span class="dt">nrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(tmp<span class="op">$</span>diff_temp))
+<span class="co"># Create plot</span>
+cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">diverging_hcl</a></span>(<span class="dv">51</span>, <span class="dt">p1 =</span> <span class="dv">5</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mar =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(.<span class="dv">5</span>, <span class="dv">4</span>), <span class="dt">oma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">3.1</span>, <span class="fl">3.1</span>, <span class="fl">2.1</span>, <span class="fl">3.1</span>))
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/layout">layout</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">nrow =</span> 1L), <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">1</span>))
+<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="dt">x =</span> tmp<span class="op">$</span>diff_temp, <span class="dt">y =</span> tmp<span class="op">$</span>wind_speed, <span class="dt">z =</span> pred, <span class="dt">col =</span> cols, <span class="dt">zlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>))
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"diff_temp"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"wind_speed"</span>)
+<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">51</span>), <span class="dt">nrow =</span> <span class="dv">1</span>),
+      <span class="dt">col =</span> cols, <span class="dt">yaxt =</span> <span class="st">"n"</span>, <span class="dt">xaxt =</span> <span class="st">"n"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"probability"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">3</span>, <span class="dt">outer =</span> <span class="ot">TRUE</span>, <span class="dt">font =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">1</span>,
+      <span class="st">"Predicted Probability | Wind Direction = 45"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/axis">axis</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">at =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">.1</span>))</code></pre></div>
+<p><img src="viejas_files/figure-html/plot_mod_2d-1.png" width="768"></p>
+</div>
+</div>
+</div>
+<div id="graphical-model-assessment" class="section level1">
+<h1 class="hasAnchor">
+<a href="#graphical-model-assessment" class="anchor"></a>Graphical Model Assessment</h1>
+<p>A <a href="references/foehnix.html"><code>foehnix</code></a> object comes with generic plots for graphical model assessment. The following figure shows the ‘log-likelihood contribution’ of</p>
+<ul>
+<li>the main <strong>component</strong> (left hand side of formula),</li>
+<li>the <strong>concomitant</strong> model (right hand side of formula),</li>
+<li>and the <strong>full</strong> log-likelihood sum which is maximised by the optimization algorithm.</li>
+</ul>
+<p>The abscissa shows the logarithm of the iterations during optimization.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log-likelihood contribution</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
+<p><img src="viejas_files/figure-html/plot_mod1-1.png" width="1152"></p>
+<p>Alternatively the coefficient paths can be plotted:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Coefficient path</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 3L)</code></pre></div>
+<p><img src="viejas_files/figure-html/plot_mod2-1.png" width="1152"></p>
+<p>The left plot shows the parameters of the two components (<span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\log(\sigma_1)\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\log(\sigma_2)\)</span>), the right one the standardized coefficients of the concomitant model.</p>
 </div>
 <div id="time-series-plot" class="section level1">
 <h1 class="hasAnchor">
@@ -219,32 +312,7 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
        <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
        <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
 <pre><code>## [1] 305 160</code></pre>
-<p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" width="1152"></p>
-<div id="model-coefficients" class="section level3">
-<h3 class="hasAnchor">
-<a href="#model-coefficients" class="anchor"></a>Model coefficients</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
-<pre><code>## Coefficients of foehnix model
-## Model formula:           diff_temp ~ wind_speed
-## foehnix family of class: Gaussian
-## 
-## Coefficients
-##         mu1      sigma1         mu2      sigma2 (Intercept)  wind_speed 
-##   9.1263349   4.0800074   0.2234891   1.4175373  -7.8449992   3.3753179</code></pre>
-</div>
-</div>
-<div id="graphical-model-assessment" class="section level1">
-<h1 class="hasAnchor">
-<a href="#graphical-model-assessment" class="anchor"></a>Graphical Model Assessment</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log-likelihood contribution</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 2L)</code></pre></div>
-<p><img src="viejas_files/figure-html/plot_mod-1.png" width="1152"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Coefficient path</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 3L)</code></pre></div>
-<p><img src="viejas_files/figure-html/plot_mod-2.png" width="1152"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Histogram</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 4L)</code></pre></div>
-<p><img src="viejas_files/figure-html/plot_mod-3.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/unnamed-chunk-7-1.png" width="1152"></p>
 </div>
 <div id="wind-rose-plot" class="section level1">
 <h1 class="hasAnchor">
@@ -274,10 +342,11 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#loading-the-data-set">Loading the Data Set</a></li>
+<li><a href="#data-set-description">Data Set Description</a></li>
+      <li><a href="#loading-the-data-set">Loading the Data Set</a></li>
       <li><a href="#estimate-foehnix-model-for-foehn-classification">Estimate <code>foehnix</code> Model for Foehn Classification</a></li>
-      <li><a href="#time-series-plot">Time Series Plot</a></li>
       <li><a href="#graphical-model-assessment">Graphical Model Assessment</a></li>
+      <li><a href="#time-series-plot">Time Series Plot</a></li>
       <li><a href="#wind-rose-plot">Wind Rose Plot</a></li>
       <li><a href="#hovmoler-diagram">Hovmöler Diagram</a></li>
       </ul>

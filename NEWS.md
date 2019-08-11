@@ -32,6 +32,7 @@
     Will be ued to test output (and compare _R_/python implementation).
 * New vignettes (currently in draft stage): each plotting routine gets its own
     vignette.
+* Allow custom wind speed breaks when calling `windrose`.
 
 # foehnix 0.1-2 (August 2019)
 

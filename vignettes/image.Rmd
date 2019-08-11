@@ -74,7 +74,7 @@ you may use a higher temporal resolution (e.g., 10min observations).
 ```{r image_custom_data1, echo = TRUE, figure = TRUE, fig.width = 10, fig.height = 5}
 # Subsetting the demo data set
 # - data_subset: take data from September 2015 trough April 2016
-data_subset <- window(data, start = as.POSIXct("2015-09-01 01:00"), end = as.POSIXlt("2016-04-30"))
+data_subset <- window(data, start = as.POSIXct("2015-09-01 01:00"), end = as.POSIXlt("2016-04-29 23:00"))
 
 # Estimate foehnix classification models
 mod_subset <- foehnix(diff_t ~ ff + rh, data = data_subset,
@@ -83,7 +83,7 @@ mod_subset <- foehnix(diff_t ~ ff + rh, data = data_subset,
 
 # Plotting "mod1" with custom x-limits
 xlim <- as.POSIXlt(range(index(data_subset)))$yday
-image(mod_subset, xlim = xlim,
+image(mod_subset, xlim = xlim, zlim = c(0, 1),
       main = sprintf("Custom x limits from %d - %d (Julian day)", xlim[1L], xlim[2L]))
 ```
 
