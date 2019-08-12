@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-01-31 08:16 on marvin
+# - L@ST MODIFIED: 2019-08-12 17:11 on marvin
 # -------------------------------------------------------------------
 
 
@@ -17,13 +17,11 @@
 #' 
 #' @param x a \code{\link{foehnix}} mixture model object.
 #' @param which \code{NULL} (default), character, character string,
-#'         integer, or numeric. Allowed characters: \code{loglik},
-#'         \code{loglikcontribution}, \code{coef}, and \code{hist}. If \code{which}
-#'         is numeric/integer or a vector of numerics/integers the numbers
-#'         correspond to \code{loglik} (\code{1}), \code{loglikpath} (\code{2}),
-#'         or \code{coef} (\code{3}).
-#' @param log logical, if \code{TRUE} the x-axis is shown on the log scale,
-#'        else on the iteration scale.
+#'         integer, or numeric. Allowed characters: \code{loglik} (\code{1}),
+#'         \code{loglikcontribution} (\code{2}), \code{coef} (\code{3}),
+#'         \code{hist} (\code{4}), and \code{posterior} (\code{5}).
+#' @param log logical, if \code{TRUE} the x-axis for \code{loglik}, \code{loglikcontribution}
+#'        and \code{coef} is shown on the log scale.
 #' @param ... additional arguments, unused.
 #' @param ask boolean, default is \code{TRUE}. User will be asked to show the
 #'        next figure if multiple figures are requested. Can be set to \code{FALSE}
@@ -42,6 +40,14 @@
 #'         components are shown on the real scale, the coefficients
 #'         of the concomitant model (if used) are shown on the
 #'         standardized scale.
+#'     \item \code{hist} plots empirical histograms of the main variable
+#'         for the two clusters (split at posterior probability >= 0.5).
+#'         In addition, the estimated parametric clusters are shown.
+#'     \item \code{posterior} creates a histogram of the posterior probabilities.
+#'         point masses at \code{0.0} and \code{1.0} indicate sharp separation
+#'         of the clusters (posterior probabilities close to \code{0} or \code{1}).
+#'         The two additional input arguments \code{breaks} (numeric vector)
+#'         and \code{freq} (logical) will be forwarded to \code{hist(...)}.
 #' }
 #'
 #' @import graphics
@@ -50,10 +56,10 @@
 plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
 
     # Define plot type
-    allowed <- c("loglik","loglikcontribution", "coef", "hist")
-    if ( is.null(which) ) {
+    allowed <- c("loglik","loglikcontribution", "coef", "hist", "posterior")
+    if (is.null(which)) {
         which <- allowed
-    } else if ( inherits(which, c("integer", "numeric")) ) {
+    } else if (inherits(which, c("integer", "numeric"))) {
         which <- allowed[as.integer(which)]
     } else {
         which <- match.arg(tolower(which), allowed, several.ok = TRUE)
@@ -71,7 +77,7 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
     }
 
     # Plotting likelihood path if requested
-    if ( "loglik" %in% which ) {
+    if ("loglik" %in% which) {
         ll <- x$optimizer$loglikpath
         ylim <- range(ll) + c(0, 0.2) * diff(range(ll))
         # Plot
@@ -88,7 +94,7 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
     }
 
     # Plotting likelihood path if requested
-    if ( "loglikcontribution" %in% which ) {
+    if ("loglikcontribution" %in% which) {
         ll <- x$optimizer$loglikpath
         for ( i in 1:ncol(ll) ) ll[,i] <- ll[,i] - ll[1,i]
         ylim <- range(ll) + c(0, 0.2) * diff(range(ll))
@@ -106,7 +112,7 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
     }
 
     # Path of estimated coefficients
-    if ( "coef" %in% which ) {
+    if ("coef" %in% which) {
         # Extract path
         path <- x$optimizer$coefpath
         at   <- if ( log ) log(1:nrow(path)) else 1:nrow(path)
@@ -157,7 +163,7 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
     }
 
     # Conditional histogram plot
-    if ( "hist" %in% which ) {
+    if ("hist" %in% which) {
 
         # Create response vector
         hold_opt <- options("na.action"); options(na.action = "na.pass")
@@ -200,6 +206,24 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
             lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 4, lwd = 2)
 
         }
+    }
+
+    # Conditional histogram plot
+    if ("posterior" %in% which) {
+        args <- match.call(expand.dots = TRUE)
+        breaks <- if ("breaks" %in% names(args)) eval(args$breaks) else seq(0, 1, by = .1)
+        freq   <- if ("freq"   %in% names(args)) eval(args$freq)   else FALSE
+        stopifnot(is.logical(freq))
+
+        # log density
+        par(mfrow = c(1, 1))
+        hist(x$optimizer$post, breaks = breaks, col = "gray80",
+             freq = freq,
+             main = "Posterior Probability Histogram",
+             xlab = "probability",
+             ylab = if (freq) "frequency" else "density")
+
+
     }
 
 }

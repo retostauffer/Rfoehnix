@@ -53,7 +53,31 @@ For details see [`demodata`](references/demodata.html).
 ```{r load_california}
 data <- demodata("california")
 head(data, n = 3)
+# Check if we have a "zoo" time series object
+is.zoo(data)
+# And that the data are numeric
+is.numeric(data)
 ```
+
+Missing values in the
+data set (`NA`s) are allowed and will be properly handled by all functions.
+One restriction is that the time series object has to be regular (but not
+strictly regular). "Regular" means that the time steps have to be divisible
+by the smallest time step, "strictly regular" means that we have no missing
+observations (if our smallest time interval is 1 hour observations have
+to be available _every hour_ have to be available to be strictly regular).
+The [`foehnix`](references/foehnix.html) will inflate the data set and make
+it strictly regular, if needed.
+
+```{r}
+c("is regular" = is.regular(data),
+  "is strictly regular" = is.regular(data, strict = TRUE))
+```
+
+
+
+After preparing the data set (regular or strictly regular `zoo   object with
+`numeric` values) we can investigate the observed wind information.
 
 ```{r, fig = TRUE, fig.width = 12, fig.height = 6}
 par(mfrow = c(1,2))
@@ -97,17 +121,16 @@ The following model assumptions are used:
 * Option `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
 
 ```{r estimate_model, results = "hide"}
-mod    <- foehnix(diff_temp ~ wind_speed,
-                  data   = data,
-                  switch = TRUE,
-                  filter = list(wind_direction = c(305, 160)))
-
+mod <- foehnix(diff_temp ~ wind_speed,
+               data   = data,
+               switch = TRUE,
+               filter = list(wind_direction = c(305, 160)))
 ```
 
 ### Model Summary
 
 ```{r, echo = FALSE}
-mod
+summary(mod, detailed = TRUE)
 ```
 
 The full data set contains `N = `r nrow(mod$data)`` rows, 
@@ -135,11 +158,6 @@ The following parameters are estimated for the two `r mod$control$family$name` c
 coef(mod)
 ```
 
-Visual justification of the estimated clusters:
-
-```{r plot_mod_hist, fig = TRUE, fig.width = 8, fig.height = 3.5}
-plot(mod, which = "hist")
-```
 
 <div class="hide-Rinput">
 
@@ -170,13 +188,33 @@ axis(side = 4, at = seq(0, 1, by = .1))
 
 </div>
 
+<div class="hide-Rinput">
+
+```{r plot_mod_2ddata, fig = TRUE, fig.width = 8, fig.height = 6}
+# Grid definition for 2-D plot
+idx  <- mod$filter_obj$good
+prob <- fitted(mod)
+cols <- cut(prob, breaks = seq(0, 1, by = 0.1), include.lowest = TRUE,
+            labels = colorspace::diverging_hcl(10))
+# Plot
+with(mod$data[idx, ],
+     plot(wind_speed ~ diff_temp, col = as.character(cols)[idx], pch = 19,
+          main = "Fitted Probabilities | within Wind Sector"))
+legend("topright", fill = colorspace::diverging_hcl(10), bty = "n",
+       title = "probability",
+       legend = levels(cut(0, breaks = seq(0, 1, by = 0.1), include.lowest = TRUE)))
+
+```
+
+</div>
 
 
 # Graphical Model Assessment
 
 A [`foehnix`](references/foehnix.html) object comes with generic plots for graphical model
-assessment. The following figure shows the
-'log-likelihood contribution' of
+assessment.
+
+The following figure shows the 'log-likelihood contribution' of
 
 * the main **component** (left hand side of formula),
 * the **concomitant** model (right hand side of formula),
@@ -201,6 +239,15 @@ plot(mod, which = 3L)
 The left plot shows the parameters of the two components
 ($\mu_1$, $\log(\sigma_1)$, $\mu_2$, $\log(\sigma_2)$), the
 right one the standardized coefficients of the concomitant model.
+
+Last but not least a histogram with the two clusters is plotted.
+`which = "hist"`creates an empirical density histogram separating "no foehn"
+and "foehn" events adding the estimated distribution for these two clusters.
+
+```{r plot_mod_hist, fig = TRUE, fig.width = 8, fig.height = 3.5}
+plot(mod, which = "hist")
+```
+
 
 
 # Time Series Plot
