@@ -10,14 +10,12 @@
 \item{x}{a \code{\link{foehnix}} mixture model object.}
 
 \item{which}{\code{NULL} (default), character, character string,
-integer, or numeric. Allowed characters: \code{loglik},
-\code{loglikcontribution}, \code{coef}, and \code{hist}. If \code{which}
-is numeric/integer or a vector of numerics/integers the numbers
-correspond to \code{loglik} (\code{1}), \code{loglikpath} (\code{2}),
-or \code{coef} (\code{3}).}
+integer, or numeric. Allowed characters: \code{loglik} (\code{1}),
+\code{loglikcontribution} (\code{2}), \code{coef} (\code{3}),
+\code{hist} (\code{4}), and \code{posterior} (\code{5}).}
 
-\item{log}{logical, if \code{TRUE} the x-axis is shown on the log scale,
-else on the iteration scale.}
+\item{log}{logical, if \code{TRUE} the x-axis for \code{loglik}, \code{loglikcontribution}
+and \code{coef} is shown on the log scale.}
 
 \item{...}{additional arguments, unused.}
 
@@ -41,6 +39,14 @@ There are currently three different plot types.
         components are shown on the real scale, the coefficients
         of the concomitant model (if used) are shown on the
         standardized scale.
+    \item \code{hist} plots empirical histograms of the main variable
+        for the two clusters (split at posterior probability >= 0.5).
+        In addition, the estimated parametric clusters are shown.
+    \item \code{posterior} creates a histogram of the posterior probabilities.
+        point masses at \code{0.0} and \code{1.0} indicate sharp separation
+        of the clusters (posterior probabilities close to \code{0} or \code{1}).
+        The two additional input arguments \code{breaks} (numeric vector)
+        and \code{freq} (logical) will be forwarded to \code{hist(...)}.
 }
 }
 \author{
