@@ -78,7 +78,7 @@ doi:<a href="https://dx.doi.org/10.18637/jss.v028.i04" target="_blank">10.18637/
 </p>
 
 <p id="gruen2007">
-Gr\"un B, Leisch F (2007).
+Gr&uuml;n B, Leisch F (2007).
 Fitting Finite Mixtures of Generalized Linear Regressions in _R_.
 _Computational Statistics \& Data Analysis_, **51**(11),
 doi:<a href="https://dx.doi.org/10.1016/j.csda.2006.08.014" target="_blank">10.1016/j.csda.2006.08.014</a>
