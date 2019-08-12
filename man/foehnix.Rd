@@ -30,7 +30,7 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 
 \method{formula}{foehnix}(x, ...)
 
-\method{summary}{foehnix}(object, detailed = FALSE, ...)
+\method{summary}{foehnix}(object, eps = 1e-04, detailed = FALSE, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} (or one that can be coerced

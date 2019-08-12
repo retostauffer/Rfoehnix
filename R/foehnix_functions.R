@@ -353,7 +353,7 @@ formula.foehnix <- function(x, ...) x$formula
 
 #' @rdname foehnix
 #' @export
-summary.foehnix <- function(object, detailed = FALSE, ...) {
+summary.foehnix <- function(object, eps=1e-4, detailed = FALSE, ...) {
 
     rval <- list()
     rval$call     <- object$call
@@ -361,7 +361,22 @@ summary.foehnix <- function(object, detailed = FALSE, ...) {
     rval$prob     <- object$prob
     rval$coef     <- coef(object, type = "parameter")
 
+    # Posteriors
+    tab <- matrix(NA, ncol = 4, nrow = 2,
+                  dimnames = list(c("Component 1 (foehn)", "Component 2 (no foehn)"),
+                                  c("prior", "size", "post>0", "ratio")))
+    priorfun <- function(x) { x <- mean(x, na.rm = TRUE); c(x, 1 - x) }
+    sizefun  <- function(x) { N <- sum(!is.na(x)); x <- sum(x >= 0.5, na.rm = TRUE); c(x, N - x) }
+    postfun  <- function(x, eps) { x <- na.omit(x); c(sum(x > eps), sum((1 - x) > eps)) }
+
+    # Analog to flexmix summary
+    tab[, "prior"]   <- priorfun(object$optimizer$prob) # mean prior probability
+    tab[, "size"]    <- sizefun(object$optimizer$post)  # on posterior probability
+    tab[, "post>0"]  <- postfun(object$optimizer$post, eps = eps) # on posterior prob
+    tab[, "ratio"]   <- tab[, "size"] / tab[, "post>0"]
+
     # Optimizer statistics
+    rval$csummary   <- tab # cluster summary (separation)
     rval$filter_obj <- object$filter_obj
     rval$time       <- object$time
     rval$logLik     <- logLik(object)
@@ -371,10 +386,7 @@ summary.foehnix <- function(object, detailed = FALSE, ...) {
     rval$n.iter     <- object$optimizer$n.iter
     rval$maxit      <- object$optimizer$maxit
     rval$detailed   <- detailed
-    if ( detailed ) {
-        rval$converged  <- object$optimizer$converged
-        rval$mu.se      <- object$mu.se
-    }
+    rval$converged  <- object$optimizer$converged
 
     # Appending concomitant model
     rval$ccmodel    <- object$optimizer$ccmodel
@@ -427,23 +439,15 @@ print.summary.foehnix <- function(x, ...) {
     # If "detailed" has been set to "TRUE" we will also print the
     # test statistics of the coefficients of the mixture model.
     if ( x$detailed ) {
-        # Summary statistics for the components
-        tmp <- matrix(NA, ncol = 4, nrow = 2, dimnames = list(
-                      c("(Intercept).1", "(Intercept).2"),
-                      c("Estimate", "Std. Error", "t value", "Pr(>|t|)")))
-        # Store coefficients on "Estimate"
-        # Store standard deviation of the coefficients on "Std. Error"
-        tmp[,"Estimate"]   <- c(x$coef["mu1"], x$coef["mu2"])
-        tmp[,"Std. Error"] <- as.numeric(x$mu.se)
-        # Calculate t value and the corresponding p value based on
-        # a Gaussian or t-test
-        tmp[,"t value"]    <- tmp[,"Estimate"] / tmp[,"Std. Error"]
-        tmp[,"Pr(>|t|)"]   <- 2 * pnorm(0, tmp[,"t value"])
-
-        # Show information
-        cat("\n---------------------------------\n\n")
-        cat("Components: t test of coefficients\n")
-        printCoefmat(tmp, P.values = TRUE, has.Pvalues = TRUE)
+        # Cluster summary/ratio
+        # Shows mean prior probability, the number of observations assigned to the
+        # corresponding clusters, the number of observations where the probability
+        # exceeds eps (with a default of eps = 10−4), and the ratio of the latter two
+        # numbers. For well-seperated components, a large proportion of observations with
+        # non-vanishing posteriors pnk should also be assigned to the corresponding
+        # cluster, giving a ratio close to 1.
+        cat("\nCluster separation (ratios close to 1 indicate\nwell separated clusters):\n")
+        print(round(x$csummary, 2))
 
         # If there is a concomitant model: show estimated coefficients and
         # z statistics.
