@@ -5,19 +5,11 @@
 * There is one import ":::" (cgaussian family) in one of the
   examples -> illegal!
 * A separate `windrose` vignette might be nice.
-* ... started a separate vignette for `tsplot`, implement separate
+    ... started a separate vignette for `tsplot`, implement separate
     vignettes for `windrose` and `image`.
-* Allow to add a wind sector when using `windrose.default`, 
-  Similar for `foehnix` models given the user-defined `dd`, `ff`
-  names.
-* Added second demo data set "Viejas and Lucky Five Ranch (CA, USA)";
-    modified the `demodata(...)` function to be able to handle both
-    (multiple) demo data sets.
-* Data sets (`ellboegen`, `sattelberg`, `viejas`, `luckyfive`) now stored
-    as binary time series objects (`.rda`; `zoo`).
-* Remove xlim and ylim from image and make it, as for zlim, an optional
-    argument documented in the 'Details' section.
 * A Tyrolean and a Californian demo vignette? - draft added.
+* `summary(..., detailed = TRUE)` does not show sigma coefficients.
+* Seems I am having some problems with cgaussian/tgaussian/...
 
 # foehnix 0.1-2 (August 2019; development stage)
 
@@ -28,11 +20,22 @@
     updated extended data set (by Deborah Detka). Moved from csv to rda
     using `usethis`; reduces package size; added data/scripts in `data-raw`.
 * Moved generic `image` function (`image.foehnix`) to `R/image.R`.
+* `image` allows to set custom `xlim`, `ylim` (and `zlim`) limits.
+    Decreasing `xlim` values allow to plot over the new years period.
 * Added generic `write.csv` method to save estimated probabilities to a CSV file.
     Will be ued to test output (and compare _R_/python implementation).
 * New vignettes (currently in draft stage): each plotting routine gets its own
     vignette.
-* Allow custom wind speed breaks when calling `windrose`.
+* Allow for custom wind speed breaks when calling `windrose`.
+* Allow for adding wind sectors when calling `windrose.default`.
+* Added second demo data set "Viejas and Lucky Five Ranch (CA, USA)";
+    modified the `demodata(...)` function to be able to handle both
+    (multiple) demo data sets.
+* Data sets (`ellboegen`, `sattelberg`, `viejas`, `luckyfive`) now stored
+    as binary time series objects (`.rda`; `zoo`).
+* Fixed a bug in the p-value calculation in `summary.crch` (`abs` was missing).
+* New test statistics in `summary.foehnix` (similar to `flexmix`).
+* Additional plot type (`"posterior"`, `5L`) in `plot.foehnix`.
 
 # foehnix 0.1-2 (August 2019)
 
