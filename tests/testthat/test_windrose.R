@@ -31,6 +31,7 @@ test_that("Testing wind rose plot functionality (basic type)", {
     # Wind speed < 0
     expect_error(windrosefun(dd = c(10,180), ff = c(-3,1)))
 
+
     # Loading some data
     expect_silent(data <- demodata("ellboegen"))
 
@@ -44,6 +45,9 @@ test_that("Testing wind rose plot functionality (basic type)", {
     expect_identical(dim(res$tab), c(length(res$dd.breaks), length(res$ff.breaks)) - 1L)
     expect_true(is.null(res$counts))
 
+    # Custom breaks
+    expect_silent(windrosefun(data, breaks = seq(0, 30, by = 2.5)))
+    expect_warning(windrosefun(data, breaks = seq(0, 10, by = 2.5)))
 
     # Second: the histogram plot
     expect_silent(res <- windrosefun(as.numeric(data$dd), as.numeric(data$ff),
@@ -63,7 +67,7 @@ test_that("Testing wind rose plot functionality (basic type)", {
     copy <- data
     names(copy)[grep("^ff$", names(copy))] <- "wind_spd"
     names(copy)[grep("^dd$", names(copy))] <- "wind_dir"
-    expect_silent(windrosefun(copy, var.ff = "wind_spd", var.dd = "wind_dir"))
+    expect_silent(windrosefun(copy, ffvar = "wind_spd", ddvar = "wind_dir"))
 
 })
 

@@ -56,6 +56,14 @@ test_that("Testing plot.foehnix function", {
     expect_silent(plotfun(mod0, which = 1:2, ask = FALSE))
     expect_silent(plotfun(mod1, which = 1:2, ask = FALSE))
 
+    # Posterior plot with custom freq/breaks
+    expect_silent(plotfun(mod1, which = "post")) 
+    expect_silent(plotfun(mod1, which = "post", freq = TRUE))
+    expect_silent(plotfun(mod1, which = "post", freq = FALSE))
+    expect_error(plotfun(mod1, which = "post", freq = "wrong"))
+    expect_silent(plot(mod1, which = "post", breaks = seq(0, 1, by = 0.05)))
+    expect_silent(plot(mod1, which = "post", breaks = c(0, 0.2, 0.4, 0.9, 1.0)))
+
     # Setting log to FALSE
     expect_silent(plotfun(mod0, log = FALSE, ask = FALSE))
     expect_silent(plotfun(mod1, log = FALSE, ask = FALSE))
