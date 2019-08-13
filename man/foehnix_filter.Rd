@@ -5,7 +5,7 @@
 \alias{print.foehnix.filter}
 \title{Evaluates Data Filter Rules for foehnix Mixture Moel Calls.}
 \usage{
-foehnix_filter(x, filter)
+foehnix_filter(x, filter, cols = NULL)
 
 \method{print}{foehnix.filter}(x, ...)
 }
@@ -17,6 +17,10 @@ observations.}
 function operating on \code{x}, or a named list with a simple
 filter rule (\code{numeric} of length two) or custom filter
 functions. Details provided in the 'Details' section.}
+
+\item{cols}{\code{NULL} or a character vector containing the names in 'x'
+which are not allowed to contain missing values.
+If \code{NULL} all elements have to be non-missing.}
 
 \item{...}{currently unused.}
 }

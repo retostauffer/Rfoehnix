@@ -66,7 +66,7 @@ the same information." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -179,8 +179,9 @@ the same information.</p>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
 <span class='fu'><a href='windrose.html'>windrose</a></span>(<span class='no'>x</span>, <span class='no'>ff</span>, <span class='kw'>interval</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"density"</span>,
-  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='no'>...</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>var.ff</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>var.dd</span> <span class='kw'>=</span> <span class='st'>"dd"</span>)</pre>
+  <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>windsector.col</span> <span class='kw'>=</span> <span class='st'>"gray90"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>hue</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>100</span>), <span class='kw'>power</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='no'>...</span>, <span class='kw'>dd</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"ff"</span>, <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -213,6 +214,10 @@ If <code>NULL</code> both types will be plotted.</p></td>
 wind sectors. See 'Examples' ('Highlighting wind sectors').</p></td>
     </tr>
     <tr>
+      <th>windsector.col</th>
+      <td><p>color of the wind sector (if provided).</p></td>
+    </tr>
+    <tr>
       <th>main</th>
       <td><p>character, title. If no title is set a default one will be shown.</p></td>
     </tr>
@@ -231,7 +236,7 @@ alpha behavior.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>currently unused.</p></td>
+      <td><p>additional optional arguments forwarded, see 'Details'.</p></td>
     </tr>
     <tr>
       <th>dd</th>
@@ -243,12 +248,12 @@ wind speed and meteorological wind direction (see 'Details' section).</p></td>
       <td><p>a custom set of filter rules (see <code><a href='foehnix_filter.html'>foehnix_filter</a></code>).</p></td>
     </tr>
     <tr>
-      <th>var.ff</th>
+      <th>ffvar</th>
       <td><p>string, custom name of the wind speed variable in <code>x</code>
 if <code>x</code> is a multivariate object (see 'Details' section).</p></td>
     </tr>
     <tr>
-      <th>var.dd</th>
+      <th>ddvar</th>
       <td><p>string, custom name of the wind direction variable in <code>x</code>
 if <code>x</code> is a multivariate object (see 'Details' section).</p></td>
     </tr>
@@ -279,12 +284,19 @@ a multivariate <code>zoo</code> object or <code>data.frame</code> can be provide
 calling the function containing (at least) wind direction and wind speed. By
 default, the method expects the wind direction variable to be named
 <code>"dd"</code>, the wind speed named <code>"ff"</code>.  Custom names can be
-specified using the two input arguments <code>var.ff</code> and <code>var.dd</code>.</p>       
+specified using the two input arguments <code>ffvar</code> and <code>ddvar</code>.</p>       
 <p>Custom filter: the optional <code>filter</code> input can be used if input
 <code>x</code> is a multivariate object and provides a convenient
 way to subset/filter the data. A detailed description how to define
 the filter rules can be found on the documentation page of 
 the <code><a href='foehnix_filter.html'>foehnix_filter</a></code> method.</p>
+<p>Additional optional arguments: The function allows to provide
+additional arguments for better customization. These arguments are
+forwarded to selected calls.
+Currently implemented:</p><ul>
+<li><p>For <code>type = "density"</code>: <code>border</code>, <code>lty</code>,
+     and <code>lty</code> forwarded to <code><a href='https://www.rdocumentation.org/packages/graphics/topics/polygon'>polygon(...)</a></code>.</p></li>
+</ul>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -318,7 +330,7 @@ the <code><a href='foehnix_filter.html'>foehnix_filter</a></code> method.</p>
 <span class='no'>copy</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>copy</span>)[<span class='fl'>1</span>:<span class='fl'>2</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"wind_dir"</span>, <span class='st'>"wind_spd"</span>)
 <span class='fu'><a href='windrose.html'>windrose</a></span>(<span class='no'>copy</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Demo Windrose\nMultivariate zoo, custom names"</span>,
-         <span class='kw'>var.dd</span> <span class='kw'>=</span> <span class='st'>"wind_dir"</span>, <span class='kw'>var.ff</span> <span class='kw'>=</span> <span class='st'>"wind_spd"</span>)</div><div class='img'><img src='windrose.default-5.png' alt='' width='700' height='433' /></div><div class='input'>
+         <span class='kw'>ddvar</span> <span class='kw'>=</span> <span class='st'>"wind_dir"</span>, <span class='kw'>ffvar</span> <span class='kw'>=</span> <span class='st'>"wind_spd"</span>)</div><div class='img'><img src='windrose.default-5.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Highlighting wind sectors</span>
 <span class='fu'><a href='windrose.html'>windrose</a></span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>)),
          <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Windrose\nUnnamed Wind Sector"</span>)</div><div class='img'><img src='windrose.default-6.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='windrose.html'>windrose</a></span>(<span class='no'>data</span>, <span class='kw'>windsector</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>),

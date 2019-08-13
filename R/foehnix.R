@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-12 14:43 on marvin
+# - L@ST MODIFIED: 2019-08-13 15:16 on marvin
 # -------------------------------------------------------------------
 
 
@@ -768,21 +768,22 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # Identify rows with missing values
     idx_notna <- which(!is.na(y) & apply(mf, 1, function(x) sum(is.na(x))) == 0)
 
+
     # If a wind sector is given: identify observations with a wind direction
     # outside the user defined sector. These will not be considered in the
     # statistical models.
-    filter_obj <- foehnix_filter(data, filter)
+    filter_obj <- foehnix_filter(data, filter, names(mf))
 
     # Take all elements which are not NA and where the
     # foehnix_filter routine returned an index on "good" (not
     # removed due to filter rules OR due to missing values).
     idx_take <- idx_notna[idx_notna %in% filter_obj$good]
-    if ( length(idx_take) == 0 ) stop("No data left after applying the required filters.")
+    if (length(idx_take) == 0) stop("No data left after applying the required filters.")
 
     # Subset the model.frame (mf) and the response (y) and pick
     # all valid rows (without missing values on the mandatory columns
     # and, if a wind sector is given, with valid wind direction observations).
-    mf <- matrix(unlist(mf[idx_take,]), ncol = ncol(mf), dimnames = list(NULL, names(mf)))
+    mf <- mf[idx_take, , drop = FALSE]
     y  <- y[idx_take]
     # If "y" is a simple constant: stop.
     if (isTRUE(all.equal(sd(y), 0))) {
@@ -801,25 +802,25 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
     # This would lead to a non-identifiable problem.
     if( sum(apply(logitX, 2, function(x) length(unique(na.omit(x)))) <= 1) > 1 )
         stop("Multiple columns with constant values in model matrix of the concomitant model. Stop!")
-    if ( control$standardize ) logitX <- standardize(logitX)
+    if (control$standardize ) logitX <- standardize(logitX)
 
     # Non-concomitant model
-    if ( length(labels(terms(formula))) == 0 ) {
-        if ( control$verbose ) cat("Calling foehnix.noconcomitant.fit\n")
+    if (length(labels(terms(formula, data = data))) == 0 ) {
+        if (control$verbose) cat("Calling foehnix.noconcomitant.fit\n")
         rval <- do.call("foehnix.noconcomitant.fit",
                         append(list(y = y), control))
     # Calling glmnet for the concomitant model
-    } else if ( inherits(control$glmnet.control, "glmnet.control") ) {
-        if ( control$verbose ) cat("Calling foehnix.reg.fit\n")
+    } else if (inherits(control$glmnet.control, "glmnet.control") ) {
+        if ( control$verbose) cat("Calling foehnix.reg.fit\n")
         rval <- do.call("foehnix.reg.fit",
                         append(list(y = y, logitX = logitX), control))
     # Unregularized fit (standard fitting method)
     } else {
-        if ( control$verbose ) cat("Calling foehnix.unreg.fit\n")
+        if (control$verbose) cat("Calling foehnix.unreg.fit\n")
         rval <- do.call("foehnix.unreg.fit",
                         append(list(y = y, logitX = logitX), control))
     }
-    if ( control$verbose ) cat("Estimation finished, create final object\n")
+    if (control$verbose) cat("Estimation finished, create final object\n")
 
 
     # Final coefficients of the concomitant model have to be destandardized

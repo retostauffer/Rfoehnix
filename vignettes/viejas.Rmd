@@ -15,7 +15,7 @@ situations. The Lucky Five Ranch is located northeast of and provides
 information about the upstream air mass for the classification algorithm.
 
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 5}
+```{r leaflet, echo = FALSE, fig.width = 10, fig.height = 5}
 library("leaflet")
 library("sp")
 
@@ -53,14 +53,12 @@ For details see [`demodata`](references/demodata.html).
 ```{r load_california}
 data <- demodata("california")
 head(data, n = 3)
-# Check if we have a "zoo" time series object
-is.zoo(data)
-# And that the data are numeric
-is.numeric(data)
+# Check if our object is a numeric zoo object:
+c("is.zoo" = is.zoo(data), "is.numeric" = is.numeric(data))
 ```
 
 Missing values in the
-data set (`NA`s) are allowed and will be properly handled by all functions.
+data set (`NA`) are allowed and will be properly handled by all functions.
 One restriction is that the time series object has to be regular (but not
 strictly regular). "Regular" means that the time steps have to be divisible
 by the smallest time step, "strictly regular" means that we have no missing
@@ -69,7 +67,7 @@ to be available _every hour_ have to be available to be strictly regular).
 The [`foehnix`](references/foehnix.html) will inflate the data set and make
 it strictly regular, if needed.
 
-```{r}
+```{r check_regular}
 c("is regular" = is.regular(data),
   "is strictly regular" = is.regular(data, strict = TRUE))
 ```
@@ -79,7 +77,7 @@ c("is regular" = is.regular(data),
 After preparing the data set (regular or strictly regular `zoo   object with
 `numeric` values) we can investigate the observed wind information.
 
-```{r, fig = TRUE, fig.width = 12, fig.height = 6}
+```{r emp_windrose, fig = TRUE, fig.width = 12, fig.height = 6}
 par(mfrow = c(1,2))
 # Observed wind speed/wind direction "Viejas"
 windrose(data, ddvar = "wind_direction", ffvar = "wind_speed",
@@ -94,33 +92,43 @@ windrose(data, ddvar = "crest_wind_direction", ffvar = "crest_wind_speed",
 Given the plots above we define the `foehn` wind direction
 at Viejas between 305 and 160 degrees (a `r 360 - (305 - 160)` degree
 wind sector centered northeast). This wind sector can be chosen
-rather wide, but should exclude non-foehn wind directions to exclude
-upslope winds.
+rather wide, but should leave out non-foehn wind directions to exclude
+upslope winds. The wind sector(s) can be added to the
+[`windrose`](references/windrose.html) as follows:
 
 ```{r, fig = TRUE, fig.width = 8, fig.height = 8}
+# Windrose plot with custom variable names (ddvar, ffvar),
+# title, breaks, polygon borders, and the wind sector from above
+# with a custom color.
 windrose(data, ddvar = "wind_direction", ffvar = "wind_speed",
          main = "Windrose Viejas with Custom foehn Wind Sector",
          breaks = seq(0, 16, by = 2),
-         windsector = list(wind_direction = c(305, 160)))
+         windsector = list(c(305, 160)),
+         windsector.col = "#DFEFF6",
+         border = "gray50", lwd = .5)
 ```
 
-For the [`windrose`](references/windrose.html) plot the `windsector`
+The `windsector`
 is solely used for visual justification, the same restriction will
 be used in the following step when estimating the [`foehnix`](references/foehnix.html)
 classification model.
 
 
-# Estimate `foehnix` Model for Foehn Classification
+# Estimate Classification Model
 
-The following model assumptions are used:
+The next step (the core feature of this package) is to estimate
+the two-component mixture model for foehn classification.
+The following model assumptions are used here:
 
-* Main variable to separate "foehn" and "no foehn" cases: `diff_temp` (potential temperature difference).
-* Concomitant variable: `wind_speed` (wind speed at target station Viejas).
-* Wind filter: the `wind_direction` at station Viejas has to lie within
+* **Main variable**: `diff_temp` (potential temperature difference) is used as
+  the main covariate to separate 'foehn' from 'no foehn' events.
+* **Concomitant variable**: `wind_speed` (wind speed at target station Viejas).
+* **Wind filter**: the `wind_direction` at station Viejas has to lie within
     305 and 160 degrees (northeasterly wind direction; see above).
-* Option `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
+* **Option switch:** `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
 
 ```{r estimate_model, results = "hide"}
+# Estimate the foehnix classification model
 mod <- foehnix(diff_temp ~ wind_speed,
                data   = data,
                switch = TRUE,
@@ -129,17 +137,46 @@ mod <- foehnix(diff_temp ~ wind_speed,
 
 ### Model Summary
 
-```{r, echo = FALSE}
+```{r model_summary, echo = FALSE}
+# Model summary
 summary(mod, detailed = TRUE)
 ```
 
-The full data set contains `N = `r nrow(mod$data)`` rows, 
-`r nrow(data)` from the data set (`data`) and 
-`r mod$inflated` due to inflation (create strictly regular time series object).
-Thereof, `r length(mod$filter_obj$ugly)` are not considered
-due to missing data, `r length(mod$filter_obj$bad)` as they do not fulfil the filter constraint
+The full data set contains $N = `r nrow(mod$data)`$ rows, $`r nrow(data)`$ from
+the data set itself (`data`) and $`r mod$inflated`$ due to inflation used to make the
+time series object strictly regular.
+
+Thereof, $`r length(mod$filter_obj$ugly)`$ are not considered
+due to missing data, $`r length(mod$filter_obj$bad)`$ as they do not fulfil the filter constraint
 (`wind_direction` outside defined wind sector), wherefore the final
-model is based on `r length(mod$filter_obj$good)` observations (or rows).
+model is based on $`r length(mod$filter_obj$good)`$ observations (or rows).
+
+One good indication whether the model well separates the two clusters
+is the "_Cluster separation_" output ([`summary`](references/summary.html))
+or the posterior probability plot:
+
+```{r}
+# Cluster separation (summary)
+summary(mod)$separation
+```
+
+The `separation` matrix shows the prior probabilities,
+the size (number of observations assigned to each component; posterior probability),
+number of probabilities exceeding a threshold (default `eps = 1e-4`), and the
+ratio between the latter two. Ratios close to $1.0$ indicate that the two clusters
+are well separated ($ratio > 0.5$ are already good for this application).
+
+Another indication is the `which = "posterior"` plot which shows the empirical
+histogram of estimated probabilities (for within-windsector observations).
+Point masses around $0.0$ and $1.0$ indicate that we have two well separated
+clusters (the probability to fall in one of the clusters is always close to
+either $0$ or $1$).
+
+```{r, fig = TRUE, fig.width = 8, figh.height = 4}
+plot(mod, which = "posterior", breaks = seq(0, 1, by = 0.05)) 
+```
+
+
 
 
 ### Model coefficients
@@ -154,14 +191,14 @@ The following parameters are estimated for the two `r mod$control$family$name` c
     `wind_speed` effect, `r sprintf("%+.1f", exp(coef(mod)["wind_speed"]) - 1)` percent per
     $m~s^{-1}$
 
-```{r}
+```{r model_coef}
 coef(mod)
 ```
 
 
 <div class="hide-Rinput">
 
-```{r plot_mod_2d, fig = TRUE, fig.width = 8, fig.height = 6}
+```{r plot_mod_2dimg, fig = TRUE, fig.width = 8, fig.height = 6}
 # Grid definition for 2-D plot
 tmp <- list(diff_temp      = seq(-5, +12, by = .5),
             wind_speed     = seq(0, 12, by = .5),
@@ -190,20 +227,23 @@ axis(side = 4, at = seq(0, 1, by = .1))
 
 <div class="hide-Rinput">
 
-```{r plot_mod_2ddata, fig = TRUE, fig.width = 8, fig.height = 6}
+```{r plot_mod_2dpoints, fig = TRUE, fig.width = 8, fig.height = 6}
 # Grid definition for 2-D plot
-idx  <- mod$filter_obj$good
-prob <- fitted(mod)
+prob <- fitted(mod)[mod$filter_obj$good] # Estimated probabilities
 cols <- cut(prob, breaks = seq(0, 1, by = 0.1), include.lowest = TRUE,
             labels = colorspace::diverging_hcl(10))
-# Plot
-with(mod$data[idx, ],
-     plot(wind_speed ~ diff_temp, col = as.character(cols)[idx], pch = 19,
+# Prepare temporary data set (out of those used for classification)
+tmp  <- as.data.frame(subset(mod$data[mod$filter_obj$good, ],
+                             select = c(wind_speed, diff_temp)))
+tmp$col <- cols      # Add color information
+tmp <- unique(tmp)   # We only need unique entries
+# Create plot
+with(tmp,
+     plot(wind_speed ~ diff_temp, col = as.character(col), pch = 19,
           main = "Fitted Probabilities | within Wind Sector"))
 legend("topright", fill = colorspace::diverging_hcl(10), bty = "n",
        title = "probability",
        legend = levels(cut(0, breaks = seq(0, 1, by = 0.1), include.lowest = TRUE)))
-
 ```
 
 </div>
@@ -221,17 +261,17 @@ The following figure shows the 'log-likelihood contribution' of
 * and the **full** log-likelihood sum which is maximised by
   the optimization algorithm.
 
-The abscissa shows the logarithm of the iterations during 
+The abscissa shows (by default) the logarithm of the iterations during 
 optimization. 
 
-```{r plot_mod1, fig = TRUE, fig.width = 12, fig.height = 6}
+```{r plot_loglikcontribution, fig = TRUE, fig.width = 12, fig.height = 6}
 # Log-likelihood contribution
 plot(mod, which = "loglikcontribution")
 ```
 
-Alternatively the coefficient paths can be plotted:
+In addition, the coefficient paths during optimization can be visualized:
 
-```{r plot_mod2, fig = TRUE, fig.width = 12, fig.height = 6}
+```{r plot_coefpath, fig = TRUE, fig.width = 12, fig.height = 6}
 # Coefficient path
 plot(mod, which = 3L)
 ```
@@ -244,7 +284,8 @@ Last but not least a histogram with the two clusters is plotted.
 `which = "hist"`creates an empirical density histogram separating "no foehn"
 and "foehn" events adding the estimated distribution for these two clusters.
 
-```{r plot_mod_hist, fig = TRUE, fig.width = 8, fig.height = 3.5}
+```{r plot_histogram, fig = TRUE, fig.width = 8, fig.height = 3.5}
+devtools::load_all("..")
 plot(mod, which = "hist")
 ```
 
@@ -256,19 +297,19 @@ The Californian demo data set has non-standard variable names (by purpose).
 Thus, when calling `tsplot` (time series plot) we do have to manually specify
 these names.
 
-```{r, fig = TRUE, fig.width = 12, fig.height = 15}
+```{r tsplot, fig = TRUE, fig.width = 12, fig.height = 15}
 # Some smaller quality issues in the data (should not be a big deal)
 start <- as.POSIXct("2012-03-01")
 end   <- as.POSIXct("2012-03-12")
 
-# As we dont have the standard names: re-specify the
-# names for this plot (new feature).
-tsplot(mod, style = "advanced", diff_t = "diff_temp",
+# As we dont have the standard names: re-specify variable names.
+# In addition, use 'style = "advanced"' to show more details.
+tsplot(mod, style = "advanced", 
+       diff_t = "diff_temp",     rh = "relative_humidity",
        t   = "air_temp",         crest_t   = "crest_air_temp",
        dd  = "wind_direction",   crest_dd  = "crest_wind_direction",
        ff  = "wind_speed",       crest_ff  = "crest_wind_speed",
        ffx = "wind_gust",        crest_ffx = "crest_wind_gust",
-       rh = "relative_humidity",
        windsector = list(wind_direction = c(305, 160)),
        start = start, end = end)
 ```
@@ -276,17 +317,19 @@ tsplot(mod, style = "advanced", diff_t = "diff_temp",
 
 # Wind Rose Plot
 
-```{r windrose}
+```{r windrose, fig = TRUE, fig.width = 12, fig.height = 5}
+devtools::load_all("..")
 windrose(mod, dd = "wind_direction", ff = "wind_speed",
          type = "hist", which = c("foehn", "nofoehn"),
-         windsector = list(c(305, 160)))
+         windsector = list(c(305, 160)),
+         breaks = seq(0, 16, by = 2))
 ```
 
 # Hovmöler Diagram
 
 
-```{r image_1, fig = TRUE, fig.width = 12, fig.height = 6}
-# Default plot
+```{r image1, fig = TRUE, fig.width = 12, fig.height = 6}
+# Default image plot
 image(mod)
 ```
 
@@ -296,7 +339,8 @@ colors and additional contour lines and custom
 aggregation period (two-weeks, 3-hourly).
 
 
-```{r image_2, fig = TRUE, fig.width = 12, fig.height = 6}
+```{r image2, fig = TRUE, fig.width = 12, fig.height = 6}
+# Customizing image plot
 image(mod, deltad = 14L, deltat = 3*3600, contours = TRUE,
       contour.col = "white", lwd = 2, labcex = 1.5,
       col = colorspace::sequential_hcl(51, "Purple-Yellow", rev = TRUE),

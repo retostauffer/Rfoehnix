@@ -7,7 +7,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-12 17:11 on marvin
+# - L@ST MODIFIED: 2019-08-13 11:15 on marvin
 # -------------------------------------------------------------------
 
 
@@ -187,23 +187,32 @@ plot.foehnix <- function(x, which = NULL, log = TRUE, ..., ask = TRUE) {
             # Position where to draw the density
             at   <- seq(min(tmp$y), max(tmp$y), length = 501)
 
+            # Breaks
             bk   <- seq(min(tmp$y), max(tmp$y), length = 50)
+
+            # Calculate the histograms
             h1   <- hist(tmp$y[which(tmp$prob <  .5)], plot = FALSE, breaks = bk, include.lowest = TRUE)
             h2   <- hist(tmp$y[which(tmp$prob >= .5)], plot = FALSE, breaks = bk, include.lowest = TRUE)
-            ylim <- c(0, max(h1$density, h2$density, na.rm = TRUE))
+            # Calculate density
+            d1   <-  x$control$family$d(at, x$coef$mu1, exp(x$coef$logsd1))
+            d2   <-  x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2))
+
+            ylim <- c(0, max(h1$density, h2$density, d1, d2, na.rm = TRUE))
             xlim <- range(bk)
 
             # Plotting conditional component 1 histogram
             plot(h1, freq = FALSE, xlim = xlim, ylim = ylim,
                  main = "Conditional Histogram\nComponent 1 (no foehn)",
                  border = "gray50", xlab = expression(paste("y[",pi < 0.5,"]")))
-            lines(at, x$control$family$d(at, x$coef$mu1, exp(x$coef$logsd1)), col = 2, lwd = 2)
+            lines(at, d2, col = "gray50", lwd = .5, lty = 5)
+            lines(at, d1, col = 2, lwd = 2)
 
             # Plotting conditional component 2 histogram
             plot(h2, freq = FALSE, xlim = xlim, ylim = ylim,
                  main = "Conditional Histogram\nComponent 2 (foehn)",
                  border = "gray50", xlab = expression(paste("y[",pi >= 0.5,"]")))
-            lines(at, x$control$family$d(at, x$coef$mu2, exp(x$coef$logsd2)), col = 4, lwd = 2)
+            lines(at, d1, col = "gray50", lwd = .5, lty = 5)
+            lines(at, d2, col = 4, lwd = 2)
 
         }
     }

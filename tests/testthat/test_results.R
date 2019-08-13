@@ -24,7 +24,7 @@ test_that("Testing results for models, Tyrolean data set", {
     expect_silent(ell2 <- foehnix(ff ~ rh, data = data_ell, filter = filter_ell, verbose = FALSE))
     expect_silent(write.csv(ell2, file = tmpfile, info = FALSE))
     #print(tools::md5sum(tmpfile))
-    expect_true(tools::md5sum(tmpfile) == "1aca3601dfe1926be5cb54d0739bbf84")
+    expect_true(tools::md5sum(tmpfile) == "1807cfb60f0b28438ab0fe80621a8ca1")
 
     expect_silent(tyr1 <- foehnix(ff ~ 1, data = data_tyrol, filter = filter_tyrol, verbose = FALSE))
     expect_silent(write.csv(tyr1, file = tmpfile, info = FALSE))

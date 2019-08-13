@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -142,11 +142,351 @@
 
     
     
-<div id="htmlwidget-7fc030a1c1a652b39e6f" style="width:960px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7fc030a1c1a652b39e6f">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
+<div id="data-set-description" class="section level1">
+<h1 class="hasAnchor">
+<a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
+<p>The “Tyrolean” data set provides hourly observations from two stations, namely “Ellbögen” and “Sattelberg” located in Tyrol, Austria.</p>
+<p>Ellbögen is our target station (valley site) located in the Wipp Valley, a north-south oriented alpine valley on the northern side of the European Alps. To the north the Wipp Valley opens into the Inn Valley (close to Innsbruck, the capitol of Tyrol), to the south the valley ends at a narrow gap in the main Alpine ridge called Brennerpass (<span class="math inline">\(1370~m\)</span>; the pass between Austria and Italy) flanked by mountains (<span class="math inline">\(&gt;2100~m\)</span>). The Wipp Valley is one of the lowest and most distinct cuts trough the Alpine mountain range and well known for south foehn (north of the Alps). Station Sattelberg serves as crest station and provides observations of the upstream air mass during south foehn events. The station is located on top of the mountain to the west of the pass.</p>
+<div id="htmlwidget-df1bd80d56c86f6e8bfe" style="width:960px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-df1bd80d56c86f6e8bfe">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
 </div>
+<div id="loading-the-data-set" class="section level1">
+<h1 class="hasAnchor">
+<a href="#loading-the-data-set" class="anchor"></a>Loading the Data Set</h1>
+<p>The call <a href="references/demodata"><code><a href="../reference/demodata.html">demodata("tyrol")</a></code></a> returns the combined data set for both station (Ellbögen and Sattelberg). In addition, the potential temperature difference between the two stations is calculated by reducing the dry air temperature from “Sattelberg” to the height of “Ellbögen” (dry adiabatic lapse rate of 1K per 100m; stored on <code>diff_t</code>). Details can be found on the <a href="references/demodata.html"><code>demodata</code></a> reference page.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
+<pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
+## 2006-01-01 01:00:00 171 0.6  90 -0.4      180     10.8      100    -7.8
+## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
+## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
+##                     diff_t
+## 2006-01-01 01:00:00   2.87
+## 2006-01-01 02:00:00   4.07
+## 2006-01-01 03:00:00   1.97</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check if our object is a numeric zoo object:</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"is.zoo"</span> =<span class="st"> </span><span class="kw">is.zoo</span>(data),
+  <span class="st">"is.numeric"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">is.numeric</a></span>(data),
+  <span class="st">"is regular"</span> =<span class="st"> </span><span class="kw">is.regular</span>(data),
+  <span class="st">"is strictly regular"</span> =<span class="st"> </span><span class="kw">is.regular</span>(data, <span class="dt">strict =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##              is.zoo          is.numeric          is regular 
+##                TRUE                TRUE                TRUE 
+## is strictly regular 
+##               FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"tepmoral resolution (seconds)"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/time">deltat</a></span>(data),
+  <span class="st">"missing values"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(data)))</code></pre></div>
+<pre><code>## tepmoral resolution (seconds)                missing values 
+##                          3600                         87267</code></pre>
+<p>The data set returned is a regular <code>numeric</code> <code>zoo</code> time series object. Note that the data set is not strictly regular (contains hourly observations, but some are missing) and contains quite some missing values (<code>NA</code>). This is not a problem as the functions and methods will take care of missing values and inflate the time series object (regular <span class="math inline">\(\rightarrow\)</span> strictly regular).</p>
+<p><strong>Important:</strong> The names of the variables in the Tyrolean data set are the “<em>standard names</em>” on which most functions and methods provided by this package are based on. To be precise:</p>
+<ul>
+<li>
+<strong>Valley station:</strong> air temperature <code>t</code>, relative humidity <code>rh</code>, wind speed <code>ff</code>, wind direction <code>dd</code> (meteorological, degrees <span class="math inline">\(\in [0, 360]\)</span>)</li>
+<li>
+<strong>Crest station:</strong> air temperature <code>crest_t</code>, relative humidity <code>crest_rh</code>, wind speed <code>crest_ff</code>, wind direction <code>crest_dd</code> (<span class="math inline">\(\in [0, 360]\)</span>)</li>
+<li>
+<strong>In addition:</strong> Potential temperature difference <code>diff_t</code> (calculated by <a href="references/demodata.html"><code>demodata</code></a>
+</li>
+</ul>
+<p>… however, all functions arguments which allow to set custom names (see “<a href="articles/viejas.html">Demos &gt; Viejas (California, USA)</a>” or function references).</p>
+<p>After preparing the data set (regular or strictly regular <code>zoo   object with</code>numeric` values) we can investigate the observed wind information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="co"># Observed wind speed/wind direction "Ellboegen"</span>
+<span class="co"># Expects a variable 'dd' and 'ff' by default. Thus,</span>
+<span class="co"># 'ddvar'/'ffvar' do not have to be specified.</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data,
+         <span class="dt">main =</span> <span class="st">"Windrose Ellbögen"</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">35</span>, <span class="dt">by =</span> <span class="dv">5</span>))
+<span class="co"># Observed wind speed/wind direction "Sattelberg"</span>
+<span class="co"># Specify dd/ff of the crest station (ddvar, ffvar)</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"crest_dd"</span>, <span class="dt">ffvar =</span> <span class="st">"crest_ff"</span>,
+         <span class="dt">main =</span> <span class="st">"Windrose Sattelberg"</span>, <span class="dt">hue =</span> <span class="dv">270</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">35</span>, <span class="dt">by =</span> <span class="dv">5</span>))</code></pre></div>
+<p><img src="ellboegen_files/figure-html/emp_windrose-1.png" width="1152"></p>
+<p>Based on prior knowledge and the plots above we define two “foehn wind sectors” as follows:</p>
+<ul>
+<li>At <strong>Ellbögen</strong> the observed wind direction (<code>dd</code>) needs to be along valley within 43 and 223 degrees (south-easterly; a 180 degree sector).</li>
+<li>At <strong>Sattelberg</strong> the observed wind direction (<code>crest_dd</code>) needs to be within 90 and 270 degrees (south wind; 180 degree sector).</li>
+</ul>
+<p>The wind sector(s) can be added to the <a href="references/windrose.html"><code>windrose</code></a> plots for visual justification, but well also be used later when estimating the <a href="references/foehnix.html"><code>foehnix</code></a> classification model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="co"># Ellboegen with custom wind sector</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data,
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"south-east wind"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
+         <span class="dt">main =</span> <span class="st">"Windrose Ellbögen"</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">35</span>, <span class="dt">by =</span> <span class="dv">5</span>))
+<span class="co"># Observed wind speed/wind direction "Sattelberg"</span>
+<span class="co"># Specify custom variable names for dd/ff (crest_dd, crest_ff).</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"crest_dd"</span>, <span class="dt">ffvar =</span> <span class="st">"crest_ff"</span>,
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"south wind"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>)),
+         <span class="dt">main =</span> <span class="st">"Windrose Sattelberg"</span>, <span class="dt">hue =</span> <span class="dv">270</span>,
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">35</span>, <span class="dt">by =</span> <span class="dv">5</span>))</code></pre></div>
+<p><img src="ellboegen_files/figure-html/windsector_windrose-1.png" width="1152"></p>
+</div>
+<div id="estimate-classification-model" class="section level1">
+<h1 class="hasAnchor">
+<a href="#estimate-classification-model" class="anchor"></a>Estimate Classification Model</h1>
+<p>The most important step is to estimate the <a href="references/foehnix.html"><code>foehnix</code></a> classification model. We use the following model assumptions:</p>
+<ul>
+<li>
+<strong>Main variable</strong>: <code>diff_t</code> is used as the main covariate to separate ‘foehn’ from ‘no foehn’ events (potential temperature difference).</li>
+<li>
+<strong>Concomitant variable</strong>: <code>rh</code> and <code>ff</code> at valley site (relative humidity and wind speed).</li>
+<li>
+<strong>Wind filters</strong>: two filters are defined. <code>dd = c(43, 223)</code> for Ellbögen and <code>crest_dd = c(90, 270)</code> for Sattelberg (see above).</li>
+<li>
+<strong>Option switch:</strong> <code>switch = TRUE</code> as high <code>diff_temp</code> indicate stable stratification (no foehn).</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate the foehnix classification model</span>
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>rh <span class="op">+</span><span class="st"> </span>ff,
+               <span class="dt">data   =</span> data,
+               <span class="dt">switch =</span> <span class="ot">TRUE</span>,
+               <span class="dt">filter =</span> filter)</code></pre></div>
+<div id="model-summary" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-summary" class="anchor"></a>Model Summary</h3>
+<pre><code>## 
+## Call: foehnix(formula = diff_t ~ rh + ff, data = data, switch = TRUE, 
+##     filter = filter)
+## 
+## Number of observations (total)   113952 (5527 due to inflation)
+## Removed due to missing values     38859 (34.1 percent)
+## Outside defined wind sector       50665 (44.5 percent)
+## Used for classification           24428 (21.4 percent)
+## 
+## Climatological foehn occurance 18.36 percent (on n = 75093)
+## Mean foehn probability 18.06 percent (on n = 75093)
+## 
+## Log-likelihood: -55044.0, 7 effective degrees of freedom
+## Corresponding AIC = 110101.9, BIC = 110158.6
+## Time required for model estimation: 3.1 seconds
+## 
+## Cluster separation (ratios close to 1 indicate
+## well separated clusters):
+##                        prior  size post&gt;0 ratio
+## Component 1 (foehn)     0.56 13785  19437  0.71
+## Component 2 (no foehn)  0.44 10643  22764  0.47
+## 
+## ---------------------------------
+## 
+## Concomitant model: z test of coefficients
+##                 Estimate Std. error   z value  Pr(&gt;|z|)    
+## cc.(Intercept)  0.812721   0.105710    7.6882 1.492e-14 ***
+## cc.rh          -1.029320   0.001446 -711.8479 &lt; 2.2e-16 ***
+## cc.ff           3.305436   0.012134  272.4222 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## Number of IWLS iterations: 2 (algorithm converged)
+## Dispersion parameter for binomial family taken to be 1.</code></pre>
+<p>The data set contains <span class="math inline">\(N = 113952\)</span> observations, <span class="math inline">\(108425\)</span> from the data set itself (<code>data</code>) and <span class="math inline">\(5527\)</span> due to inflation used to make the time series object strictly regular.</p>
+<p>Due to missing data <span class="math inline">\(38859\)</span> observations are not considered during model estimation (<code>dd</code>, <code>crest_dd</code>, <code>diff_t</code>, <code>rh</code>, or <code>ff</code> missing), <span class="math inline">\(50665\)</span> and are not included in model estimation as they do not lie within the defined wind sectors (<code>filter</code>). Thus, the <a href="references/foehnix.html"><code>foehnix</code></a> model is based on a total number of <span class="math inline">\(24428\)</span> observations (or rows).</p>
+<p>Once we have estimated the model we can check whether or not the two clusters are well separated (foehn and no foehn). This can be done by checking the “<em>Cluster separation</em>” summary provided by <a href="references/summary.html"><code>summary</code></a> or checking the posterior probability plot:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cluster separation (summary)</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod)<span class="op">$</span>separation</code></pre></div>
+<pre><code>##                            prior  size post&gt;0     ratio
+## Component 1 (foehn)    0.5596183 13785  19437 0.7092144
+## Component 2 (no foehn) 0.4403817 10643  22764 0.4675365</code></pre>
+<p>The <code>separation</code> matrix shows the prior probabilities, the size (number of observations assigned to each component; posterior probability), number of probabilities exceeding a threshold (default <code>eps = 1e-4</code>), and the ratio between the latter two. Ratios close to <span class="math inline">\(1.0\)</span> indicate that the two clusters are well separated (<span class="math inline">\(ratio &gt; 0.5\)</span> are already good for this application).</p>
+<p>The “posterior probability histogram” (<code><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot(..., which = "posterior")</a></code>) shows the empirical histogram of estimated probabilities (for within-windsector observations). Point masses around <span class="math inline">\(0.0\)</span> and <span class="math inline">\(1.0\)</span> indicate that we have two well separated clusters (the probability to fall in one of the clusters is always close to either <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"posterior"</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>)) </code></pre></div>
+<p><img src="ellboegen_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
+</div>
+<div id="model-coefficients" class="section level3">
+<h3 class="hasAnchor">
+<a href="#model-coefficients" class="anchor"></a>Model coefficients</h3>
+<p>The following parameters are estimated for the two Gaussian clusters:</p>
+<ul>
+<li>No-foehn cluster: <span class="math inline">\(\mu_1 = 5.8\)</span>, <span class="math inline">\(\sigma_1 = 2.64\)</span> (parameter scale)</li>
+<li>Foehn cluster: <span class="math inline">\(\mu_2 = 0.86\)</span>, <span class="math inline">\(\sigma_2 = 1.33\)</span> (parameter scale)</li>
+<li>Concomitant model: positive <code>rh</code> effect of -0.1 percent per on relative humidity and a positive <code>ff</code> effect of +1.4 on wind speed</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
+<pre><code>## Coefficients of foehnix model
+## Model formula:           diff_t ~ rh + ff
+## foehnix family of class: Gaussian
+## 
+## Coefficients
+##         mu1      sigma1         mu2      sigma2 (Intercept)          rh 
+##  5.79908130  2.64068519  0.85860362  1.32845891 -1.19979850 -0.05476087 
+##          ff 
+##  0.88116142</code></pre>
+<p>In other words: if the relative humidity increases the probability that we observed foehn decreases, while the probability increases with increasing wind speed.</p>
+</div>
+</div>
+<div id="graphical-model-assessment" class="section level1">
+<h1 class="hasAnchor">
+<a href="#graphical-model-assessment" class="anchor"></a>Graphical Model Assessment</h1>
+<p>A <a href="references/foehnix.html"><code>foehnix</code></a> object comes with generic plots for graphical model assessment.</p>
+<p>The following figure shows the ‘log-likelihood contribution’ of</p>
+<ul>
+<li>the main <strong>component</strong> (left hand side of formula),</li>
+<li>the <strong>concomitant</strong> model (right hand side of formula),</li>
+<li>and the <strong>full</strong> log-likelihood sum which is maximised by the optimization algorithm.</li>
+</ul>
+<p>The abscissa shows (by default) the logarithm of the iterations during optimization.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log-likelihood contribution</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/plot_loglikcontribution-1.png" width="1152"></p>
+<p>In addition, the coefficient paths during optimization can be visualized:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Coefficient path</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 3L)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/plot_coefpath-1.png" width="1152"></p>
+<p>The left plot shows the parameters of the two components (<span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\log(\sigma_1)\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\log(\sigma_2)\)</span>), the right one the standardized coefficients of the concomitant model.</p>
+<p>Last but not least a histogram with the two clusters is plotted. <code>which = "hist"</code>creates an empirical density histogram separating “no foehn” and “foehn” events adding the estimated distribution for these two clusters.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<pre><code>## Loading foehnix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/plot_histogram-1.png" width="768"></p>
+</div>
+<div id="time-series-plot" class="section level1">
+<h1 class="hasAnchor">
+<a href="#time-series-plot" class="anchor"></a>Time Series Plot</h1>
+<p>The Californian demo data set has non-standard variable names (by purpose). Thus, when calling <code>tsplot</code> (time series plot) we do have to manually specify these names.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Some smaller quality issues in the data (should not be a big deal)</span>
+start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2017-02-01"</span>)
+end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2017-02-12"</span>)
+
+<span class="co"># As we dont have the standard names: re-specify variable names.</span>
+<span class="co"># In addition, use 'style = "advanced"' to show more details.</span>
+<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(mod, <span class="dt">style =</span> <span class="st">"advanced"</span>, 
+       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
+       <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/tsplot-1.png" width="1152"></p>
+</div>
+<div id="wind-rose-plot" class="section level1">
+<h1 class="hasAnchor">
+<a href="#wind-rose-plot" class="anchor"></a>Wind Rose Plot</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<pre><code>## Loading foehnix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod,
+         <span class="dt">type =</span> <span class="st">"hist"</span>, <span class="dt">which =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"foehn"</span>, <span class="st">"nofoehn"</span>),
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
+<p><img src="ellboegen_files/figure-html/windrose-1.png" width="1152"></p>
+</div>
+<div id="hovmoler-diagram" class="section level1">
+<h1 class="hasAnchor">
+<a href="#hovmoler-diagram" class="anchor"></a>Hovmöler Diagram</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Default image plot</span>
+<span class="kw"><a href="../reference/image.html">image</a></span>(mod)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/image1-1.png" width="1152"></p>
+<p>Customized plot which shows the “foehn frequency” for the interesting time period from August to April with custom colors and additional contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Customizing image plot</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<pre><code>## Loading foehnix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">deltad =</span> 10L, <span class="dt">deltat =</span> <span class="dv">2</span><span class="op">*</span><span class="dv">3600</span>, <span class="dt">contours =</span> <span class="ot">TRUE</span>,
+      <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">labcex =</span> <span class="fl">1.5</span>,
+      <span class="dt">col =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="st">"Purple-Yellow"</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>),
+      <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">212</span>, <span class="dv">119</span>), <span class="dt">zlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="fl">0.5</span>))</code></pre></div>
+<p><img src="ellboegen_files/figure-html/image2-1.png" width="1152"></p>
+</div>
+<div id="compare-models" class="section level1">
+<h1 class="hasAnchor">
+<a href="#compare-models" class="anchor"></a>Compare Models</h1>
+<p>The model above (<code>diff_t ~ rh + ff</code>) fits this station well, however, we could of course change the model specifications. In addition to the model above, let us specify three alternative models, all solely based on data from the valley station. Thus, we do not rely on the availability of data from the crest station (but losing some information as we neglect the crest station).</p>
+<ul>
+<li>Alternative model 1 (<code>alt1</code>)
+<ul>
+<li>Formula: <code>ff ~ 1</code>
+</li>
+<li>Filter: no filter</li>
+<li>No concomitant model</li>
+</ul>
+</li>
+<li>Alternative model 2 (<code>alt2</code>)
+<ul>
+<li>Formula: <code>ff ~ 1</code>
+</li>
+<li>Filter: no filter<code>dd = c(43, 223)</code>
+</li>
+<li>No concomitant model</li>
+</ul>
+</li>
+<li>Alternative model 3 (<code>alt3</code>)
+<ul>
+<li>Formula: <code>ff ~ rh</code>
+</li>
+<li>Filter: <code>dd = c(43, 223)</code>
+</li>
+<li>Concomitant: relative humidity</li>
+</ul>
+</li>
+<li>Alternative model 4 (<code>alt4</code>)
+<ul>
+<li>Formula: <code>ff ~ .</code>
+</li>
+<li>Filter: <code>dd = c(43, 223)</code>
+</li>
+<li>Concomitant: relative humidity</li>
+</ul>
+</li>
+</ul>
+<p>Note that <code>switch = FALSE</code> (default) as higher wind speed (<code>ff</code>) are an indication for foehn, thus the cluster with higher overall wind speed must be the foehn cluster (compare with <code>mod</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load "Ellboegen only" data set</span>
+ell &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"ellboegen"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(ell, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
+<pre><code>##                      dd  ff  rh    t
+## 2006-01-01 01:00:00 171 0.6  90 -0.4
+## 2006-01-01 02:00:00 268 0.3 100 -1.8
+## 2006-01-01 03:00:00 115 5.2  79  0.9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The filter for model 2-4</span>
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>))
+
+<span class="co"># Estimate the alternative models</span>
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<pre><code>## Loading foehnix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alt1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span><span class="dv">1</span>, <span class="dt">data =</span> ell, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+alt2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span><span class="dv">1</span>, <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+alt3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+alt4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span>., <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>We can use “<em>classical</em>” information criteria to compare the models such as <code>logLik</code>, <code>AIC</code>, or <code>BIC</code>. The following matrix shows the number of observations (<code>N</code>) and the three information criteria:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract information criteria</span>
+get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x))
+IC     &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4), get_IC)
+IC</code></pre></div>
+<pre><code>##             alt1      alt2      alt3      alt4
+## N       103077.0   52482.0   52390.0   52319.0
+## loglik -257222.9 -141865.9 -131631.0 -129816.5
+## AIC     514453.8  283739.7  263274.1  259648.9
+## BIC     514492.0  283775.2  263327.3  259719.8</code></pre>
+<p><strong>Warning:</strong> we are not allowed to compare these models directly as, due to the different specifications the number of observations differ! To compare all four we could, e.g., calculate the ignorance (<code>IGN</code>, mean negative log-likelihood):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">IGN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4),
+              <span class="cf">function</span>(x) <span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(x<span class="op">$</span>data))
+IGN</code></pre></div>
+<pre><code>## alt1.loglik alt2.loglik alt3.loglik alt4.loglik 
+##    2.257292    1.244962    1.155145    1.139220</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which.min">which.min</a></span>(IGN)</code></pre></div>
+<pre><code>## alt4.loglik 
+##           4</code></pre>
+<p>Based on <code>IGN</code> we would preferr the most complex model <code>mod4</code> over the other ones. Let us check the posterior probability histograms (same as returned by <code><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot(..., which = "post")</a></code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-10-20"</span>)
+end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-11-05"</span>)
+
+<span class="co"># As we dont have the standard names: re-specify variable names.</span>
+<span class="co"># In addition, use 'style = "advanced"' to show more details.</span>
+<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt4 =</span> alt4, <span class="dt">alt3 =</span> alt3, <span class="dt">alt2 =</span> alt2, <span class="dt">alt1 =</span> alt1),
+       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
+       <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/alt_tsplot-1.png" width="1152"></p>
+</div>
+  </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#data-set-description">Data Set Description</a></li>
+      <li><a href="#loading-the-data-set">Loading the Data Set</a></li>
+      <li><a href="#estimate-classification-model">Estimate Classification Model</a></li>
+      <li><a href="#graphical-model-assessment">Graphical Model Assessment</a></li>
+      <li><a href="#time-series-plot">Time Series Plot</a></li>
+      <li><a href="#wind-rose-plot">Wind Rose Plot</a></li>
+      <li><a href="#hovmoler-diagram">Hovmöler Diagram</a></li>
+      <li><a href="#compare-models">Compare Models</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

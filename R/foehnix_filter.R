@@ -35,6 +35,9 @@
 #'        function operating on \code{x}, or a named list with a simple
 #'        filter rule (\code{numeric} of length two) or custom filter
 #'        functions. Details provided in the 'Details' section.
+#' @param cols \code{NULL} or a character vector containing the names in 'x'
+#'        which are not allowed to contain missing values.
+#'        If \code{NULL} all elements have to be non-missing.
 #' @param ... currently unused.
 #'
 #' @return Returns a vector of integers corresponding to those rows in
@@ -175,16 +178,15 @@
 #' 
 #' @author Reto Stauffer
 #' @export
-foehnix_filter <- function(x, filter) {
+foehnix_filter <- function(x, filter, cols = NULL) {
 
     # Wrong input 'x' 
-    if ( ! inherits(x, c("zoo", "data.frame")) )
+    if (! inherits(x, c("zoo", "data.frame")))
         stop("Input \"x\" to foehnix_filter has to be of class zoo or data.frame.")
 
     # ---------------
-    # If NULL: return integer sequence corresponding to
-    # the number of rows in 'x'.
-    if ( is.null(filter) ) {
+    # If filter is NULL
+    if (is.null(filter)) {
         tmp <- rep(TRUE, nrow(x))
 
     # ---------------
@@ -246,8 +248,17 @@ foehnix_filter <- function(x, filter) {
         tmp <- apply(tmp, 1, function(x) ifelse(any(is.na(x)), NA, all(x)))
     }
 
+    # Set rows with missing values to 'NA'
+    if (is.null(cols)) {
+        isnan <- which(apply(x, 1, function(x) any(is.na(x))))
+    } else {
+        isnan <- which(apply(subset(x, select = cols), 1, function(x) any(is.na(x))))
+    }
+    if (length(isnan) > 0) tmp[isnan] <- NA
+
+
     # Wrong length? Stop!
-    if ( ! length(tmp) == nrow(x) )
+    if (!length(tmp) == nrow(x))
         stop("Filter did not return expected length (not 'nrow(x)'). Stop.")
 
     # Else return a list with indizes corresponding to the filter

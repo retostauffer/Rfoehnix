@@ -201,28 +201,28 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     tmp <- list()
     if ( "density_unconditional" %in% which )
         tmp[["density_unconditional"]] <- with(data,
-              windrose(dd, ff, hue = c(10, 130),
+              windrose(dd, ff, hue = c(10, 130), breaks = breaks,
                        main = expression("Unconditional"), ...))
     if ( "density_nofoehn" %in% which )
         tmp[["density_nofoehn"]] <- with(subset(data, prob < 0.5),
-              windrose(dd, ff, hue = c(100, 180),
+              windrose(dd, ff, hue = c(100, 180), breaks = breaks,
                        main = expression(paste("No Foehn [",pi < 0.5,"]")), ...))
     if ( "density_foehn" %in% which )
         tmp[["density_foehn"]] <- with(subset(data, prob >= 0.5),
-              windrose(dd, ff, hue = c(-20, 30),
+              windrose(dd, ff, hue = c(-20, 30), breaks = breaks,
                        main = expression(paste("Foehn [",pi >= 0.5,"]")), ...))
     # Plot type = "histogram"
     if ( "histogram_unconditional" %in% which )
         tmp[["histogram_unconditional"]] <- with(data,
-              windrose(dd, ff, hue = c(10, 130), type = "histogram",
+              windrose(dd, ff, hue = c(10, 130), type = "histogram", breaks = breaks,
                        main = expression("Unconditional"), ...))
     if ( "histogram_nofoehn" %in% which )
         tmp[["histogram_nofoehn"]] <- with(subset(data, prob <  0.5),
-              windrose(dd, ff, hue = c(100, 180), type = "histogram",
+              windrose(dd, ff, hue = c(100, 180), type = "histogram", breaks = breaks,
                        main = expression(paste("No Foehn [",pi < 0.5,"]")), ...))
     if ( "histogram_foehn" %in% which )
         tmp[["histogram_foehn"]] <- with(subset(data, prob >= 0.5),
-              windrose(dd, ff, hue = c(-20, 30), type = "histogram",
+              windrose(dd, ff, hue = c(-20, 30), type = "histogram", breaks = breaks,
                        main = expression(paste("Foehn [",pi >= 0.5,"]")), ...))
 
     # Invisible return of all windrose-returns, mainly for testing.
@@ -248,6 +248,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #'        If \code{NULL} both types will be plotted.
 #' @param windsector list, matrix, or data frame for highlighting one or multiple
 #'        wind sectors. See 'Examples' ('Highlighting wind sectors').
+#' @param windsector.col color of the wind sector (if provided).
 #' @param main character, title. If no title is set a default one will be shown.
 #' @param hue numeric vector of length 1 or two (for \code{type = "density"}
 #'        two are used, for \code{type = "histogram"} only the first one will be
@@ -256,7 +257,7 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #'        \code{type = "histogram"}. If \code{1} the alpha channel is linear
 #'        for the whole range of \code{ff}, values \code{!= 1} change the
 #'        alpha behavior.
-#' @param ... currently unused.
+#' @param ... additional optional arguments forwarded, see 'Details'.
 #' @param dd can be used if univariate objects or vectors are provided for
 #'        wind speed and meteorological wind direction (see 'Details' section).
 #' @param filter a custom set of filter rules (see \code{\link{foehnix_filter}}).
@@ -298,6 +299,15 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' way to subset/filter the data. A detailed description how to define
 #' the filter rules can be found on the documentation page of 
 #' the \code{\link{foehnix_filter}} method.
+#'
+#' Additional optional arguments: The function allows to provide
+#' additional arguments for better customization. These arguments are
+#' forwarded to selected calls.
+#' Currently implemented:
+#' \itemize{
+#'   \item For \code{type = "density"}: \code{border}, \code{lty},
+#'      and \code{lty} forwarded to \code{polygon(...)}.
+#' }
 #'
 #' @examples
 #' # Loading observation data for station Ellboegen.
@@ -398,7 +408,8 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 # tricky to keep track of duplicates and missings as it is.
 windrose.default <- function(x, ff,
                              interval = 10, type = "density", 
-                             windsector = NULL, main = NULL, hue = c(10,100),
+                             windsector = NULL, windsector.col = "gray90",
+                             main = NULL, hue = c(10,100),
                              power = .5, ..., dd = NULL, filter = NULL,
                              ffvar = "ff", ddvar = "dd", breaks = NULL) {
 
@@ -516,6 +527,7 @@ windrose.default <- function(x, ff,
 
     # Type "histogram"
     } else {
+
         # Create matrizes with counts
         counts <- windrose_get_counts(data, dd.breaks, ff.breaks)
         # Convert counts into colors
@@ -531,6 +543,7 @@ windrose.default <- function(x, ff,
 
         # Title
         if ( is.null(main) ) main <- "Windrose Histogram"
+
     }
 
     # ----------------
@@ -545,13 +558,20 @@ windrose.default <- function(x, ff,
 
     # Adding wind sectors (if required)
     if (!is.null(windsector))
-        windrose_add_windsector(windsector, if (type == "density") density.breaks else ff.breaks)
+        windrose_add_windsector(windsector,
+                                if (type == "density") density.breaks else ff.breaks,
+                                windsector.col)
+
 
     # Adding polygons (density)
     if ( type == "density" ) {
+        args <- as.list(match.call(expand.dots = TRUE))
+        args <- c(list(x = NA, y = NA, col = NA), args[c("border", "lty", "lwd")])
         for ( i in ncol(tab):1 ) { 
             tmp <- (-1) * ddff2uv(dd.breaks + interval / 2, c(tab[,i], tab[1,i]))
-            polygon(tmp$u, tmp$v, col = cols[i], border = NA)
+            args$x <- tmp$u; args$y = tmp$v; args$col = cols[i]
+            do.call(polygon, args)
+            #polygon(tmp$u, tmp$v, col = cols[i], border = border)
         }
     # Plot type "histogram"
     } else {
@@ -581,11 +601,11 @@ windrose.default <- function(x, ff,
     for ( d in at ) {
         # Add circle
         tmp <- ddff2uv(seq(0, 360), d)
-        lines(tmp$u, tmp$v, col = "gray50", lty = 3)
+        lines(tmp$u, tmp$v, col = "gray50", lty = 2)
         # Else add label
         if ( d <= 0 ) next
         tmp <- ddff2uv(45, d)
-        text(tmp$u, tmp$v, sprintf(fmt, d), cex = .5)
+        text(tmp$u, tmp$v, sprintf(fmt, d), cex = .7)
     }
     lines(c(0,0), c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)))
     lines(c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)), c(0,0))
@@ -735,10 +755,11 @@ windrose_get_cols <- function(x, col, p = 1, ncol = 50L) {
 #' @param ff wind speed (in case of plot type "density", or density in 
 #'        case of plot type "histogram". Used to draw the polygon and
 #'        to plot the labels (if needed).
+#' @param col color of the wind sector.
 #' @param offset offset for text adjustment.
 #' 
 #' @author Reto Stauffer
-windrose_add_windsector <- function(x, ff, offset = .02) {
+windrose_add_windsector <- function(x, ff, col, offset = .02) {
 
     # Looping over all entries, draw wind sectors and
     # add labels if names are given.
@@ -763,7 +784,7 @@ windrose_add_windsector <- function(x, ff, offset = .02) {
         }
 
         # Draw the polygon
-        polygon(-tmp$u, -tmp$v, col = "gray90", border = NA)#1, lty = 3)
+        polygon(-tmp$u, -tmp$v, col = col, border = NA)
 
         # If we have names: draw name
         if (!is.null(names(x))) {

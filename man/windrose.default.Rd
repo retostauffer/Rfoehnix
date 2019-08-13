@@ -5,9 +5,9 @@
 \title{Default Wind Rose Plot}
 \usage{
 \method{windrose}{default}(x, ff, interval = 10, type = "density",
-  windsector = NULL, main = NULL, hue = c(10, 100), power = 0.5,
-  ..., dd = NULL, filter = NULL, ffvar = "ff", ddvar = "dd",
-  breaks = NULL)
+  windsector = NULL, windsector.col = "gray90", main = NULL,
+  hue = c(10, 100), power = 0.5, ..., dd = NULL, filter = NULL,
+  ffvar = "ff", ddvar = "dd", breaks = NULL)
 }
 \arguments{
 \item{x}{either an univariate object (\code{numeric} vector or \code{zoo})
@@ -27,6 +27,8 @@ If \code{NULL} both types will be plotted.}
 \item{windsector}{list, matrix, or data frame for highlighting one or multiple
 wind sectors. See 'Examples' ('Highlighting wind sectors').}
 
+\item{windsector.col}{color of the wind sector (if provided).}
+
 \item{main}{character, title. If no title is set a default one will be shown.}
 
 \item{hue}{numeric vector of length 1 or two (for \code{type = "density"}
@@ -38,7 +40,7 @@ used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.}
 for the whole range of \code{ff}, values \code{!= 1} change the
 alpha behavior.}
 
-\item{...}{currently unused.}
+\item{...}{additional optional arguments forwarded, see 'Details'.}
 
 \item{dd}{can be used if univariate objects or vectors are provided for
 wind speed and meteorological wind direction (see 'Details' section).}
@@ -89,6 +91,15 @@ Custom filter: the optional \code{filter} input can be used if input
 way to subset/filter the data. A detailed description how to define
 the filter rules can be found on the documentation page of 
 the \code{\link{foehnix_filter}} method.
+
+Additional optional arguments: The function allows to provide
+additional arguments for better customization. These arguments are
+forwarded to selected calls.
+Currently implemented:
+\itemize{
+  \item For \code{type = "density"}: \code{border}, \code{lty},
+     and \code{lty} forwarded to \code{polygon(...)}.
+}
 }
 \examples{
 # Loading observation data for station Ellboegen.

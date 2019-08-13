@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -188,16 +188,14 @@
     <tr>
       <th>which</th>
       <td><p><code>NULL</code> (default), character, character string,
-integer, or numeric. Allowed characters: <code>loglik</code>,
-<code>loglikcontribution</code>, <code>coef</code>, and <code>hist</code>. If <code>which</code>
-is numeric/integer or a vector of numerics/integers the numbers
-correspond to <code>loglik</code> (<code>1</code>), <code>loglikpath</code> (<code>2</code>),
-or <code>coef</code> (<code>3</code>).</p></td>
+integer, or numeric. Allowed characters: <code>loglik</code> (<code>1</code>),
+<code>loglikcontribution</code> (<code>2</code>), <code>coef</code> (<code>3</code>),
+<code>hist</code> (<code>4</code>), and <code>posterior</code> (<code>5</code>).</p></td>
     </tr>
     <tr>
       <th>log</th>
-      <td><p>logical, if <code>TRUE</code> the x-axis is shown on the log scale,
-else on the iteration scale.</p></td>
+      <td><p>logical, if <code>TRUE</code> the x-axis for <code>loglik</code>, <code>loglikcontribution</code>
+and <code>coef</code> is shown on the log scale.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -224,6 +222,14 @@ to overwrite the default.</p></td>
         components are shown on the real scale, the coefficients
         of the concomitant model (if used) are shown on the
         standardized scale.</p></li>
+<li><p><code>hist</code> plots empirical histograms of the main variable
+        for the two clusters (split at posterior probability &gt;= 0.5).
+        In addition, the estimated parametric clusters are shown.</p></li>
+<li><p><code>posterior</code> creates a histogram of the posterior probabilities.
+        point masses at <code>0.0</code> and <code>1.0</code> indicate sharp separation
+        of the clusters (posterior probabilities close to <code>0</code> or <code>1</code>).
+        The two additional input arguments <code>breaks</code> (numeric vector)
+        and <code>freq</code> (logical) will be forwarded to <code><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist(...)</a></code>.</p></li>
 </ul>
     
 

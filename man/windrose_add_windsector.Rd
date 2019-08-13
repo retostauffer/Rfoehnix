@@ -4,7 +4,7 @@
 \alias{windrose_add_windsector}
 \title{Adding Wind Sector for Windrose Plots}
 \usage{
-windrose_add_windsector(x, ff, offset = 0.02)
+windrose_add_windsector(x, ff, col, offset = 0.02)
 }
 \arguments{
 \item{x}{list containing vectors of length 2 or a matrix with two
@@ -14,6 +14,8 @@ the names will be used to label the segments.}
 \item{ff}{wind speed (in case of plot type "density", or density in 
 case of plot type "histogram". Used to draw the polygon and
 to plot the labels (if needed).}
+
+\item{col}{color of the wind sector.}
 
 \item{offset}{offset for text adjustment.}
 }

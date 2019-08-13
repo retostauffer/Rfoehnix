@@ -362,21 +362,21 @@ summary.foehnix <- function(object, eps=1e-4, detailed = FALSE, ...) {
     rval$coef     <- coef(object, type = "parameter")
 
     # Posteriors
-    tab <- matrix(NA, ncol = 4, nrow = 2,
-                  dimnames = list(c("Component 1 (foehn)", "Component 2 (no foehn)"),
-                                  c("prior", "size", "post>0", "ratio")))
+    separation <- matrix(NA, ncol = 4, nrow = 2,
+                         dimnames = list(c("Component 1 (foehn)", "Component 2 (no foehn)"),
+                                         c("prior", "size", "post>0", "ratio")))
     priorfun <- function(x) { x <- mean(x, na.rm = TRUE); c(x, 1 - x) }
     sizefun  <- function(x) { N <- sum(!is.na(x)); x <- sum(x >= 0.5, na.rm = TRUE); c(x, N - x) }
     postfun  <- function(x, eps) { x <- na.omit(x); c(sum(x > eps), sum((1 - x) > eps)) }
 
     # Analog to flexmix summary
-    tab[, "prior"]   <- priorfun(object$optimizer$prob) # mean prior probability
-    tab[, "size"]    <- sizefun(object$optimizer$post)  # on posterior probability
-    tab[, "post>0"]  <- postfun(object$optimizer$post, eps = eps) # on posterior prob
-    tab[, "ratio"]   <- tab[, "size"] / tab[, "post>0"]
+    separation[, "prior"]   <- priorfun(object$optimizer$prob) # mean prior probability
+    separation[, "size"]    <- sizefun(object$optimizer$post)  # on posterior probability
+    separation[, "post>0"]  <- postfun(object$optimizer$post, eps = eps) # on posterior prob
+    separation[, "ratio"]   <- separation[, "size"] / separation[, "post>0"]
 
     # Optimizer statistics
-    rval$csummary   <- tab # cluster summary (separation)
+    rval$separation <- separation # cluster summary (separation)
     rval$filter_obj <- object$filter_obj
     rval$time       <- object$time
     rval$logLik     <- logLik(object)
@@ -447,7 +447,7 @@ print.summary.foehnix <- function(x, ...) {
         # non-vanishing posteriors pnk should also be assigned to the corresponding
         # cluster, giving a ratio close to 1.
         cat("\nCluster separation (ratios close to 1 indicate\nwell separated clusters):\n")
-        print(round(x$csummary, 2))
+        print(round(x$separation, 2))
 
         # If there is a concomitant model: show estimated coefficients and
         # z statistics.

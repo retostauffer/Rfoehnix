@@ -3,9 +3,26 @@
 suppressPackageStartupMessages(library("foehnix"))
 ```
 
+# Data Set Description
+
+The "Tyrolean" data set provides hourly observations
+from two stations, namely "Ellbögen" and "Sattelberg" located in
+Tyrol, Austria.
+
+Ellbögen is our target station (valley site) located in the Wipp Valley, a
+north-south oriented alpine valley on the northern side of the European Alps.
+To the north the Wipp Valley opens into the Inn Valley (close to Innsbruck, the
+capitol of Tyrol), to the south the valley ends at a narrow gap in the main
+Alpine ridge called Brennerpass ($1370~m$; the pass between Austria and Italy)
+flanked by mountains ($>2100~m$).
+The Wipp Valley is one of the lowest and most distinct cuts trough the Alpine
+mountain range and well known for south foehn (north of the Alps).  Station
+Sattelberg serves as crest station and provides observations of the upstream
+air mass during south foehn events. The station is located on top of the
+mountain to the west of the pass.
 
 
-```{r, echo = FALSE, fig.width = 10, fig.height = 5}
+```{r leaflet, echo = FALSE, fig.width = 10, fig.height = 5}
 library("leaflet")
 library("sp")
 
@@ -28,3 +45,367 @@ for (i in 1:nrow(stations)) {
 m <- addProviderTiles(m, "OpenTopoMap")
 m
 ```
+
+# Loading the Data Set
+
+The call [`demodata("tyrol")`](references/demodata) returns the combined
+data set for both station (Ellbögen and Sattelberg).
+In addition, the potential temperature difference between the two stations
+is calculated by reducing the dry air temperature from "Sattelberg"
+to the height of "Ellbögen" (dry adiabatic lapse rate of 1K per 100m;
+stored on `diff_t`).
+Details can be found on the [`demodata`](references/demodata.html)
+reference page.
+
+```{r load_california}
+data <- demodata("tyrol")
+head(data, n = 3)
+# Check if our object is a numeric zoo object:
+c("is.zoo" = is.zoo(data),
+  "is.numeric" = is.numeric(data),
+  "is regular" = is.regular(data),
+  "is strictly regular" = is.regular(data, strict = TRUE))
+c("tepmoral resolution (seconds)" = deltat(data),
+  "missing values" = sum(is.na(data)))
+```
+
+The data set returned is a regular `numeric` `zoo` time series object.
+Note that the data set is not strictly regular (contains hourly observations,
+but some are missing) and contains quite some missing values (`NA`).
+This is not a problem as the functions and methods will take care of missing
+values and inflate the time series object (regular $\rightarrow$ strictly regular).
+
+**Important:** The names of the variables in the Tyrolean data set are the
+"_standard names_" on which most functions and methods provided by this package
+are based on. To be precise:
+
+* **Valley station:** air temperature `t`, relative humidity `rh`, 
+  wind speed `ff`, wind direction `dd` (meteorological, degrees $\in [0, 360]$)
+* **Crest station:** air temperature `crest_t`, relative humidity `crest_rh`, 
+  wind speed `crest_ff`, wind direction `crest_dd` ($\in [0, 360]$)
+* **In addition:** Potential temperature difference `diff_t` (calculated
+  by [`demodata`](references/demodata.html)
+
+... however, all functions arguments which allow to set custom names
+(see "[Demos > Viejas (California, USA)](articles/viejas.html)" or
+function references).
+
+After preparing the data set (regular or strictly regular `zoo   object with
+`numeric` values) we can investigate the observed wind information.
+
+```{r emp_windrose, fig = TRUE, fig.width = 12, fig.height = 6}
+par(mfrow = c(1,2))
+# Observed wind speed/wind direction "Ellboegen"
+# Expects a variable 'dd' and 'ff' by default. Thus,
+# 'ddvar'/'ffvar' do not have to be specified.
+windrose(data,
+         main = "Windrose Ellbögen",
+         breaks = seq(0, 35, by = 5))
+# Observed wind speed/wind direction "Sattelberg"
+# Specify dd/ff of the crest station (ddvar, ffvar)
+windrose(data, ddvar = "crest_dd", ffvar = "crest_ff",
+         main = "Windrose Sattelberg", hue = 270,
+         breaks = seq(0, 35, by = 5))
+```
+
+Based on prior knowledge and the plots above we define two "foehn wind sectors"
+as follows:
+
+* At **Ellbögen** the observed wind direction (`dd`) needs to be
+  along valley within 43 and 223 degrees
+  (south-easterly; a `r 223 - 43` degree sector).
+* At **Sattelberg** the observed wind direction (`crest_dd`) needs to be within
+  90 and 270 degrees (south wind; `r 270 - 90` degree sector).
+
+
+The wind sector(s) can be added to the [`windrose`](references/windrose.html)
+plots for visual justification, but well also be used later when estimating the
+[`foehnix`](references/foehnix.html) classification model.
+
+```{r windsector_windrose, fig = TRUE, fig.width = 12, fig.height = 6}
+par(mfrow = c(1,2))
+# Ellboegen with custom wind sector
+windrose(data,
+         windsector = list("south-east wind" = c(43, 223)),
+         main = "Windrose Ellbögen",
+         breaks = seq(0, 35, by = 5))
+# Observed wind speed/wind direction "Sattelberg"
+# Specify custom variable names for dd/ff (crest_dd, crest_ff).
+windrose(data, ddvar = "crest_dd", ffvar = "crest_ff",
+         windsector = list("south wind" = c(90, 270)),
+         main = "Windrose Sattelberg", hue = 270,
+         breaks = seq(0, 35, by = 5))
+```
+
+
+# Estimate Classification Model
+
+The most important step is to estimate the [`foehnix`](references/foehnix.html)
+classification model. We use the following model assumptions:
+
+* **Main variable**: `diff_t` is used as the main covariate to separate 'foehn'
+  from 'no foehn' events (potential temperature difference).
+* **Concomitant variable**: `rh` and `ff` at valley site (relative humidity and
+  wind speed).
+* **Wind filters**: two filters are defined. `dd = c(43, 223)` for Ellbögen and
+  `crest_dd = c(90, 270)` for Sattelberg (see above).
+* **Option switch:** `switch = TRUE` as high `diff_temp` indicate stable stratification (no foehn).
+
+```{r estimate_model, results = "hide"}
+# Estimate the foehnix classification model
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod <- foehnix(diff_t ~ rh + ff,
+               data   = data,
+               switch = TRUE,
+               filter = filter)
+```
+
+### Model Summary
+
+```{r model_summary, echo = FALSE}
+# Model summary
+summary(mod, detailed = TRUE)
+```
+
+The data set contains $N = `r nrow(mod$data)`$ observations, $`r nrow(data)`$ from
+the data set itself (`data`) and $`r mod$inflated`$ due to inflation used to make the
+time series object strictly regular.
+
+Due to missing data $`r length(mod$filter_obj$ugly)`$ observations are not considered
+during model estimation (`dd`, `crest_dd`, `diff_t`, `rh`, or `ff` missing),
+$`r length(mod$filter_obj$bad)`$ and are not included in model estimation as they do not
+lie within the defined wind sectors (`filter`).
+Thus, the [`foehnix`](references/foehnix.html) model is based on a total number of
+$`r length(mod$filter_obj$good)`$ observations (or rows).
+
+Once we have estimated the model we can check whether or not the two clusters
+are well separated (foehn and no foehn).
+This can be done by checking the "_Cluster separation_" summary provided by
+[`summary`](references/summary.html) or checking the 
+posterior probability plot:
+
+```{r}
+# Cluster separation (summary)
+summary(mod)$separation
+```
+
+The `separation` matrix shows the prior probabilities,
+the size (number of observations assigned to each component; posterior probability),
+number of probabilities exceeding a threshold (default `eps = 1e-4`), and the
+ratio between the latter two. Ratios close to $1.0$ indicate that the two clusters
+are well separated ($ratio > 0.5$ are already good for this application).
+
+The "posterior probability histogram" (`plot(..., which = "posterior")`) shows
+the empirical histogram of estimated probabilities (for within-windsector
+observations).  Point masses around $0.0$ and $1.0$ indicate that we have two
+well separated clusters (the probability to fall in one of the clusters is
+always close to either $0$ or $1$).
+
+```{r, fig = TRUE, fig.width = 8, figh.height = 4}
+plot(mod, which = "posterior", breaks = seq(0, 1, by = 0.05)) 
+```
+
+
+### Model coefficients
+
+The following parameters are estimated for the two `r mod$control$family$name` clusters:
+
+* No-foehn cluster: $\mu_1 = `r round(coef(mod)["mu1"], 2)`$,
+                    $\sigma_1 = `r round(coef(mod)["sigma1"], 2)`$ (parameter scale)
+* Foehn cluster: $\mu_2 = `r round(coef(mod)["mu2"], 2)`$,
+                    $\sigma_2 = `r round(coef(mod)["sigma2"], 2)`$ (parameter scale)
+* Concomitant model:
+    `r ifelse(sign(coef(mod)["rh"]), "positive", "negative")`
+    `rh` effect of `r sprintf("%+.1f", exp(coef(mod)["rh"]) - 1)` percent per on
+    relative humidity and a
+    `r ifelse(sign(coef(mod)["ff"]), "positive", "negative")`
+    `ff` effect of `r sprintf("%+.1f", exp(coef(mod)["ff"]) - 1)` on wind speed
+
+```{r model_coef}
+coef(mod)
+```
+
+In other words: if the relative humidity increases the probability that we observed
+foehn decreases, while the probability increases with increasing wind speed.
+
+
+# Graphical Model Assessment
+
+A [`foehnix`](references/foehnix.html) object comes with generic plots for graphical model
+assessment.
+
+The following figure shows the 'log-likelihood contribution' of
+
+* the main **component** (left hand side of formula),
+* the **concomitant** model (right hand side of formula),
+* and the **full** log-likelihood sum which is maximised by
+  the optimization algorithm.
+
+The abscissa shows (by default) the logarithm of the iterations during 
+optimization. 
+
+```{r plot_loglikcontribution, fig = TRUE, fig.width = 12, fig.height = 6}
+# Log-likelihood contribution
+plot(mod, which = "loglikcontribution")
+```
+
+In addition, the coefficient paths during optimization can be visualized:
+
+```{r plot_coefpath, fig = TRUE, fig.width = 12, fig.height = 6}
+# Coefficient path
+plot(mod, which = 3L)
+```
+
+The left plot shows the parameters of the two components
+($\mu_1$, $\log(\sigma_1)$, $\mu_2$, $\log(\sigma_2)$), the
+right one the standardized coefficients of the concomitant model.
+
+Last but not least a histogram with the two clusters is plotted.
+`which = "hist"`creates an empirical density histogram separating "no foehn"
+and "foehn" events adding the estimated distribution for these two clusters.
+
+```{r plot_histogram, fig = TRUE, fig.width = 8, fig.height = 3.5}
+devtools::load_all("..")
+plot(mod, which = "hist")
+```
+
+
+
+# Time Series Plot
+
+The Californian demo data set has non-standard variable names (by purpose).
+Thus, when calling `tsplot` (time series plot) we do have to manually specify
+these names.
+
+```{r tsplot, fig = TRUE, fig.width = 12, fig.height = 15}
+# Some smaller quality issues in the data (should not be a big deal)
+start <- as.POSIXct("2017-02-01")
+end   <- as.POSIXct("2017-02-12")
+
+# As we dont have the standard names: re-specify variable names.
+# In addition, use 'style = "advanced"' to show more details.
+tsplot(mod, style = "advanced", 
+       windsector = list(c(43, 223)),
+       start = start, end = end)
+```
+
+
+# Wind Rose Plot
+
+```{r windrose, fig = TRUE, fig.width = 12, fig.height = 5}
+devtools::load_all("..")
+windrose(mod,
+         type = "hist", which = c("foehn", "nofoehn"),
+         windsector = list(c(43, 223)),
+         breaks = seq(0, 22, by = 2))
+```
+
+# Hovmöler Diagram
+
+
+```{r image1, fig = TRUE, fig.width = 12, fig.height = 6}
+# Default image plot
+image(mod)
+```
+
+Customized plot which shows the "foehn frequency" for the
+interesting time period from August to April with custom
+colors and additional contour lines and custom
+aggregation period (two-weeks, 3-hourly).
+
+
+```{r image2, fig = TRUE, fig.width = 12, fig.height = 6}
+# Customizing image plot
+devtools::load_all("..")
+image(mod, deltad = 10L, deltat = 2*3600, contours = TRUE,
+      contour.col = "white", lwd = 2, labcex = 1.5,
+      col = colorspace::sequential_hcl(51, "Purple-Yellow", rev = TRUE),
+      xlim = c(212, 119), zlim = c(0, 0.5))
+```
+
+
+# Compare Models
+
+The model above (`diff_t ~ rh + ff`) fits this station well, however,
+we could of course change the model specifications. In addition
+to the model above, let us specify three alternative models, all
+solely based on data from the valley station. Thus, we do not
+rely on the availability of data from the crest station (but losing
+some information as we neglect the crest station).
+
+* Alternative model 1 (`alt1`)
+    * Formula: `ff ~ 1`
+    * Filter: no filter
+    * No concomitant model
+* Alternative model 2 (`alt2`)
+    * Formula: `ff ~ 1`
+    * Filter: no filter`dd = c(43, 223)`
+    * No concomitant model
+* Alternative model 3 (`alt3`)
+    * Formula: `ff ~ rh`
+    * Filter: `dd = c(43, 223)`
+    * Concomitant: relative humidity
+* Alternative model 4 (`alt4`)
+    * Formula: `ff ~ .`
+    * Filter: `dd = c(43, 223)`
+    * Concomitant: relative humidity
+
+Note that `switch = FALSE` (default) as higher wind speed (`ff`)
+are an indication for foehn, thus the cluster with higher overall
+wind speed must be the foehn cluster (compare with `mod`).
+
+```{r}
+# Load "Ellboegen only" data set
+ell <- demodata("ellboegen")
+head(ell, n = 3)
+
+# The filter for model 2-4
+filter <- list(dd = c(43, 223))
+
+# Estimate the alternative models
+devtools::load_all("..")
+alt1 <- foehnix(ff ~  1, data = ell, verbose = FALSE)
+alt2 <- foehnix(ff ~  1, data = ell, filter = filter, verbose = FALSE)
+alt3 <- foehnix(ff ~ rh, data = ell, filter = filter, verbose = FALSE)
+alt4 <- foehnix(ff ~  ., data = ell, filter = filter, verbose = FALSE)
+```
+
+We can use "_classical_" information criteria to compare the models such
+as `logLik`, `AIC`, or `BIC`. The following matrix shows the number of
+observations (`N`) and the three information criteria:
+
+```{r}
+# Extract information criteria
+get_IC <- function(x) c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x))
+IC     <- sapply(list(alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4), get_IC)
+IC
+```
+
+**Warning:** we are not allowed to compare these models directly as, due to
+the different specifications the number of observations differ!
+To compare all four we could, e.g., calculate the ignorance
+(`IGN`, mean negative log-likelihood):
+
+```{r}
+IGN <- sapply(list(alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4),
+              function(x) -logLik(x) / nrow(x$data))
+IGN
+which.min(IGN)
+```
+
+Based on `IGN` we would preferr the most complex model `mod4` over the
+other ones. Let us check the posterior probability histograms (same
+as returned by `plot(..., which = "post")`):
+
+
+```{r alt_tsplot, fig = TRUE, fig.width = 12, fig.height = 8}
+start <- as.POSIXct("2015-10-20")
+end   <- as.POSIXct("2015-11-05")
+
+# As we dont have the standard names: re-specify variable names.
+# In addition, use 'style = "advanced"' to show more details.
+tsplot(list(alt4 = alt4, alt3 = alt3, alt2 = alt2, alt1 = alt1),
+       windsector = list(dd = c(43, 223)),
+       start = start, end = end)
+```
+
