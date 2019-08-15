@@ -26,31 +26,6 @@ Station Lucky Five Ranch operated by San Diego Gas and Electric and made freely
 publicly available through Synoptic PBC at \url{https://synopticdata.com/}.
 }
 \usage{
-# Combined data set Tyrol (A).
-# Valley station: Ellbögen; crest station: Sattelberg
-demodata()
-demodata(which = "tyrol")
-
-# Combined data set California (CA, USA).
-# Valley station: Viejas; crest station: Lucky Five Ranch
-demodata(which = "california")
-
-# Hourly observations station Ellögen (Tyrol, Austria).
-# Serves as "valley" or "target" station for the "tyrol" data set.
-data(which = "ellboegen")
-
-# Hourly observations station Sattelberg (Tyrol, Austria).
-# Serves as "crest" station for the "tyrol" data set.
-data(which = "sattelberg")
-
-# Hourly observations station Viejas Casino and Resort (California, U.S.A.).
-# Serves as "valley" or "target" station for the "california data set.
-data(which = "viejas")
-
-# Hourly observations station Lucky Five Ranch (California, U.S.A.).
-# Serves as "crest" station for the "california" data set.
-data(which = "luckyfive")
-
 demodata(which = c("tyrol", "ellboegen", "sattelberg", "california",
   "viejas", "luckyfive"))
 }

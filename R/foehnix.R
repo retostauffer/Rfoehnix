@@ -11,7 +11,7 @@
 # -------------------------------------------------------------------
 # - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
 # -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-13 15:16 on marvin
+# - L@ST MODIFIED: 2019-08-15 10:36 on marvin
 # -------------------------------------------------------------------
 
 
@@ -427,7 +427,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
 #'        also input \code{left} and input \code{truncated}. Can be set to any finite
 #'        numeric value.
 #' @param truncated logical. If set to \code{TRUE} truncation is used instead of
-#'        \code{censored}. This only affects the \code{\link{foehnix}} model estimate
+#'        censoring. This only affects the \code{\link{foehnix}} model estimate
 #'        if input \code{left} and/or input \code{right} are specified.
 #' @param standardize logical flag, default is \code{TRUE}. Defines whether or
 #'        not the model matrix for the concomitant model should be standardized for
@@ -560,6 +560,7 @@ print.foehnix.control <- function(x, ...) str(x)
 #' This is the main method of the foehnix package to estimate
 #' two-component mixture models for automated foehn classification.
 #' 
+#' @param x a \code{foehnix} object.
 #' @param formula an object of class \code{formula} (or one that can be coerced
 #'        to that class): a symbolic description of the model to be fitted.  The
 #'        details of model specification are given under 'Details'.
@@ -581,6 +582,8 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @param object a \code{foehnix} object (input to S3 methods)
 #' @param detailed boolean, default FALSE. If set to true, additional information
 #'        will be printed.
+#' @param eps threshold for posterior probabilities used in \code{summary}.
+#'        \code{numeric} value, default \code{1e-4}.
 #' @param ... forwarded to \code{\link{foehnix.control}}
 #'
 #' @return Returns an object of class \code{foehnix}.

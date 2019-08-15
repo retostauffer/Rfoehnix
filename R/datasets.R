@@ -1,14 +1,15 @@
 
-#' @usage
-#' # Combined data set Tyrol (A).
-#' # Valley station: Ellbögen; crest station: Sattelberg
-#' demodata()
-#' demodata(which = "tyrol")
-#'
-#' # Combined data set California (CA, USA).
-#' # Valley station: Viejas; crest station: Lucky Five Ranch
-#' demodata(which = "california")
-#'
+# @usage
+# # Combined data set Tyrol (A).
+# # Valley station: Ellbögen; crest station: Sattelberg
+# demodata()
+# demodata(which = "tyrol")
+#
+# # Combined data set California (CA, USA).
+# # Valley station: Viejas; crest station: Lucky Five Ranch
+# demodata(which = "california")
+#
+
 #' @details
 #' The Tyrolean data set consists of station
 #' Elbögen located in the Wipp valley, an area well known for south foehn
@@ -61,10 +62,11 @@
 #' @author Reto Stauffer, Deborah Detka
 NULL
 
-#' @usage
-#' # Hourly observations station Ellögen (Tyrol, Austria).
-#' # Serves as "valley" or "target" station for the "tyrol" data set.
-#' data(which = "ellboegen")
+# @usage
+# # Hourly observations station Ellögen (Tyrol, Austria).
+# # Serves as "valley" or "target" station for the "tyrol" data set.
+# data(which = "ellboegen")
+
 #' @source Station Ellögen operated by the Department of Atmospheric and Cryospheric
 #' Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.
 #' The data is available under the
@@ -73,10 +75,11 @@ NULL
 #' @rdname demodata
 NULL
 
-#' @usage
-#' # Hourly observations station Sattelberg (Tyrol, Austria).
-#' # Serves as "crest" station for the "tyrol" data set.
-#' data(which = "sattelberg")
+# @usage
+# # Hourly observations station Sattelberg (Tyrol, Austria).
+# # Serves as "crest" station for the "tyrol" data set.
+# data(which = "sattelberg")
+
 #' @source Station Sattelberg operated by the Department of Atmospheric and Cryospheric
 #' Sciences (\url{http://acinn.uibk.ac.at}) of the University of Innsbruck.
 #' The data is available under the
@@ -85,20 +88,22 @@ NULL
 #' @rdname demodata
 NULL
 
-#' @usage
-#' # Hourly observations station Viejas Casino and Resort (California, U.S.A.).
-#' # Serves as "valley" or "target" station for the "california data set.
-#' data(which = "viejas")
+# @usage
+# # Hourly observations station Viejas Casino and Resort (California, U.S.A.).
+# # Serves as "valley" or "target" station for the "california data set.
+# data(which = "viejas")
+
 #' @source Station Viejas Casino and Resort operated by San Diego Gas and Electric and made freely
 #' publicly available through Synoptic PBC at \url{https://synopticdata.com/}.
 #' @name viejas
 #' @rdname demodata
 NULL
 
-#' @usage
-#' # Hourly observations station Lucky Five Ranch (California, U.S.A.).
-#' # Serves as "crest" station for the "california" data set.
-#' data(which = "luckyfive")
+# @usage
+# # Hourly observations station Lucky Five Ranch (California, U.S.A.).
+# # Serves as "crest" station for the "california" data set.
+# data(which = "luckyfive")
+
 #' @source Station Lucky Five Ranch operated by San Diego Gas and Electric and made freely
 #' publicly available through Synoptic PBC at \url{https://synopticdata.com/}.
 #'

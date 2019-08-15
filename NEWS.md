@@ -11,7 +11,12 @@
 * `summary(..., detailed = TRUE)` does not show sigma coefficients.
 * Seems I am having some problems with cgaussian/tgaussian/...
 
-# foehnix 0.1-2 (August 2019; development stage)
+# foehnix 0.1-4 (August 2019; development)
+
+* Additional tests added.
+* Added generic function for `IGN` (ignorance) as alternative score.
+
+# foehnix 0.1-3 (August 2019)
 
 * Additional functionality added to `image.foehnix` (custom `xlim` and `ylim`,
     allow for custom `style` files).
@@ -36,6 +41,8 @@
 * Fixed a bug in the p-value calculation in `summary.crch` (`abs` was missing).
 * New test statistics in `summary.foehnix` (similar to `flexmix`).
 * Additional plot type (`"posterior"`, `5L`) in `plot.foehnix`.
+* Fixed an NA-handling bug in `foehnix_filter`. Only rows used have to be
+    checked (controlled by new input argument \code{cols}).
 
 # foehnix 0.1-2 (August 2019)
 

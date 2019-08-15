@@ -135,7 +135,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/ellboegen.Rmd"><code>../vignettes/ellboegen.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/ellboegen.Rmd"><code>vignettes/ellboegen.Rmd</code></a></small>
       <div class="hidden name"><code>ellboegen.Rmd</code></div>
 
     </div>
@@ -147,8 +147,8 @@
 <a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
 <p>The “Tyrolean” data set provides hourly observations from two stations, namely “Ellbögen” and “Sattelberg” located in Tyrol, Austria.</p>
 <p>Ellbögen is our target station (valley site) located in the Wipp Valley, a north-south oriented alpine valley on the northern side of the European Alps. To the north the Wipp Valley opens into the Inn Valley (close to Innsbruck, the capitol of Tyrol), to the south the valley ends at a narrow gap in the main Alpine ridge called Brennerpass (<span class="math inline">\(1370~m\)</span>; the pass between Austria and Italy) flanked by mountains (<span class="math inline">\(&gt;2100~m\)</span>). The Wipp Valley is one of the lowest and most distinct cuts trough the Alpine mountain range and well known for south foehn (north of the Alps). Station Sattelberg serves as crest station and provides observations of the upstream air mass during south foehn events. The station is located on top of the mountain to the west of the pass.</p>
-<div id="htmlwidget-df1bd80d56c86f6e8bfe" style="width:960px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-df1bd80d56c86f6e8bfe">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8b47247fc2405e2e1ea0" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8b47247fc2405e2e1ea0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
@@ -260,7 +260,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55044.0, 7 effective degrees of freedom
 ## Corresponding AIC = 110101.9, BIC = 110158.6
-## Time required for model estimation: 3.1 seconds
+## Time required for model estimation: 3.0 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -299,7 +299,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <ul>
 <li>No-foehn cluster: <span class="math inline">\(\mu_1 = 5.8\)</span>, <span class="math inline">\(\sigma_1 = 2.64\)</span> (parameter scale)</li>
 <li>Foehn cluster: <span class="math inline">\(\mu_2 = 0.86\)</span>, <span class="math inline">\(\sigma_2 = 1.33\)</span> (parameter scale)</li>
-<li>Concomitant model: positive <code>rh</code> effect of -0.1 percent per on relative humidity and a positive <code>ff</code> effect of +1.4 on wind speed</li>
+<li>Concomitant model: positive <code>rh</code> effect of -5.3 percent per on relative humidity and a positive <code>ff</code> effect of +141.4 percent on wind speed</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
@@ -381,9 +381,9 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
       <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">212</span>, <span class="dv">119</span>), <span class="dt">zlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="fl">0.5</span>))</code></pre></div>
 <p><img src="ellboegen_files/figure-html/image2-1.png" width="1152"></p>
 </div>
-<div id="compare-models" class="section level1">
+<div id="compare-models-gaussian" class="section level1">
 <h1 class="hasAnchor">
-<a href="#compare-models" class="anchor"></a>Compare Models</h1>
+<a href="#compare-models-gaussian" class="anchor"></a>Compare Models (Gaussian)</h1>
 <p>The model above (<code>diff_t ~ rh + ff</code>) fits this station well, however, we could of course change the model specifications. In addition to the model above, let us specify three alternative models, all solely based on data from the valley station. Thus, we do not rely on the availability of data from the crest station (but losing some information as we neglect the crest station).</p>
 <ul>
 <li>Alternative model 1 (<code>alt1</code>)
@@ -451,24 +451,852 @@ IC</code></pre></div>
 ## AIC     514453.8  283739.7  263274.1  259648.9
 ## BIC     514492.0  283775.2  263327.3  259719.8</code></pre>
 <p><strong>Warning:</strong> we are not allowed to compare these models directly as, due to the different specifications the number of observations differ! To compare all four we could, e.g., calculate the ignorance (<code>IGN</code>, mean negative log-likelihood):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">IGN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4),
-              <span class="cf">function</span>(x) <span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(x<span class="op">$</span>data))
-IGN</code></pre></div>
-<pre><code>## alt1.loglik alt2.loglik alt3.loglik alt4.loglik 
-##    2.257292    1.244962    1.155145    1.139220</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which.min">which.min</a></span>(IGN)</code></pre></div>
-<pre><code>## alt4.loglik 
-##           4</code></pre>
-<p>Based on <code>IGN</code> we would preferr the most complex model <code>mod4</code> over the other ones. Let us check the posterior probability histograms (same as returned by <code><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot(..., which = "post")</a></code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">IGN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4), IGN)
+<span class="co"># Sort (lowest to highest ignorance)</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(IGN)</code></pre></div>
+<pre><code>##  mod.IGN alt4.IGN alt1.IGN alt3.IGN alt2.IGN 
+## 2.253314 2.481249 2.495444 2.512522 2.703134</code></pre>
+<p>Based on <code>IGN</code> we would preferr the most complex model <code>mod</code> over all alternative models (<code>alt1</code>, <code>alt2</code>, <code>alt3</code>, <code>alt4</code>). From the alternative ones, <code>alt4</code> performs best in terms of ignorance.</p>
+<p>We could also compare the “Cluster separation” returned by <a href="references/summary.html"><code>summary</code></a>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod)<span class="op">$</span>separation</code></pre></div>
+<pre><code>##                            prior  size post&gt;0     ratio
+## Component 1 (foehn)    0.5596183 13785  19437 0.7092144
+## Component 2 (no foehn) 0.4403817 10643  22764 0.4675365</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(alt1)<span class="op">$</span>separation</code></pre></div>
+<pre><code>##                            prior  size post&gt;0     ratio
+## Component 1 (foehn)    0.2813766 24695 103077 0.2395782
+## Component 2 (no foehn) 0.7186234 78382  91075 0.8606313</code></pre>
+<p>… or compare the outcome of the different models in a time series plot (<a href="references/tsplot.html"><code>tsplot</code></a>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-10-20"</span>)
 end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-11-05"</span>)
 
-<span class="co"># As we dont have the standard names: re-specify variable names.</span>
-<span class="co"># In addition, use 'style = "advanced"' to show more details.</span>
-<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt4 =</span> alt4, <span class="dt">alt3 =</span> alt3, <span class="dt">alt2 =</span> alt2, <span class="dt">alt1 =</span> alt1),
+<span class="co"># Time series plot to compare "mod" (the most complex model)</span>
+<span class="co"># and the four alternatives.</span>
+<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">alt4 =</span> alt4, <span class="dt">alt3 =</span> alt3, <span class="dt">alt2 =</span> alt2, <span class="dt">alt1 =</span> alt1),
        <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
        <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
 <p><img src="ellboegen_files/figure-html/alt_tsplot-1.png" width="1152"></p>
+</div>
+<div id="compare-models-distributions" class="section level1">
+<h1 class="hasAnchor">
+<a href="#compare-models-distributions" class="anchor"></a>Compare Models (Distributions)</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gaussian models: Gaussian, left-censored Gaussian (at 0),</span>
+<span class="co"># and left-truncated Gaussian (at 0). Note that, for demonstration</span>
+<span class="co"># purposes, the censored/truncated models do 20 iterations.</span>
+mod_gauss  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit
+## EM iteration 1/100, ll = -209921.43
+ EM iteration 1/100, ll =  -46974.77
+ EM iteration 1/100, ll = -256896.20
+EM iteration 2/100, ll = -202451.79
+ EM iteration 2/100, ll =  -46329.96
+ EM iteration 2/100, ll = -248781.75
+EM iteration 3/100, ll = -199912.54
+ EM iteration 3/100, ll =  -46846.60
+ EM iteration 3/100, ll = -246759.14
+EM iteration 4/100, ll = -198881.85
+ EM iteration 4/100, ll =  -47419.53
+ EM iteration 4/100, ll = -246301.37
+EM iteration 5/100, ll = -198423.57
+ EM iteration 5/100, ll =  -47850.85
+ EM iteration 5/100, ll = -246274.42
+EM iteration 6/100, ll = -198220.99
+ EM iteration 6/100, ll =  -48147.21
+ EM iteration 6/100, ll = -246368.20
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_cgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
+                      <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 1/20, ll = -196388.00
+ EM iteration 1/20, ll =  -53329.73
+ EM iteration 1/20, ll = -249717.74</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 2/20, ll = -197875.58
+ EM iteration 2/20, ll =  -51786.91
+ EM iteration 2/20, ll = -249662.49</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 3/20, ll = -198652.34
+ EM iteration 3/20, ll =  -50796.02
+ EM iteration 3/20, ll = -249448.36</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 4/20, ll = -199050.46
+ EM iteration 4/20, ll =  -50156.52
+ EM iteration 4/20, ll = -249206.99</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 5/20, ll = -199243.84
+ EM iteration 5/20, ll =  -49741.58
+ EM iteration 5/20, ll = -248985.42</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 6/20, ll = -199331.69
+ EM iteration 6/20, ll =  -49465.61
+ EM iteration 6/20, ll = -248797.30</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 7/20, ll = -199353.19
+ EM iteration 7/20, ll =  -49281.05
+ EM iteration 7/20, ll = -248634.24</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 8/20, ll = -199339.71
+ EM iteration 8/20, ll =  -49155.66
+ EM iteration 8/20, ll = -248495.38</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 9/20, ll = -199308.82
+ EM iteration 9/20, ll =  -49068.64
+ EM iteration 9/20, ll = -248377.46</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 10/20, ll = -199270.58
+ EM iteration 10/20, ll =  -49006.75
+ EM iteration 10/20, ll = -248277.33</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 11/20, ll = -199222.54
+ EM iteration 11/20, ll =  -48966.08
+ EM iteration 11/20, ll = -248188.62</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 12/20, ll = -199180.81
+ EM iteration 12/20, ll =  -48936.25
+ EM iteration 12/20, ll = -248117.06</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 13/20, ll = -199143.91
+ EM iteration 13/20, ll =  -48913.32
+ EM iteration 13/20, ll = -248057.23</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 14/20, ll = -199111.55
+ EM iteration 14/20, ll =  -48895.19
+ EM iteration 14/20, ll = -248006.74</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 15/20, ll = -199083.41
+ EM iteration 15/20, ll =  -48880.60
+ EM iteration 15/20, ll = -247964.01</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 16/20, ll = -199059.12
+ EM iteration 16/20, ll =  -48868.69
+ EM iteration 16/20, ll = -247927.81</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 17/20, ll = -199038.27
+ EM iteration 17/20, ll =  -48858.86
+ EM iteration 17/20, ll = -247897.13</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 18/20, ll = -199020.45
+ EM iteration 18/20, ll =  -48850.69
+ EM iteration 18/20, ll = -247871.14</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 19/20, ll = -199005.26
+ EM iteration 19/20, ll =  -48843.86
+ EM iteration 19/20, ll = -247849.12</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 20/20, ll = -198992.34
+ EM iteration 20/20, ll =  -48838.13
+ EM iteration 20/20, ll = -247830.47
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
+                      <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>, <span class="dt">truncated =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.
+
+## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 1/20, ll = -193772.74
+ EM iteration 1/20, ll =  -52471.14
+ EM iteration 1/20, ll = -246243.89</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 2/20, ll = -196008.19
+ EM iteration 2/20, ll =  -50373.67
+ EM iteration 2/20, ll = -246381.85</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 3/20, ll = -197524.79
+ EM iteration 3/20, ll =  -48832.44
+ EM iteration 3/20, ll = -246357.23</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 4/20, ll = -198601.48
+ EM iteration 4/20, ll =  -47678.20
+ EM iteration 4/20, ll = -246279.68</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 5/20, ll = -199405.35
+ EM iteration 5/20, ll =  -46800.52
+ EM iteration 5/20, ll = -246205.87</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 6/20, ll = -200030.71
+ EM iteration 6/20, ll =  -46122.78
+ EM iteration 6/20, ll = -246153.49</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 7/20, ll = -200533.14
+ EM iteration 7/20, ll =  -45591.40
+ EM iteration 7/20, ll = -246124.54</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 8/20, ll = -200948.50
+ EM iteration 8/20, ll =  -45167.49
+ EM iteration 8/20, ll = -246115.99</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 9/20, ll = -201298.73
+ EM iteration 9/20, ll =  -44824.11
+ EM iteration 9/20, ll = -246122.84</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 10/20, ll = -201599.32
+ EM iteration 10/20, ll =  -44541.65
+ EM iteration 10/20, ll = -246140.97</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 11/20, ll = -201861.17
+ EM iteration 11/20, ll =  -44305.81
+ EM iteration 11/20, ll = -246166.98</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 12/20, ll = -202092.12
+ EM iteration 12/20, ll =  -44106.07
+ EM iteration 12/20, ll = -246198.19</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 13/20, ll = -202297.92
+ EM iteration 13/20, ll =  -43934.63
+ EM iteration 13/20, ll = -246232.56</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 14/20, ll = -202480.61
+ EM iteration 14/20, ll =  -43786.74
+ EM iteration 14/20, ll = -246267.35</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 15/20, ll = -202646.49
+ EM iteration 15/20, ll =  -43657.13
+ EM iteration 15/20, ll = -246303.62</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 16/20, ll = -202797.77
+ EM iteration 16/20, ll =  -43542.21
+ EM iteration 16/20, ll = -246339.98</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 17/20, ll = -202936.31
+ EM iteration 17/20, ll =  -43439.30
+ EM iteration 17/20, ll = -246375.61</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 18/20, ll = -203063.67
+ EM iteration 18/20, ll =  -43346.37
+ EM iteration 18/20, ll = -246410.04</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 19/20, ll = -203181.14
+ EM iteration 19/20, ll =  -43261.86
+ EM iteration 19/20, ll = -246443.00</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 20/20, ll = -203289.76
+ EM iteration 20/20, ll =  -43184.54
+ EM iteration 20/20, ll = -246474.30
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Logistic models: logistic, left-censored logistic (at 0),</span>
+<span class="co"># and left-truncated logistic (at 0). Again, fixed number of</span>
+<span class="co"># iterations for the censored and truncated models.</span>
+mod_logis  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit
+## EM iteration 1/100, ll = -208705.02
+ EM iteration 1/100, ll =  -46194.27
+ EM iteration 1/100, ll = -254899.30
+EM iteration 2/100, ll = -202624.20
+ EM iteration 2/100, ll =  -45533.52
+ EM iteration 2/100, ll = -248157.73
+EM iteration 3/100, ll = -200831.49
+ EM iteration 3/100, ll =  -45816.36
+ EM iteration 3/100, ll = -246647.85
+EM iteration 4/100, ll = -200130.72
+ EM iteration 4/100, ll =  -46113.01
+ EM iteration 4/100, ll = -246243.74
+EM iteration 5/100, ll = -199803.99
+ EM iteration 5/100, ll =  -46307.36
+ EM iteration 5/100, ll = -246111.34
+EM iteration 6/100, ll = -199637.27
+ EM iteration 6/100, ll =  -46419.74
+ EM iteration 6/100, ll = -246057.01
+EM iteration 7/100, ll = -199548.28
+ EM iteration 7/100, ll =  -46480.88
+ EM iteration 7/100, ll = -246029.16
+EM iteration 8/100, ll = -199499.53
+ EM iteration 8/100, ll =  -46512.65
+ EM iteration 8/100, ll = -246012.18
+EM iteration 9/100, ll = -199472.28
+ EM iteration 9/100, ll =  -46528.26
+ EM iteration 9/100, ll = -246000.54
+EM iteration 10/100, ll = -199456.71
+ EM iteration 10/100, ll =  -46535.25
+ EM iteration 10/100, ll = -245991.95
+EM iteration 11/100, ll = -199447.56
+ EM iteration 11/100, ll =  -46537.72
+ EM iteration 11/100, ll = -245985.29
+EM iteration 12/100, ll = -199441.99
+ EM iteration 12/100, ll =  -46537.94
+ EM iteration 12/100, ll = -245979.93
+EM iteration 13/100, ll = -199438.45
+ EM iteration 13/100, ll =  -46537.09
+ EM iteration 13/100, ll = -245975.53
+EM iteration 14/100, ll = -199436.07
+ EM iteration 14/100, ll =  -46535.79
+ EM iteration 14/100, ll = -245971.86
+EM iteration 15/100, ll = -199434.39
+ EM iteration 15/100, ll =  -46534.38
+ EM iteration 15/100, ll = -245968.77
+EM iteration 16/100, ll = -199433.15
+ EM iteration 16/100, ll =  -46533.00
+ EM iteration 16/100, ll = -245966.14
+EM iteration 17/100, ll = -199432.19
+ EM iteration 17/100, ll =  -46531.72
+ EM iteration 17/100, ll = -245963.91
+EM iteration 18/100, ll = -199431.42
+ EM iteration 18/100, ll =  -46530.58
+ EM iteration 18/100, ll = -245962.00
+EM iteration 19/100, ll = -199430.79
+ EM iteration 19/100, ll =  -46529.57
+ EM iteration 19/100, ll = -245960.36
+EM iteration 20/100, ll = -199430.27
+ EM iteration 20/100, ll =  -46528.69
+ EM iteration 20/100, ll = -245958.96
+EM iteration 21/100, ll = -199429.83
+ EM iteration 21/100, ll =  -46527.93
+ EM iteration 21/100, ll = -245957.75
+EM iteration 22/100, ll = -199429.45
+ EM iteration 22/100, ll =  -46527.27
+ EM iteration 22/100, ll = -245956.72
+EM iteration 23/100, ll = -199429.14
+ EM iteration 23/100, ll =  -46526.70
+ EM iteration 23/100, ll = -245955.83
+EM iteration 24/100, ll = -199428.86
+ EM iteration 24/100, ll =  -46526.21
+ EM iteration 24/100, ll = -245955.07
+EM iteration 25/100, ll = -199428.63
+ EM iteration 25/100, ll =  -46525.79
+ EM iteration 25/100, ll = -245954.42
+EM iteration 26/100, ll = -199428.43
+ EM iteration 26/100, ll =  -46525.43
+ EM iteration 26/100, ll = -245953.86
+EM iteration 27/100, ll = -199428.26
+ EM iteration 27/100, ll =  -46525.11
+ EM iteration 27/100, ll = -245953.38
+EM iteration 28/100, ll = -199428.12
+ EM iteration 28/100, ll =  -46524.85
+ EM iteration 28/100, ll = -245952.96
+EM iteration 29/100, ll = -199427.99
+ EM iteration 29/100, ll =  -46524.62
+ EM iteration 29/100, ll = -245952.61
+EM iteration 30/100, ll = -199427.88
+ EM iteration 30/100, ll =  -46524.42
+ EM iteration 30/100, ll = -245952.30
+EM iteration 31/100, ll = -199427.79
+ EM iteration 31/100, ll =  -46524.25
+ EM iteration 31/100, ll = -245952.04
+EM iteration 32/100, ll = -199427.71
+ EM iteration 32/100, ll =  -46524.11
+ EM iteration 32/100, ll = -245951.82
+EM iteration 33/100, ll = -199427.64
+ EM iteration 33/100, ll =  -46523.98
+ EM iteration 33/100, ll = -245951.62
+EM iteration 34/100, ll = -199427.58
+ EM iteration 34/100, ll =  -46523.87
+ EM iteration 34/100, ll = -245951.46
+EM iteration 35/100, ll = -199427.53
+ EM iteration 35/100, ll =  -46523.78
+ EM iteration 35/100, ll = -245951.32
+EM iteration 36/100, ll = -199427.49
+ EM iteration 36/100, ll =  -46523.70
+ EM iteration 36/100, ll = -245951.19
+EM iteration 37/100, ll = -199427.45
+ EM iteration 37/100, ll =  -46523.63
+ EM iteration 37/100, ll = -245951.09
+EM iteration 38/100, ll = -199427.42
+ EM iteration 38/100, ll =  -46523.58
+ EM iteration 38/100, ll = -245951.00
+EM iteration 39/100, ll = -199427.39
+ EM iteration 39/100, ll =  -46523.53
+ EM iteration 39/100, ll = -245950.92
+EM iteration 40/100, ll = -199427.37
+ EM iteration 40/100, ll =  -46523.48
+ EM iteration 40/100, ll = -245950.85
+EM iteration 41/100, ll = -199427.35
+ EM iteration 41/100, ll =  -46523.45
+ EM iteration 41/100, ll = -245950.80
+EM iteration 42/100, ll = -199427.33
+ EM iteration 42/100, ll =  -46523.41
+ EM iteration 42/100, ll = -245950.75
+EM iteration 43/100, ll = -199427.32
+ EM iteration 43/100, ll =  -46523.39
+ EM iteration 43/100, ll = -245950.71
+EM iteration 44/100, ll = -199427.31
+ EM iteration 44/100, ll =  -46523.36
+ EM iteration 44/100, ll = -245950.67
+EM iteration 45/100, ll = -199427.29
+ EM iteration 45/100, ll =  -46523.34
+ EM iteration 45/100, ll = -245950.64
+EM iteration 46/100, ll = -199427.29
+ EM iteration 46/100, ll =  -46523.33
+ EM iteration 46/100, ll = -245950.61
+EM iteration 47/100, ll = -199427.28
+ EM iteration 47/100, ll =  -46523.31
+ EM iteration 47/100, ll = -245950.59
+EM iteration 48/100, ll = -199427.27
+ EM iteration 48/100, ll =  -46523.30
+ EM iteration 48/100, ll = -245950.57
+EM iteration 49/100, ll = -199427.26
+ EM iteration 49/100, ll =  -46523.29
+ EM iteration 49/100, ll = -245950.55
+EM iteration 50/100, ll = -199427.26
+ EM iteration 50/100, ll =  -46523.28
+ EM iteration 50/100, ll = -245950.54
+EM iteration 51/100, ll = -199427.25
+ EM iteration 51/100, ll =  -46523.27
+ EM iteration 51/100, ll = -245950.53
+EM iteration 52/100, ll = -199427.25
+ EM iteration 52/100, ll =  -46523.26
+ EM iteration 52/100, ll = -245950.51
+EM iteration 53/100, ll = -199427.25
+ EM iteration 53/100, ll =  -46523.26
+ EM iteration 53/100, ll = -245950.51
+EM iteration 54/100, ll = -199427.25
+ EM iteration 54/100, ll =  -46523.25
+ EM iteration 54/100, ll = -245950.50
+EM iteration 55/100, ll = -199427.24
+ EM iteration 55/100, ll =  -46523.25
+ EM iteration 55/100, ll = -245950.49
+EM iteration 56/100, ll = -199427.24
+ EM iteration 56/100, ll =  -46523.24
+ EM iteration 56/100, ll = -245950.48
+EM iteration 57/100, ll = -199427.24
+ EM iteration 57/100, ll =  -46523.24
+ EM iteration 57/100, ll = -245950.48
+EM iteration 58/100, ll = -199427.24
+ EM iteration 58/100, ll =  -46523.24
+ EM iteration 58/100, ll = -245950.48
+EM iteration 59/100, ll = -199427.24
+ EM iteration 59/100, ll =  -46523.24
+ EM iteration 59/100, ll = -245950.47
+EM iteration 60/100, ll = -199427.23
+ EM iteration 60/100, ll =  -46523.23
+ EM iteration 60/100, ll = -245950.47
+EM iteration 61/100, ll = -199427.23
+ EM iteration 61/100, ll =  -46523.23
+ EM iteration 61/100, ll = -245950.47
+EM iteration 62/100, ll = -199427.23
+ EM iteration 62/100, ll =  -46523.23
+ EM iteration 62/100, ll = -245950.46
+EM iteration 63/100, ll = -199427.23
+ EM iteration 63/100, ll =  -46523.23
+ EM iteration 63/100, ll = -245950.46
+EM iteration 64/100, ll = -199427.23
+ EM iteration 64/100, ll =  -46523.23
+ EM iteration 64/100, ll = -245950.46
+EM iteration 65/100, ll = -199427.23
+ EM iteration 65/100, ll =  -46523.23
+ EM iteration 65/100, ll = -245950.46
+EM iteration 66/100, ll = -199427.23
+ EM iteration 66/100, ll =  -46523.23
+ EM iteration 66/100, ll = -245950.46
+EM iteration 67/100, ll = -199427.23
+ EM iteration 67/100, ll =  -46523.23
+ EM iteration 67/100, ll = -245950.46
+EM iteration 68/100, ll = -199427.23
+ EM iteration 68/100, ll =  -46523.22
+ EM iteration 68/100, ll = -245950.45
+EM iteration 69/100, ll = -199427.23
+ EM iteration 69/100, ll =  -46523.22
+ EM iteration 69/100, ll = -245950.45
+EM iteration 70/100, ll = -199427.23
+ EM iteration 70/100, ll =  -46523.22
+ EM iteration 70/100, ll = -245950.45
+EM iteration 71/100, ll = -199427.23
+ EM iteration 71/100, ll =  -46523.22
+ EM iteration 71/100, ll = -245950.45
+EM iteration 72/100, ll = -199427.23
+ EM iteration 72/100, ll =  -46523.22
+ EM iteration 72/100, ll = -245950.45
+EM iteration 73/100, ll = -199427.23
+ EM iteration 73/100, ll =  -46523.22
+ EM iteration 73/100, ll = -245950.45
+EM iteration 74/100, ll = -199427.23
+ EM iteration 74/100, ll =  -46523.22
+ EM iteration 74/100, ll = -245950.45
+EM iteration 75/100, ll = -199427.23
+ EM iteration 75/100, ll =  -46523.22
+ EM iteration 75/100, ll = -245950.45
+EM iteration 76/100, ll = -199427.23
+ EM iteration 76/100, ll =  -46523.22
+ EM iteration 76/100, ll = -245950.45
+EM iteration 77/100, ll = -199427.23
+ EM iteration 77/100, ll =  -46523.22
+ EM iteration 77/100, ll = -245950.45
+EM iteration 78/100, ll = -199427.23
+ EM iteration 78/100, ll =  -46523.22
+ EM iteration 78/100, ll = -245950.45
+EM iteration 79/100, ll = -199427.23
+ EM iteration 79/100, ll =  -46523.22
+ EM iteration 79/100, ll = -245950.45
+EM iteration 80/100, ll = -199427.23
+ EM iteration 80/100, ll =  -46523.22
+ EM iteration 80/100, ll = -245950.45
+EM iteration 81/100, ll = -199427.23
+ EM iteration 81/100, ll =  -46523.22
+ EM iteration 81/100, ll = -245950.45
+EM iteration 82/100, ll = -199427.23
+ EM iteration 82/100, ll =  -46523.22
+ EM iteration 82/100, ll = -245950.45
+EM iteration 83/100, ll = -199427.23
+ EM iteration 83/100, ll =  -46523.22
+ EM iteration 83/100, ll = -245950.45
+EM iteration 84/100, ll = -199427.23
+ EM iteration 84/100, ll =  -46523.22
+ EM iteration 84/100, ll = -245950.45
+EM iteration 85/100, ll = -199427.23
+ EM iteration 85/100, ll =  -46523.22
+ EM iteration 85/100, ll = -245950.45
+EM iteration 86/100, ll = -199427.23
+ EM iteration 86/100, ll =  -46523.22
+ EM iteration 86/100, ll = -245950.45
+EM iteration 87/100, ll = -199427.23
+ EM iteration 87/100, ll =  -46523.22
+ EM iteration 87/100, ll = -245950.45
+EM iteration 88/100, ll = -199427.23
+ EM iteration 88/100, ll =  -46523.22
+ EM iteration 88/100, ll = -245950.45
+EM iteration 89/100, ll = -199427.23
+ EM iteration 89/100, ll =  -46523.22
+ EM iteration 89/100, ll = -245950.45
+EM iteration 90/100, ll = -199427.23
+ EM iteration 90/100, ll =  -46523.22
+ EM iteration 90/100, ll = -245950.45
+EM iteration 91/100, ll = -199427.23
+ EM iteration 91/100, ll =  -46523.22
+ EM iteration 91/100, ll = -245950.45
+EM iteration 92/100, ll = -199427.23
+ EM iteration 92/100, ll =  -46523.22
+ EM iteration 92/100, ll = -245950.45
+EM iteration 93/100, ll = -199427.23
+ EM iteration 93/100, ll =  -46523.22
+ EM iteration 93/100, ll = -245950.45
+EM iteration 94/100, ll = -199427.23
+ EM iteration 94/100, ll =  -46523.22
+ EM iteration 94/100, ll = -245950.45
+EM iteration 95/100, ll = -199427.23
+ EM iteration 95/100, ll =  -46523.22
+ EM iteration 95/100, ll = -245950.45
+EM iteration 96/100, ll = -199427.23
+ EM iteration 96/100, ll =  -46523.22
+ EM iteration 96/100, ll = -245950.45
+EM iteration 97/100, ll = -199427.23
+ EM iteration 97/100, ll =  -46523.22
+ EM iteration 97/100, ll = -245950.45
+EM iteration 98/100, ll = -199427.23
+ EM iteration 98/100, ll =  -46523.22
+ EM iteration 98/100, ll = -245950.45
+EM iteration 99/100, ll = -199427.23
+ EM iteration 99/100, ll =  -46523.22
+ EM iteration 99/100, ll = -245950.45
+EM iteration 100/100, ll = -199427.23
+ EM iteration 100/100, ll =  -46523.22
+ EM iteration 100/100, ll = -245950.45
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_clogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>,
+                      <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.
+
+## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 1/20, ll = -200457.45
+ EM iteration 1/20, ll =  -52280.16
+ EM iteration 1/20, ll = -252737.61</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 2/20, ll = -201717.12
+ EM iteration 2/20, ll =  -50474.88
+ EM iteration 2/20, ll = -252192.00</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 3/20, ll = -202327.77
+ EM iteration 3/20, ll =  -49342.20
+ EM iteration 3/20, ll = -251669.97</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 4/20, ll = -202620.76
+ EM iteration 4/20, ll =  -48621.30
+ EM iteration 4/20, ll = -251242.05</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 5/20, ll = -202746.25
+ EM iteration 5/20, ll =  -48154.74
+ EM iteration 5/20, ll = -250900.99</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 6/20, ll = -202779.38
+ EM iteration 6/20, ll =  -47846.70
+ EM iteration 6/20, ll = -250626.09</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 7/20, ll = -202761.69
+ EM iteration 7/20, ll =  -47638.48
+ EM iteration 7/20, ll = -250400.17</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 8/20, ll = -202717.42
+ EM iteration 8/20, ll =  -47493.82
+ EM iteration 8/20, ll = -250211.24</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 9/20, ll = -202660.94
+ EM iteration 9/20, ll =  -47390.16
+ EM iteration 9/20, ll = -250051.11</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 10/20, ll = -202600.69
+ EM iteration 10/20, ll =  -47313.42
+ EM iteration 10/20, ll = -249914.11</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 11/20, ll = -202541.44
+ EM iteration 11/20, ll =  -47254.72
+ EM iteration 11/20, ll = -249796.16</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 12/20, ll = -202485.74
+ EM iteration 12/20, ll =  -47208.44
+ EM iteration 12/20, ll = -249694.17</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 13/20, ll = -202434.78
+ EM iteration 13/20, ll =  -47170.98
+ EM iteration 13/20, ll = -249605.75</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 14/20, ll = -202388.96
+ EM iteration 14/20, ll =  -47140.01
+ EM iteration 14/20, ll = -249528.97</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 15/20, ll = -202348.22
+ EM iteration 15/20, ll =  -47113.98
+ EM iteration 15/20, ll = -249462.21</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 16/20, ll = -202312.28
+ EM iteration 16/20, ll =  -47091.85
+ EM iteration 16/20, ll = -249404.13</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 17/20, ll = -202280.73
+ EM iteration 17/20, ll =  -47072.85
+ EM iteration 17/20, ll = -249353.58</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 18/20, ll = -202253.13
+ EM iteration 18/20, ll =  -47056.45
+ EM iteration 18/20, ll = -249309.59</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 19/20, ll = -202229.04
+ EM iteration 19/20, ll =  -47042.24
+ EM iteration 19/20, ll = -249271.28</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 20/20, ll = -202208.04
+ EM iteration 20/20, ll =  -47029.90
+ EM iteration 20/20, ll = -249237.94
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tlogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>,
+                      <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>, <span class="dt">truncated =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.
+
+## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
+## IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 1/20, ll = -196881.92
+ EM iteration 1/20, ll =  -51278.44
+ EM iteration 1/20, ll = -248160.36</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 2/20, ll = -198979.48
+ EM iteration 2/20, ll =  -48788.41
+ EM iteration 2/20, ll = -247767.89</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 3/20, ll = -200355.58
+ EM iteration 3/20, ll =  -46985.00
+ EM iteration 3/20, ll = -247340.58</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 4/20, ll = -201330.04
+ EM iteration 4/20, ll =  -45649.26
+ EM iteration 4/20, ll = -246979.30</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 5/20, ll = -202066.70
+ EM iteration 5/20, ll =  -44639.25
+ EM iteration 5/20, ll = -246705.95</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 6/20, ll = -202650.49
+ EM iteration 6/20, ll =  -43859.17
+ EM iteration 6/20, ll = -246509.66</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 7/20, ll = -203129.63
+ EM iteration 7/20, ll =  -43243.76
+ EM iteration 7/20, ll = -246373.40</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 8/20, ll = -203533.74
+ EM iteration 8/20, ll =  -42748.00
+ EM iteration 8/20, ll = -246281.74</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 9/20, ll = -203882.21
+ EM iteration 9/20, ll =  -42340.34
+ EM iteration 9/20, ll = -246222.55</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 10/20, ll = -204188.30
+ EM iteration 10/20, ll =  -41998.41
+ EM iteration 10/20, ll = -246186.71</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 11/20, ll = -204461.37
+ EM iteration 11/20, ll =  -41706.10
+ EM iteration 11/20, ll = -246167.47</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 12/20, ll = -204705.98
+ EM iteration 12/20, ll =  -41453.02
+ EM iteration 12/20, ll = -246159.00</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 13/20, ll = -204931.08
+ EM iteration 13/20, ll =  -41228.74
+ EM iteration 13/20, ll = -246159.83</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 14/20, ll = -205138.53
+ EM iteration 14/20, ll =  -41027.30
+ EM iteration 14/20, ll = -246165.84</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 15/20, ll = -205331.12
+ EM iteration 15/20, ll =  -40843.91
+ EM iteration 15/20, ll = -246175.04</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 16/20, ll = -205511.46
+ EM iteration 16/20, ll =  -40675.07
+ EM iteration 16/20, ll = -246186.53</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 17/20, ll = -205680.43
+ EM iteration 17/20, ll =  -40518.08
+ EM iteration 17/20, ll = -246198.51</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 18/20, ll = -205839.09
+ EM iteration 18/20, ll =  -40371.02
+ EM iteration 18/20, ll = -246210.11</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 19/20, ll = -205989.06
+ EM iteration 19/20, ll =  -40232.52
+ EM iteration 19/20, ll = -246221.57</code></pre>
+<pre><code>## Warning in iwls_logit(logitX, post, beta = ccmodel$beta, standardize =
+## FALSE, : IWLS solver for logistic model did not converge.</code></pre>
+<pre><code>## EM iteration 20/20, ll = -206131.04
+ EM iteration 20/20, ll =  -40101.21
+ EM iteration 20/20, ll = -246232.25
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Information criteria</span>
+get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+    res &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x), <span class="kw">IGN</span>(x))
+    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(res)
+}
+IC     &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"gaussian"</span>           =<span class="st"> </span>mod_gauss,
+                      <span class="st">"gaussian censored"</span>  =<span class="st"> </span>mod_cgauss,
+                      <span class="st">"gaussian truncated"</span> =<span class="st"> </span>mod_tgauss,
+                      <span class="st">"logistic"</span>           =<span class="st"> </span>mod_logis,
+                      <span class="st">"logistic censored"</span>  =<span class="st"> </span>mod_clogis,
+                      <span class="st">"logistic truncated"</span> =<span class="st"> </span>mod_tlogis),
+                 get_IC)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(IC)</code></pre></div>
+<pre><code>##                         N    loglik      AIC      BIC      IGN
+## gaussian           102918 -246274.4 492560.8 492618.1 2.392919
+## gaussian censored  102918 -247830.5 495672.9 495730.2 2.408038
+## gaussian truncated 102918 -246474.3 492960.6 493017.9 2.394861
+## logistic           102918 -245950.4 491912.9 491970.1 2.389771
+## logistic censored  102918 -249237.9 498487.9 498545.1 2.421714
+## logistic truncated 102918 -246232.2 492476.5 492533.7 2.392509</code></pre>
+<p>As the number of observations the classification is based on is the same for all models, we can directly compare the information criteria (i.e., AIC, BIC, log-likelihood). In all cases the “logistic” model seems to perform best among these models.</p>
+<p>The more complex model <code>mod</code> shows a lower ignorance but, due to the specification of the model, contains more missing values where no classification is possible when data from the crest station is missing.</p>
+<p>To fill gaps (missing values in the classification of model <code>mod</code>) we could combine the estimates of both models:</p>
+<ul>
+<li>First, take probabilities from model <code>mod</code>. If not available,</li>
+<li>take estimates from model <code>mod_logis</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine results of both models:</span>
+prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(<span class="dt">mod =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod), <span class="dt">mod_logis =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod_logis))
+
+<span class="co"># Number of missing entries</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x)))</code></pre></div>
+<pre><code>##       mod mod_logis 
+##     38859     11034</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For demonstration purposes: find rows where mod is missing</span>
+<span class="co"># while mod_logis returns a probability:</span>
+idx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod_logis))[1L] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx, ])</code></pre></div>
+<pre><code>##                     mod   mod_logis
+## 2006-01-01 07:00:00   0 0.003570127
+## 2006-01-01 08:00:00   0 0.003439705
+## 2006-01-01 09:00:00   0 0.005580110
+## 2006-01-01 10:00:00  NA 0.004342683
+## 2006-01-01 11:00:00   0 0.003189531
+## 2006-01-01 12:00:00   0 0.003904288</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine the two (take probability from mod if available,</span>
+<span class="co"># else from mod_logis; both missing: NA).</span>
+combine_prob &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/all">all</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x))) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="ot">NA</span>)
+    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/na.fail">na.omit</a></span>(x), <span class="dt">n =</span> <span class="dv">1</span>))
+}
+prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">1</span>, combine_prob)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx])</code></pre></div>
+<pre><code>## 2006-01-01 07:00:00 2006-01-01 08:00:00 2006-01-01 09:00:00 
+##         0.000000000         0.000000000         0.000000000 
+## 2006-01-01 10:00:00 2006-01-01 11:00:00 2006-01-01 12:00:00 
+##         0.004342683         0.000000000         0.000000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check missing values</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob))</code></pre></div>
+<pre><code>## [1] 11034</code></pre>
 </div>
   </div>
 
@@ -484,7 +1312,8 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
       <li><a href="#time-series-plot">Time Series Plot</a></li>
       <li><a href="#wind-rose-plot">Wind Rose Plot</a></li>
       <li><a href="#hovmoler-diagram">Hovmöler Diagram</a></li>
-      <li><a href="#compare-models">Compare Models</a></li>
+      <li><a href="#compare-models-gaussian">Compare Models (Gaussian)</a></li>
+      <li><a href="#compare-models-distributions">Compare Models (Distributions)</a></li>
       </ul>
 </div>
       </div>

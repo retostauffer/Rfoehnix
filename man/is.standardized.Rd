@@ -16,5 +16,5 @@ Helper function for \code{foehnix}. Returns \code{TRUE}
 if input \code{x} is a standardized matrix, else \code{FALSE}.
 }
 \seealso{
-\code{\link{standardize}}.
+\code{\link[foehnix]{standardize}}.
 }

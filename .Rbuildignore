@@ -1,4 +1,6 @@
 
+# Makefile
+^Makefile$
 
 # Raw data folder
 ^data-raw$

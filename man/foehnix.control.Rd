@@ -28,7 +28,7 @@ also input \code{left} and input \code{truncated}. Can be set to any finite
 numeric value.}
 
 \item{truncated}{logical. If set to \code{TRUE} truncation is used instead of
-\code{censored}. This only affects the \code{\link{foehnix}} model estimate
+censoring. This only affects the \code{\link{foehnix}} model estimate
 if input \code{left} and/or input \code{right} are specified.}
 
 \item{standardize}{logical flag, default is \code{TRUE}. Defines whether or

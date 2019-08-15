@@ -265,6 +265,8 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #'        if \code{x} is a multivariate object (see 'Details' section).
 #' @param ffvar string, custom name of the wind speed variable in \code{x}
 #'        if \code{x} is a multivariate object (see 'Details' section).
+#' @param breaks \code{NULL} or a sequence of \code{numeric} values to set
+#'        the breaks along \code{ff}.
 #'
 #' @details The \code{\link{windrose}} function can be used in different ways.
 #' The main purpose is to plot (conditional) wind roses for
@@ -497,6 +499,7 @@ windrose.default <- function(x, ff,
     # Breaks for classification
     dd.breaks <- seq(-interval / 2, 360, by=interval)
     ff.breaks <- if (!is.null(breaks)) breaks else pretty(ff)
+    stopifnot(is.numeric(ff.breaks))
 
     # Picking some colors
     cols <- rev(colorspace::heat_hcl(length(ff.breaks) - 1, h = hue, c. = c(60, 10),
@@ -566,12 +569,12 @@ windrose.default <- function(x, ff,
     # Adding polygons (density)
     if ( type == "density" ) {
         args <- as.list(match.call(expand.dots = TRUE))
-        args <- c(list(x = NA, y = NA, col = NA), args[c("border", "lty", "lwd")])
+        args <- c(list(x = NA, y = NA, col = NA),
+                  args[names(args) %in% c("border", "lty", "lwd")])
         for ( i in ncol(tab):1 ) { 
             tmp <- (-1) * ddff2uv(dd.breaks + interval / 2, c(tab[,i], tab[1,i]))
             args$x <- tmp$u; args$y = tmp$v; args$col = cols[i]
             do.call(polygon, args)
-            #polygon(tmp$u, tmp$v, col = cols[i], border = border)
         }
     # Plot type "histogram"
     } else {

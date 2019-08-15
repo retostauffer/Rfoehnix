@@ -76,7 +76,7 @@ demodata <- function(which = c("tyrol", "ellboegen", "sattelberg",
     stopifnot(identical(sort(names(stations)), c("crest", "valley")))
 
     # Load data sets
-    obj  <- data(list = stations, package = "foehnix")
+    obj  <- data(list = stations, package = "foehnix", envir = environment())
     data <- lapply(obj, function(x) return(eval(parse(text = x))))
 
     # Rename crest station variables

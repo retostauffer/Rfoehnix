@@ -4,6 +4,7 @@
 
 [![Build Status](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)
 [![codecov](https://codecov.io/gh/retostauffer/Rfoehnix/branch/master/graph/badge.svg)](https://codecov.io/gh/retostauffer/Rfoehnix)
+[![Repository Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/badges/latest/wip.svg)
 [![Python](https://img.shields.io/badge/Python-githubio-yellowgreen)](https://matthiasdusch.github.io/foehnix-python/_build/html/)
 
 ### Toolbox for Automated Foehn Classification based on Mixture Models

@@ -35,7 +35,7 @@ stations <- data.frame(lon  = c(11.42889, 11.47889),
 b <- list(x0 = min(stations$lon) - .2, x1 = max(stations$lon) + .2,
           y0 = max(stations$lat) + .2, y1 = max(stations$lat) + .2)
 
-m <- leaflet() %>% addTiles() %>% fitBounds(b$x0, b$y0, b$x1, b$x2)
+m <- leaflet(width = "100%") %>% addTiles() %>% fitBounds(b$x0, b$y0, b$x1, b$x2)
 m <- setView(m, mean(stations$lon), mean(stations$lat), zoom = 10.5)
 for (i in 1:nrow(stations)) {
     m <- addPopups(m, stations$lon[i], stations$lat[i],
@@ -216,10 +216,10 @@ The following parameters are estimated for the two `r mod$control$family$name` c
                     $\sigma_2 = `r round(coef(mod)["sigma2"], 2)`$ (parameter scale)
 * Concomitant model:
     `r ifelse(sign(coef(mod)["rh"]), "positive", "negative")`
-    `rh` effect of `r sprintf("%+.1f", exp(coef(mod)["rh"]) - 1)` percent per on
+    `rh` effect of `r sprintf("%+.1f", 100 * exp(coef(mod)["rh"]) - 100)` percent per on
     relative humidity and a
     `r ifelse(sign(coef(mod)["ff"]), "positive", "negative")`
-    `ff` effect of `r sprintf("%+.1f", exp(coef(mod)["ff"]) - 1)` on wind speed
+    `ff` effect of `r sprintf("%+.1f", 100 * exp(coef(mod)["ff"]) - 100)` percent on wind speed
 
 ```{r model_coef}
 coef(mod)
@@ -324,7 +324,7 @@ image(mod, deltad = 10L, deltat = 2*3600, contours = TRUE,
 ```
 
 
-# Compare Models
+# Compare Models (Gaussian)
 
 The model above (`diff_t ~ rh + ff`) fits this station well, however,
 we could of course change the model specifications. In addition
@@ -387,25 +387,113 @@ To compare all four we could, e.g., calculate the ignorance
 (`IGN`, mean negative log-likelihood):
 
 ```{r}
-IGN <- sapply(list(alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4),
-              function(x) -logLik(x) / nrow(x$data))
-IGN
-which.min(IGN)
+IGN <- sapply(list(mod = mod, alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4), IGN)
+# Sort (lowest to highest ignorance)
+sort(IGN)
 ```
 
-Based on `IGN` we would preferr the most complex model `mod4` over the
-other ones. Let us check the posterior probability histograms (same
-as returned by `plot(..., which = "post")`):
+Based on `IGN` we would preferr the most complex model `mod` over
+all alternative models (`alt1`, `alt2`, `alt3`, `alt4`).
+From the alternative ones, `alt4` performs best in terms of ignorance.
+
+We could also compare the "Cluster separation" returned by [`summary`](references/summary.html):
+
+```{r}
+summary(mod)$separation
+summary(alt1)$separation
+```
+
+... or compare the outcome of the different models in a time series plot
+([`tsplot`](references/tsplot.html)):
 
 
 ```{r alt_tsplot, fig = TRUE, fig.width = 12, fig.height = 8}
 start <- as.POSIXct("2015-10-20")
 end   <- as.POSIXct("2015-11-05")
 
-# As we dont have the standard names: re-specify variable names.
-# In addition, use 'style = "advanced"' to show more details.
-tsplot(list(alt4 = alt4, alt3 = alt3, alt2 = alt2, alt1 = alt1),
+# Time series plot to compare "mod" (the most complex model)
+# and the four alternatives.
+tsplot(list(mod = mod, alt4 = alt4, alt3 = alt3, alt2 = alt2, alt1 = alt1),
        windsector = list(dd = c(43, 223)),
        start = start, end = end)
 ```
+
+# Compare Models (Distributions)
+
+```{r}
+# Gaussian models: Gaussian, left-censored Gaussian (at 0),
+# and left-truncated Gaussian (at 0). Note that, for demonstration
+# purposes, the censored/truncated models do 20 iterations.
+mod_gauss  <- foehnix(ff ~ rh, data = ell, family = "gaussian")
+mod_cgauss <- foehnix(ff ~ rh, data = ell, family = "gaussian",
+                      left = 0, tol = -Inf, maxit = 20)
+mod_tgauss <- foehnix(ff ~ rh, data = ell, family = "gaussian",
+                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
+# Logistic models: logistic, left-censored logistic (at 0),
+# and left-truncated logistic (at 0). Again, fixed number of
+# iterations for the censored and truncated models.
+mod_logis  <- foehnix(ff ~ rh, data = ell, family = "logistic")
+mod_clogis <- foehnix(ff ~ rh, data = ell, family = "logistic",
+                      left = 0, tol = -Inf, maxit = 20)
+mod_tlogis <- foehnix(ff ~ rh, data = ell, family = "logistic",
+                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
+```
+
+```{r}
+# Information criteria
+get_IC <- function(x) {
+    res <- c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x), IGN(x))
+    return(res)
+}
+IC     <- sapply(list("gaussian"           = mod_gauss,
+                      "gaussian censored"  = mod_cgauss,
+                      "gaussian truncated" = mod_tgauss,
+                      "logistic"           = mod_logis,
+                      "logistic censored"  = mod_clogis,
+                      "logistic truncated" = mod_tlogis),
+                 get_IC)
+t(IC)
+```
+
+As the number of observations the classification is based on is the
+same for all models, we can directly compare the information criteria
+(i.e., AIC, BIC, log-likelihood).
+In all cases the "logistic" model seems to perform best among these
+models.
+
+The more complex model `mod` shows a lower ignorance but, due to the
+specification of the model, contains more missing values where no
+classification is possible when data from the crest station is missing.
+
+To fill gaps (missing values in the classification of model `mod`) we
+could combine the estimates of both models:
+
+* First, take probabilities from model `mod`. If not available,
+* take estimates from model `mod_logis`.
+
+```{r}
+# Combine results of both models:
+prob <- merge(mod = fitted(mod), mod_logis = fitted(mod_logis))
+
+# Number of missing entries
+apply(prob, 2, function(x) sum(is.na(x)))
+
+# For demonstration purposes: find rows where mod is missing
+# while mod_logis returns a probability:
+idx <- which(is.na(prob$mod) & !is.na(prob$mod_logis))[1L] + seq(-3, 3)
+head(prob[idx, ])
+
+# Combine the two (take probability from mod if available,
+# else from mod_logis; both missing: NA).
+combine_prob <- function(x) {
+    if (all(is.na(x))) return(NA)
+    return(head(na.omit(x), n = 1))
+}
+prob <- apply(prob, 1, combine_prob)
+head(prob[idx])
+
+# Check missing values
+sum(is.na(prob))
+```
+
 

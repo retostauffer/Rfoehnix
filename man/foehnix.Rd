@@ -6,6 +6,7 @@
 \alias{logLik.foehnix}
 \alias{AIC.foehnix}
 \alias{BIC.foehnix}
+\alias{IGN.foehnix}
 \alias{edf.foehnix}
 \alias{print.foehnix}
 \alias{formula.foehnix}
@@ -23,6 +24,8 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
 \method{AIC}{foehnix}(object, ...)
 
 \method{BIC}{foehnix}(object, ...)
+
+\method{IGN}{foehnix}(object, ...)
 
 \method{edf}{foehnix}(object, ...)
 
@@ -60,6 +63,11 @@ or an object of class \code{foehnix.family}.}
 \item{...}{forwarded to \code{\link{foehnix.control}}}
 
 \item{object}{a \code{foehnix} object (input to S3 methods)}
+
+\item{x}{a \code{foehnix} object.}
+
+\item{eps}{threshold for posterior probabilities used in \code{summary}.
+\code{numeric} value, default \code{1e-4}.}
 
 \item{detailed}{boolean, default FALSE. If set to true, additional information
 will be printed.}

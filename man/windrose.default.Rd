@@ -52,6 +52,9 @@ if \code{x} is a multivariate object (see 'Details' section).}
 
 \item{ddvar}{string, custom name of the wind direction variable in \code{x}
 if \code{x} is a multivariate object (see 'Details' section).}
+
+\item{breaks}{\code{NULL} or a sequence of \code{numeric} values to set
+the breaks along \code{ff}.}
 }
 \description{
 Windrose plot, can handle two type of plots (see \code{type}) using

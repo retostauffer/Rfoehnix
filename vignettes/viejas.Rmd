@@ -188,7 +188,7 @@ The following parameters are estimated for the two `r mod$control$family$name` c
 * Foehn cluster: $\mu_2 = `r round(coef(mod)["mu2"], 2)`$,
                     $\sigma_2 = `r round(coef(mod)["sigma2"], 2)`$ (parameter scale)
 * Concomitant model: `r ifelse(sign(coef(mod)["wind_speed"]), "positive", "negative")`
-    `wind_speed` effect, `r sprintf("%+.1f", exp(coef(mod)["wind_speed"]) - 1)` percent per
+    `wind_speed` effect, `r sprintf("%+.1f", 100 * exp(coef(mod)["wind_speed"]) - 100)` percent per
     $m~s^{-1}$
 
 ```{r model_coef}

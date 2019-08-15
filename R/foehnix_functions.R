@@ -1,14 +1,3 @@
-# -------------------------------------------------------------------
-# - NAME:        foehnix_functions.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-12-16
-# -------------------------------------------------------------------
-# - DESCRIPTION: Contains a set of S3 methods for the foehnix model
-#                itself and some helper functions used within the
-#                foehnix function.
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-12-16, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
 
 utils::globalVariables(c("time_mid", "yday_mid", "value"))
 
@@ -110,7 +99,7 @@ destandardize.standardized <- function(x, ...) {
 #' @param x a matrix or standardized matrix.
 #' @param ... ignored.
 #'
-#' @seealso \code{\link{standardize}}.
+#' @seealso \code{\link[foehnix]{standardize}}.
 #' @export
 is.standardized <- function(x, ...) UseMethod("is.standardized")
 
@@ -165,6 +154,24 @@ AIC.foehnix <- function(object, ...)    structure(object$optimizer$AIC, names = 
 #' @rdname foehnix
 #' @export
 BIC.foehnix <- function(object, ...)    structure(object$optimizer$BIC, names = "BIC")
+
+#' @rdname foehnix
+#' @export
+IGN.foehnix <- function(object, ...) {
+    structure(- logLik(object) / length(object$filter_obj$good), names = "IGN")
+}
+
+#' Returns the Ignorance of the Object
+#'
+#' Mmethod which returns the ignorance of the \code{object}.
+#' The ignorance is the mean negative log-likelihood.
+#'
+#' @param object the object to be evaluated.
+#' @param ... forwarded to generic methods.
+#' @seealso foehnix()
+
+#' @export
+IGN <- function(object, ...) UseMethod("IGN")
 
 
 #' Returns Effective Degrees of Freedom
@@ -267,6 +274,15 @@ write.csv.foehnix <- function(x, file, info = TRUE, format = NULL, ...) {
     invisible(x)
 }
 
+#' Data Output
+#'
+#' Generic method to write data to CSV. By default this method
+#' falls back to \code{utils::write.csv(...)}.
+#'
+#' @param ... arguments passed to generic method.
+#'
+#' @seealso foehnix()
+#'
 #' @export
 write.csv <- function(...) UseMethod("write.csv")
 
@@ -518,26 +534,6 @@ windsector_convert <- function(x) {
     if (!hadnames) names(x) <- NULL
     return(x)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
