@@ -211,7 +211,6 @@ test_that("Windrose customization", {
     expect_silent(windrosefun(data, border = "red", lty = 3, lwd = 3))
     expect_error(windrosefun(data, border = "red", lty = "foo", lwd = 3))
     expect_error(windrosefun(data, lty = "foo"))
-    expect_error(windrosefun(data, lwd = "foo"))
     # Well, this results in an error and an additional warning message
     expect_warning(expect_error(windrosefun(data, lwd = "foo")))
 

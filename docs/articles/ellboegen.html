@@ -147,8 +147,8 @@
 <a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
 <p>The “Tyrolean” data set provides hourly observations from two stations, namely “Ellbögen” and “Sattelberg” located in Tyrol, Austria.</p>
 <p>Ellbögen is our target station (valley site) located in the Wipp Valley, a north-south oriented alpine valley on the northern side of the European Alps. To the north the Wipp Valley opens into the Inn Valley (close to Innsbruck, the capitol of Tyrol), to the south the valley ends at a narrow gap in the main Alpine ridge called Brennerpass (<span class="math inline">\(1370~m\)</span>; the pass between Austria and Italy) flanked by mountains (<span class="math inline">\(&gt;2100~m\)</span>). The Wipp Valley is one of the lowest and most distinct cuts trough the Alpine mountain range and well known for south foehn (north of the Alps). Station Sattelberg serves as crest station and provides observations of the upstream air mass during south foehn events. The station is located on top of the mountain to the west of the pass.</p>
-<div id="htmlwidget-8b47247fc2405e2e1ea0" style="width:100%;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8b47247fc2405e2e1ea0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7f7b9405ceb7292bc89c" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7f7b9405ceb7292bc89c">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[47.18694,11.42889,"Station Ellbögen, 1080 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[47.01083,11.47889,"Station Sattelberg, 2107 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[47.098885,11.45389],10.5,[]],"limits":{"lat":[47.01083,47.18694],"lng":[11.42889,11.47889]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
@@ -260,7 +260,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55044.0, 7 effective degrees of freedom
 ## Corresponding AIC = 110101.9, BIC = 110158.6
-## Time required for model estimation: 3.0 seconds
+## Time required for model estimation: 3.8 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -292,9 +292,10 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"posterior"</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>)) </code></pre></div>
 <p><img src="ellboegen_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
 </div>
-<div id="model-coefficients" class="section level3">
-<h3 class="hasAnchor">
-<a href="#model-coefficients" class="anchor"></a>Model coefficients</h3>
+</div>
+<div id="estimated-coefficients" class="section level1">
+<h1 class="hasAnchor">
+<a href="#estimated-coefficients" class="anchor"></a>Estimated Coefficients</h1>
 <p>The following parameters are estimated for the two Gaussian clusters:</p>
 <ul>
 <li>No-foehn cluster: <span class="math inline">\(\mu_1 = 5.8\)</span>, <span class="math inline">\(\sigma_1 = 2.64\)</span> (parameter scale)</li>
@@ -312,7 +313,6 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ##          ff 
 ##  0.88116142</code></pre>
 <p>In other words: if the relative humidity increases the probability that we observed foehn decreases, while the probability increases with increasing wind speed.</p>
-</div>
 </div>
 <div id="graphical-model-assessment" class="section level1">
 <h1 class="hasAnchor">
@@ -334,8 +334,6 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p><img src="ellboegen_files/figure-html/plot_coefpath-1.png" width="1152"></p>
 <p>The left plot shows the parameters of the two components (<span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\log(\sigma_1)\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\log(\sigma_2)\)</span>), the right one the standardized coefficients of the concomitant model.</p>
 <p>Last but not least a histogram with the two clusters is plotted. <code>which = "hist"</code>creates an empirical density histogram separating “no foehn” and “foehn” events adding the estimated distribution for these two clusters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
-<pre><code>## Loading foehnix</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
 <p><img src="ellboegen_files/figure-html/plot_histogram-1.png" width="768"></p>
 </div>
@@ -384,95 +382,450 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 <div id="compare-models-gaussian" class="section level1">
 <h1 class="hasAnchor">
 <a href="#compare-models-gaussian" class="anchor"></a>Compare Models (Gaussian)</h1>
-<p>The model above (<code>diff_t ~ rh + ff</code>) fits this station well, however, we could of course change the model specifications. In addition to the model above, let us specify three alternative models, all solely based on data from the valley station. Thus, we do not rely on the availability of data from the crest station (but losing some information as we neglect the crest station).</p>
+<p>The model above (<code>diff_t ~ rh + ff</code>) fits this station well, however, we could of course change the model specifications. Let us specify a second model solely based on the target station (valley site). This can be important in practice if:</p>
 <ul>
-<li>Alternative model 1 (<code>alt1</code>)
+<li>A upstream crest station is not available.</li>
+<li>The data availability for the crest station is limited due to outages, is no longer maintained, or has been installed much later than the valley station.</li>
+</ul>
+<p>Thus, we estimate a second model <code>mod_valley</code> using the following model specification:</p>
 <ul>
-<li>Formula: <code>ff ~ 1</code>
-</li>
-<li>Filter: no filter</li>
-<li>No concomitant model</li>
+<li>Data set: Ellbögen (<code>ell</code>; <code><a href="../reference/demodata.html">demodata("ellboegen")</a></code>)</li>
+<li>Main variable: <code>ff</code> (wind speed)</li>
+<li>Concomitants: <code>rf</code> (relative humidity)</li>
+<li>Wind filter: <code>dd</code> <span class="math inline">\(\in [43, 223]\)</span> (as above)</li>
 </ul>
-</li>
-<li>Alternative model 2 (<code>alt2</code>)
-<ul>
-<li>Formula: <code>ff ~ 1</code>
-</li>
-<li>Filter: no filter<code>dd = c(43, 223)</code>
-</li>
-<li>No concomitant model</li>
-</ul>
-</li>
-<li>Alternative model 3 (<code>alt3</code>)
-<ul>
-<li>Formula: <code>ff ~ rh</code>
-</li>
-<li>Filter: <code>dd = c(43, 223)</code>
-</li>
-<li>Concomitant: relative humidity</li>
-</ul>
-</li>
-<li>Alternative model 4 (<code>alt4</code>)
-<ul>
-<li>Formula: <code>ff ~ .</code>
-</li>
-<li>Filter: <code>dd = c(43, 223)</code>
-</li>
-<li>Concomitant: relative humidity</li>
-</ul>
-</li>
-</ul>
-<p>Note that <code>switch = FALSE</code> (default) as higher wind speed (<code>ff</code>) are an indication for foehn, thus the cluster with higher overall wind speed must be the foehn cluster (compare with <code>mod</code>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load "Ellboegen only" data set</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load demo data set</span>
 ell &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"ellboegen"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(ell, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
-<pre><code>##                      dd  ff  rh    t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4
-## 2006-01-01 02:00:00 268 0.3 100 -1.8
-## 2006-01-01 03:00:00 115 5.2  79  0.9</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The filter for model 2-4</span>
-filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>))
+<span class="co"># Estimate alternative model</span>
+mod_valley &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell,
+                      <span class="dt">filter =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)))</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit
+## EM iteration 1/100, ll = -116585.87
+ EM iteration 1/100, ll =  -22372.25
+ EM iteration 1/100, ll = -138958.12
+EM iteration 2/100, ll = -111699.60
+ EM iteration 2/100, ll =  -22198.13
+ EM iteration 2/100, ll = -133897.74
+EM iteration 3/100, ll = -109626.44
+ EM iteration 3/100, ll =  -22523.17
+ EM iteration 3/100, ll = -132149.61
+EM iteration 4/100, ll = -108899.30
+ EM iteration 4/100, ll =  -22782.19
+ EM iteration 4/100, ll = -131681.50
+EM iteration 5/100, ll = -108736.65
+ EM iteration 5/100, ll =  -22894.40
+ EM iteration 5/100, ll = -131631.04
+EM iteration 6/100, ll = -108804.98
+ EM iteration 6/100, ll =  -22898.67
+ EM iteration 6/100, ll = -131703.65
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod_valley, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
+<p><img src="ellboegen_files/figure-html/mod_valley-1.png" width="768"></p>
+<p>To compare the performance of the two models we can calculate a set of information criterion. The following matrix shows the sample size (<code>N</code>), log-likelihood sum (<code>loglik</code>), Akaike information criterion (<code>AIC</code>), Bayesian information criterion (<code>BIC</code>), and ignorance (<code>IGN</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x), <span class="kw"><a href="../reference/IGN.html">IGN</a></span>(x))
+IC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">mod_valley =</span> mod_valley), get_IC)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(IC, <span class="dv">1</span>)</code></pre></div>
+<pre><code>##             mod mod_valley
+## N       24428.0    52390.0
+## loglik -55044.0  -131631.0
+## AIC    110101.9   263274.1
+## BIC    110158.6   263327.3
+## IGN         2.3        2.5</code></pre>
+<p><strong>Warning:</strong> due to the model specification the two models are based on different data sets (sample size strongly differs). Thus, we <em>cannot directly compare the models</em> using <code>loglik</code>, <code>AIC</code>, or <code>BIC</code>. <code>IGN</code> accounts for the sample size (mean negative log-likelihood), however, as the two models include different training data sets this is inconclusive.</p>
+<p>For a fair and reliable comparison one should estimate both models on the very same data set, e.g., as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the demo data set once more</span>
+data_for_comparison &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
+<span class="co"># Extract the required variables</span>
+data_for_comparison &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/subset">subset</a></span>(data_for_comparison, <span class="dt">select =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(dd, ff, rh, diff_t, crest_dd))
+<span class="co"># Remove all observations (rows) with missing values</span>
+data_for_comparison &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/na.fail">na.omit</a></span>(data_for_comparison)
 
-<span class="co"># Estimate the alternative models</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
-<pre><code>## Loading foehnix</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alt1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span><span class="dv">1</span>, <span class="dt">data =</span> ell, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-alt2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span><span class="dv">1</span>, <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-alt3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-alt4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st">  </span>., <span class="dt">data =</span> ell, <span class="dt">filter =</span> filter, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p>We can use “<em>classical</em>” information criteria to compare the models such as <code>logLik</code>, <code>AIC</code>, or <code>BIC</code>. The following matrix shows the number of observations (<code>N</code>) and the three information criteria:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Extract information criteria</span>
-get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x))
-IC     &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4), get_IC)
-IC</code></pre></div>
-<pre><code>##             alt1      alt2      alt3      alt4
-## N       103077.0   52482.0   52390.0   52319.0
-## loglik -257222.9 -141865.9 -131631.0 -129816.5
-## AIC     514453.8  283739.7  263274.1  259648.9
-## BIC     514492.0  283775.2  263327.3  259719.8</code></pre>
-<p><strong>Warning:</strong> we are not allowed to compare these models directly as, due to the different specifications the number of observations differ! To compare all four we could, e.g., calculate the ignorance (<code>IGN</code>, mean negative log-likelihood):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">IGN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">alt1 =</span> alt1, <span class="dt">alt2 =</span> alt2, <span class="dt">alt3 =</span> alt3, <span class="dt">alt4 =</span> alt4), IGN)
-<span class="co"># Sort (lowest to highest ignorance)</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(IGN)</code></pre></div>
-<pre><code>##  mod.IGN alt4.IGN alt1.IGN alt3.IGN alt2.IGN 
-## 2.253314 2.481249 2.495444 2.512522 2.703134</code></pre>
-<p>Based on <code>IGN</code> we would preferr the most complex model <code>mod</code> over all alternative models (<code>alt1</code>, <code>alt2</code>, <code>alt3</code>, <code>alt4</code>). From the alternative ones, <code>alt4</code> performs best in terms of ignorance.</p>
-<p>We could also compare the “Cluster separation” returned by <a href="references/summary.html"><code>summary</code></a>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod)<span class="op">$</span>separation</code></pre></div>
-<pre><code>##                            prior  size post&gt;0     ratio
-## Component 1 (foehn)    0.5596183 13785  19437 0.7092144
-## Component 2 (no foehn) 0.4403817 10643  22764 0.4675365</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(alt1)<span class="op">$</span>separation</code></pre></div>
-<pre><code>##                            prior  size post&gt;0     ratio
-## Component 1 (foehn)    0.2813766 24695 103077 0.2395782
-## Component 2 (no foehn) 0.7186234 78382  91075 0.8606313</code></pre>
-<p>… or compare the outcome of the different models in a time series plot (<a href="references/tsplot.html"><code>tsplot</code></a>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-10-20"</span>)
-end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2015-11-05"</span>)
+<span class="co"># Estimate alternative model "mod_comparison"</span>
+<span class="co"># Note: using dd/crest_dd filter for both models (required to</span>
+<span class="co"># end up with the same sample size)</span>
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+mod_comparison        &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/formula">formula</a></span>(mod),
+                                 <span class="dt">data =</span> data_for_comparison,
+                                 <span class="dt">filter =</span> filter)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit
+## EM iteration 1/100, ll =  -50413.45
+ EM iteration 1/100, ll =   -6417.57
+ EM iteration 1/100, ll =  -56831.02
+EM iteration 2/100, ll =  -49253.02
+ EM iteration 2/100, ll =   -6049.06
+ EM iteration 2/100, ll =  -55302.09
+EM iteration 3/100, ll =  -49045.42
+ EM iteration 3/100, ll =   -6022.55
+ EM iteration 3/100, ll =  -55067.97
+EM iteration 4/100, ll =  -48995.41
+ EM iteration 4/100, ll =   -6048.54
+ EM iteration 4/100, ll =  -55043.95
+EM iteration 5/100, ll =  -48975.44
+ EM iteration 5/100, ll =   -6080.42
+ EM iteration 5/100, ll =  -55055.86
+## Estimation finished, create final object</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_valley_comparison &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/formula">formula</a></span>(mod_valley),
+                                 <span class="dt">data =</span> data_for_comparison,
+                                 <span class="dt">filter =</span> filter)</code></pre></div>
+<pre><code>## Calling foehnix.unreg.fit
+## EM iteration 1/100, ll =  -58847.82
+ EM iteration 1/100, ll =  -12700.17
+ EM iteration 1/100, ll =  -71547.98
+EM iteration 2/100, ll =  -57448.95
+ EM iteration 2/100, ll =  -12209.81
+ EM iteration 2/100, ll =  -69658.76
+EM iteration 3/100, ll =  -56440.92
+ EM iteration 3/100, ll =  -11986.48
+ EM iteration 3/100, ll =  -68427.40
+EM iteration 4/100, ll =  -55737.86
+ EM iteration 4/100, ll =  -11858.49
+ EM iteration 4/100, ll =  -67596.35
+EM iteration 5/100, ll =  -55275.52
+ EM iteration 5/100, ll =  -11740.68
+ EM iteration 5/100, ll =  -67016.20
+EM iteration 6/100, ll =  -55007.66
+ EM iteration 6/100, ll =  -11605.70
+ EM iteration 6/100, ll =  -66613.36
+EM iteration 7/100, ll =  -54890.22
+ EM iteration 7/100, ll =  -11451.18
+ EM iteration 7/100, ll =  -66341.40
+EM iteration 8/100, ll =  -54879.55
+ EM iteration 8/100, ll =  -11283.43
+ EM iteration 8/100, ll =  -66162.98
+EM iteration 9/100, ll =  -54937.29
+ EM iteration 9/100, ll =  -11110.68
+ EM iteration 9/100, ll =  -66047.97
+EM iteration 10/100, ll =  -55033.61
+ EM iteration 10/100, ll =  -10940.41
+ EM iteration 10/100, ll =  -65974.03
+EM iteration 11/100, ll =  -55147.60
+ EM iteration 11/100, ll =  -10778.30
+ EM iteration 11/100, ll =  -65925.90
+EM iteration 12/100, ll =  -55265.72
+ EM iteration 12/100, ll =  -10628.05
+ EM iteration 12/100, ll =  -65893.77
+EM iteration 13/100, ll =  -55379.91
+ EM iteration 13/100, ll =  -10491.69
+ EM iteration 13/100, ll =  -65871.60
+EM iteration 14/100, ll =  -55485.74
+ EM iteration 14/100, ll =  -10369.96
+ EM iteration 14/100, ll =  -65855.70
+EM iteration 15/100, ll =  -55581.22
+ EM iteration 15/100, ll =  -10262.67
+ EM iteration 15/100, ll =  -65843.88
+EM iteration 16/100, ll =  -55665.75
+ EM iteration 16/100, ll =  -10169.06
+ EM iteration 16/100, ll =  -65834.81
+EM iteration 17/100, ll =  -55739.62
+ EM iteration 17/100, ll =  -10088.03
+ EM iteration 17/100, ll =  -65827.65
+EM iteration 18/100, ll =  -55803.55
+ EM iteration 18/100, ll =  -10018.33
+ EM iteration 18/100, ll =  -65821.89
+EM iteration 19/100, ll =  -55858.49
+ EM iteration 19/100, ll =   -9958.70
+ EM iteration 19/100, ll =  -65817.18
+EM iteration 20/100, ll =  -55905.44
+ EM iteration 20/100, ll =   -9907.87
+ EM iteration 20/100, ll =  -65813.31
+EM iteration 21/100, ll =  -55945.40
+ EM iteration 21/100, ll =   -9864.70
+ EM iteration 21/100, ll =  -65810.10
+EM iteration 22/100, ll =  -55979.29
+ EM iteration 22/100, ll =   -9828.12
+ EM iteration 22/100, ll =  -65807.42
+EM iteration 23/100, ll =  -56007.97
+ EM iteration 23/100, ll =   -9797.21
+ EM iteration 23/100, ll =  -65805.18
+EM iteration 24/100, ll =  -56032.19
+ EM iteration 24/100, ll =   -9771.12
+ EM iteration 24/100, ll =  -65803.30
+EM iteration 25/100, ll =  -56052.60
+ EM iteration 25/100, ll =   -9749.14
+ EM iteration 25/100, ll =  -65801.73
+EM iteration 26/100, ll =  -56069.78
+ EM iteration 26/100, ll =   -9730.64
+ EM iteration 26/100, ll =  -65800.42
+EM iteration 27/100, ll =  -56084.23
+ EM iteration 27/100, ll =   -9715.09
+ EM iteration 27/100, ll =  -65799.32
+EM iteration 28/100, ll =  -56096.37
+ EM iteration 28/100, ll =   -9702.03
+ EM iteration 28/100, ll =  -65798.39
+EM iteration 29/100, ll =  -56106.56
+ EM iteration 29/100, ll =   -9691.06
+ EM iteration 29/100, ll =  -65797.62
+EM iteration 30/100, ll =  -56115.11
+ EM iteration 30/100, ll =   -9681.86
+ EM iteration 30/100, ll =  -65796.97
+EM iteration 31/100, ll =  -56122.28
+ EM iteration 31/100, ll =   -9674.15
+ EM iteration 31/100, ll =  -65796.43
+EM iteration 32/100, ll =  -56128.28
+ EM iteration 32/100, ll =   -9667.69
+ EM iteration 32/100, ll =  -65795.97
+EM iteration 33/100, ll =  -56133.32
+ EM iteration 33/100, ll =   -9662.28
+ EM iteration 33/100, ll =  -65795.59
+EM iteration 34/100, ll =  -56137.53
+ EM iteration 34/100, ll =   -9657.74
+ EM iteration 34/100, ll =  -65795.27
+EM iteration 35/100, ll =  -56141.07
+ EM iteration 35/100, ll =   -9653.94
+ EM iteration 35/100, ll =  -65795.00
+EM iteration 36/100, ll =  -56144.02
+ EM iteration 36/100, ll =   -9650.76
+ EM iteration 36/100, ll =  -65794.78
+EM iteration 37/100, ll =  -56146.50
+ EM iteration 37/100, ll =   -9648.09
+ EM iteration 37/100, ll =  -65794.59
+EM iteration 38/100, ll =  -56148.58
+ EM iteration 38/100, ll =   -9645.86
+ EM iteration 38/100, ll =  -65794.44
+EM iteration 39/100, ll =  -56150.31
+ EM iteration 39/100, ll =   -9643.99
+ EM iteration 39/100, ll =  -65794.31
+EM iteration 40/100, ll =  -56151.76
+ EM iteration 40/100, ll =   -9642.43
+ EM iteration 40/100, ll =  -65794.20
+EM iteration 41/100, ll =  -56152.98
+ EM iteration 41/100, ll =   -9641.12
+ EM iteration 41/100, ll =  -65794.10
+EM iteration 42/100, ll =  -56154.00
+ EM iteration 42/100, ll =   -9640.03
+ EM iteration 42/100, ll =  -65794.03
+EM iteration 43/100, ll =  -56154.85
+ EM iteration 43/100, ll =   -9639.11
+ EM iteration 43/100, ll =  -65793.96
+EM iteration 44/100, ll =  -56155.56
+ EM iteration 44/100, ll =   -9638.35
+ EM iteration 44/100, ll =  -65793.91
+EM iteration 45/100, ll =  -56156.16
+ EM iteration 45/100, ll =   -9637.71
+ EM iteration 45/100, ll =  -65793.86
+EM iteration 46/100, ll =  -56156.65
+ EM iteration 46/100, ll =   -9637.17
+ EM iteration 46/100, ll =  -65793.83
+EM iteration 47/100, ll =  -56157.07
+ EM iteration 47/100, ll =   -9636.72
+ EM iteration 47/100, ll =  -65793.79
+EM iteration 48/100, ll =  -56157.42
+ EM iteration 48/100, ll =   -9636.35
+ EM iteration 48/100, ll =  -65793.77
+EM iteration 49/100, ll =  -56157.71
+ EM iteration 49/100, ll =   -9636.03
+ EM iteration 49/100, ll =  -65793.75
+EM iteration 50/100, ll =  -56157.96
+ EM iteration 50/100, ll =   -9635.77
+ EM iteration 50/100, ll =  -65793.73
+EM iteration 51/100, ll =  -56158.16
+ EM iteration 51/100, ll =   -9635.55
+ EM iteration 51/100, ll =  -65793.71
+EM iteration 52/100, ll =  -56158.33
+ EM iteration 52/100, ll =   -9635.37
+ EM iteration 52/100, ll =  -65793.70
+EM iteration 53/100, ll =  -56158.47
+ EM iteration 53/100, ll =   -9635.21
+ EM iteration 53/100, ll =  -65793.69
+EM iteration 54/100, ll =  -56158.59
+ EM iteration 54/100, ll =   -9635.09
+ EM iteration 54/100, ll =  -65793.68
+EM iteration 55/100, ll =  -56158.69
+ EM iteration 55/100, ll =   -9634.98
+ EM iteration 55/100, ll =  -65793.67
+EM iteration 56/100, ll =  -56158.78
+ EM iteration 56/100, ll =   -9634.89
+ EM iteration 56/100, ll =  -65793.67
+EM iteration 57/100, ll =  -56158.85
+ EM iteration 57/100, ll =   -9634.81
+ EM iteration 57/100, ll =  -65793.66
+EM iteration 58/100, ll =  -56158.91
+ EM iteration 58/100, ll =   -9634.75
+ EM iteration 58/100, ll =  -65793.66
+EM iteration 59/100, ll =  -56158.95
+ EM iteration 59/100, ll =   -9634.70
+ EM iteration 59/100, ll =  -65793.65
+EM iteration 60/100, ll =  -56159.00
+ EM iteration 60/100, ll =   -9634.65
+ EM iteration 60/100, ll =  -65793.65
+EM iteration 61/100, ll =  -56159.03
+ EM iteration 61/100, ll =   -9634.62
+ EM iteration 61/100, ll =  -65793.65
+EM iteration 62/100, ll =  -56159.06
+ EM iteration 62/100, ll =   -9634.59
+ EM iteration 62/100, ll =  -65793.64
+EM iteration 63/100, ll =  -56159.08
+ EM iteration 63/100, ll =   -9634.56
+ EM iteration 63/100, ll =  -65793.64
+EM iteration 64/100, ll =  -56159.10
+ EM iteration 64/100, ll =   -9634.54
+ EM iteration 64/100, ll =  -65793.64
+EM iteration 65/100, ll =  -56159.12
+ EM iteration 65/100, ll =   -9634.52
+ EM iteration 65/100, ll =  -65793.64
+EM iteration 66/100, ll =  -56159.13
+ EM iteration 66/100, ll =   -9634.51
+ EM iteration 66/100, ll =  -65793.64
+EM iteration 67/100, ll =  -56159.14
+ EM iteration 67/100, ll =   -9634.49
+ EM iteration 67/100, ll =  -65793.64
+EM iteration 68/100, ll =  -56159.15
+ EM iteration 68/100, ll =   -9634.48
+ EM iteration 68/100, ll =  -65793.64
+EM iteration 69/100, ll =  -56159.16
+ EM iteration 69/100, ll =   -9634.47
+ EM iteration 69/100, ll =  -65793.64
+EM iteration 70/100, ll =  -56159.17
+ EM iteration 70/100, ll =   -9634.47
+ EM iteration 70/100, ll =  -65793.64
+EM iteration 71/100, ll =  -56159.18
+ EM iteration 71/100, ll =   -9634.46
+ EM iteration 71/100, ll =  -65793.64
+EM iteration 72/100, ll =  -56159.18
+ EM iteration 72/100, ll =   -9634.46
+ EM iteration 72/100, ll =  -65793.64
+EM iteration 73/100, ll =  -56159.18
+ EM iteration 73/100, ll =   -9634.45
+ EM iteration 73/100, ll =  -65793.64
+EM iteration 74/100, ll =  -56159.19
+ EM iteration 74/100, ll =   -9634.45
+ EM iteration 74/100, ll =  -65793.63
+EM iteration 75/100, ll =  -56159.19
+ EM iteration 75/100, ll =   -9634.44
+ EM iteration 75/100, ll =  -65793.63
+EM iteration 76/100, ll =  -56159.19
+ EM iteration 76/100, ll =   -9634.44
+ EM iteration 76/100, ll =  -65793.63
+EM iteration 77/100, ll =  -56159.19
+ EM iteration 77/100, ll =   -9634.44
+ EM iteration 77/100, ll =  -65793.63
+EM iteration 78/100, ll =  -56159.20
+ EM iteration 78/100, ll =   -9634.44
+ EM iteration 78/100, ll =  -65793.63
+EM iteration 79/100, ll =  -56159.20
+ EM iteration 79/100, ll =   -9634.44
+ EM iteration 79/100, ll =  -65793.63
+EM iteration 80/100, ll =  -56159.20
+ EM iteration 80/100, ll =   -9634.44
+ EM iteration 80/100, ll =  -65793.63
+EM iteration 81/100, ll =  -56159.20
+ EM iteration 81/100, ll =   -9634.43
+ EM iteration 81/100, ll =  -65793.63
+EM iteration 82/100, ll =  -56159.20
+ EM iteration 82/100, ll =   -9634.43
+ EM iteration 82/100, ll =  -65793.63
+EM iteration 83/100, ll =  -56159.20
+ EM iteration 83/100, ll =   -9634.43
+ EM iteration 83/100, ll =  -65793.63
+EM iteration 84/100, ll =  -56159.20
+ EM iteration 84/100, ll =   -9634.43
+ EM iteration 84/100, ll =  -65793.63
+EM iteration 85/100, ll =  -56159.20
+ EM iteration 85/100, ll =   -9634.43
+ EM iteration 85/100, ll =  -65793.63
+EM iteration 86/100, ll =  -56159.20
+ EM iteration 86/100, ll =   -9634.43
+ EM iteration 86/100, ll =  -65793.63
+EM iteration 87/100, ll =  -56159.20
+ EM iteration 87/100, ll =   -9634.43
+ EM iteration 87/100, ll =  -65793.63
+EM iteration 88/100, ll =  -56159.20
+ EM iteration 88/100, ll =   -9634.43
+ EM iteration 88/100, ll =  -65793.63
+EM iteration 89/100, ll =  -56159.20
+ EM iteration 89/100, ll =   -9634.43
+ EM iteration 89/100, ll =  -65793.63
+EM iteration 90/100, ll =  -56159.20
+ EM iteration 90/100, ll =   -9634.43
+ EM iteration 90/100, ll =  -65793.63
+EM iteration 91/100, ll =  -56159.20
+ EM iteration 91/100, ll =   -9634.43
+ EM iteration 91/100, ll =  -65793.63
+EM iteration 92/100, ll =  -56159.20
+ EM iteration 92/100, ll =   -9634.43
+ EM iteration 92/100, ll =  -65793.63
+EM iteration 93/100, ll =  -56159.20
+ EM iteration 93/100, ll =   -9634.43
+ EM iteration 93/100, ll =  -65793.63
+EM iteration 94/100, ll =  -56159.20
+ EM iteration 94/100, ll =   -9634.43
+ EM iteration 94/100, ll =  -65793.63
+EM iteration 95/100, ll =  -56159.20
+ EM iteration 95/100, ll =   -9634.43
+ EM iteration 95/100, ll =  -65793.63
+EM iteration 96/100, ll =  -56159.20
+ EM iteration 96/100, ll =   -9634.43
+ EM iteration 96/100, ll =  -65793.63
+EM iteration 97/100, ll =  -56159.20
+ EM iteration 97/100, ll =   -9634.43
+ EM iteration 97/100, ll =  -65793.63
+EM iteration 98/100, ll =  -56159.20
+ EM iteration 98/100, ll =   -9634.43
+ EM iteration 98/100, ll =  -65793.63
+EM iteration 99/100, ll =  -56159.20
+ EM iteration 99/100, ll =   -9634.43
+ EM iteration 99/100, ll =  -65793.63
+EM iteration 100/100, ll =  -56159.20
+ EM iteration 100/100, ll =   -9634.43
+ EM iteration 100/100, ll =  -65793.63
+## Estimation finished, create final object</code></pre>
+<p>Again, calculate the information criteria:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Information criteria</span>
+IC &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod_comparison =</span> mod_comparison,
+                  <span class="dt">mod_valley_comparison =</span> mod_valley_comparison), get_IC)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(IC, <span class="dv">1</span>)</code></pre></div>
+<pre><code>##        mod_comparison mod_valley_comparison
+## N             24428.0               24428.0
+## loglik       -55044.0              -65793.6
+## AIC          110101.9              131599.3
+## BIC          110158.6              131647.9
+## IGN               2.3                   2.7</code></pre>
+<p>Both models are now based on the same sample (<span class="math inline">\(N = 2.4428\times 10^{4}\)</span>). Thus, we can compare the different scores. The more complex model (<code>mod_comparison</code>) outperforms the one solely based on observations from the valley site. Thus, the model <code>mod</code> should be preferred over the simpler one. However, in practice it is often useful to have both (more than one) model to fill in periods where e.g., the crest station does not provide data.</p>
+<p>To fill gaps (missing values in the classification of model <code>mod</code>) we could combine the estimates of both models:</p>
+<ul>
+<li>First, take probabilities from model <code>mod</code>. If not available,</li>
+<li>take estimates from model <code>mod_valley</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine results of both models:</span>
+prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(<span class="dt">mod =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod), <span class="dt">mod_valley =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod_valley))
+
+<span class="co"># Number of missing entries</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x)))</code></pre></div>
+<pre><code>##        mod mod_valley 
+##      38859      11162</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For demonstration purposes: find rows where mod is missing</span>
+<span class="co"># while mod_valley returns a probability:</span>
+idx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod_valley))[1L] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx, ])</code></pre></div>
+<pre><code>##                     mod  mod_valley
+## 2006-01-01 07:00:00   0 0.000000000
+## 2006-01-01 08:00:00   0 0.000000000
+## 2006-01-01 09:00:00   0 0.000000000
+## 2006-01-01 10:00:00  NA 0.001756782
+## 2006-01-01 11:00:00   0 0.001629606
+## 2006-01-01 12:00:00   0 0.000000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine the two (take probability from mod if available,</span>
+<span class="co"># else from mod_valley; both missing: NA).</span>
+combine_prob &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/all">all</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x))) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="ot">NA</span>)
+    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/na.fail">na.omit</a></span>(x), <span class="dt">n =</span> <span class="dv">1</span>))
+}
+prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">1</span>, combine_prob)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx])</code></pre></div>
+<pre><code>## 2006-01-01 07:00:00 2006-01-01 08:00:00 2006-01-01 09:00:00 
+##         0.000000000         0.000000000         0.000000000 
+## 2006-01-01 10:00:00 2006-01-01 11:00:00 2006-01-01 12:00:00 
+##         0.001756782         0.000000000         0.000000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check missing values</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob))</code></pre></div>
+<pre><code>## [1] 11162</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2010-02-01"</span>)
+end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2010-02-15"</span>)
 
 <span class="co"># Time series plot to compare "mod" (the most complex model)</span>
 <span class="co"># and the four alternatives.</span>
-<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">alt4 =</span> alt4, <span class="dt">alt3 =</span> alt3, <span class="dt">alt2 =</span> alt2, <span class="dt">alt1 =</span> alt1),
+<span class="kw"><a href="../reference/tsplot.html">tsplot</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">mod =</span> mod, <span class="dt">mod_valley =</span> mod_valley),
+       <span class="dt">style =</span> <span class="st">"advanced"</span>,
        <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>)),
        <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
 <p><img src="ellboegen_files/figure-html/alt_tsplot-1.png" width="1152"></p>
@@ -480,10 +833,14 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <div id="compare-models-distributions" class="section level1">
 <h1 class="hasAnchor">
 <a href="#compare-models-distributions" class="anchor"></a>Compare Models (Distributions)</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gaussian models: Gaussian, left-censored Gaussian (at 0),</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Formula and wind direction filter specification</span>
+filter  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+formula &lt;-<span class="st"> "ff ~ rh"</span>
+
+<span class="co"># Gaussian models: Gaussian, left-censored Gaussian (at 0),</span>
 <span class="co"># and left-truncated Gaussian (at 0). Note that, for demonstration</span>
 <span class="co"># purposes, the censored/truncated models do 20 iterations.</span>
-mod_gauss  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>)</code></pre></div>
+mod_gauss  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"gaussian"</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit
 ## EM iteration 1/100, ll = -209921.43
  EM iteration 1/100, ll =  -46974.77
@@ -504,7 +861,7 @@ EM iteration 6/100, ll = -198220.99
  EM iteration 6/100, ll =  -48147.21
  EM iteration 6/100, ll = -246368.20
 ## Estimation finished, create final object</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_cgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_cgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
                       <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit</code></pre>
 <pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
@@ -610,7 +967,7 @@ EM iteration 6/100, ll = -198220.99
  EM iteration 20/20, ll =  -48838.13
  EM iteration 20/20, ll = -247830.47
 ## Estimation finished, create final object</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tgauss &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"gaussian"</span>,
                       <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>, <span class="dt">truncated =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit</code></pre>
 <pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
@@ -720,7 +1077,7 @@ EM iteration 6/100, ll = -198220.99
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Logistic models: logistic, left-censored logistic (at 0),</span>
 <span class="co"># and left-truncated logistic (at 0). Again, fixed number of</span>
 <span class="co"># iterations for the censored and truncated models.</span>
-mod_logis  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>)</code></pre></div>
+mod_logis  &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"logistic"</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit
 ## EM iteration 1/100, ll = -208705.02
  EM iteration 1/100, ll =  -46194.27
@@ -1023,7 +1380,7 @@ EM iteration 100/100, ll = -199427.23
  EM iteration 100/100, ll =  -46523.22
  EM iteration 100/100, ll = -245950.45
 ## Estimation finished, create final object</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_clogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_clogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"logistic"</span>,
                       <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit</code></pre>
 <pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
@@ -1130,7 +1487,7 @@ EM iteration 100/100, ll = -199427.23
  EM iteration 20/20, ll =  -47029.90
  EM iteration 20/20, ll = -249237.94
 ## Estimation finished, create final object</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tlogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(ff <span class="op">~</span><span class="st"> </span>rh, <span class="dt">data =</span> ell, <span class="dt">family =</span> <span class="st">"logistic"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod_tlogis &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(formula, <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="st">"logistic"</span>,
                       <span class="dt">left =</span> <span class="dv">0</span>, <span class="dt">tol =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">maxit =</span> <span class="dv">20</span>, <span class="dt">truncated =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## Calling foehnix.unreg.fit</code></pre>
 <pre><code>## Warning in iwls_logit(logitX, z, standardize = FALSE, maxit = tail(maxit, :
@@ -1238,10 +1595,7 @@ EM iteration 100/100, ll = -199427.23
  EM iteration 20/20, ll = -246232.25
 ## Estimation finished, create final object</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Information criteria</span>
-get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
-    res &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x), <span class="kw">IGN</span>(x))
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(res)
-}
+get_IC &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">N =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(x<span class="op">$</span>filter_obj<span class="op">$</span>good), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(x), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(x), <span class="kw"><a href="../reference/IGN.html">IGN</a></span>(x))
 IC     &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"gaussian"</span>           =<span class="st"> </span>mod_gauss,
                       <span class="st">"gaussian censored"</span>  =<span class="st"> </span>mod_cgauss,
                       <span class="st">"gaussian truncated"</span> =<span class="st"> </span>mod_tgauss,
@@ -1258,45 +1612,6 @@ IC     &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 ## logistic censored  102918 -249237.9 498487.9 498545.1 2.421714
 ## logistic truncated 102918 -246232.2 492476.5 492533.7 2.392509</code></pre>
 <p>As the number of observations the classification is based on is the same for all models, we can directly compare the information criteria (i.e., AIC, BIC, log-likelihood). In all cases the “logistic” model seems to perform best among these models.</p>
-<p>The more complex model <code>mod</code> shows a lower ignorance but, due to the specification of the model, contains more missing values where no classification is possible when data from the crest station is missing.</p>
-<p>To fill gaps (missing values in the classification of model <code>mod</code>) we could combine the estimates of both models:</p>
-<ul>
-<li>First, take probabilities from model <code>mod</code>. If not available,</li>
-<li>take estimates from model <code>mod_logis</code>.</li>
-</ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine results of both models:</span>
-prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(<span class="dt">mod =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod), <span class="dt">mod_logis =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod_logis))
-
-<span class="co"># Number of missing entries</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x)))</code></pre></div>
-<pre><code>##       mod mod_logis 
-##     38859     11034</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># For demonstration purposes: find rows where mod is missing</span>
-<span class="co"># while mod_logis returns a probability:</span>
-idx &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob<span class="op">$</span>mod_logis))[1L] <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx, ])</code></pre></div>
-<pre><code>##                     mod   mod_logis
-## 2006-01-01 07:00:00   0 0.003570127
-## 2006-01-01 08:00:00   0 0.003439705
-## 2006-01-01 09:00:00   0 0.005580110
-## 2006-01-01 10:00:00  NA 0.004342683
-## 2006-01-01 11:00:00   0 0.003189531
-## 2006-01-01 12:00:00   0 0.003904288</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine the two (take probability from mod if available,</span>
-<span class="co"># else from mod_logis; both missing: NA).</span>
-combine_prob &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
-    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/all">all</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(x))) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="ot">NA</span>)
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/na.fail">na.omit</a></span>(x), <span class="dt">n =</span> <span class="dv">1</span>))
-}
-prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(prob, <span class="dv">1</span>, combine_prob)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(prob[idx])</code></pre></div>
-<pre><code>## 2006-01-01 07:00:00 2006-01-01 08:00:00 2006-01-01 09:00:00 
-##         0.000000000         0.000000000         0.000000000 
-## 2006-01-01 10:00:00 2006-01-01 11:00:00 2006-01-01 12:00:00 
-##         0.004342683         0.000000000         0.000000000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check missing values</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(prob))</code></pre></div>
-<pre><code>## [1] 11034</code></pre>
 </div>
   </div>
 
@@ -1308,6 +1623,7 @@ prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocume
 <li><a href="#data-set-description">Data Set Description</a></li>
       <li><a href="#loading-the-data-set">Loading the Data Set</a></li>
       <li><a href="#estimate-classification-model">Estimate Classification Model</a></li>
+      <li><a href="#estimated-coefficients">Estimated Coefficients</a></li>
       <li><a href="#graphical-model-assessment">Graphical Model Assessment</a></li>
       <li><a href="#time-series-plot">Time Series Plot</a></li>
       <li><a href="#wind-rose-plot">Wind Rose Plot</a></li>

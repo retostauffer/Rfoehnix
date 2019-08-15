@@ -206,7 +206,7 @@ plot(mod, which = "posterior", breaks = seq(0, 1, by = 0.05))
 ```
 
 
-### Model coefficients
+# Estimated Coefficients
 
 The following parameters are estimated for the two `r mod$control$family$name` clusters:
 
@@ -265,7 +265,6 @@ Last but not least a histogram with the two clusters is plotted.
 and "foehn" events adding the estimated distribution for these two clusters.
 
 ```{r plot_histogram, fig = TRUE, fig.width = 8, fig.height = 3.5}
-devtools::load_all("..")
 plot(mod, which = "hist")
 ```
 
@@ -327,93 +326,130 @@ image(mod, deltad = 10L, deltat = 2*3600, contours = TRUE,
 # Compare Models (Gaussian)
 
 The model above (`diff_t ~ rh + ff`) fits this station well, however,
-we could of course change the model specifications. In addition
-to the model above, let us specify three alternative models, all
-solely based on data from the valley station. Thus, we do not
-rely on the availability of data from the crest station (but losing
-some information as we neglect the crest station).
+we could of course change the model specifications.
+Let us specify a second model solely based on the target station (valley site).
+This can be important in practice if:
 
-* Alternative model 1 (`alt1`)
-    * Formula: `ff ~ 1`
-    * Filter: no filter
-    * No concomitant model
-* Alternative model 2 (`alt2`)
-    * Formula: `ff ~ 1`
-    * Filter: no filter`dd = c(43, 223)`
-    * No concomitant model
-* Alternative model 3 (`alt3`)
-    * Formula: `ff ~ rh`
-    * Filter: `dd = c(43, 223)`
-    * Concomitant: relative humidity
-* Alternative model 4 (`alt4`)
-    * Formula: `ff ~ .`
-    * Filter: `dd = c(43, 223)`
-    * Concomitant: relative humidity
+* A upstream crest station is not available.
+* The data availability for the crest station is limited due to
+    outages, is no longer maintained, or has been installed much
+    later than the valley station.
 
-Note that `switch = FALSE` (default) as higher wind speed (`ff`)
-are an indication for foehn, thus the cluster with higher overall
-wind speed must be the foehn cluster (compare with `mod`).
+Thus, we estimate a second model `mod_valley` using the following
+model specification:
 
-```{r}
-# Load "Ellboegen only" data set
+* Data set: Ellbögen (`ell`; `demodata("ellboegen")`)
+* Main variable: `ff` (wind speed)
+* Concomitants: `rf` (relative humidity) 
+* Wind filter: `dd` $\in [43, 223]$ (as above)
+
+```{r mod_valley, fig = TRUE, fig.width = 8, fig.height = 3.5}
+# Load demo data set
 ell <- demodata("ellboegen")
-head(ell, n = 3)
-
-# The filter for model 2-4
-filter <- list(dd = c(43, 223))
-
-# Estimate the alternative models
-devtools::load_all("..")
-alt1 <- foehnix(ff ~  1, data = ell, verbose = FALSE)
-alt2 <- foehnix(ff ~  1, data = ell, filter = filter, verbose = FALSE)
-alt3 <- foehnix(ff ~ rh, data = ell, filter = filter, verbose = FALSE)
-alt4 <- foehnix(ff ~  ., data = ell, filter = filter, verbose = FALSE)
+# Estimate alternative model
+mod_valley <- foehnix(ff ~ rh, data = ell,
+                      filter = list(dd = c(43, 223)))
+plot(mod_valley, which = "hist")
 ```
 
-We can use "_classical_" information criteria to compare the models such
-as `logLik`, `AIC`, or `BIC`. The following matrix shows the number of
-observations (`N`) and the three information criteria:
+To compare the performance of the two models we can calculate
+a set of information criterion.
+The following matrix shows the sample size (`N`), log-likelihood sum (`loglik`),
+Akaike information criterion (`AIC`), Bayesian information criterion (`BIC`),
+and ignorance (`IGN`).
+
+
+```{r IC}
+get_IC <- function(x) c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x), IGN(x))
+IC <- sapply(list(mod = mod, mod_valley = mod_valley), get_IC)
+round(IC, 1)
+```
+
+**Warning:** due to the model specification the two models are based on
+different data sets (sample size strongly differs). Thus, we _cannot directly compare
+the models_ using `loglik`, `AIC`, or `BIC`. `IGN` accounts for the sample size
+(mean negative log-likelihood), however, as the two models include different training
+data sets this is inconclusive.
+
+For a fair and reliable comparison one should estimate both models on the very
+same data set, e.g., as follows:
 
 ```{r}
-# Extract information criteria
-get_IC <- function(x) c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x))
-IC     <- sapply(list(alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4), get_IC)
-IC
+# Load the demo data set once more
+data_for_comparison <- demodata("tyrol")
+# Extract the required variables
+data_for_comparison <- subset(data_for_comparison, select = c(dd, ff, rh, diff_t, crest_dd))
+# Remove all observations (rows) with missing values
+data_for_comparison <- na.omit(data_for_comparison)
+
+# Estimate alternative model "mod_comparison"
+# Note: using dd/crest_dd filter for both models (required to
+# end up with the same sample size)
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod_comparison        <- foehnix(formula(mod),
+                                 data = data_for_comparison,
+                                 filter = filter)
+mod_valley_comparison <- foehnix(formula(mod_valley),
+                                 data = data_for_comparison,
+                                 filter = filter)
 ```
 
-**Warning:** we are not allowed to compare these models directly as, due to
-the different specifications the number of observations differ!
-To compare all four we could, e.g., calculate the ignorance
-(`IGN`, mean negative log-likelihood):
+Again, calculate the information criteria:
+
+```{r IC_comparison}
+# Information criteria
+IC <- sapply(list(mod_comparison = mod_comparison,
+                  mod_valley_comparison = mod_valley_comparison), get_IC)
+round(IC, 1)
+```
+
+Both models are now based on the same sample ($N = `r IC["N", 1L]`$). Thus,
+we can compare the different scores. The more complex model (`mod_comparison`)
+outperforms the one solely based on observations from the valley site.
+Thus, the model `mod` should be preferred over the simpler one. However,
+in practice it is often useful to have both (more than one) model to
+fill in periods where e.g., the crest station does not provide data.
+
+To fill gaps (missing values in the classification of model `mod`) we
+could combine the estimates of both models:
+
+* First, take probabilities from model `mod`. If not available,
+* take estimates from model `mod_valley`.
 
 ```{r}
-IGN <- sapply(list(mod = mod, alt1 = alt1, alt2 = alt2, alt3 = alt3, alt4 = alt4), IGN)
-# Sort (lowest to highest ignorance)
-sort(IGN)
+# Combine results of both models:
+prob <- merge(mod = fitted(mod), mod_valley = fitted(mod_valley))
+
+# Number of missing entries
+apply(prob, 2, function(x) sum(is.na(x)))
+
+# For demonstration purposes: find rows where mod is missing
+# while mod_valley returns a probability:
+idx <- which(is.na(prob$mod) & !is.na(prob$mod_valley))[1L] + seq(-3, 3)
+head(prob[idx, ])
+
+# Combine the two (take probability from mod if available,
+# else from mod_valley; both missing: NA).
+combine_prob <- function(x) {
+    if (all(is.na(x))) return(NA)
+    return(head(na.omit(x), n = 1))
+}
+prob <- apply(prob, 1, combine_prob)
+head(prob[idx])
+
+# Check missing values
+sum(is.na(prob))
 ```
-
-Based on `IGN` we would preferr the most complex model `mod` over
-all alternative models (`alt1`, `alt2`, `alt3`, `alt4`).
-From the alternative ones, `alt4` performs best in terms of ignorance.
-
-We could also compare the "Cluster separation" returned by [`summary`](references/summary.html):
-
-```{r}
-summary(mod)$separation
-summary(alt1)$separation
-```
-
-... or compare the outcome of the different models in a time series plot
-([`tsplot`](references/tsplot.html)):
 
 
 ```{r alt_tsplot, fig = TRUE, fig.width = 12, fig.height = 8}
-start <- as.POSIXct("2015-10-20")
-end   <- as.POSIXct("2015-11-05")
+start <- as.POSIXct("2010-02-01")
+end   <- as.POSIXct("2010-02-15")
 
 # Time series plot to compare "mod" (the most complex model)
 # and the four alternatives.
-tsplot(list(mod = mod, alt4 = alt4, alt3 = alt3, alt2 = alt2, alt1 = alt1),
+tsplot(list(mod = mod, mod_valley = mod_valley),
+       style = "advanced",
        windsector = list(dd = c(43, 223)),
        start = start, end = end)
 ```
@@ -421,30 +457,31 @@ tsplot(list(mod = mod, alt4 = alt4, alt3 = alt3, alt2 = alt2, alt1 = alt1),
 # Compare Models (Distributions)
 
 ```{r}
+# Formula and wind direction filter specification
+filter  <- list(dd = c(43, 223), crest_dd = c(90, 270))
+formula <- "ff ~ rh"
+
 # Gaussian models: Gaussian, left-censored Gaussian (at 0),
 # and left-truncated Gaussian (at 0). Note that, for demonstration
 # purposes, the censored/truncated models do 20 iterations.
-mod_gauss  <- foehnix(ff ~ rh, data = ell, family = "gaussian")
-mod_cgauss <- foehnix(ff ~ rh, data = ell, family = "gaussian",
+mod_gauss  <- foehnix(formula, data = data, family = "gaussian")
+mod_cgauss <- foehnix(formula, data = data, family = "gaussian",
                       left = 0, tol = -Inf, maxit = 20)
-mod_tgauss <- foehnix(ff ~ rh, data = ell, family = "gaussian",
+mod_tgauss <- foehnix(formula, data = data, family = "gaussian",
                       left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
 # Logistic models: logistic, left-censored logistic (at 0),
 # and left-truncated logistic (at 0). Again, fixed number of
 # iterations for the censored and truncated models.
-mod_logis  <- foehnix(ff ~ rh, data = ell, family = "logistic")
-mod_clogis <- foehnix(ff ~ rh, data = ell, family = "logistic",
+mod_logis  <- foehnix(formula, data = data, family = "logistic")
+mod_clogis <- foehnix(formula, data = data, family = "logistic",
                       left = 0, tol = -Inf, maxit = 20)
-mod_tlogis <- foehnix(ff ~ rh, data = ell, family = "logistic",
+mod_tlogis <- foehnix(formula, data = data, family = "logistic",
                       left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
 ```
 
 ```{r}
 # Information criteria
-get_IC <- function(x) {
-    res <- c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x), IGN(x))
-    return(res)
-}
+get_IC <- function(x) c(N = length(x$filter_obj$good), logLik(x), AIC(x), BIC(x), IGN(x))
 IC     <- sapply(list("gaussian"           = mod_gauss,
                       "gaussian censored"  = mod_cgauss,
                       "gaussian truncated" = mod_tgauss,
@@ -460,40 +497,5 @@ same for all models, we can directly compare the information criteria
 (i.e., AIC, BIC, log-likelihood).
 In all cases the "logistic" model seems to perform best among these
 models.
-
-The more complex model `mod` shows a lower ignorance but, due to the
-specification of the model, contains more missing values where no
-classification is possible when data from the crest station is missing.
-
-To fill gaps (missing values in the classification of model `mod`) we
-could combine the estimates of both models:
-
-* First, take probabilities from model `mod`. If not available,
-* take estimates from model `mod_logis`.
-
-```{r}
-# Combine results of both models:
-prob <- merge(mod = fitted(mod), mod_logis = fitted(mod_logis))
-
-# Number of missing entries
-apply(prob, 2, function(x) sum(is.na(x)))
-
-# For demonstration purposes: find rows where mod is missing
-# while mod_logis returns a probability:
-idx <- which(is.na(prob$mod) & !is.na(prob$mod_logis))[1L] + seq(-3, 3)
-head(prob[idx, ])
-
-# Combine the two (take probability from mod if available,
-# else from mod_logis; both missing: NA).
-combine_prob <- function(x) {
-    if (all(is.na(x))) return(NA)
-    return(head(na.omit(x), n = 1))
-}
-prob <- apply(prob, 1, combine_prob)
-head(prob[idx])
-
-# Check missing values
-sum(is.na(prob))
-```
 
 

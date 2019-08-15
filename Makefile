@@ -7,7 +7,7 @@ test:
 
 # testing md5 idea
 md5:
-	make package
+	make install
 	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test_md5.R')"
 	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test_results.R')"
 
