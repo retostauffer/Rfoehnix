@@ -1,6 +1,5 @@
 
-# foehnix
-
+# foehnix <a href='https://retostauffer.github.io/Rfoehnix/'><img src='https://github.com/retostauffer/Rfoehnix/raw/master/foehnix-logo.png' align="right" height="139" /></a>
 
 [![Build Status](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)
 [![codecov](https://codecov.io/gh/retostauffer/Rfoehnix/branch/master/graph/badge.svg)](https://codecov.io/gh/retostauffer/Rfoehnix)
