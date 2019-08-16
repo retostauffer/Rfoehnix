@@ -1,29 +1,13 @@
-# -------------------------------------------------------------------
-# - NAME:        foehnix.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-11-28
-# -------------------------------------------------------------------
-# - DESCRIPTION: Scripts to estimate Gaussian and logistic
-#                two-component mixture models with IWLS and
-#                weighted empirical moments.
-#                "simple" here referrs to non-gradient non-optimizer
-#                based model estimates.
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-11-28, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-15 10:36 on marvin
-# -------------------------------------------------------------------
-
 
 
 #' Fitting foehnix Mixture Model Without Concomitant Model.
 #'
 #' Fitting method for two-component foehnix mixture model without
 #' concomitants.
-#' Typically not called directly, interfaced via \code{\link{foehnix}}.
+#' Typically not called directly, interfaced via \code{\link[foehnix]{foehnix}}.
 #' @param y numeric vector, covariate for the components of the
 #'        mixture model, dimension \code{N}.
-#' @param family object of class \code{\link{foehnix.family}}.
+#' @param family object of class \code{\link[foehnix]{foehnix.family}}.
 #' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
@@ -31,21 +15,22 @@
 #'        the clusters (by setting \code{switch = TRUE}).
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm.
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param tol numeric, or vector of length 2 containing numeric values.
 #'        Tolerance for the EM algorithm.
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
 #' @param ... currently unused.
 #'
 #' @seealso
-#' \code{\link{foehnix.family}},
-#' \code{\link{foehnix}},
-#' \code{\link{foehnix.control}},
-#' \code{\link{foehnix.noconcomitant.fit}},
-#' \code{\link{foehnix.reg.fit}},
-#' \code{\link{iwls_logit}}.
+#' \code{\link[foehnix]{foehnix.family}},
+#' \code{\link[foehnix]{foehnix}},
+#' \code{\link[foehnix]{foehnix.control}},
+#' \code{\link[foehnix]{foehnix.noconcomitant.fit}},
+#' \code{\link[foehnix]{foehnix.reg.fit}},
+#' \code{\link[foehnix]{iwls_logit}},
+#' \code{\link[foehnix]{coef.foehnix}}.
 #'
 #' @author Reto Stauffer
 #' @import stats
@@ -146,13 +131,13 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #'
 #' Fitting method for two-component foehnix mixture model with
 #' additional concomitants.
-#' Typically not called directly, interfaced via \code{\link{foehnix}}.
+#' Typically not called directly, interfaced via \code{\link[foehnix]{foehnix}}.
 #'
 #' @param y numeric vector, covariate for the components of the
 #'        mixture model, dimension \code{N}.
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
-#' @param family object of class \code{\link{foehnix.family}}.
+#' @param family object of class \code{\link[foehnix]{foehnix.family}}.
 #' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
@@ -161,21 +146,21 @@ foehnix.noconcomitant.fit <- function(y, family, switch = FALSE,
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm
 #'        and the concomitant model.
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param tol numeric, or vector of length 2 containing numeric values.
 #'        Tolerance for the optimization (EM algorithm and concomitant model).
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
 #' @param ... currently unused.
 #'
 #' @seealso
-#' \code{\link{foehnix.family}},
-#' \code{\link{foehnix}},
-#' \code{\link{foehnix.control}},
-#' \code{\link{foehnix.noconcomitant.fit}},
-#' \code{\link{foehnix.reg.fit}},
-#' \code{\link{iwls_logit}}.
+#' \code{\link[foehnix]{foehnix.family}},
+#' \code{\link[foehnix]{foehnix}},
+#' \code{\link[foehnix]{foehnix.control}},
+#' \code{\link[foehnix]{foehnix.noconcomitant.fit}},
+#' \code{\link[foehnix]{foehnix.reg.fit}},
+#' \code{\link[foehnix]{iwls_logit}}.
 #'
 #' @author Reto Stauffer
 #' @import stats
@@ -279,7 +264,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #' Fitting Regularized foehnix Mixture Model With Concomitant Model.
 #'
 #' Fitting method for two-component foehnix mixture model with regularization.
-#' Typically not called directly, interfaced via \code{\link{foehnix}}.
+#' Typically not called directly, interfaced via \code{\link[foehnix]{foehnix}}.
 #'
 #' TODO: Method not yet implemented, as soon as the method itself
 #' has been written: update manual page!
@@ -288,7 +273,7 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #'        mixture model, dimension \code{N}.
 #' @param logitX numeric matrix of dimension \code{N x P}, covariates
 #'        for the concomitant model (logistic regression model matrix).
-#' @param family object of class \code{\link{foehnix.family}}.
+#' @param family object of class \code{\link[foehnix]{foehnix.family}}.
 #' @param switch logical whether or not the two components should be switched.
 #'        By default (\code{switch = FALSE}) the component which shows
 #'        higher values of \code{y} is assumed to be the foehn cluster!
@@ -297,19 +282,19 @@ foehnix.unreg.fit <- function(y, logitX, family, switch = FALSE,
 #' @param maxit positive integer, or vector of length 2 with positive
 #'        integer values. Maximum number of iterations of the EM algorithm
 #'        and the concomitant model.
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param tol numeric, or vector of length 2 containing numeric values.
 #'        Tolerance for the optimization (EM algorithm and concomitant model).
-#'        Check manual of \code{\link{foehnix.control}} for more details.
+#'        Check manual of \code{\link[foehnix]{foehnix.control}} for more details.
 #' @param glmnet.control an object of class \code{\link[foehnix]{glmnet.control}}
 #'        containing the arguments for the glmnet function.
 #' @param verbose logical, default \code{TRUE}. If set to \code{FALSE}
 #'        verbose output will be suppressed.
 #' @param ... currently unused.
 #'
-#' @seealso \code{\link{foehnix}}, \code{\link{foehnix.control}},
-#' \code{\link{foehnix.noconcomitant.fit}}, \code{\link{foehnix.reg.fit}},
-#' \code{\link{iwls_logit}}.
+#' @seealso \code{\link[foehnix]{foehnix}}, \code{\link[foehnix]{foehnix.control}},
+#' \code{\link[foehnix]{foehnix.noconcomitant.fit}}, \code{\link[foehnix]{foehnix.reg.fit}},
+#' \code{\link[foehnix]{iwls_logit}}.
 #'
 #' @author Reto Stauffer
 
@@ -410,7 +395,7 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
 
 #' foehnix Two-Component Mixture-Model Control Object
 #'
-#' Used to control the \code{\link{foehnix}} mixture models.
+#' Used to control the \code{\link[foehnix]{foehnix}} mixture models.
 #'
 #' @param family character specifying the distribution of the components in the
 #'        mixture model. Allowed: \code{"gaussian"} and \code{"logistic"}.  For
@@ -427,55 +412,54 @@ foehnix.reg.fit <- function(y, logitX, family, glmnet.control, switch = FALSE,
 #'        also input \code{left} and input \code{truncated}. Can be set to any finite
 #'        numeric value.
 #' @param truncated logical. If set to \code{TRUE} truncation is used instead of
-#'        censoring. This only affects the \code{\link{foehnix}} model estimate
+#'        censoring. This only affects the \code{\link[foehnix]{foehnix}} model estimate
 #'        if input \code{left} and/or input \code{right} are specified.
-#' @param standardize logical flag, default is \code{TRUE}. Defines whether or
+#' @param standardize logical flag, default is \code{TRUE}. Whether or
 #'        not the model matrix for the concomitant model should be standardized for
-#'        model estimation. Recommended.
+#'        model estimation (recommended).
 #' @param maxit control argument for the iterative solvers. Default is
 #'        \code{100L}, the maximum number of iterations for the EM algorithm and the
 #'        IWLS backfitting algorithm for the concomitant model.  If a vector of length
 #'        two is provided the first value is used for the EM algorithm, the second for
 #'        the IWLS backfitting.
-#' @param force.inflate logical, default is \code{FALSE}. \code{\link{foehnix}} creates
+#' @param force.inflate logical, default is \code{FALSE}. \code{\link[foehnix]{foehnix}} creates
 #'        a strictly regular time series object by inflating the data set using the
 #'        smallest time interval in the data set. If the inflation rate is larger than
 #'        2 the script will stop except the user forces inflation by specifying
 #'        \code{force.inflate = TRUE}. See 'Details' section for more information.
 #' @param tol similar as for \code{maxit}. Used to identify convergence of the
-#'        iterative solvers. Default is \code{1e-8}, if two values are given the first
+#'        iterative solvers. Default is \code{1e-8}, if two values are provided the first
 #'        will be used for the EM algorithm, the second one for the IWLS backfitting
 #'        procedure. If set to \code{-Inf} \code{maxit} will be used as stopping
 #'        criteria.
 #' @param glmnet.control an object of class \code{\link[foehnix]{glmnet.control}}
-#'        containing the arguments for the glmnet function.
+#'        containing the arguments for the glmnet function (experimental).
 #' @param verbose logical, if set to \code{FALSE} output is suppressed.
 #' @param ... currently sent to hell.
 #'
-#' @details \code{\link{foehnix}} models are based on time series objects. 
+#' @details Inflation: \code{\link[foehnix]{foehnix}} models are based on time series objects. 
 #' For some methods (e.g., to create nice and easy to read time series plots and
 #' count statistics)
-#' \code{\link{foehnix}} inflates the time series object using the smallest time
+#' \code{\link[foehnix]{foehnix}} inflates the time series object using the smallest time
 #' interval in the data set. This can, possibly, yield very large data sets. Thus,
-#' \code{\link{foehnix}} is pre-calculating the inflation rate, the fraction between
+#' \code{\link[foehnix]{foehnix}} is pre-calculating the inflation rate, the fraction between
 #' the length of the inflated data set versus the length of the data set provided by
 #' the user. If this inflation rate exceeds 2 the script will raise an error!
 #'
-#' In this case the user should make sure that the time series object provided
-#' is proper before continuing. A possible scenario: a user is performing foehn diagnosis
+#' In this case, the user is kindly asked to check if the time series object
+#' (input \code{data}). A possible scenario: a user is performing foehn diagnosis
 #' using 5 years of data from one station with 10 minute observations. This yields
 #' (neglecting leap years) \code{5 * 365 * 144 = 262.800} observations. Imagine that there
 #' is one incorrect observation reported one second after one of the regular
 #' 10 minute records. The smallest time increment would thus be 1 second. This would
 #' yield an inflated time series object with a total record length of
 #' \code{5 * 365 * 86.400 = 157.680.000}. Even if only filled with missing values
-#' (\code{NA}) this will be extremely memory demanding. To avoid this action
-#' \code{\link{foehnix}} will stop in such situations.
-#'
+#' (\code{NA}) this will be extremely memory demanding. To avoid this,
+#' \code{\link[foehnix]{foehnix}} will stop in such situations.
 #' However, the user is allowed to overrule this condition by setting the
 #' \code{force.inflate} option to \code{TRUE}.
 #'
-#' @seealso \code{\link{foehnix}}, \code{\link{foehnix.family}}.
+#' @seealso \code{\link[foehnix]{foehnix}}, \code{\link[foehnix]{foehnix.family}}.
 #'
 #' @author Reto Stauffer
 #' @import utils
@@ -560,7 +544,6 @@ print.foehnix.control <- function(x, ...) str(x)
 #' This is the main method of the foehnix package to estimate
 #' two-component mixture models for automated foehn classification.
 #' 
-#' @param x a \code{foehnix} object.
 #' @param formula an object of class \code{formula} (or one that can be coerced
 #'        to that class): a symbolic description of the model to be fitted.  The
 #'        details of model specification are given under 'Details'.
@@ -575,30 +558,31 @@ print.foehnix.control <- function(x, ...) str(x)
 #' @param filter a named list can be provided to apply a custom (simple) filter
 #'        to the observations on \code{data}. Can be used to e.g., prespecify a
 #'        specific wind sector for foehn winds. Please read the manual of the
-#'        \code{\link{foehnix_filter}} method for more details and examples.
+#'        \code{\link[foehnix]{foehnix_filter}} method for more details and examples.
 #' @param family character (at the moment \code{"gaussian"} or \code{"logistic"})
 #'        or an object of class \code{foehnix.family}.
-#' @param control additional control arguments, see \code{\link{foehnix.control}}.
-#' @param object a \code{foehnix} object (input to S3 methods)
-#' @param detailed boolean, default FALSE. If set to true, additional information
-#'        will be printed.
+#' @param control additional control arguments, see \code{\link[foehnix]{foehnix.control}}.
+#' @param object a \code{foehnix} object (input for S3 methods)
+#' @param x a \code{foehnix} object (input for S3 methods)
+#' @param detailed boolean, default \code{FALSE}. If \code{TRUE}, additional information
+#'        will be returned.
 #' @param eps threshold for posterior probabilities used in \code{summary}.
 #'        \code{numeric} value, default \code{1e-4}.
-#' @param ... forwarded to \code{\link{foehnix.control}}
+#' @param ... forwarded to \code{\link[foehnix]{foehnix.control}}
 #'
 #' @return Returns an object of class \code{foehnix}.
 #'
 #' @details
 #' The two-component mixture model can be specified via formula object where
-#' the left hand side of the formula contains the variable explaining the two
+#' the left hand side of the formula contains the 'main' variable explaining the two
 #' components (only one variable), the right hand side of the formula specifies
 #' the concomitant variables (multiple variables allowed).  As an example:
-#' let's assume that our zoo object '\code{data}' contains the following
+#' let's assume that our zoo object \code{data} contains the following
 #' columns:
 #' \itemize{
 #'     \item \code{ff}: observed wind speed at target site
 #'     \item \code{rh}: observed relative humidity at target site
-#'     \item \code{diff_t}: temperature difference between target site and a station
+#'     \item \code{diff_t}: (potential) temperature difference between target site and a station
 #'           upstream of the foehn wind direction
 #' }
 #'
@@ -606,34 +590,30 @@ print.foehnix.control <- function(x, ...) str(x)
 #' \itemize{
 #'     \item \code{ff ~ 1}: the two components of the mixture model will be
 #'           based on the observed wind speed (\code{ff}), no concomitant
-#'           variables are given (intercept only). 
+#'           model (right hand side is simply \code{1}). 
 #'     \item \code{ff ~ rh}: similar to the specification above, but using
 #'            observed relative humidity (\code{rh}) as concomitant.
 #'     \item \code{ff ~ rh + diff_t}: as above but with an additional second
 #'           concomitant variable (observed temperature difference, \code{diff_t}).
 #'     \item \code{diff_t ~ ff + rh}: using temperature difference as the main
 #'           variable for the two components while \code{ff} and \code{rh} are
-#'           used as concomitants.
+#'           used as concomitants. Note: in this case it will be required to set
+#'           \code{switch = TRUE} as lower values of \code{diff_t} indicate
+#'           less stratified conditions where the occurrence of foehn is
+#'           more likely. If \code{switch = FALSE} the two components (foehn
+#'           and no foehn) may be interchanged and the model will return
+#'           "probabilities of not observing foehn".
 #' }
 #'  
 #' Note that these are just examples and have to be adjusted given data
 #' availability, location, structure/names of the variables in the \code{data}
 #' object.
 #' 
-#' An optional numeric vector of length \code{2} can be provided to filter the
-#' data. If set, only times (rows in \code{data}) where the observed wind
-#' direction \code{dd} lies within the wind sector specified.  For the examples
-#' the wind direction \code{dd} is assumed to be in degrees, meteorological
-#' definition (\code{90} = from east, \code{180} = from south, \dots).  The
-#' following condition is used:
-#' \itemize{
-#'     \item If \code{windsector[1L] < windsector[2L]}: use \code{data} where
-#'           \code{data$dd >= windsector[1L]} \code{&} \code{data$dd <= windsector[2L]}
-#'           (e.g., \code{windsector = c(90, 270)} for south wind sector).
-#'     \item If \code{windsector[1L] > windsector[2L]}: use \code{data} where
-#'           \code{data$dd >= windsector[1L]} \code{|} \code{data$dd <= windsector[2L]}
-#'           (e.g., \code{windsector = c(270, 90)} for north wind sector).
-#' }
+#' The optional input \code{filter} allows to specify simple or complex
+#' filters (see \code{\link[foehnix]{foehnix_filter}} for details).
+#' This allows to add additional constraints, e.g., adding a filter on the
+#' observed wind direction to ensure that only events within a specific wind
+#' sector (the main foehn wind direction) are classified as "foehn".
 #' 
 #' @references Plavcan D, Mayr GJ, Zeileis A (2014).
 #' Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
@@ -656,15 +636,25 @@ print.foehnix.control <- function(x, ...) str(x)
 #' \bold{97}(458), 611--631. \doi{10.1198/016214502760047131}
 #'
 #' @seealso
-#' See \code{\link{foehnix_filter}} for more information about the
-#' \code{filter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
-#' TODO: filter should be renamed to filter.
+#' See \code{\link[foehnix]{foehnix_filter}} for more information about the
+#' \code{filter} option.  See also: \code{\link[foehnix]{tsplot}}, \code{\link[foehnix]{windrose}}.
 #' 
-#' Foehnix family objects: \code{\link{foehnix.family}}.
+#' Foehnix family objects: \code{\link[foehnix]{foehnix.family}}.
 #'
 #' S3 methods for \code{foehnix} objects:
-#' \code{\link{plot.foehnix}}, \code{\link{predict.foehnix}}, \code{\link{fitted.foehnix}},
-#' \code{\link{print.foehnix}}, \code{\link{windrose.foehnix}}, \code{\link{coef.foehnix}},
+#' \code{\link[foehnix]{plot.foehnix}},
+#' \code{\link[foehnix]{predict.foehnix}},
+#' \code{\link[foehnix]{fitted.foehnix}},
+#' \code{\link[foehnix]{print.foehnix}},
+#' \code{\link[foehnix]{summary.foehnix}},
+#' \code{\link[foehnix]{windrose.foehnix}},
+#' \code{\link[foehnix]{coef.foehnix}},
+#' \code{\link[foehnix]{nobs.foehnix}},
+#' \code{\link[foehnix]{edf.foehnix}},
+#' \code{\link[foehnix]{AIC.foehnix}},
+#' \code{\link[foehnix]{BIC.foehnix}},
+#' \code{\link[foehnix]{IGN.foehnix}},
+#' \code{\link[foehnix]{logLik.foehnix}},
 #' ...
 #'
 #' @importFrom zoo zoo index is.regular
@@ -912,13 +902,13 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 #'
 #' Some details.
 #'
-#' @param object a \code{\link{foehnix}} mixture model object.
+#' @param object a \code{\link[foehnix]{foehnix}} mixture model object.
 #' @param newdata if \code{NULL} (default) the prediction of the
 #'        underlying training data set will be returned
-#'        (see also \code{\link{fitted}}). Else \code{newdata}
+#'        (see also \code{\link[foehnix]{fitted}}). Else \code{newdata}
 #'        has to be a \code{zoo} object providing the required
 #'        variables which have been used for model fitting
-#'        and filtering (see \code{\link{foehnix}}).
+#'        and filtering (see \code{\link[foehnix]{foehnix}}).
 #' @param type character, one of \code{"response"} (default),
 #'        \code{"all"}.
 #' @param ... additional arguments, ignored.
@@ -931,17 +921,17 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 #' estimated parameters on a new data set (\code{newdata}). If no
 #' new data set is provided (\code{newdata = NULL}) the prediction
 #' is made on the internal data set, the data set which has been
-#' used to train the \code{\link{foehnix}} mixture model.
+#' used to train the \code{\link[foehnix]{foehnix}} mixture model.
 #' If a new data set is provided (\code{newdata}) the foehn diagnosis
 #' will be performed on this new data set, e.g., based on a set
-#' of new observations when using \code{\link{foehnix}} for operational
+#' of new observations when using \code{\link[foehnix]{foehnix}} for operational
 #' near real time foehn diagnosis.
 #'
 #' Note that \code{newdata} has to be a \code{zoo} object containing
-#' the required information to perform the \code{\link{foehnix}} diagnosis,
+#' the required information to perform the \code{\link[foehnix]{foehnix}} diagnosis,
 #' namely the variables used for classification (see
-#' \code{\link{formula.foehnix}} plus the ones used to filter the data
-#' (see \code{\link{foehnix}} input argument \code{filter}).
+#' \code{\link[foehnix]{formula.foehnix}} plus the ones used to filter the data
+#' (see \code{\link[foehnix]{foehnix}} input argument \code{filter}).
 #'
 #' Usually \code{type = "response"} is used which returns the foehn
 #' probabilities. If \code{type = "all"} a set of additional values will
@@ -1014,18 +1004,13 @@ predict.foehnix <- function(object, newdata = NULL, type = "response", ...) {
 
 }
 
-#' Returns the Number of Values Used for Classification
-#'
-#' @rdname foehnix
-#' @export
-nobs.foehnix <- function(object, ...) return(object$nobs)
 
 #' Returns Fitted Values of foehnix Mixture Models
 #'
-#' Extracts fitted probabilities and/or flags from a \code{\link{foehnix}}
+#' Extracts fitted probabilities and/or flags from a \code{\link[foehnix]{foehnix}}
 #' mixture model.
 #'
-#' @param object a \code{\link{foehnix}} model object.
+#' @param object a \code{\link[foehnix]{foehnix}} model object.
 #' @param which what to get as return. Can a character string, one of
 #'        \code{"probability"} or \code{"flag"}, or \code{"both"}.
 #'        Alternatively integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).

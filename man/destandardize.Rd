@@ -12,7 +12,14 @@ destandardize(x, ...)
 \item{...}{forwarded, unused.}
 }
 \description{
+Destandardize a Standardized Matrix
+}
+\details{
 Reverse function of \code{\link[foehnix]{standardize}}.
+}
+\examples{
+# See example on R documentation for \\code{?standardize}.
+
 }
 \seealso{
 \code{\link[foehnix]{standardize}}

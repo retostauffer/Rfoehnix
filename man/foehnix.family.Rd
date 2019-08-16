@@ -16,23 +16,32 @@
 \usage{
 \method{print}{foehnix.family}(x, ...)
 
+# Check if truncation is set
 is.truncated(x, ...)
 
+# Check if left censoring/truncation limit has been specified
 has.left(x, ...)
 
-has.right(x, ...)
+# Check if right censoring/truncation limit has been specified
+has.left(x, ...)
 
+# Logistic mixture-model family
 foehnix_logistic()
 
+# Censored logistic mixture-model family
 foehnix_clogistic(left = -Inf, right = Inf)
 
+# Truncated logistic mixture-model family
 foehnix_tlogistic(left = -Inf, right = Inf)
 
+# Gaussian mixture-model family
 foehnix_gaussian()
 
-foehnix_cgaussian(left = -Inf, right = Inf)
+# Censored Gaussian mixture-model family
+foehnix_cgaussian()
 
-foehnix_tgaussian(left = -Inf, right = Inf)
+# Truncated Gaussian mixture-model family
+foehnix_tgaussian()
 }
 \arguments{
 \item{x}{\code{foehnix.family} object.}
@@ -96,5 +105,7 @@ Examples are: `foehnix_gaussian`, `foehnix_cgaussian`, `foehnix_tgaussian`,
 \code{\link{foehnix}}, \code{\link{foehnix.control}}.
 }
 \author{
+Reto Stauffer
+
 Reto Stauffer
 }

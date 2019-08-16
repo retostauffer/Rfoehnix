@@ -81,28 +81,16 @@ estimating the logistic regression model (concomitant model)." />
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -190,9 +178,10 @@ estimating the logistic regression model (concomitant model).</p>
 <span class='co'># S3 method for matrix</span>
 <span class='fu'>standardize</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for standardized</span>
+<span class='co'># Returns 'scaled:scale' used for standardization</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/scale'>scale</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
+<span class='co'># Returns 'scaled:center' used for standardization</span>
 <span class='fu'>center</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for standardized</span>
@@ -259,11 +248,16 @@ and <code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
 #&gt; 4           1  1.40641756  0.4385852 -1.6571715 -1.504117 -1.3719627
 #&gt; 7           1  1.25282846 -0.3765451 -1.3423751 -1.504117 -1.0274200
 #&gt; 8           1 -0.94130153  1.0850679 -1.9719679 -1.504117 -0.9125725</div><div class='input'>
-<span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># Get parameters used for standardization</span>
 <span class='fu'>center</span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; (Intercept)     Solar.R        Wind        Temp       Month         Day 
 #&gt;    0.000000  184.801802    9.939640   77.792793    7.216216   15.945946 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/scale'>scale</a></span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; (Intercept)     Solar.R        Wind        Temp       Month         Day 
 #&gt;    1.000000   91.152302    3.557713    9.529969    1.473434    8.707194 </div><div class='input'>
+<span class='co'># Destandardize</span>
+<span class='no'>D</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='destandardize.html'>destandardize</a></span>(<span class='no'>S</span>)
+
+<span class='co'># Check</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/all.equal'>all.equal</a></span>(<span class='no'>D</span>, <span class='no'>X</span>, <span class='kw'>check.attributes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -13,8 +13,10 @@ standardize(x, ...)
 
 \method{standardize}{matrix}(x, ...)
 
-\method{scale}{standardized}(x, ...)
+# Returns 'scaled:scale' used for standardization
+scale(x, ...)
 
+# Returns 'scaled:center' used for standardization
 center(x, ...)
 
 \method{destandardize}{standardized}(x, ...)
@@ -28,7 +30,7 @@ destandardize_coefficients(beta, X)
 
 \item{beta}{regression coefficients estimated on standardized data.}
 
-\item{X}{object of class \code{\link{standardize}}.}
+\item{X}{object of class \code{\link[foehnix]{standardize}}.}
 }
 \value{
 Returns a matrix of the same dimension as input \code{x}
@@ -42,7 +44,7 @@ as input \code{beta}.
 \description{
 Function to standardize the columns of a matrix, used to
 standardize the model matrix before estimating the regression
-coefficients of a generalized linear model (\code{\link{iwls_logit}}).
+coefficients of a generalized linear model (\code{\link[foehnix]{iwls_logit}}).
 
 Destandardize coefficients. Brings coefficients back to
 the "real" scale if standardized coefficients are used when
@@ -62,16 +64,22 @@ S <- standardize(X)
 print(head(S))
 
 is.standardized(X)
-is.standardized(X)
+is.standardized(S)
 
 # Get parameters used for standardization
 center(S)
 scale(S)
 
+# Destandardize
+D <- destandardize(S)
+
+# Check
+all.equal(D, X, check.attributes = FALSE)
+
 }
 \seealso{
-\code{\link{standardize}}. Used in \code{\link{foehnix}}
-and \code{\link{iwls_logit}}.
+\code{\link[foehnix]{standardize}}. Used in \code{\link[foehnix]{foehnix}}
+and \code{\link[foehnix]{iwls_logit}}.
 }
 \author{
 Reto Stauffer

@@ -23,7 +23,7 @@ utils::globalVariables(c("prob", "maxpp"))
 #' @param ffvar character, name of the column in the training data set which contains
 #'        the wind speed (or gust speed) data.
 #' @param breaks \code{NULL} or a numeric vector to define the wind speed (\code{ff}) breaks.
-#' @param mfcol integer, number of columns of subplots.
+#' @param ncol integer, number of columns of subplots.
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
 #'
@@ -110,7 +110,7 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' @rdname windrose
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
-                             breaks = NULL, mfcol = 2L, maxpp = Inf, ...) {
+                             breaks = NULL, ncol = NULL, maxpp = Inf, ...) {
 
     # Just to be on the very safe side.
     stopifnot(inherits(x, "foehnix"))
@@ -126,10 +126,9 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     if ( is.null(type) ) type <- allowed
     type <- match.arg(type, allowed, several.ok = TRUE)
 
-    # Input argument mfcol
-    if ( inherits(mfcol, "numeric") ) { mfcol <- as.integer(mfcol) }
-    else { stopifnot(inherits(mfcol, "integer")) }
-    stopifnot(mfcol > 0)
+    # Input argument ncol
+    if (inherits(ncol, "numeric")) ncol <- as.integer(ncol)
+    stopifnot(inherits(ncol, c("NULL", "integer")) | ncol <= 0)
 
     # Input argument maxpp
     if ( !maxpp == Inf ) {
@@ -184,18 +183,18 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     # Else start plotting
     # Step 1: calculate number of pages/rows/columns based on
     # the number of requested plots (given which/type) and the
-    # user specification mfcol/maxpp.
+    # user specification ncol/maxpp.
     hold <- par(no.readonly = TRUE); on.exit(par(hold))
 
     # Number of rows and columns needed
-    if ( length(which) > 1 ) {
+    if (length(which) > 1) {
         maxpp <- min(maxpp, length(which))
-        mfcol = max(ceiling(maxpp / 2), mfcol)
-        mfrow = ceiling(maxpp / mfcol)
-        if ( mfrow == 2 & mfcol == 1 ) { mfrow <- 1; mfcol = 2; }
-        par(mfrow = c(mfrow, mfcol))
-    } else { mfrow = 1; mfcol = 1; }
-    if ( (mfcol * mfrow) < length(which) ) par(ask = TRUE)
+        ncol  <- ifelse(is.null(ncol), ceiling(maxpp / 2), ncol)
+        nrow <- ceiling(maxpp / ncol)
+        if ( nrow == 2 & ncol == 1 ) { nrow <- 1; ncol = 2; }
+        par(mfrow = c(nrow, ncol))
+    } else { nrow = 1; ncol = 1; }
+    if ((ncol * nrow) < length(which)) par(ask = TRUE)
 
     # Plot type = "density"
     tmp <- list()
@@ -620,26 +619,19 @@ windrose.default <- function(x, ff,
     x0 <- max(at, na.rm = TRUE) * 1.05
     x1 <- max(at, na.rm = TRUE) * 1.05 + diff(at[1:2])
 
+
     if ( type == "density" ) {
-        for ( i in 1:ncol(tab) ) {
-            y0 <- at[(i-1)*2 + 1]; y1 <- at[i*2]
-            rect(x0, y0, x1, y1, col = cols[i])
-            text(x1, (y0+y1)/2, colnames(tab)[i], pos = 4)
-        }
+        legend("topright", fill = rev(cols), legend = rev(colnames(tab)), bty = "n")
     } else {
-        for ( i in 1:nrow(tab$legend) ) {
-            y0 <- at[(i-1)*2 + 1]; y1 <- at[i*2]
-            rect(x0, y0, x1, y1,
-                 col = tab$legend$color[i], border = "gray50")
-            text(x1, (y0+y1)/2, sprintf("%d", tab$legend$level[i]), pos = 4)
-        }
+        legend("topright", fill = rev(tab$legend$color), legend = rev(tab$legend$level), bty = "n")
     }
     msg <- if(is.null(filter)) {
                sprintf("N = %d", nrow(data))
            } else {
                sprintf("N = %d/%d\ncustom data filter", nrow(data), filter_obj$total)
            }
-    text(x0, -mean(tail(at, 2)), pos = 4, msg)
+    #text(x0, -mean(tail(at, 2)), pos = 4, msg)
+    legend("bottomright", bty = "n", legend = msg)
 
     # Invisible return of some properties, mainly for testing.
     invisible(list(xlim       = xlim,

@@ -75,6 +75,26 @@ tsplot(list("Enhanced" = mod, "Alternative (basic)" = alt_mod),
        style = "bw")
 ```
 
+As an alternative, one of the default style files can be modified and used as a custom
+style.
+
+```{r tsplot_custom_csv, figure = TRUE, fig.width = 15, fig.height = 9, results = "hide"}
+# Loading demo data set, change units
+data <- demodata()
+data$t      <- data$t * 1.8 + 32       # Celsius to Fahrenheit
+data$diff_t <- data$diff_t * 1.8 + 32  # Celsius to Fahrenheit
+data$ff     <- data$ff * 1.943844      # m/s to knots
+filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
+mod2 <- foehnix(diff_t ~ rh + ff, data = data, filter = filter, switch = TRUE)
+
+# Use "custom_demo.csv" shipped with the package
+style_file <- system.file(package = "foehnix", "tsplot.control/custom_demo.csv")
+tsplot(mod2, style = style_file,
+      start = "2017-03-01", end = "2017-03-10",
+      windsector = list(c(43, 223)))
+```
+
+
 ## Highlight Wind Sectors
 
 TODO: Wind sectors (as for the windrose plot) can be used to set specific highlights.

@@ -42,28 +42,16 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -132,7 +120,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/windrose.Rmd"><code>../vignettes/windrose.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/windrose.Rmd"><code>vignettes/windrose.Rmd</code></a></small>
       <div class="hidden name"><code>windrose.Rmd</code></div>
 
     </div>
@@ -152,7 +140,14 @@
 <div id="windrose-plot-for-observation-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#windrose-plot-for-observation-data" class="anchor"></a>Windrose Plot for Observation Data</h3>
-<p>The <a href="../references/windrose.html"><code>windrose</code></a> function can be called with a set of (observed) wind direction and wind speed values. Wind direction has to be the meteorological wind direction in degrees (<code>[0, 360]</code>, <code>0</code> and <code>360</code> corresponds to wind coming from North, <code>90</code> for wind from East, <code>180</code> for wind from South, and <code>270</code> from West).</p>
+<p>The <a href="../references/windrose.html"><code>windrose</code></a> function allows to plot empirical circular densities and histograms (the classical ‘windrose’) of observed values. The data set can either be a</p>
+<ul>
+<li>multivariate <code>zoo</code> time series object,</li>
+<li>a <code>data.frame</code>,</li>
+<li>or simply two numeric vectors.</li>
+</ul>
+<p>All needed is wind speed (<span class="math inline">\(\in [0, \infty]\)</span>) and wind direction. The wind direction needs to be provided in meteorological degrees (<span class="math inline">\(\in [0, 360]\)</span>) where <span class="math inline">\(0\)</span> and <span class="math inline">\(360\)</span> corresponds to wind coming from North, <span class="math inline">\(90\)</span> for wind from East, <span class="math inline">\(180\)</span> for wind from South, and <span class="math inline">\(270\)</span> from West.</p>
+<p>If used with a multivariate <code>zoo</code> object or a <code>data.frame</code> the <a href="../references/windrose.html"><code>windrose</code></a> function expects to find two variables called <code>ff</code> (wind speed) and <code>dd</code> (wind direction). However, custom names can be specified if needed (see customization section). The plot below shows examples using <code>zoo</code>, <code>data.frame</code>, or <code>numeric</code> vectors. While the upper two show <code>type = "density"</code>, the lower two show the circular histograms (<code>type = "histogram"</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"ellboegen"</span>)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
@@ -163,34 +158,36 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 ## 2006-01-01 04:00:00 152 2.1  88 -0.6
 ## 2006-01-01 05:00:00 319 0.7 100 -2.6
 ## 2006-01-01 06:00:00  36 0.1  99 -1.7</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plotting windrose</span>
-<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data<span class="op">$</span>dd, data<span class="op">$</span>ff, <span class="dt">type =</span> <span class="st">"density"</span>)</code></pre></div>
-<p><img src="windrose_files/figure-html/unnamed-chunk-2-1.png" width="960"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>dd), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>ff), <span class="dt">type =</span> <span class="st">"histogram"</span>)</code></pre></div>
-<p><img src="windrose_files/figure-html/unnamed-chunk-2-2.png" width="960"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(data)</code></pre></div>
+<pre><code>## [1] "zoo"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Default plot using a zoo object</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">mar =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>))
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data)
+<span class="co"># Default plot using a data.frame</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(data))
+<span class="co"># Defualt plot using univariate zoo objects/numeric vectors</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data<span class="op">$</span>dd, data<span class="op">$</span>ff, <span class="dt">type =</span> <span class="st">"histogram"</span>)
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>dd), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>ff), <span class="dt">type =</span> <span class="st">"histogram"</span>)</code></pre></div>
+<p><img src="windrose_files/figure-html/unnamed-chunk-2-1.png" width="768"></p>
 </div>
 <div id="windrose-plot-for-foehnix-models" class="section level3">
 <h3 class="hasAnchor">
 <a href="#windrose-plot-for-foehnix-models" class="anchor"></a>Windrose Plot for foehnix Models</h3>
-<p>Windrose plots can also be created for <code>foehnix</code> foehn classification models if wind speed and wind direction information has been provided to the <a href="../references/foehnix.html"><code>foehnix</code></a> function when estimating the classification model.</p>
+<p>The <a href="../references/windrose.html"><code>windrose</code></a> function can also directly be applied to <a href="../references/foehnix.html"><code>foehnix</code></a> objects. By default, six windroses will be plotted:</p>
+<ul>
+<li>
+<strong>top row:</strong> density plot</li>
+<li>
+<strong>bottom row:</strong> circular histograms</li>
+<li>
+<strong>left to right:</strong> unconditional, for <span class="math inline">\(\pi &lt; 0.5\)</span> and <span class="math inline">\(\pi \ge 0.5\)</span>
+</li>
+</ul>
+<p><em>Unconditional</em> is the same as if one would call the <a href="../references/windrose.html"><code>windrose</code></a> function on the data set (<code>data</code>), the latter two show the windrose conditional on the foehn probability estimated by the <a href="../references/foehnix.html"><code>foehnix</code></a> classification model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for Tyrol (Ellboegen and Innsbruck)</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
-<pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4      180     10.8      100    -7.8
-## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
-## 2006-01-01 03:00:00 115 5.2  79  0.9      181     11.3      100    -7.4
-## 2006-01-01 04:00:00 152 2.1  88 -0.6      178     13.3      100    -7.5
-## 2006-01-01 05:00:00 319 0.7 100 -2.6      176     13.1      100    -7.1
-## 2006-01-01 06:00:00  36 0.1  99 -1.7      184     10.0      100    -6.9
-##                     diff_t
-## 2006-01-01 01:00:00   2.87
-## 2006-01-01 02:00:00   4.07
-## 2006-01-01 03:00:00   1.97
-## 2006-01-01 04:00:00   3.37
-## 2006-01-01 05:00:00   5.77
-## 2006-01-01 06:00:00   5.07</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
+
+<span class="co"># Estimate a foehnix classification model</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
@@ -198,35 +195,39 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <span class="co"># Plotting windroses</span>
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod)</code></pre></div>
 <p><img src="windrose_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
-<p>By default, <code>windrose</code> expects that the parameters are called <code>dd</code> (wind direction) and <code>ff</code> (wind speed), however, custom names can also be used.</p>
+<p>Again, the <a href="../references/windrose.html"><code>windrose</code></a> function expects that the two variables ‘wind speed’ and ‘wind direction’ are called <code>ff</code> and <code>dd</code> but can be adjusted if custom names are used. An example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen and Sattelberg (combined)</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"dd$"</span>, <span class="st">"winddir"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"ff$"</span>, <span class="st">"windspd"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
-<pre><code>##                     winddir windspd  rh    t crest_winddir crest_windspd
-## 2006-01-01 01:00:00     171     0.6  90 -0.4           180          10.8
-## 2006-01-01 02:00:00     268     0.3 100 -1.8           186          12.5
-## 2006-01-01 03:00:00     115     5.2  79  0.9           181          11.3
-## 2006-01-01 04:00:00     152     2.1  88 -0.6           178          13.3
-## 2006-01-01 05:00:00     319     0.7 100 -2.6           176          13.1
-## 2006-01-01 06:00:00      36     0.1  99 -1.7           184          10.0
-##                     crest_rh crest_t diff_t
-## 2006-01-01 01:00:00      100    -7.8   2.87
-## 2006-01-01 02:00:00      100    -8.0   4.07
-## 2006-01-01 03:00:00      100    -7.4   1.97
-## 2006-01-01 04:00:00      100    -7.5   3.37
-## 2006-01-01 05:00:00      100    -7.1   5.77
-## 2006-01-01 06:00:00      100    -6.9   5.07</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data)</code></pre></div>
+<pre><code>## [1] "winddir"       "windspd"       "rh"            "t"            
+## [5] "crest_winddir" "crest_windspd" "crest_rh"      "crest_t"      
+## [9] "diff_t"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model using the new</span>
+<span class="co"># custom names (see 'foehnix' function documentation for details)</span>
 filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">winddir =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_winddir =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
-mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>windspd <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
-               <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+mod2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>windspd <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
+                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
-<span class="co"># Plotting windroses</span>
-<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">ddvar =</span> <span class="st">"winddir"</span>, <span class="dt">ffvar =</span> <span class="st">"windspd"</span>)</code></pre></div>
-<p><img src="windrose_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
+<span class="co"># Plotting windroses using custom names</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod2, <span class="dt">ddvar =</span> <span class="st">"winddir"</span>, <span class="dt">ffvar =</span> <span class="st">"windspd"</span>)</code></pre></div>
+<p><img src="windrose_files/figure-html/windrose_foehnix-1.png" width="768"></p>
+<p>The additional input arguments <code>type</code> and <code>which</code> allow to specify what should be plotted:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># density plots only</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">type =</span> <span class="st">"density"</span>, <span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
+<p><img src="windrose_files/figure-html/windrose_foehnix_subset-1.png" width="768"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># circular histogram plots only</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">type =</span> <span class="st">"histogram"</span>, <span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
+<p><img src="windrose_files/figure-html/windrose_foehnix_subset-2.png" width="768"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Only histograms for "foehn" and "no foehN"</span>
+<span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">type =</span> <span class="st">"histogram"</span>, <span class="dt">which =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"nofoehn"</span>, <span class="st">"foehn"</span>))</code></pre></div>
+<p><img src="windrose_files/figure-html/windrose_foehnix_subset-3.png" width="768"></p>
 </div>
+</div>
+<div id="windrose-customization" class="section level1">
+<h1 class="hasAnchor">
+<a href="#windrose-customization" class="anchor"></a>Windrose customization</h1>
 </div>
   </div>
 
@@ -236,6 +237,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#windrose">Windrose</a></li>
+      <li><a href="#windrose-customization">Windrose customization</a></li>
       </ul>
 </div>
       </div>

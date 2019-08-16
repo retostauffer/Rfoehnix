@@ -76,28 +76,16 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -211,14 +199,14 @@ numeric value.</p></td>
     <tr>
       <th>truncated</th>
       <td><p>logical. If set to <code>TRUE</code> truncation is used instead of
-<code>censored</code>. This only affects the <code><a href='foehnix.html'>foehnix</a></code> model estimate
+censoring. This only affects the <code><a href='foehnix.html'>foehnix</a></code> model estimate
 if input <code>left</code> and/or input <code>right</code> are specified.</p></td>
     </tr>
     <tr>
       <th>standardize</th>
-      <td><p>logical flag, default is <code>TRUE</code>. Defines whether or
+      <td><p>logical flag, default is <code>TRUE</code>. Whether or
 not the model matrix for the concomitant model should be standardized for
-model estimation. Recommended.</p></td>
+model estimation (recommended).</p></td>
     </tr>
     <tr>
       <th>maxit</th>
@@ -231,7 +219,7 @@ the IWLS backfitting.</p></td>
     <tr>
       <th>tol</th>
       <td><p>similar as for <code>maxit</code>. Used to identify convergence of the
-iterative solvers. Default is <code>1e-8</code>, if two values are given the first
+iterative solvers. Default is <code>1e-8</code>, if two values are provided the first
 will be used for the EM algorithm, the second one for the IWLS backfitting
 procedure. If set to <code>-Inf</code> <code>maxit</code> will be used as stopping
 criteria.</p></td>
@@ -247,7 +235,7 @@ smallest time interval in the data set. If the inflation rate is larger than
     <tr>
       <th>glmnet.control</th>
       <td><p>an object of class <code><a href='glmnet.control.html'>glmnet.control</a></code>
-containing the arguments for the glmnet function.</p></td>
+containing the arguments for the glmnet function (experimental).</p></td>
     </tr>
     <tr>
       <th>verbose</th>
@@ -261,7 +249,7 @@ containing the arguments for the glmnet function.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code><a href='foehnix.html'>foehnix</a></code> models are based on time series objects. 
+    <p>Inflation: <code><a href='foehnix.html'>foehnix</a></code> models are based on time series objects. 
 For some methods (e.g., to create nice and easy to read time series plots and
 count statistics)
 <code><a href='foehnix.html'>foehnix</a></code> inflates the time series object using the smallest time
@@ -269,17 +257,17 @@ interval in the data set. This can, possibly, yield very large data sets. Thus,
 <code><a href='foehnix.html'>foehnix</a></code> is pre-calculating the inflation rate, the fraction between
 the length of the inflated data set versus the length of the data set provided by
 the user. If this inflation rate exceeds 2 the script will raise an error!</p>
-<p>In this case the user should make sure that the time series object provided
-is proper before continuing. A possible scenario: a user is performing foehn diagnosis
+<p>In this case, the user is kindly asked to check if the time series object
+(input <code>data</code>). A possible scenario: a user is performing foehn diagnosis
 using 5 years of data from one station with 10 minute observations. This yields
 (neglecting leap years) <code>5 * 365 * 144 = 262.800</code> observations. Imagine that there
 is one incorrect observation reported one second after one of the regular
 10 minute records. The smallest time increment would thus be 1 second. This would
 yield an inflated time series object with a total record length of
 <code>5 * 365 * 86.400 = 157.680.000</code>. Even if only filled with missing values
-(<code>NA</code>) this will be extremely memory demanding. To avoid this action
-<code><a href='foehnix.html'>foehnix</a></code> will stop in such situations.</p>
-<p>However, the user is allowed to overrule this condition by setting the
+(<code>NA</code>) this will be extremely memory demanding. To avoid this,
+<code><a href='foehnix.html'>foehnix</a></code> will stop in such situations.
+However, the user is allowed to overrule this condition by setting the
 <code>force.inflate</code> option to <code>TRUE</code>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>

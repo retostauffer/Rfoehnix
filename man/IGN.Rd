@@ -2,7 +2,7 @@
 % Please edit documentation in R/foehnix_functions.R
 \name{IGN}
 \alias{IGN}
-\title{Returns the Ignorance of the Object}
+\title{Returns the Ignorance of an Object}
 \usage{
 IGN(object, ...)
 }
@@ -12,9 +12,9 @@ IGN(object, ...)
 \item{...}{forwarded to generic methods.}
 }
 \description{
-Mmethod which returns the ignorance of the \code{object}.
-The ignorance is the mean negative log-likelihood.
+Returns the ignorance (mean negative log-likelihood)
+of the \code{object}.
 }
 \seealso{
-foehnix()
+\code{\link[foehnix]{foehnix}}
 }

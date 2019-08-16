@@ -35,9 +35,9 @@
 <meta property="og:title" content="foehnix Demo Data Set — demodata" />
 
 <meta property="og:description" content="The foehnix package comes with two sets of meteorological
-observations one for Tyrol, Austria, and one for Southern California, USA.
-Each region comes with observations from two stations, one valley station
-(or target station) and one station further upstream of the main wind direction
+observations: one for Tyrol, Austria, and one for Southern California, USA.
+Both data sets come with observations from two stations, one valley station
+(or target station) and one station further upstream of the main foehn wind direction
 (crest station) used to filter the data (see foehnix_filter).
 For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
 (crest) are included, the Californian data set consists of the crest station
@@ -84,28 +84,16 @@ More details are provided in the 'Details' section." />
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -180,9 +168,9 @@ More details are provided in the 'Details' section." />
     <div class="ref-description">
     
     <p>The <code><a href='foehnix.html'>foehnix</a></code> package comes with two sets of meteorological
-observations one for Tyrol, Austria, and one for Southern California, USA.
-Each region comes with observations from two stations, one valley station
-(or target station) and one station further upstream of the main wind direction
+observations: one for Tyrol, Austria, and one for Southern California, USA.
+Both data sets come with observations from two stations, one valley station
+(or target station) and one station further upstream of the main foehn wind direction
 (crest station) used to filter the data (see <code><a href='foehnix_filter.html'>foehnix_filter</a></code>).
 For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
 (crest) are included, the Californian data set consists of the crest station
@@ -191,32 +179,7 @@ More details are provided in the 'Details' section.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># Combined data set Tyrol (A).</span>
-<span class='co'># Valley station: Ellbögen; crest station: Sattelberg</span>
-<span class='fu'>demodata</span>()
-<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"tyrol"</span>)
-
-<span class='co'># Combined data set California (CA, USA).</span>
-<span class='co'># Valley station: Viejas; crest station: Lucky Five Ranch</span>
-<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"california"</span>)
-
-<span class='co'># Hourly observations station Ellögen (Tyrol, Austria).</span>
-<span class='co'># Serves as "valley" or "target" station for the "tyrol" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"ellboegen"</span>)
-
-<span class='co'># Hourly observations station Sattelberg (Tyrol, Austria).</span>
-<span class='co'># Serves as "crest" station for the "tyrol" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"sattelberg"</span>)
-
-<span class='co'># Hourly observations station Viejas Casino and Resort (California, U.S.A.).</span>
-<span class='co'># Serves as "valley" or "target" station for the "california data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"viejas"</span>)
-
-<span class='co'># Hourly observations station Lucky Five Ranch (California, U.S.A.).</span>
-<span class='co'># Serves as "crest" station for the "california" data set.</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='st'>"luckyfive"</span>)
-
-<span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tyrol"</span>, <span class='st'>"ellboegen"</span>, <span class='st'>"sattelberg"</span>, <span class='st'>"california"</span>,
+    <pre class="usage"><span class='fu'>demodata</span>(<span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"tyrol"</span>, <span class='st'>"ellboegen"</span>, <span class='st'>"sattelberg"</span>, <span class='st'>"california"</span>,
   <span class='st'>"viejas"</span>, <span class='st'>"luckyfive"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -224,10 +187,10 @@ More details are provided in the 'Details' section.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>which</th>
-      <td><p><code>which = "tyrol"</code> returns the combined tyrolean data set (A) and
-<code>which = "california"</code> the combined californian data set (USA), a time series
+      <td><p><code>which = "tyrol"</code> returns the combined Tyrolean data set (A) and
+<code>which = "california"</code> the combined Californian data set (USA), a time series
 object which contains measurements from both stations (valley/crest).
-The function can also be used to get the demo data sets for specific sites
+Else, the data for a specific site will be returned
 (see 'Examples'/'Usage').</p></td>
     </tr>
     </table>
@@ -286,11 +249,6 @@ crest station.</p>
        180 'wind from south', and 270 'wind from west')</p></li>
 <li><p><code>wind_gust</code>: wind gust speed in meters per second</p></li>
 </ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code>ellboegen</code>, <code>sattelberg</code>,
-         <code>viejas</code>, <code>luckyfive</code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -397,8 +355,6 @@ crest station.</p>
       <li><a href="#source">Source</a></li>
 
       <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

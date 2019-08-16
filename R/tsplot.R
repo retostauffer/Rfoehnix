@@ -818,13 +818,22 @@ tsplot_add_foehn <- function(x, control, prob_boxes, xtra = NULL, xtra_names = N
 #' Add Polygon to Plot
 #'
 #' Helper function to plot a filled polygon based on a \code{zoo}
-#' time series object with nice missing data handling.
+#' time series object. Automatic handling of missing values.
 #'
 #' @param x an univariate \code{zoo} time series object.
-#' @param col character, a hex color. Default is \code{"#ff0000"} (red).
+#' @param col character, a hex color (no alpha channel), default \code{"#ff0000"} (red).
 #' @param lower.limit numeric, the lower limit used to plot the polygon.
 #'        default is \code{0}.
 #' @param ... additional arguments forwarded to \code{lines}.
+#'
+#' @details Based on input \code{x} a filled polygon is added to the
+#' current plot. The color (\code{col}) is used to colorize the line,
+#' a lighter version of the color is used to fill the polygon by adding
+#' opacity.
+#'
+#' If the input object \code{x} contains missing values (periods with
+#' explicit \code{NA} values) the polygon will be interrupted and
+#' gaps will be plotted.
 #'
 #' @examples
 #' library("zoo")

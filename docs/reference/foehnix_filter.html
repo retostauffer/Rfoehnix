@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluates Data Filter Rules for foehnix Mixture Moel Calls. — foehnix_filter • foehnix</title>
+<title>Evaluates Data Filter Rules for foehnix Mixture Moel Calls — foehnix_filter • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,12 +32,21 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Evaluates Data Filter Rules for foehnix Mixture Moel Calls. — foehnix_filter" />
+<meta property="og:title" content="Evaluates Data Filter Rules for foehnix Mixture Moel Calls — foehnix_filter" />
 
 <meta property="og:description" content="foehnix models allow to specify an optional
 foehnix_filter. If a filter is given only a subset
 of the data set provided to foehnix is used
-for the foehn classification." />
+for the foehn classification.
+A typical example is a wind direction filter such that
+only observations (times) are used where the observed
+wind direction was within a user defined wind sector
+corresponding to the wind direction during foehn events
+for a specific location.
+However, the filter option allows to even implement complex
+filter rules if required. The 'Details' section contains
+further information and examples how this filter rules can
+be used." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -79,28 +88,16 @@ for the foehn classification." />
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -167,7 +164,7 @@ for the foehn classification." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluates Data Filter Rules for foehnix Mixture Moel Calls.</h1>
+    <h1>Evaluates Data Filter Rules for foehnix Mixture Moel Calls</h1>
     <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_filter.R'><code>R/foehnix_filter.R</code></a></small>
     <div class="hidden name"><code>foehnix_filter.Rd</code></div>
     </div>
@@ -177,7 +174,16 @@ for the foehn classification." />
     <p><code><a href='foehnix.html'>foehnix</a></code> models allow to specify an optional
 <code>foehnix_filter</code>. If a filter is given only a subset
 of the data set provided to <code><a href='foehnix.html'>foehnix</a></code> is used
-for the foehn classification.</p>
+for the foehn classification.
+A typical example is a wind direction filter such that
+only observations (times) are used where the observed
+wind direction was within a user defined wind sector
+corresponding to the wind direction during foehn events
+for a specific location.
+However, the filter option allows to even implement complex
+filter rules if required. The 'Details' section contains
+further information and examples how this filter rules can
+be used.</p>
     
     </div>
 
@@ -221,16 +227,7 @@ the data set <code>x</code> which fulfill all filte criteria. If input
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A typical example is a wind direction filter such that
-only observations (times) are used where the observed
-wind direction was within a user defined wind sector
-corresponding to the wind direction during foehn events
-for a specific location.</p>
-<p>However, the filter option allows to even implement complex
-filter rules if required. The 'Details' section contains
-further information and examples how this filter rules can
-be used.</p>
-<p>Foehn winds often (not always) show a very specific wind direction
+    <p>Foehn winds often (not always) show a very specific wind direction
 due to the canalization of the air flow trough the local topography. The
 <code>foehnix_filter</code> option allows to subset the data according to a
 user defined set of filters from simple filters to complex filters.</p>
@@ -252,7 +249,7 @@ filter. Examples:</p>
         as 'good' (within filter) if <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code>.</p></li>
 <li><p><code>filter = list(dd = c(330, 30)</code>: similar to the filter
         rule above, allows to specify a wind sector going trough 0
-        (if dd is wind direction in degrees between <code>[0, 360[</code>).
+        (if dd is wind direction in degrees between <code>[0, 360]</code>).
         The filter classifies observations/rows as 'good' (within filter)
         if <code>x$dd &gt;= 330 | x$dd &lt;= 30</code>.</p></li>
 <li><p><code>filter = list(dd = c(43, 223), crest_dd = c(90, 270)</code>:
@@ -267,25 +264,26 @@ filter. Examples:</p>
         examples above)!</p></li>
 </ul>
     <p>Custom filter functions: Instead of only providing a segment/sector defined
-by two finite numeric values (see 'Simple filter' above) a named list of #'
-functions can be provided. These functions DO HAVE TO return a vector of #'
-logical values (<code>TRUE</code> (good),<code>FALSE</code> (bad), or <code>NA</code> (ugly)) #'
+by two finite numeric values (see 'Simple filter' above) a named list of
+functions can be provided. These functions DO HAVE TO return a vector of
+logical values (<code>TRUE</code> (good),<code>FALSE</code> (bad), or <code>NA</code> (ugly))
 of length <code>nrow{x}</code>. If not, an error will be thrown.  The function will
-be applied to the column #' specified by the name of the list element. Some
+be applied to the column specified by the name of the list element. Some
 examples:</p>
 <ul>
 <li><p><code>filter = list(dd = function(x) x &gt;= 43 &amp; x &lt;= 223)</code>:
         The function will be applied to <code>x$dd</code>.
-        A vector with <code>TRUE</code>, <code>FALSE</code>, or <code>NA</code> is returned for each for
+        A vector with <code>TRUE</code>, <code>FALSE</code>, or <code>NA</code> is returned for
         each <code>1:nrow{x}</code> which takes <code>NA</code> if <code><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na(x$dd)</a></code>,
         <code>TRUE</code> if <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> and <code>FALSE</code> else.
         Thus, this filter is the very same as the first example in the
         'Simple filter' section above.</p></li>
 <li><p><code>filter = list(ff = function(x) x &gt; 2.0)</code>:
-        Custom filter applied to column <code>x$ff</code>.
-        A vector with <code>TRUE</code>, <code>FALSE</code>, and <code>NA</code> is returned for each for
-        each <code>1:nrow{x}</code> which takes <code>NA</code> if <code><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na(x$ff)</a></code>, <code>TRUE</code> if
-        <code>x$ff &gt; 2.0</code>, and <code>FALSE</code> else.</p></li>
+        Custom filter applied to column <code>x$ff</code>.  A vector with
+        <code>TRUE</code>, <code>FALSE</code>, and <code>NA</code> is returned for each
+        observation <code>1:nrow{x}</code> which takes <code>NA</code> if
+        <code><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na(x$ff)</a></code>, <code>TRUE</code> if <code>x$ff &gt; 2.0</code>, and
+        <code>FALSE</code> else.</p></li>
 <li><p><code>filter = list(ff = function(x) &#8230;, dd = function(x) &#8230;)</code>:
         two filter functions, one applied to <code>x$ff</code>, one to <code>x$dd</code>.
         Note that observations/rows will be classified as 'ugly' if one of the
@@ -310,8 +308,7 @@ any complexity. As an example:</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Loading example data set and conver to zoo time series</span>
-<span class='co'># time series object.</span>
-<span class='co'># Loading combined demo data set</span>
+<span class='co'># time series object (station Ellboegen).</span>
 <span class='no'>ellboegen</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>(<span class='st'>"ellboegen"</span>)
 
 <span class='co'># Case 1:</span>

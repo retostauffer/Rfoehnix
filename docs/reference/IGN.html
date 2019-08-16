@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>foehnix Families for Two-Component Mixture Models — foehnix.family • foehnix</title>
+<title>Returns the Ignorance of an Object — IGN • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,13 +32,10 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="foehnix Families for Two-Component Mixture Models — foehnix.family" />
+<meta property="og:title" content="Returns the Ignorance of an Object — IGN" />
 
-<meta property="og:description" content="The foehnix mixture models are based on a set of families provided with this
-package. Currently, the package provides a two-component Gaussian and a
-two-component logistic mixture model and their truncated and censored
-versions.  Custom foehn.family objects could also be plugged in (see
-'Details' section)." />
+<meta property="og:description" content="Returns the ignorance (mean negative log-likelihood)
+of the object." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -156,113 +153,36 @@ versions.  Custom foehn.family objects could also be plugged in (see
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>foehnix Families for Two-Component Mixture Models</h1>
-    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/families.R'><code>R/families.R</code></a></small>
-    <div class="hidden name"><code>foehnix.family.Rd</code></div>
+    <h1>Returns the Ignorance of an Object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
+    <div class="hidden name"><code>IGN.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The foehnix mixture models are based on a set of families provided with this
-package. Currently, the package provides a two-component Gaussian and a
-two-component logistic mixture model and their truncated and censored
-versions.  Custom <code>foehn.family</code> objects could also be plugged in (see
-'Details' section).</p>
+    <p>Returns the ignorance (mean negative log-likelihood)
+of the <code>object</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for foehnix.family</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># Check if truncation is set</span>
-<span class='fu'>is.truncated</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># Check if left censoring/truncation limit has been specified</span>
-<span class='fu'>has.left</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># Check if right censoring/truncation limit has been specified</span>
-<span class='fu'>has.left</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># Logistic mixture-model family</span>
-<span class='fu'>foehnix_logistic</span>()
-
-<span class='co'># Censored logistic mixture-model family</span>
-<span class='fu'>foehnix_clogistic</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
-
-<span class='co'># Truncated logistic mixture-model family</span>
-<span class='fu'>foehnix_tlogistic</span>(<span class='kw'>left</span> <span class='kw'>=</span> -<span class='fl'>Inf</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
-
-<span class='co'># Gaussian mixture-model family</span>
-<span class='fu'>foehnix_gaussian</span>()
-
-<span class='co'># Censored Gaussian mixture-model family</span>
-<span class='fu'>foehnix_cgaussian</span>()
-
-<span class='co'># Truncated Gaussian mixture-model family</span>
-<span class='fu'>foehnix_tgaussian</span>()</pre>
+    <pre class="usage"><span class='fu'>IGN</span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p><code>foehnix.family</code> object.</p></td>
+      <th>object</th>
+      <td><p>the object to be evaluated.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments, ignored.</p></td>
-    </tr>
-    <tr>
-      <th>left</th>
-      <td><p>left censoring or truncation point (if the family object
-provides this option).</p></td>
-    </tr>
-    <tr>
-      <th>right</th>
-      <td><p>right censoring or truncation point (if the family object
-provides this option).</p></td>
+      <td><p>forwarded to generic methods.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The method <code><a href='foehnix.html'>foehnix</a></code> allows to specify a <code>family</code> input
-argument which has to be either <code>"gaussian"</code> (the default) or
-<code>"logistic"</code> for now.  If finite arguments for <code>left</code> and/or
-<code>right</code> are set as well, a censored Gaussian/logistic mixture model
-will be estimated (or truncated, if <code>truncated = TRUE</code>; see
-<code><a href='foehnix.html'>foehnix</a></code> and <code><a href='foehnix.control.html'>foehnix.control</a></code>).</p>
-<p>However, feel free to develop custom family objects if needed: if a
-<code>foehnix.family</code> object is provided on <code>family</code> when calling
-<code>foehnix</code> this custom object will be used. For example:</p>
-<ul>
-<li><p><code>fam &lt;- foehnix:::foehnix_cgaussian(left = 0)</code></p></li>
-<li><p><code>mod &lt;- foehnix(dt ~ ff + dd + rh, data = data, family = fam)</code></p></li>
-</ul>
-    <p>Each `foehn.family` object consists of a set of functions:</p><ul>
-<li><p>optional arguments not listed here (stored inside the
-          object environment when specified on initialization,</p></li>
-<li><p><code>left</code> and <code>right</code> used for the censored and truncated
-          Gaussian/logistic families are such examples).</p></li>
-<li><p><code>name</code>: character, name of the family object.</p></li>
-<li><p><code>d</code>: density function of the mixture distribution.</p></li>
-<li><p><code>p</code>: distribution function of the mixture distribution.</p></li>
-<li><p><code>r</code>: not required for optimization but nice for testing:
-          returns random numbers from the mixed distribution to simulate data.</p></li>
-<li><p><code>loglik</code> function returning the log-likelihood sum,
-          used for model estimation (EM algorithm).</p></li>
-<li><p><code>posterior</code> returns the (updated) posterior probabilities,
-          used for model estimation (EM algorithm).</p></li>
-<li><p><code>theta</code> returns the parameters of the distributions of the
-          components of the mixture models. Used for model
-          estimation (EM algorithm).</p></li>
-</ul><p>Examples are: `foehnix_gaussian`, `foehnix_cgaussian`, `foehnix_tgaussian`,
-`foehnix_logistic`, `foehnix_clogistic`, and `foehnix_tlogistic` in
-`R/families.R`.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code>, <code><a href='foehnix.control.html'>foehnix.control</a></code>.</p></div>
+    <div class='dont-index'><p><code><a href='foehnix.html'>foehnix</a></code></p></div>
     
 
   </div>
@@ -271,14 +191,9 @@ will be estimated (or truncated, if <code>truncated = TRUE</code>; see
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#details">Details</a></li>
-
       <li><a href="#see-also">See also</a></li>
           </ul>
 
-    <h2>Author</h2>
-    <p>Reto Stauffer</p>
-<p>Reto Stauffer</p>
   </div>
 </div>
 

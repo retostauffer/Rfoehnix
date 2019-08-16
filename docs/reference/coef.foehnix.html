@@ -34,8 +34,8 @@
   <script src="../extra.js"></script>
 <meta property="og:title" content="Get Estimated Mixture Model Coefficients — coef.foehnix" />
 
-<meta property="og:description" content="Returns the estimated coefficients of a foehnix mixture model
-for both, the components and the concomitant model (if in use)." />
+<meta property="og:description" content="Returns the estimated coefficients of a foehnix
+mixture model for both, the components and the concomitant model (if specified)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -77,28 +77,16 @@ for both, the components and the concomitant model (if in use)." />
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -172,8 +160,8 @@ for both, the components and the concomitant model (if in use)." />
 
     <div class="ref-description">
     
-    <p>Returns the estimated coefficients of a <code><a href='foehnix.html'>foehnix</a></code> mixture model
-for both, the components and the concomitant model (if in use).</p>
+    <p>Returns the estimated coefficients of a <code><a href='foehnix.html'>foehnix</a></code>
+mixture model for both, the components and the concomitant model (if specified).</p>
     
     </div>
 
@@ -185,7 +173,7 @@ for both, the components and the concomitant model (if in use).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p><code><a href='foehnix.html'>foehnix</a></code> mixture model object.</p></td>
+      <td><p>a <code><a href='foehnix.html'>foehnix</a></code> object.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -201,21 +189,17 @@ for both, the components and the concomitant model (if in use).</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns a <code>coef.foehnix</code> object with the estimated
-        coefficients.</p>
+coefficients.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns the coeffficients of the mixture model.
-If <code>type = "parameter"</code> the parameters are returned of the
-components are returned on the 'true' scale, namely:
-<code>mu1</code> and <code>sigma1</code> (location and scale of component 1),
-<code>mu2</code> and <code>sigma2</code> (location and scale of component 2),
-and a set of coefficients from the concomitant model if one has been
-specified. These coefficients are the coefficients from a (possibly
-regularized) logistic regression model (see <code><a href='iwls_logit.html'>iwls_logit</a></code>).</p>
-<p>If <code>type = "coefficients"</code> the scale parameters are returned
-on the log-scale (<code>logsd1</code>, <code>logsd2</code>) as used during
-optimization.</p>
+    <p>Returns the coefficients of the mixture model.  If <code>type =
+"parameter"</code> the parameters of the mixture model components are returned on
+the 'true' scale (parameter scale), else on the link scale (as used for
+optimization).  For each component the location and scale parameters are
+returned.  If a concomitant model has been specified, the coefficients of
+the (possibly regularized) logistic regression model are returned as well
+(concomitant model).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

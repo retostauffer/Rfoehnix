@@ -1,14 +1,3 @@
-# -------------------------------------------------------------------
-# - NAME:        families.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-12-13
-# -------------------------------------------------------------------
-# - DESCRIPTION:
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-12-13, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-05 12:03 on marvin
-# -------------------------------------------------------------------
 
 
 #' foehnix Families for Two-Component Mixture Models
@@ -71,6 +60,7 @@
 #' @name foehnix.family
 #' @author Reto Stauffer
 #' @export
+#' @author Reto Stauffer
 print.foehnix.family <- function(x, ...) {
 
     cat(sprintf("foehnix family of class: %s\n", x$name))
@@ -86,6 +76,9 @@ print.foehnix.family <- function(x, ...) {
 }
 
 
+#' @usage
+#' # Check if truncation is set
+#' is.truncated(x, ...)
 #' @rdname foehnix.family
 #' @export
 is.truncated <- function(x, ...) UseMethod("is.truncated")
@@ -94,6 +87,9 @@ is.truncated <- function(x, ...) UseMethod("is.truncated")
 is.truncated.foehnix.family <- function(x, ...) "truncated" %in% names(x)
 
 
+#' @usage
+#' # Check if left censoring/truncation limit has been specified
+#' has.left(x, ...)
 #' @rdname foehnix.family
 #' @export
 
@@ -107,6 +103,9 @@ has.left.foehnix.family <- function(x, ...) {
 }
 
 
+#' @usage
+#' # Check if right censoring/truncation limit has been specified
+#' has.left(x, ...)
 #' @rdname foehnix.family
 #' @export
 has.right <- function(x, ...) UseMethod("has.right")
@@ -123,6 +122,10 @@ has.right.foehnix.family <- function(x, ...) {
 # -------------------------------------------------------------------
 # Logistic foehnix mixture model family.
 # -------------------------------------------------------------------
+
+#' @usage
+#' # Logistic mixture-model family
+#' foehnix_logistic()
 #' @rdname foehnix.family
 #' @import stats
 foehnix_logistic <- function() {
@@ -198,6 +201,9 @@ foehnix_logistic <- function() {
 # Censored logistic foehnix mixture model family.
 # -------------------------------------------------------------------
 
+#' @usage
+#' # Censored logistic mixture-model family
+#' foehnix_clogistic(left = -Inf, right = Inf)
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -309,6 +315,9 @@ foehnix_clogistic <- function(left = -Inf, right = Inf) {
 # Truncated logistic foehnix mixture model family.
 # -------------------------------------------------------------------
 
+#' @usage
+#' # Truncated logistic mixture-model family
+#' foehnix_tlogistic(left = -Inf, right = Inf)
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -424,6 +433,9 @@ foehnix_tlogistic <- function(left = -Inf, right = Inf) {
 # Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
 
+#' @usage
+#' # Gaussian mixture-model family
+#' foehnix_gaussian()
 #' @rdname foehnix.family
 #' @import stats
 foehnix_gaussian <- function() {
@@ -499,6 +511,9 @@ foehnix_gaussian <- function() {
 # Censored Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
 
+#' @usage
+#' # Censored Gaussian mixture-model family
+#' foehnix_cgaussian()
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -611,6 +626,9 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
 # Truncated Gaussian foehnix mixture model family.
 # -------------------------------------------------------------------
 
+#' @usage
+#' # Truncated Gaussian mixture-model family
+#' foehnix_tgaussian()
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 

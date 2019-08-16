@@ -1,14 +1,14 @@
-enabled; var;       type; pch; cex; lwd; lty; name;       col;       ylab
-TRUE;    t;         l;    NA;  1.0; 2.0;   1;   t;         black;    air temperature [C]
-FALSE;   crest_t;   o;    17;  1.0; 1.0;   1;   crest_t;   black;    air temperature crest [C]
-TRUE;    rh;        l;    NA;  1.0; 1.0;   1;   rh;        black;    relative humidity [%]
-FALSE;   crest_rh;  o;    17;  1.0; 1.0;   1;   crest_rh;  black;    relative humidity crest [%]
-TRUE;    diff_t;    l;    NA;  1.0; 2.0;   1;   diff_t;    black;    temperature difference [C]
-TRUE;    dd;        p;    19;  0.7; 1.0;   1;   dd;        black;    wind direction [deg]
-FALSE;   crest_dd;  p;    17;  1.0; 0.0;   0;   crest_dd;  black;    wind direction crest [deg]
-TRUE;    ff;        l;    NA;  1.0; 2.0;   1;   ff;        black;    wind speed [m/s]
-FALSE;   crest_ff;  o;    17;  1.0; 1.0;   1;   crest_ff;  black;    wind speed crest [m/s]
-TRUE;    ffx;       l;    NA;  1.0; 1.0;   1;   ffx;       black;    gust speed [m/s]
-FALSE;   crest_ffx; o;    17;  1.0; 0.5;   1;   crest_ffx; black;    gust speed crest [m/s]
-TRUE;    prob;      l;    NA;  1.0; 2.0;   1;   ----;      black;    probability
-TRUE;    foehnix_windsector; n;    NA;   NA;  NA;  NA; "---"; gray70; wind sector overlay
+enabled; var;          type; pch; cex; lwd; lty; name;        col;    ylab
+TRUE;    t;            l;    NA;  1.0; 2.0;   1;   t;         black;  "air temperature [C]"
+FALSE;   crest_t;      o;    17;  1.0; 1.0;   1;   crest_t;   black;  "air temperature crest [C]"
+TRUE;    rh;           l;    NA;  1.0; 1.0;   1;   rh;        black;  "relative humidity [%]"
+FALSE;   crest_rh;     o;    17;  1.0; 1.0;   1;   crest_rh;  black;  "relative humidity crest [%]"
+TRUE;    diff_t;       l;    NA;  1.0; 2.0;   1;   diff_t;    black;  "temperature difference [C]"
+TRUE;    dd;           p;    19;  0.7; 1.0;   1;   dd;        black;  "wind direction [deg]"
+FALSE;   crest_dd;     p;    17;  1.0; 0.0;   0;   crest_dd;  black;  "wind direction crest [deg]"
+TRUE;    ff;           l;    NA;  1.0; 2.0;   1;   ff;        black;  "wind speed [m/s]"
+FALSE;   crest_ff;     o;    17;  1.0; 1.0;   1;   crest_ff;  black;  "wind speed crest [m/s]"
+TRUE;    ffx;          l;    NA;  1.0; 1.0;   1;   ffx;       black;  "gust speed [m/s]"
+FALSE;   crest_ffx;    o;    17;  1.0; 0.5;   1;   crest_ffx; black;  "gust speed crest [m/s]"
+TRUE;    prob;         l;    NA;  1.0; 2.0;   1;   ----;      black;  "probability"
+TRUE;    foehnix_windsector; n;    NA;   NA;  NA;  NA; "---"; gray70; "wind sector overlay"

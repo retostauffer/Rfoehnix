@@ -12,7 +12,7 @@ is.standardized(x, ...)
 \item{...}{ignored.}
 }
 \description{
-Helper function for \code{foehnix}. Returns \code{TRUE}
+Returns \code{TRUE}
 if input \code{x} is a standardized matrix, else \code{FALSE}.
 }
 \seealso{

@@ -2,12 +2,12 @@
 % Please edit documentation in R/wind_functions.R
 \name{uv2ddff}
 \alias{uv2ddff}
-\title{Convert U and V Wind Components to Wind Speed and Direction}
+\title{Convert u and v Wind Components to Wind Speed and Wind Direction}
 \usage{
 uv2ddff(u, v = NULL, rad = FALSE)
 }
 \arguments{
-\item{u}{\code{numeric} vector with U components or a 
+\item{u}{\code{numeric} vector with u components or a 
 \code{data.frame} or \code{zoo} object containing
 a column named \code{u} and a column named \code{v}.}
 
@@ -15,11 +15,11 @@ a column named \code{u} and a column named \code{v}.}
 If input \code{u} is a single vector \code{v} has to be specified.}
 
 \item{rad}{\code{logical}, default is \code{FALSE}. Returns wind
-direction in radiant rather than in degrees.}
+direction in radiant rather than degrees.}
 }
 \value{
-Returns a data.frame or zoo object (depending on input
-object \code{u}) with two columns named \code{dd}
+Returns a \code{data.frame} or \code{zoo} object (depending on input
+\code{u}) with two columns named \code{dd}
 and \code{ff} containing wind speed (same physical unit as
 input \code{u}/\code{v}) and wind direction. Wind direction
 is either in meteorological degrees (0 from North, from 90 East,
@@ -27,13 +27,13 @@ is either in meteorological degrees (0 from North, from 90 East,
 if input \code{rad = TRUE}.
 }
 \description{
-Takes U/V wind components as input and returns wind speed
-and meteorological wind direction.
+Takes u/v wind components (zonal and meridional wind components) as input
+and returns wind speed and meteorological wind direction.
 }
 \details{
 Note: if both, \code{u} and \code{v} are provided they
 do have to be of the same length OR one of them has to be of length 1.
-The one with length 1 will be repeated.
+The one with length 1 will be recycled.
 }
 \examples{
 ## Generate data.frame with u/v components for all 4 main wind directions
@@ -68,5 +68,5 @@ class(ddff)
 ddff2uv
 }
 \author{
-Jakob Messner, Reto Stauffer
+Reto Stauffer
 }

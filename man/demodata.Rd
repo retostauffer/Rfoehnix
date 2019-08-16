@@ -30,18 +30,18 @@ demodata(which = c("tyrol", "ellboegen", "sattelberg", "california",
   "viejas", "luckyfive"))
 }
 \arguments{
-\item{which}{\code{which = "tyrol"} returns the combined tyrolean data set (A) and
-\code{which = "california"} the combined californian data set (USA), a time series
+\item{which}{\code{which = "tyrol"} returns the combined Tyrolean data set (A) and
+\code{which = "california"} the combined Californian data set (USA), a time series
 object which contains measurements from both stations (valley/crest).
-The function can also be used to get the demo data sets for specific sites
+Else, the data for a specific site will be returned
 (see 'Examples'/'Usage').}
 }
 \description{
-The \code{\link{foehnix}} package comes with two sets of meteorological
-observations one for Tyrol, Austria, and one for Southern California, USA.
-Each region comes with observations from two stations, one valley station
-(or target station) and one station further upstream of the main wind direction
-(crest station) used to filter the data (see \code{\link{foehnix_filter}}).
+The \code{\link[foehnix]{foehnix}} package comes with two sets of meteorological
+observations: one for Tyrol, Austria, and one for Southern California, USA.
+Both data sets come with observations from two stations, one valley station
+(or target station) and one station further upstream of the main foehn wind direction
+(crest station) used to filter the data (see \code{\link[foehnix]{foehnix_filter}}).
 For Tyrol, observations for station Ellbögen (valley) and station Sattelberg
 (crest) are included, the Californian data set consists of the crest station
 'Lucky Five Ranch' and the valley station 'Viejas Casino and Resort'.
@@ -122,10 +122,6 @@ print(head(x))
 x <- demodata("luckyfive")
 print(head(x))
 
-}
-\seealso{
-\code{\link{ellboegen}}, \code{\link{sattelberg}},
-         \code{\link{viejas}}, \code{\link{luckyfive}}
 }
 \author{
 Reto Stauffer, Deborah Detka

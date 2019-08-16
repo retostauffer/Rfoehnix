@@ -343,7 +343,7 @@ model specification:
 * Concomitants: `rf` (relative humidity) 
 * Wind filter: `dd` $\in [43, 223]$ (as above)
 
-```{r mod_valley, fig = TRUE, fig.width = 8, fig.height = 3.5}
+```{r mod_valley, fig = TRUE, fig.width = 8, fig.height = 3.5, results = "hide"}
 # Load demo data set
 ell <- demodata("ellboegen")
 # Estimate alternative model
@@ -374,7 +374,7 @@ data sets this is inconclusive.
 For a fair and reliable comparison one should estimate both models on the very
 same data set, e.g., as follows:
 
-```{r}
+```{r, results = "hide"}
 # Load the demo data set once more
 data_for_comparison <- demodata("tyrol")
 # Extract the required variables
@@ -456,7 +456,7 @@ tsplot(list(mod = mod, mod_valley = mod_valley),
 
 # Compare Models (Distributions)
 
-```{r}
+```{r compare_distributions, results = "hide"}
 # Formula and wind direction filter specification
 filter  <- list(dd = c(43, 223), crest_dd = c(90, 270))
 formula <- "ff ~ rh"
@@ -464,19 +464,25 @@ formula <- "ff ~ rh"
 # Gaussian models: Gaussian, left-censored Gaussian (at 0),
 # and left-truncated Gaussian (at 0). Note that, for demonstration
 # purposes, the censored/truncated models do 20 iterations.
-mod_gauss  <- foehnix(formula, data = data, family = "gaussian")
+mod_gauss  <- foehnix(formula, data = data, family = "gaussian",
+                      verbose = FALSE)
 mod_cgauss <- foehnix(formula, data = data, family = "gaussian",
-                      left = 0, tol = -Inf, maxit = 20)
+                      left = 0, tol = -Inf, maxit = 20,
+                      verbose = FALSE)
 mod_tgauss <- foehnix(formula, data = data, family = "gaussian",
-                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
+                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE,
+                      verbose = FALSE)
 # Logistic models: logistic, left-censored logistic (at 0),
 # and left-truncated logistic (at 0). Again, fixed number of
 # iterations for the censored and truncated models.
-mod_logis  <- foehnix(formula, data = data, family = "logistic")
+mod_logis  <- foehnix(formula, data = data, family = "logistic",
+                      verbose = FALSE)
 mod_clogis <- foehnix(formula, data = data, family = "logistic",
-                      left = 0, tol = -Inf, maxit = 20)
+                      left = 0, tol = -Inf, maxit = 20,
+                      verbose = FALSE)
 mod_tlogis <- foehnix(formula, data = data, family = "logistic",
-                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE)
+                      left = 0, tol = -Inf, maxit = 20, truncated = TRUE,
+                      verbose = FALSE)
 ```
 
 ```{r}

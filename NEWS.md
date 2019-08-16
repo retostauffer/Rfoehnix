@@ -10,6 +10,9 @@
 * A Tyrolean and a Californian demo vignette? - draft added.
 * `summary(..., detailed = TRUE)` does not show sigma coefficients.
 * Seems I am having some problems with cgaussian/tgaussian/...
+* Windrose: changed argument `mfcol` to `ncol`, adjusted handling of
+    labels/legends.
+* Updated a series of _R_ documentation pages.
 
 # foehnix 0.1-4 (August 2019; development)
 

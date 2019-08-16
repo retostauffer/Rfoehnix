@@ -7,7 +7,7 @@
 \method{coef}{foehnix}(object, type = "parameter", ...)
 }
 \arguments{
-\item{object}{\code{\link{foehnix}} mixture model object.}
+\item{object}{a \code{\link[foehnix]{foehnix}} object.}
 
 \item{type}{character, either \code{"parameter"} \code{"coefficients"}, see
 'Details' section.}
@@ -16,28 +16,23 @@
 }
 \value{
 Returns a \code{coef.foehnix} object with the estimated
-        coefficients.
+coefficients.
 }
 \description{
-Returns the estimated coefficients of a \code{\link{foehnix}} mixture model
-for both, the components and the concomitant model (if in use).
+Returns the estimated coefficients of a \code{\link[foehnix]{foehnix}}
+mixture model for both, the components and the concomitant model (if specified).
 }
 \details{
-Returns the coeffficients of the mixture model.
-If \code{type = "parameter"} the parameters are returned of the
-components are returned on the 'true' scale, namely:
-\code{mu1} and \code{sigma1} (location and scale of component 1),
-\code{mu2} and \code{sigma2} (location and scale of component 2),
-and a set of coefficients from the concomitant model if one has been
-specified. These coefficients are the coefficients from a (possibly
-regularized) logistic regression model (see \code{\link{iwls_logit}}).
-
-If \code{type = "coefficients"} the scale parameters are returned
-on the log-scale (\code{logsd1}, \code{logsd2}) as used during
-optimization.
+Returns the coefficients of the mixture model.  If \code{type =
+"parameter"} the parameters of the mixture model components are returned on
+the 'true' scale (parameter scale), else on the link scale (as used for
+optimization).  For each component the location and scale parameters are
+returned.  If a concomitant model has been specified, the coefficients of
+the (possibly regularized) logistic regression model are returned as well
+(concomitant model).
 }
 \seealso{
-\code{\link{foehnix}}, \code{\link{iwls_logit}}.
+\code{\link[foehnix]{foehnix}}, \code{\link[foehnix]{iwls_logit}}.
 }
 \author{
 Reto Stauffer

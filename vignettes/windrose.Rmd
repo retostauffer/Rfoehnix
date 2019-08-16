@@ -15,35 +15,64 @@ data. Two types of windrose plots are available:
 
 ### Windrose Plot for Observation Data
 
-The [`windrose`](../references/windrose.html) function can be called
-with a set of (observed) wind direction and wind speed values. Wind
-direction has to be the meteorological wind direction in degrees
-(`[0, 360]`, `0` and `360` corresponds to wind coming from North,
-`90` for wind from East, `180` for wind from South, and `270` from
-West).
+The [`windrose`](../references/windrose.html) function
+allows to plot empirical circular densities and histograms (the classical
+'windrose') of observed values. The data set can either be a
+
+* multivariate `zoo` time series object,
+* a `data.frame`,
+* or simply two numeric vectors.
+
+All needed is wind speed ($\in [0, \infty]$) and wind direction.
+The wind direction needs to be provided in meteorological degrees
+($\in [0, 360]$) where $0$ and $360$ corresponds to wind coming from North,
+$90$ for wind from East, $180$ for wind from South, and $270$ from
+West.
+
+If used with a multivariate `zoo` object or a `data.frame` the
+[`windrose`](../references/windrose.html) function expects to find two
+variables called `ff` (wind speed) and `dd` (wind direction).
+However, custom names can be specified if needed (see customization section).
+The plot below shows examples using `zoo`, `data.frame`, or `numeric` vectors.
+While the upper two show `type = "density"`, the lower two show the circular
+histograms (`type = "histogram"`).
 
 
-```{r, echo = TRUE, figure = TRUE, fig.width = 10, fig.height = 5}
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 8}
 # Loading the demo data set for station Ellboegen
 data <- demodata("ellboegen")
 print(head(data))
+class(data)
 
-# Plotting windrose
-windrose(data$dd, data$ff, type = "density")
+# Default plot using a zoo object
+par(mfrow = c(2, 2), mar = c(1, 1, 3, 1))
+windrose(data)
+# Default plot using a data.frame
+windrose(data.frame(data))
+# Defualt plot using univariate zoo objects/numeric vectors
+windrose(data$dd, data$ff, type = "histogram")
 windrose(as.numeric(data$dd), as.numeric(data$ff), type = "histogram")
 ```
 
 ### Windrose Plot for foehnix Models
 
-Windrose plots can also be created for `foehnix` foehn classification
-models if wind speed and wind direction information has been provided
-to the [`foehnix`](../references/foehnix.html) function when estimating
-the classification model.
+The [`windrose`](../references/windrose.html) function can also directly
+be applied to [`foehnix`](../references/foehnix.html) objects.
+By default, six windroses will be plotted:
 
-```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
+* **top row:** density plot
+* **bottom row:** circular histograms
+* **left to right:** unconditional, for $\pi < 0.5$ and $\pi \ge 0.5$
+
+_Unconditional_ is the same as if one would call the [`windrose`](../references/windrose.html)
+function on the data set (`data`), the latter two show the windrose
+conditional on the foehn probability estimated by the
+[`foehnix`](../references/foehnix.html) classification model.
+
+```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 6.5}
 # Loading the demo data set for Tyrol (Ellboegen and Innsbruck)
-data <- demodata("tyrol") # default
-print(head(data))
+data <- demodata("tyrol")
 
 # Estimate a foehnix classification model
 filter <- list(dd = c(43, 223), crest_dd = c(90, 270))
@@ -54,23 +83,48 @@ mod <- foehnix(diff_t ~ ff + rh, data = data, filter = filter,
 windrose(mod)
 ```
 
-By default, `windrose` expects that the parameters are called `dd` (wind direction)
-and `ff` (wind speed), however, custom names can also be used.
+Again, the [`windrose`](../references/windrose.html) function expects
+that the two variables 'wind speed' and 'wind direction' are called
+`ff` and `dd` but can be adjusted if custom names are used.
+An example:
 
-```{r, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
+```{r windrose_foehnix, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 6.5}
 # Loading the demo data set for station Ellboegen and Sattelberg (combined)
 data <- demodata("tyrol") # default
 names(data) <- gsub("dd$", "winddir", names(data))
 names(data) <- gsub("ff$", "windspd", names(data))
-print(head(data))
+names(data)
 
-# Estimate a foehnix classification model
+# Estimate a foehnix classification model using the new
+# custom names (see 'foehnix' function documentation for details)
 filter <- list(winddir = c(43, 223), crest_winddir = c(90, 270))
-mod <- foehnix(diff_t ~ windspd + rh, data = data, filter = filter,
-               switch = TRUE, verbose = FALSE)
+mod2 <- foehnix(diff_t ~ windspd + rh, data = data, filter = filter,
+                switch = TRUE, verbose = FALSE)
 
-# Plotting windroses
-windrose(mod, ddvar = "winddir", ffvar = "windspd")
+# Plotting windroses using custom names
+windrose(mod2, ddvar = "winddir", ffvar = "windspd")
 ```
+
+The additional input arguments `type` and `which` allow to 
+specify what should be plotted:
+
+```{r windrose_foehnix_subset, echo = TRUE, figure = TRUE, fig.width = 8, fig.height = 5}
+# density plots only
+windrose(mod, type = "density", ncol = 3)
+# circular histogram plots only
+windrose(mod, type = "histogram", ncol = 3)
+# Only histograms for "foehn" and "no foehN"
+windrose(mod, type = "histogram", which = c("nofoehn", "foehn"))
+```
+
+
+# Windrose customization
+
+
+
+
+
+
+
 
 

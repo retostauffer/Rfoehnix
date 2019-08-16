@@ -8,14 +8,14 @@
   ...)
 }
 \arguments{
-\item{object}{a \code{\link{foehnix}} mixture model object.}
+\item{object}{a \code{\link[foehnix]{foehnix}} mixture model object.}
 
 \item{newdata}{if \code{NULL} (default) the prediction of the
 underlying training data set will be returned
-(see also \code{\link{fitted}}). Else \code{newdata}
+(see also \code{\link[foehnix]{fitted}}). Else \code{newdata}
 has to be a \code{zoo} object providing the required
 variables which have been used for model fitting
-and filtering (see \code{\link{foehnix}}).}
+and filtering (see \code{\link[foehnix]{foehnix}}).}
 
 \item{type}{character, one of \code{"response"} (default),
 \code{"all"}.}
@@ -35,17 +35,17 @@ Used for prediction (perform foehn diagnosis given the
 estimated parameters on a new data set (\code{newdata}). If no
 new data set is provided (\code{newdata = NULL}) the prediction
 is made on the internal data set, the data set which has been
-used to train the \code{\link{foehnix}} mixture model.
+used to train the \code{\link[foehnix]{foehnix}} mixture model.
 If a new data set is provided (\code{newdata}) the foehn diagnosis
 will be performed on this new data set, e.g., based on a set
-of new observations when using \code{\link{foehnix}} for operational
+of new observations when using \code{\link[foehnix]{foehnix}} for operational
 near real time foehn diagnosis.
 
 Note that \code{newdata} has to be a \code{zoo} object containing
-the required information to perform the \code{\link{foehnix}} diagnosis,
+the required information to perform the \code{\link[foehnix]{foehnix}} diagnosis,
 namely the variables used for classification (see
-\code{\link{formula.foehnix}} plus the ones used to filter the data
-(see \code{\link{foehnix}} input argument \code{filter}).
+\code{\link[foehnix]{formula.foehnix}} plus the ones used to filter the data
+(see \code{\link[foehnix]{foehnix}} input argument \code{filter}).
 
 Usually \code{type = "response"} is used which returns the foehn
 probabilities. If \code{type = "all"} a set of additional values will

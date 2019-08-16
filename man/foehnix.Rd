@@ -2,8 +2,8 @@
 % Please edit documentation in R/foehnix.R, R/foehnix_functions.R
 \name{foehnix}
 \alias{foehnix}
-\alias{nobs.foehnix}
 \alias{logLik.foehnix}
+\alias{nobs.foehnix}
 \alias{AIC.foehnix}
 \alias{BIC.foehnix}
 \alias{IGN.foehnix}
@@ -17,23 +17,32 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
   family = "gaussian", control = foehnix.control(family, switch, ...),
   ...)
 
-\method{nobs}{foehnix}(object, ...)
+# Log-likelihood sum
+logLik(object, ...)
 
-\method{logLik}{foehnix}(object, ...)
+# Number of observations used to train the model
+nobs(object, ...)
 
-\method{AIC}{foehnix}(object, ...)
+# Akaike information criterion
+AIC(object, ...)
 
-\method{BIC}{foehnix}(object, ...)
+# Bayesian information criterion
+BIC(object, ...)
 
-\method{IGN}{foehnix}(object, ...)
+# Ignorance (mean negative log-likelihood)
+IGN(object, ...)
 
-\method{edf}{foehnix}(object, ...)
+# Effective degrees of freedom
+edf(object, ...)
 
-\method{print}{foehnix}(x, ...)
+# Print object
+print(x, ...)
 
-\method{formula}{foehnix}(x, ...)
+# Model formula
+formula(x, ...)
 
-\method{summary}{foehnix}(object, eps = 1e-04, detailed = FALSE, ...)
+# Model/object summary
+summary(object, eps = 1e-4, detailed = FALSE, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} (or one that can be coerced
@@ -53,24 +62,24 @@ covariate.}
 \item{filter}{a named list can be provided to apply a custom (simple) filter
 to the observations on \code{data}. Can be used to e.g., prespecify a
 specific wind sector for foehn winds. Please read the manual of the
-\code{\link{foehnix_filter}} method for more details and examples.}
+\code{\link[foehnix]{foehnix_filter}} method for more details and examples.}
 
 \item{family}{character (at the moment \code{"gaussian"} or \code{"logistic"})
 or an object of class \code{foehnix.family}.}
 
-\item{control}{additional control arguments, see \code{\link{foehnix.control}}.}
+\item{control}{additional control arguments, see \code{\link[foehnix]{foehnix.control}}.}
 
-\item{...}{forwarded to \code{\link{foehnix.control}}}
+\item{...}{forwarded to \code{\link[foehnix]{foehnix.control}}}
 
-\item{object}{a \code{foehnix} object (input to S3 methods)}
+\item{object}{a \code{foehnix} object (input for S3 methods)}
 
-\item{x}{a \code{foehnix} object.}
+\item{x}{a \code{foehnix} object (input for S3 methods)}
 
 \item{eps}{threshold for posterior probabilities used in \code{summary}.
 \code{numeric} value, default \code{1e-4}.}
 
-\item{detailed}{boolean, default FALSE. If set to true, additional information
-will be printed.}
+\item{detailed}{boolean, default \code{FALSE}. If \code{TRUE}, additional information
+will be returned.}
 }
 \value{
 Returns an object of class \code{foehnix}.
@@ -81,15 +90,15 @@ two-component mixture models for automated foehn classification.
 }
 \details{
 The two-component mixture model can be specified via formula object where
-the left hand side of the formula contains the variable explaining the two
+the left hand side of the formula contains the 'main' variable explaining the two
 components (only one variable), the right hand side of the formula specifies
 the concomitant variables (multiple variables allowed).  As an example:
-let's assume that our zoo object '\code{data}' contains the following
+let's assume that our zoo object \code{data} contains the following
 columns:
 \itemize{
     \item \code{ff}: observed wind speed at target site
     \item \code{rh}: observed relative humidity at target site
-    \item \code{diff_t}: temperature difference between target site and a station
+    \item \code{diff_t}: (potential) temperature difference between target site and a station
           upstream of the foehn wind direction
 }
 
@@ -97,34 +106,30 @@ The specification for \code{formula} could e.g. look as follows:
 \itemize{
     \item \code{ff ~ 1}: the two components of the mixture model will be
           based on the observed wind speed (\code{ff}), no concomitant
-          variables are given (intercept only). 
+          model (right hand side is simply \code{1}). 
     \item \code{ff ~ rh}: similar to the specification above, but using
            observed relative humidity (\code{rh}) as concomitant.
     \item \code{ff ~ rh + diff_t}: as above but with an additional second
           concomitant variable (observed temperature difference, \code{diff_t}).
     \item \code{diff_t ~ ff + rh}: using temperature difference as the main
           variable for the two components while \code{ff} and \code{rh} are
-          used as concomitants.
+          used as concomitants. Note: in this case it will be required to set
+          \code{switch = TRUE} as lower values of \code{diff_t} indicate
+          less stratified conditions where the occurrence of foehn is
+          more likely. If \code{switch = FALSE} the two components (foehn
+          and no foehn) may be interchanged and the model will return
+          "probabilities of not observing foehn".
 }
  
 Note that these are just examples and have to be adjusted given data
 availability, location, structure/names of the variables in the \code{data}
 object.
 
-An optional numeric vector of length \code{2} can be provided to filter the
-data. If set, only times (rows in \code{data}) where the observed wind
-direction \code{dd} lies within the wind sector specified.  For the examples
-the wind direction \code{dd} is assumed to be in degrees, meteorological
-definition (\code{90} = from east, \code{180} = from south, \dots).  The
-following condition is used:
-\itemize{
-    \item If \code{windsector[1L] < windsector[2L]}: use \code{data} where
-          \code{data$dd >= windsector[1L]} \code{&} \code{data$dd <= windsector[2L]}
-          (e.g., \code{windsector = c(90, 270)} for south wind sector).
-    \item If \code{windsector[1L] > windsector[2L]}: use \code{data} where
-          \code{data$dd >= windsector[1L]} \code{|} \code{data$dd <= windsector[2L]}
-          (e.g., \code{windsector = c(270, 90)} for north wind sector).
-}
+The optional input \code{filter} allows to specify simple or complex
+filters (see \code{\link[foehnix]{foehnix_filter}} for details).
+This allows to add additional constraints, e.g., adding a filter on the
+observed wind direction to ensure that only events within a specific wind
+sector (the main foehn wind direction) are classified as "foehn".
 }
 \references{
 Plavcan D, Mayr GJ, Zeileis A (2014).
@@ -148,15 +153,25 @@ Model-Based Clustering, Discriminant Analysis, and Density Estimation.
 \bold{97}(458), 611--631. \doi{10.1198/016214502760047131}
 }
 \seealso{
-See \code{\link{foehnix_filter}} for more information about the
-\code{filter} option.  See also: \code{\link{tsplot}}, \code{\link{windrose}}.
-TODO: filter should be renamed to filter.
+See \code{\link[foehnix]{foehnix_filter}} for more information about the
+\code{filter} option.  See also: \code{\link[foehnix]{tsplot}}, \code{\link[foehnix]{windrose}}.
 
-Foehnix family objects: \code{\link{foehnix.family}}.
+Foehnix family objects: \code{\link[foehnix]{foehnix.family}}.
 
 S3 methods for \code{foehnix} objects:
-\code{\link{plot.foehnix}}, \code{\link{predict.foehnix}}, \code{\link{fitted.foehnix}},
-\code{\link{print.foehnix}}, \code{\link{windrose.foehnix}}, \code{\link{coef.foehnix}},
+\code{\link[foehnix]{plot.foehnix}},
+\code{\link[foehnix]{predict.foehnix}},
+\code{\link[foehnix]{fitted.foehnix}},
+\code{\link[foehnix]{print.foehnix}},
+\code{\link[foehnix]{summary.foehnix}},
+\code{\link[foehnix]{windrose.foehnix}},
+\code{\link[foehnix]{coef.foehnix}},
+\code{\link[foehnix]{nobs.foehnix}},
+\code{\link[foehnix]{edf.foehnix}},
+\code{\link[foehnix]{AIC.foehnix}},
+\code{\link[foehnix]{BIC.foehnix}},
+\code{\link[foehnix]{IGN.foehnix}},
+\code{\link[foehnix]{logLik.foehnix}},
 ...
 }
 \author{

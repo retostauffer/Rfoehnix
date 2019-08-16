@@ -42,28 +42,16 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Demos
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
-    </li>
-    <li>
-      <a href="../articles/viejas.html">Viejas (California, USA)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/foehnix.html">Foehnix Demo</a>
+      <a href="../articles/ellboegen.html">[Demo] Ellbögen (Tyrol, A)</a>
+    </li>
+    <li>
+      <a href="../articles/viejas.html">[Demo] Viejas (California, USA)</a>
     </li>
     <li>
       <a href="../articles/windrose.html">[Plot] Wind Rose</a>
@@ -135,7 +123,7 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/../vignettes/viejas.Rmd"><code>../vignettes/viejas.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/viejas.Rmd"><code>vignettes/viejas.Rmd</code></a></small>
       <div class="hidden name"><code>viejas.Rmd</code></div>
 
     </div>
@@ -147,8 +135,8 @@
 <a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
 <p>The “Californian” data set consists of hourly meteorological observations from station “Viejas Casino and Ranch” and station “Lucky Five Ranch” located in South California.</p>
 <p>Viejas is located at the foot of the westerly slope of the Sierra Nevada mountain range and exhibits strong easterly winds during downslope wind situations. The Lucky Five Ranch is located northeast of and provides information about the upstream air mass for the classification algorithm.</p>
-<div id="htmlwidget-2816281a4980dc507fd7" style="width:100%;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2816281a4980dc507fd7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-863ccea118ab14034192" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-863ccea118ab14034192">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
@@ -241,7 +229,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -86157.2, 6 effective degrees of freedom
 ## Corresponding AIC = 172326.5, BIC = 172376.6
-## Time required for model estimation: 7.7 seconds
+## Time required for model estimation: 7.5 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -279,7 +267,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <ul>
 <li>No-foehn cluster: <span class="math inline">\(\mu_1 = 9.13\)</span>, <span class="math inline">\(\sigma_1 = 4.08\)</span> (parameter scale)</li>
 <li>Foehn cluster: <span class="math inline">\(\mu_2 = 0.22\)</span>, <span class="math inline">\(\sigma_2 = 1.42\)</span> (parameter scale)</li>
-<li>Concomitant model: positive <code>wind_speed</code> effect, +28.2 percent per <span class="math inline">\(m~s^{-1}\)</span>
+<li>Concomitant model: positive <code>wind_speed</code> effect, +2823.4 percent per <span class="math inline">\(m~s^{-1}\)</span>
 </li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>

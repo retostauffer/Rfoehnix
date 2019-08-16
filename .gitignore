@@ -1,4 +1,8 @@
+
+# Ignore coverage file (see Makefile)
+_coverage.rds
 *.pdf
+
 # Ignore modules and shared object files
 src/*.o
 src/*.so

@@ -1,29 +1,16 @@
-# -------------------------------------------------------------------
-# - NAME:        foehnix_filter.R
-# - AUTHOR:      Reto Stauffer
-# - DATE:        2018-12-19
-# -------------------------------------------------------------------
-# - DESCRIPTION:
-# -------------------------------------------------------------------
-# - EDITORIAL:   2018-12-19, RS: Created file on thinkreto.
-# -------------------------------------------------------------------
-# - L@ST MODIFIED: 2019-08-07 16:31 on marvin
-# -------------------------------------------------------------------
 
 
-#' Evaluates Data Filter Rules for foehnix Mixture Moel Calls.
+#' Evaluates Data Filter Rules for foehnix Mixture Moel Calls
 #' 
-#' \code{\link{foehnix}} models allow to specify an optional
+#' \code{\link[foehnix]{foehnix}} models allow to specify an optional
 #' \code{foehnix_filter}. If a filter is given only a subset
-#' of the data set provided to \code{\link{foehnix}} is used
+#' of the data set provided to \code{\link[foehnix]{foehnix}} is used
 #' for the foehn classification.
-#' 
 #' A typical example is a wind direction filter such that
 #' only observations (times) are used where the observed
 #' wind direction was within a user defined wind sector
 #' corresponding to the wind direction during foehn events
 #' for a specific location.
-#' 
 #' However, the filter option allows to even implement complex
 #' filter rules if required. The 'Details' section contains
 #' further information and examples how this filter rules can
@@ -46,7 +33,7 @@
 #' 
 #' @details Foehn winds often (not always) show a very specific wind direction
 #' due to the canalization of the air flow trough the local topography. The
-#' \code{\link{foehnix_filter}} option allows to subset the data according to a
+#' \code{\link[foehnix]{foehnix_filter}} option allows to subset the data according to a
 #' user defined set of filters from simple filters to complex filters.
 #'
 #' These filters classify each observation (each row in \code{x}) as
@@ -70,7 +57,7 @@
 #'         as 'good' (within filter) if \code{x$dd >= 43 & x$dd <= 223}.
 #'     \item \code{filter = list(dd = c(330, 30)}: similar to the filter
 #'         rule above, allows to specify a wind sector going trough 0
-#'         (if dd is wind direction in degrees between \code{[0, 360[}).
+#'         (if dd is wind direction in degrees between \code{[0, 360]}).
 #'         The filter classifies observations/rows as 'good' (within filter)
 #'         if \code{x$dd >= 330 | x$dd <= 30}.
 #'     \item \code{filter = list(dd = c(43, 223), crest_dd = c(90, 270)}:
@@ -87,26 +74,27 @@
 #' 
 #' 
 #' Custom filter functions: Instead of only providing a segment/sector defined
-#' by two finite numeric values (see 'Simple filter' above) a named list of #'
-#' functions can be provided. These functions DO HAVE TO return a vector of #'
-#' logical values (\code{TRUE} (good),\code{FALSE} (bad), or \code{NA} (ugly)) #'
+#' by two finite numeric values (see 'Simple filter' above) a named list of
+#' functions can be provided. These functions DO HAVE TO return a vector of
+#' logical values (\code{TRUE} (good),\code{FALSE} (bad), or \code{NA} (ugly))
 #' of length \code{nrow{x}}. If not, an error will be thrown.  The function will
-#' be applied to the column #' specified by the name of the list element. Some
+#' be applied to the column specified by the name of the list element. Some
 #' examples:
 #' 
 #' \itemize{
 #'     \item \code{filter = list(dd = function(x) x >= 43 & x <= 223)}:
 #'         The function will be applied to \code{x$dd}.
-#'         A vector with \code{TRUE}, \code{FALSE}, or \code{NA} is returned for each for
+#'         A vector with \code{TRUE}, \code{FALSE}, or \code{NA} is returned for
 #'         each \code{1:nrow{x}} which takes \code{NA} if \code{is.na(x$dd)},
 #'         \code{TRUE} if \code{x$dd >= 43 & x$dd <= 223} and \code{FALSE} else.
 #'         Thus, this filter is the very same as the first example in the
 #'         'Simple filter' section above.
 #'     \item \code{filter = list(ff = function(x) x > 2.0)}:
-#'         Custom filter applied to column \code{x$ff}.
-#'         A vector with \code{TRUE}, \code{FALSE}, and \code{NA} is returned for each for
-#'         each \code{1:nrow{x}} which takes \code{NA} if \code{is.na(x$ff)}, \code{TRUE} if
-#'         \code{x$ff > 2.0}, and \code{FALSE} else.
+#'         Custom filter applied to column \code{x$ff}.  A vector with
+#'         \code{TRUE}, \code{FALSE}, and \code{NA} is returned for each
+#'         observation \code{1:nrow{x}} which takes \code{NA} if
+#'         \code{is.na(x$ff)}, \code{TRUE} if \code{x$ff > 2.0}, and
+#'         \code{FALSE} else.
 #'     \item \code{filter = list(ff = function(x) \dots, dd = function(x) \dots)}:
 #'         two filter functions, one applied to \code{x$ff}, one to \code{x$dd}.
 #'         Note that observations/rows will be classified as 'ugly' if one of the
@@ -122,7 +110,7 @@
 #' \itemize{
 #'     \item \code{filter = function(x) (x$dd >= 43 & x$dd <= 223) & x$ff >= 2.0}:
 #'         Input \code{x} to the filter function is the object as provided
-#'         to the \code{\link{foehnix_filter}} function (\code{x}). Thus,
+#'         to the \code{\link[foehnix]{foehnix_filter}} function (\code{x}). Thus,
 #'         the different columns of the object can be accessed directly
 #'         trough their names (e.g., \code{x$dd}, \code{x$ff}).
 #'         A vector of length \code{nrow(x)} with \code{TRUE}, \code{FALSE},
@@ -132,8 +120,7 @@
 #'             
 #' @examples
 #' # Loading example data set and conver to zoo time series
-#' # time series object.
-#' # Loading combined demo data set
+#' # time series object (station Ellboegen).
 #' ellboegen <- demodata("ellboegen")
 #' 
 #' # Case 1:

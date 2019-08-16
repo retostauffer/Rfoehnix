@@ -7,7 +7,7 @@
 \method{write.csv}{foehnix}(x, file, info = TRUE, format = NULL, ...)
 }
 \arguments{
-\item{x}{a \code{\link{foehnix}} object}
+\item{x}{a \code{\link[foehnix]{foehnix}} object}
 
 \item{file}{character, name of the target file}
 
@@ -24,7 +24,7 @@ date/time information should be written to the \code{file} (forwarded to
 Invisible return of the data.frame written to the output file.
 }
 \description{
-Write the results of a \code{\link{foehnix}} model into a CSV
+Write the results of a \code{\link[foehnix]{foehnix}} model into a CSV
 text file. Custom date/time information can be specified using the
 input argument \code{format}. By default UNIX timestamp will be used.
 }

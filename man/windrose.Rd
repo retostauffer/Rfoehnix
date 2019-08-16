@@ -8,7 +8,7 @@
 windrose(x, ...)
 
 \method{windrose}{foehnix}(x, type = NULL, which = NULL,
-  ddvar = "dd", ffvar = "ff", breaks = NULL, mfcol = 2L,
+  ddvar = "dd", ffvar = "ff", breaks = NULL, ncol = NULL,
   maxpp = Inf, ...)
 }
 \arguments{
@@ -32,7 +32,7 @@ the wind speed (or gust speed) data.}
 
 \item{breaks}{\code{NULL} or a numeric vector to define the wind speed (\code{ff}) breaks.}
 
-\item{mfcol}{integer, number of columns of subplots.}
+\item{ncol}{integer, number of columns of subplots.}
 
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}

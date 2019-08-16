@@ -2,44 +2,45 @@
 % Please edit documentation in R/wind_functions.R
 \name{ddff2uv}
 \alias{ddff2uv}
-\title{Conver Wind Speed and Wind Direction In U/V Components}
+\title{Convert Wind Speed and Wind Direction to u/v Wind Components}
 \usage{
 ddff2uv(dd, ff = NULL)
 }
 \arguments{
-\item{dd}{only necessary if 'ff' is a numeric vector.
-Use NULL if ff is containing both
-variables (ff/dd), else dd is a data vector containing
-the wind direction in degrees (0: north, 90: east, ...)}
+\item{dd}{only necessary if \code{ff} is a numeric vector.  Use NULL if
+input \code{ff} is containing both variables (\code{ff}, \code{dd}), else
+\code{dd} is a data vector containing the wind direction in degrees (0:
+north, 90: east, ...)}
 
-\item{ff}{there are several options to use this input argument.
-Most simple: ff is a numeric vector, then dd is required as
-second input (numeric vector, too). But ff can also be
-a zoo object or a data.frame or a matrix.
-If it is a matrix: needs two columns, first one has to be
-ff, second dd. If it is a zoo object or a data.frame
-there have to be at least two columns (only those two will
-be used for computation) named 'ff' and 'dd'.}
+\item{ff}{\code{numeric}, \code{matrix}, \code{data.frame}, or
+\code{zoo} object (see 'Details' section).}
 }
 \value{
-Returns a data.frame or zoo object (depending on input \code{ff})
+Returns a \code{data.frame} or \code{zoo} object (depending on input \code{ff})
 containing the \code{u} and \code{v} components
 of the data. In addition, \code{rad} (mathematical representation
 of wind direction in radiant) is returned.
 }
 \description{
-Converting wind direction (dd) and wind speed (ff) into 
-zonal (u) und meridional (v) wind components.
+Converts wind direction (\code{dd}) and wind speed (\code{ff})
+information into \code{u}/\code{v} wind components (zonal and
+meridional wind component).
 }
 \details{
-Wind speed units can be what you want. You are getting back
-         the two wind components in the same unit. Wind direction 'dd'
-         has to be in meteorological degrees where 0 is North,
-         90 is East and so on.
+Converts data from wind speed and direction into the zonal
+and meridional wind components (\code{u}/\code{v}).
 
-         If both, \code{dd} and \code{ff} are provided they
-         do have to be of the same length OR one of them has to be of length 1.
-         The one with length 1 will be repeated.
+Different inputs are allowed:
+\itemize{
+   \item if \code{ff} is a matrix: requires to contains at least the
+         two columns \code{"ff"} and \code{"dd"}.
+   \item if \code{ff} is a \code{data.frame} or \code{zoo} object:
+         requires to contains at least the
+         two variables \code{"ff"} and \code{"dd"}.
+   \item if \code{ff} is \code{numeric}: \code{dd} has to be provided
+         in advance. \code{ff} and \code{dd} have to be of the same length
+         or one has to be of length \code{1} (will be recycled).
+}
 }
 \examples{
 ## Generate dd and ff variable
@@ -75,5 +76,5 @@ class(uv)
 uv2ddff
 }
 \author{
-Jakob Messner, Reto Stauffer
+Reto Stauffer
 }

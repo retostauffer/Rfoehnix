@@ -5,7 +5,7 @@ utils::globalVariables(c("time_mid", "yday_mid", "value"))
 #'
 #' Function to standardize the columns of a matrix, used to
 #' standardize the model matrix before estimating the regression
-#' coefficients of a generalized linear model (\code{\link{iwls_logit}}).
+#' coefficients of a generalized linear model (\code{\link[foehnix]{iwls_logit}}).
 #'
 #' @param x matrix of dimension \code{N x p}.
 #' @param ... additional arguments, ignored.
@@ -28,11 +28,17 @@ utils::globalVariables(c("time_mid", "yday_mid", "value"))
 #' print(head(S))
 #'
 #' is.standardized(X)
-#' is.standardized(X)
+#' is.standardized(S)
 #'
 #' # Get parameters used for standardization
 #' center(S)
 #' scale(S)
+#'
+#' # Destandardize
+#' D <- destandardize(S)
+#'
+#' # Check
+#' all.equal(D, X, check.attributes = FALSE)
 #'
 #' @author Reto Stauffer
 #' @export
@@ -57,11 +63,17 @@ standardize.matrix <- function(x, ...) {
 }
 
 
+#' @usage
+#' # Returns 'scaled:scale' used for standardization
+#' scale(x, ...)
 #' @rdname standardize
 #' @export
 scale.standardized <- function(x, ...) return(attr(x, "scaled:scale"))
 
 
+#' @usage
+#' # Returns 'scaled:center' used for standardization
+#' center(x, ...)
 #' @rdname standardize
 #' @export
 center <- function(x, ...) UseMethod("center")
@@ -70,13 +82,17 @@ center.standardized <- function(x, ...) return(attr(x, "scaled:center"))
 
 #' Destandardize a Standardized Matrix
 #'
-#' Reverse function of \code{\link[foehnix]{standardize}}.
+#' @details Reverse function of \code{\link[foehnix]{standardize}}.
 #'
 #' @param x standardized matrix of class \code{standardized}.
 #' @param ... forwarded, unused.
 #'
 #' @seealso \code{\link[foehnix]{standardize}}
 #' @author Reto Stauffer
+#'
+#' @examples
+#' # See example on R documentation for \code{?standardize}.
+#'
 #' @export
 destandardize <- function(x, ...) UseMethod("destandardize")
 
@@ -93,7 +109,7 @@ destandardize.standardized <- function(x, ...) {
 
 #' Check if Matrix is Standardized
 #'
-#' Helper function for \code{foehnix}. Returns \code{TRUE}
+#' Returns \code{TRUE}
 #' if input \code{x} is a standardized matrix, else \code{FALSE}.
 #'
 #' @param x a matrix or standardized matrix.
@@ -115,12 +131,12 @@ is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
 #' estimating the logistic regression model (concomitant model).
 #'
 #' @param beta regression coefficients estimated on standardized data.
-#' @param X object of class \code{\link{standardize}}.
+#' @param X object of class \code{\link[foehnix]{standardize}}.
 #' @return Returns destandardized regression coefficients, same object
 #' as input \code{beta}.
 #'
-#' @seealso \code{\link{standardize}}. Used in \code{\link{foehnix}}
-#' and \code{\link{iwls_logit}}.
+#' @seealso \code{\link[foehnix]{standardize}}. Used in \code{\link[foehnix]{foehnix}}
+#' and \code{\link[foehnix]{iwls_logit}}.
 #'
 #' @rdname standardize
 #' @export
@@ -141,35 +157,54 @@ destandardize_coefficients <- function(beta, X) {
 }
 
 
+#' @usage
+#' # Log-likelihood sum
+#' logLik(object, ...)
 #' @rdname foehnix
 #' @export
 logLik.foehnix <- function(object, ...) structure(object$optimizer$loglik, names = "loglik")
 
 
+#' @usage
+#' # Number of observations used to train the model
+#' nobs(object, ...)
+#' @rdname foehnix
+#' @export
+nobs.foehnix <- function(object, ...) return(object$nobs)
+
+
+#' @usage
+#' # Akaike information criterion
+#' AIC(object, ...)
 #' @rdname foehnix
 #' @export
 AIC.foehnix <- function(object, ...)    structure(object$optimizer$AIC, names = "AIC")
 
 
+#' @usage
+#' # Bayesian information criterion
+#' BIC(object, ...)
 #' @rdname foehnix
 #' @export
 BIC.foehnix <- function(object, ...)    structure(object$optimizer$BIC, names = "BIC")
 
+#' @usage
+#' # Ignorance (mean negative log-likelihood)
+#' IGN(object, ...)
 #' @rdname foehnix
 #' @export
 IGN.foehnix <- function(object, ...) {
-    structure(- logLik(object) / length(object$filter_obj$good), names = "IGN")
+    structure(-logLik(object) / nobs(object), names = "IGN")
 }
 
-#' Returns the Ignorance of the Object
+#' Returns the Ignorance of an Object
 #'
-#' Mmethod which returns the ignorance of the \code{object}.
-#' The ignorance is the mean negative log-likelihood.
+#' Returns the ignorance (mean negative log-likelihood)
+#' of the \code{object}. 
 #'
 #' @param object the object to be evaluated.
 #' @param ... forwarded to generic methods.
-#' @seealso foehnix()
-
+#' @seealso \code{\link[foehnix]{foehnix}}
 #' @export
 IGN <- function(object, ...) UseMethod("IGN")
 
@@ -183,11 +218,17 @@ IGN <- function(object, ...) UseMethod("IGN")
 #' @export
 edf <- function(object, ...) UseMethod("edf")
 
+#' @usage
+#' # Effective degrees of freedom
+#' edf(object, ...)
 #' @rdname foehnix
 #' @export
 edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names = "edf")
 
 
+#' @usage
+#' # Print object
+#' print(x, ...)
 #' @rdname foehnix
 #' @export
 print.foehnix <- function(x, ...) print(summary(x, ...))
@@ -195,11 +236,11 @@ print.foehnix <- function(x, ...) print(summary(x, ...))
 
 #' Write Estimated Probabilities to CSV File
 #'
-#' Write the results of a \code{\link{foehnix}} model into a CSV
+#' Write the results of a \code{\link[foehnix]{foehnix}} model into a CSV
 #' text file. Custom date/time information can be specified using the
 #' input argument \code{format}. By default UNIX timestamp will be used.
 #'
-#' @param x a \code{\link{foehnix}} object
+#' @param x a \code{\link[foehnix]{foehnix}} object
 #' @param file character, name of the target file
 #' @param info logical, whether or not header information
 #'      should be written
@@ -292,29 +333,24 @@ write.csv.default <- function(...) utils::write.csv(...)
 
 #' Get Estimated Mixture Model Coefficients
 #'
-#' Returns the estimated coefficients of a \code{\link{foehnix}} mixture model
-#' for both, the components and the concomitant model (if in use).
+#' Returns the estimated coefficients of a \code{\link[foehnix]{foehnix}}
+#' mixture model for both, the components and the concomitant model (if specified).
 #'
-#' @param object \code{\link{foehnix}} mixture model object.
+#' @param object a \code{\link[foehnix]{foehnix}} object.
 #' @param type character, either \code{"parameter"} \code{"coefficients"}, see
 #'        'Details' section.
 #' @param ... additional arguments, ignored.
 #' @return Returns a \code{coef.foehnix} object with the estimated
-#'         coefficients.
-#' @details Returns the coeffficients of the mixture model.
-#' If \code{type = "parameter"} the parameters are returned of the
-#' components are returned on the 'true' scale, namely:
-#' \code{mu1} and \code{sigma1} (location and scale of component 1),
-#' \code{mu2} and \code{sigma2} (location and scale of component 2),
-#' and a set of coefficients from the concomitant model if one has been
-#' specified. These coefficients are the coefficients from a (possibly
-#' regularized) logistic regression model (see \code{\link{iwls_logit}}).
+#' coefficients.
+#' @details Returns the coefficients of the mixture model.  If \code{type =
+#' "parameter"} the parameters of the mixture model components are returned on
+#' the 'true' scale (parameter scale), else on the link scale (as used for
+#' optimization).  For each component the location and scale parameters are
+#' returned.  If a concomitant model has been specified, the coefficients of
+#' the (possibly regularized) logistic regression model are returned as well
+#' (concomitant model).
 #'
-#' If \code{type = "coefficients"} the scale parameters are returned
-#' on the log-scale (\code{logsd1}, \code{logsd2}) as used during
-#' optimization.
-#'
-#' @seealso \code{\link{foehnix}}, \code{\link{iwls_logit}}.
+#' @seealso \code{\link[foehnix]{foehnix}}, \code{\link[foehnix]{iwls_logit}}.
 #'
 #' @author Reto Stauffer
 #' @export
@@ -362,11 +398,17 @@ print.coef.foehnix <- function(x, ...) {
 }
 
 
+#' @usage
+#' # Model formula
+#' formula(x, ...)
 #' @rdname foehnix
 #' @export
 formula.foehnix <- function(x, ...) x$formula
 
 
+#' @usage
+#' # Model/object summary
+#' summary(object, eps = 1e-4, detailed = FALSE, ...)
 #' @rdname foehnix
 #' @export
 summary.foehnix <- function(object, eps=1e-4, detailed = FALSE, ...) {

@@ -7,7 +7,7 @@
 \method{fitted}{foehnix}(object, which = "probability", ...)
 }
 \arguments{
-\item{object}{a \code{\link{foehnix}} model object.}
+\item{object}{a \code{\link[foehnix]{foehnix}} model object.}
 
 \item{which}{what to get as return. Can a character string, one of
 \code{"probability"} or \code{"flag"}, or \code{"both"}.
@@ -19,7 +19,7 @@ Alternatively integers can be used (\code{1}, \code{2}, or \code{c(1,2)}).}
 Returns a univariate or multivariate \code{zoo} object.
 }
 \description{
-Extracts fitted probabilities and/or flags from a \code{\link{foehnix}}
+Extracts fitted probabilities and/or flags from a \code{\link[foehnix]{foehnix}}
 mixture model.
 }
 \author{
