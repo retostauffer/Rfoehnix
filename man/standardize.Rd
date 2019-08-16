@@ -4,7 +4,6 @@
 \alias{standardize}
 \alias{standardize.matrix}
 \alias{scale.standardized}
-\alias{center}
 \alias{destandardize.standardized}
 \alias{destandardize_coefficients}
 \title{Standardize (Model) Matrix}
@@ -13,11 +12,7 @@ standardize(x, ...)
 
 \method{standardize}{matrix}(x, ...)
 
-# Returns 'scaled:scale' used for standardization
-scale(x, ...)
-
-# Returns 'scaled:center' used for standardization
-center(x, ...)
+\method{scale}{standardized}(x, ...)
 
 \method{destandardize}{standardized}(x, ...)
 
@@ -37,6 +32,8 @@ Returns a matrix of the same dimension as input \code{x}
 but with standardized data. The return object is of class
 \code{c("standardized", "matrix")} which comes with some handy
 S3 methods.
+
+Returns 'scaled:scale' used for standardization
 
 Returns destandardized regression coefficients, same object
 as input \code{beta}.

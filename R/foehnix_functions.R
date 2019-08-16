@@ -45,6 +45,7 @@ utils::globalVariables(c("time_mid", "yday_mid", "value"))
 standardize <- function(x, ...) UseMethod("standardize")
 
 #' @rdname standardize
+#' @method standardize matrix
 #' @export
 standardize.matrix <- function(x, ...) {
     # Scale covariates
@@ -63,20 +64,28 @@ standardize.matrix <- function(x, ...) {
 }
 
 
-#' @usage
-#' # Returns 'scaled:scale' used for standardization
-#' scale(x, ...)
+#' @return Returns 'scaled:scale' used for standardization
+#' @method scale standardized
 #' @rdname standardize
 #' @export
 scale.standardized <- function(x, ...) return(attr(x, "scaled:scale"))
 
 
-#' @usage
-#' # Returns 'scaled:center' used for standardization
-#' center(x, ...)
-#' @rdname standardize
+#' Extract Values used for Standardization (scaled:center)
+#'
+#' Generic method to extract 'centering' values used for
+#' standardization (emprical first moment).
+#'
+#' @param x object.
+#' @param ... forwarded to generic methods.
+#'
+#' @return Returns 'scaled:center' used for standardization
 #' @export
 center <- function(x, ...) UseMethod("center")
+
+#' @rdname center
+#' @method center standardized
+#' @aliases center
 #' @export
 center.standardized <- function(x, ...) return(attr(x, "scaled:center"))
 
@@ -119,6 +128,9 @@ destandardize.standardized <- function(x, ...) {
 #' @export
 is.standardized <- function(x, ...) UseMethod("is.standardized")
 
+#' @return Returns logical \code{TRUE} if matrix \code{x} is standardized, else \code{FALSE}.
+#' @method is.standardized matrix
+#' @rdname is.standardized
 #' @export
 is.standardized.matrix <- function(x, ...) inherits(x, "standardized")
 
@@ -157,41 +169,40 @@ destandardize_coefficients <- function(beta, X) {
 }
 
 
-#' @usage
-#' # Log-likelihood sum
-#' logLik(object, ...)
+#' @return Log-likelihood sum (\code{numeric}).
 #' @rdname foehnix
+#' @method logLik foehnix
+#' @aliases logLik
 #' @export
 logLik.foehnix <- function(object, ...) structure(object$optimizer$loglik, names = "loglik")
 
 
-#' @usage
-#' # Number of observations used to train the model
-#' nobs(object, ...)
+#' @return Number of observations (\code{integer}) used to train the model.
 #' @rdname foehnix
+#' @method nobs foehnix
+#' @aliases nobs
 #' @export
 nobs.foehnix <- function(object, ...) return(object$nobs)
 
 
-#' @usage
-#' # Akaike information criterion
-#' AIC(object, ...)
+#' @return Returns the Akaike information criterion (\code{numeric}).
 #' @rdname foehnix
+#' @method AIC foehnix
+#' @aliases AIC
 #' @export
 AIC.foehnix <- function(object, ...)    structure(object$optimizer$AIC, names = "AIC")
 
 
-#' @usage
-#' # Bayesian information criterion
-#' BIC(object, ...)
+#' @return Bayesian information criterion (\code{numeric}).
 #' @rdname foehnix
+#' @method BIC foehnix
+#' @aliases BIC
 #' @export
 BIC.foehnix <- function(object, ...)    structure(object$optimizer$BIC, names = "BIC")
 
-#' @usage
-#' # Ignorance (mean negative log-likelihood)
-#' IGN(object, ...)
+#' @return Ignorance (mean negative log-likelihood; \code{numeric}).
 #' @rdname foehnix
+#' @method IGN foehnix
 #' @export
 IGN.foehnix <- function(object, ...) {
     structure(-logLik(object) / nobs(object), names = "IGN")
@@ -218,18 +229,16 @@ IGN <- function(object, ...) UseMethod("IGN")
 #' @export
 edf <- function(object, ...) UseMethod("edf")
 
-#' @usage
-#' # Effective degrees of freedom
-#' edf(object, ...)
+#' @return Effective degrees of freedom.
 #' @rdname foehnix
+#' @method edf foehnix
 #' @export
 edf.foehnix <- function(object, ...)     structure(object$optimizer$edf, names = "edf")
 
 
-#' @usage
-#' # Print object
-#' print(x, ...)
+#' @return NULL 
 #' @rdname foehnix
+#' @method print foehnix
 #' @export
 print.foehnix <- function(x, ...) print(summary(x, ...))
 
@@ -251,6 +260,7 @@ print.foehnix <- function(x, ...) print(summary(x, ...))
 #'
 #' @return Invisible return of the data.frame written to the output file.
 #' @author Reto Stauffer
+#' @method write.csv foehnix
 #' @export
 write.csv.foehnix <- function(x, file, info = TRUE, format = NULL, ...) {
 
@@ -352,6 +362,7 @@ write.csv.default <- function(...) utils::write.csv(...)
 #'
 #' @seealso \code{\link[foehnix]{foehnix}}, \code{\link[foehnix]{iwls_logit}}.
 #'
+#' @method coef foehnix
 #' @author Reto Stauffer
 #' @export
 coef.foehnix <- function(object, type = "parameter", ...) {
@@ -398,18 +409,16 @@ print.coef.foehnix <- function(x, ...) {
 }
 
 
-#' @usage
-#' # Model formula
-#' formula(x, ...)
+#' @return Returns the formula of the model (\code{formula}).
 #' @rdname foehnix
+#' @method formula foehnix
 #' @export
 formula.foehnix <- function(x, ...) x$formula
 
 
-#' @usage
-#' # Model/object summary
-#' summary(object, eps = 1e-4, detailed = FALSE, ...)
+#' @return Object of class \code{summary.foehnix}.
 #' @rdname foehnix
+#' @method summary foehnix
 #' @export
 summary.foehnix <- function(object, eps=1e-4, detailed = FALSE, ...) {
 

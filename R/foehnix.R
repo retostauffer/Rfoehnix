@@ -905,7 +905,7 @@ foehnix <- function(formula, data, switch = FALSE, filter = NULL,
 #' @param object a \code{\link[foehnix]{foehnix}} mixture model object.
 #' @param newdata if \code{NULL} (default) the prediction of the
 #'        underlying training data set will be returned
-#'        (see also \code{\link[foehnix]{fitted}}). Else \code{newdata}
+#'        (see also \code{\link[foehnix]{fitted.foehnix}}). Else \code{newdata}
 #'        has to be a \code{zoo} object providing the required
 #'        variables which have been used for model fitting
 #'        and filtering (see \code{\link[foehnix]{foehnix}}).

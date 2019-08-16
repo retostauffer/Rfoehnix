@@ -178,11 +178,8 @@ estimating the logistic regression model (concomitant model).</p>
 <span class='co'># S3 method for matrix</span>
 <span class='fu'>standardize</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># Returns 'scaled:scale' used for standardization</span>
+<span class='co'># S3 method for standardized</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/scale'>scale</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># Returns 'scaled:center' used for standardization</span>
-<span class='fu'>center</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for standardized</span>
 <span class='fu'><a href='destandardize.html'>destandardize</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
@@ -216,6 +213,7 @@ estimating the logistic regression model (concomitant model).</p>
 but with standardized data. The return object is of class
 <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("standardized", "matrix")</a></code> which comes with some handy
 S3 methods.</p>
+<p>Returns 'scaled:scale' used for standardization</p>
 <p>Returns destandardized regression coefficients, same object
 as input <code>beta</code>.</p>
     
@@ -250,7 +248,7 @@ and <code><a href='iwls_logit.html'>iwls_logit</a></code>.</p></div>
 #&gt; 8           1 -0.94130153  1.0850679 -1.9719679 -1.504117 -0.9125725</div><div class='input'>
 <span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>X</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='is.standardized.html'>is.standardized</a></span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># Get parameters used for standardization</span>
-<span class='fu'>center</span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; (Intercept)     Solar.R        Wind        Temp       Month         Day 
+<span class='fu'><a href='center.html'>center</a></span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; (Intercept)     Solar.R        Wind        Temp       Month         Day 
 #&gt;    0.000000  184.801802    9.939640   77.792793    7.216216   15.945946 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/scale'>scale</a></span>(<span class='no'>S</span>)</div><div class='output co'>#&gt; (Intercept)     Solar.R        Wind        Temp       Month         Day 
 #&gt;    1.000000   91.152302    3.557713    9.529969    1.473434    8.707194 </div><div class='input'>
 <span class='co'># Destandardize</span>

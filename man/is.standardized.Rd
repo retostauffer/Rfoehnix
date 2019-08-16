@@ -2,14 +2,20 @@
 % Please edit documentation in R/foehnix_functions.R
 \name{is.standardized}
 \alias{is.standardized}
+\alias{is.standardized.matrix}
 \title{Check if Matrix is Standardized}
 \usage{
 is.standardized(x, ...)
+
+\method{is.standardized}{matrix}(x, ...)
 }
 \arguments{
 \item{x}{a matrix or standardized matrix.}
 
 \item{...}{ignored.}
+}
+\value{
+Returns logical \code{TRUE} if matrix \code{x} is standardized, else \code{FALSE}.
 }
 \description{
 Returns \code{TRUE}

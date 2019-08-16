@@ -87,8 +87,8 @@ test_that("Testing foehnix plot on windrose object", {
     # Rename the variables dd/ff -> should result in an error
     expect_error(windrosefun(mod, ddvar = "foo"))
     expect_error(windrosefun(mod, ffvar = "foo"))
-    expect_error(windrosefun(mod, mfcol =  -10))
-    expect_error(windrosefun(mod, mfcol =  "foo"))
+    expect_error(windrosefun(mod, ncol  =  -10))
+    expect_error(windrosefun(mod, ncol  =  "foo"))
     expect_error(windrosefun(mod, maxpp =  -10))
     expect_error(windrosefun(mod, maxpp = -Inf))
 

@@ -38,10 +38,10 @@ foehnix_tlogistic(left = -Inf, right = Inf)
 foehnix_gaussian()
 
 # Censored Gaussian mixture-model family
-foehnix_cgaussian()
+foehnix_cgaussian(left = -Inf, right = Inf)
 
 # Truncated Gaussian mixture-model family
-foehnix_tgaussian()
+foehnix_tgaussian(left = -Inf, right = Inf)
 }
 \arguments{
 \item{x}{\code{foehnix.family} object.}

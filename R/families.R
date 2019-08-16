@@ -513,7 +513,7 @@ foehnix_gaussian <- function() {
 
 #' @usage
 #' # Censored Gaussian mixture-model family
-#' foehnix_cgaussian()
+#' foehnix_cgaussian(left = -Inf, right = Inf)
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 
@@ -628,7 +628,7 @@ foehnix_cgaussian <- function(left = -Inf, right = Inf) {
 
 #' @usage
 #' # Truncated Gaussian mixture-model family
-#' foehnix_tgaussian()
+#' foehnix_tgaussian(left = -Inf, right = Inf)
 #' @rdname foehnix.family
 #' @import stats
 #' @useDynLib foehnix, .registration = TRUE 

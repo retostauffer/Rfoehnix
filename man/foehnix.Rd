@@ -3,9 +3,13 @@
 \name{foehnix}
 \alias{foehnix}
 \alias{logLik.foehnix}
+\alias{logLik}
 \alias{nobs.foehnix}
+\alias{nobs}
 \alias{AIC.foehnix}
+\alias{AIC}
 \alias{BIC.foehnix}
+\alias{BIC}
 \alias{IGN.foehnix}
 \alias{edf.foehnix}
 \alias{print.foehnix}
@@ -17,32 +21,23 @@ foehnix(formula, data, switch = FALSE, filter = NULL,
   family = "gaussian", control = foehnix.control(family, switch, ...),
   ...)
 
-# Log-likelihood sum
-logLik(object, ...)
+\method{logLik}{foehnix}(object, ...)
 
-# Number of observations used to train the model
-nobs(object, ...)
+\method{nobs}{foehnix}(object, ...)
 
-# Akaike information criterion
-AIC(object, ...)
+\method{AIC}{foehnix}(object, ...)
 
-# Bayesian information criterion
-BIC(object, ...)
+\method{BIC}{foehnix}(object, ...)
 
-# Ignorance (mean negative log-likelihood)
-IGN(object, ...)
+\method{IGN}{foehnix}(object, ...)
 
-# Effective degrees of freedom
-edf(object, ...)
+\method{edf}{foehnix}(object, ...)
 
-# Print object
-print(x, ...)
+\method{print}{foehnix}(x, ...)
 
-# Model formula
-formula(x, ...)
+\method{formula}{foehnix}(x, ...)
 
-# Model/object summary
-summary(object, eps = 1e-4, detailed = FALSE, ...)
+\method{summary}{foehnix}(object, eps = 1e-04, detailed = FALSE, ...)
 }
 \arguments{
 \item{formula}{an object of class \code{formula} (or one that can be coerced
@@ -83,6 +78,22 @@ will be returned.}
 }
 \value{
 Returns an object of class \code{foehnix}.
+
+Log-likelihood sum (\code{numeric}).
+
+Number of observations (\code{integer}) used to train the model.
+
+Returns the Akaike information criterion (\code{numeric}).
+
+Bayesian information criterion (\code{numeric}).
+
+Ignorance (mean negative log-likelihood; \code{numeric}).
+
+Effective degrees of freedom.
+
+Returns the formula of the model (\code{formula}).
+
+Object of class \code{summary.foehnix}.
 }
 \description{
 This is the main method of the foehnix package to estimate

@@ -2,6 +2,9 @@
 # Makefile
 ^Makefile$
 
+# Coverage summary
+^_coverage.rds$
+
 # Raw data folder
 ^data-raw$
 

@@ -169,32 +169,32 @@ two-component mixture models for automated foehn classification.</p>
   <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gaussian"</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='foehnix.control.html'>foehnix.control</a></span>(<span class='no'>family</span>, <span class='no'>switch</span>, <span class='no'>...</span>),
   <span class='no'>...</span>)
 
-<span class='co'># Log-likelihood sum</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/logLik'>logLik</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'>logLik</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Number of observations used to train the model</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/nobs'>nobs</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'>nobs</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Akaike information criterion</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>AIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'>AIC</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Bayesian information criterion</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/AIC'>BIC</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'>BIC</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Ignorance (mean negative log-likelihood)</span>
+<span class='co'># S3 method for foehnix</span>
 <span class='fu'><a href='IGN.html'>IGN</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Effective degrees of freedom</span>
+<span class='co'># S3 method for foehnix</span>
 <span class='fu'><a href='edf.html'>edf</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># Print object</span>
+<span class='co'># S3 method for foehnix</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># Model formula</span>
+<span class='co'># S3 method for foehnix</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/formula'>formula</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># Model/object summary</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-4</span>, <span class='kw'>detailed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for foehnix</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>object</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>detailed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -262,6 +262,14 @@ will be returned.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns an object of class <code>foehnix</code>.</p>
+<p>Log-likelihood sum (<code>numeric</code>).</p>
+<p>Number of observations (<code>integer</code>) used to train the model.</p>
+<p>Returns the Akaike information criterion (<code>numeric</code>).</p>
+<p>Bayesian information criterion (<code>numeric</code>).</p>
+<p>Ignorance (mean negative log-likelihood; <code>numeric</code>).</p>
+<p>Effective degrees of freedom.</p>
+<p>Returns the formula of the model (<code>formula</code>).</p>
+<p>Object of class <code>summary.foehnix</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

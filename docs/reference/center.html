@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check if Matrix is Standardized — is.standardized • foehnix</title>
+<title>Extract Values used for Standardization (scaled:center) — center • foehnix</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,10 +32,10 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Check if Matrix is Standardized — is.standardized" />
+<meta property="og:title" content="Extract Values used for Standardization (scaled:center) — center" />
 
-<meta property="og:description" content="Returns TRUE
-if input x is a standardized matrix, else FALSE." />
+<meta property="og:description" content="Generic method to extract 'centering' values used for
+standardization (emprical first moment)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -153,43 +153,39 @@ if input x is a standardized matrix, else FALSE." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check if Matrix is Standardized</h1>
+    <h1>Extract Values used for Standardization (scaled:center)</h1>
     <small class="dont-index">Source: <a href='https://github.com/retostauffer/Rfoehnix/blob/master/R/foehnix_functions.R'><code>R/foehnix_functions.R</code></a></small>
-    <div class="hidden name"><code>is.standardized.Rd</code></div>
+    <div class="hidden name"><code>center.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Returns <code>TRUE</code>
-if input <code>x</code> is a standardized matrix, else <code>FALSE</code>.</p>
+    <p>Generic method to extract 'centering' values used for
+standardization (emprical first moment).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>is.standardized</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>center</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for matrix</span>
-<span class='fu'>is.standardized</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='co'># S3 method for standardized</span>
+<span class='fu'>center</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a matrix or standardized matrix.</p></td>
+      <td><p>object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>ignored.</p></td>
+      <td><p>forwarded to generic methods.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns logical <code>TRUE</code> if matrix <code>x</code> is standardized, else <code>FALSE</code>.</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='standardize.html'>standardize</a></code>.</p></div>
+    <p>Returns 'scaled:center' used for standardization</p>
     
 
   </div>
@@ -199,8 +195,6 @@ if input <code>x</code> is a standardized matrix, else <code>FALSE</code>.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

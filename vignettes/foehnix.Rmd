@@ -232,13 +232,13 @@ In addition, [windrose](reference/windrose.foehnix.html) proides a convenient
 function to plot wind roses.
 
 ```{r, fig = TRUE, fig.width = 12, fig.height = 8}
-windrose(mod, mfcol = 3)
+windrose(mod, ncol = 3)
 ```
 
 The individual plots can also be plotted separately: 
 
 ```{r, fig = TRUE, fig.width = 12, fig.height = 5}
-windrose(mod, which = "foehn", mfcol = 2)
+windrose(mod, which = "foehn", ncol = 2)
 ```
 
 One type shows the density function (`type = "density"`), the other one a 2-D histogram

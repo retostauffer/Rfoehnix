@@ -198,7 +198,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <span class="co"># edf: effective degrees of freedom</span>
 <span class="co"># AIC: Akaike information criterion</span>
 <span class="co"># BIC: Bayesian information criterion</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(mod), <span class="kw"><a href="../reference/edf.html">edf</a></span>(mod), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">AIC</a></span>(mod), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/AIC">BIC</a></span>(mod))</code></pre></div>
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="../reference/foehnix.html">logLik</a></span>(mod), <span class="kw"><a href="../reference/edf.html">edf</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">AIC</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">BIC</a></span>(mod))</code></pre></div>
 <pre><code>##    loglik       edf       AIC       BIC 
 ## -55763.83      6.00 111539.67 111588.29</code></pre>
 <p>The <code>print</code> and <code>summary</code> methods show some information about the model such as number of observations used for the classification, the filter and its effect, and the corresponding information criteria.</p>
@@ -217,7 +217,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 2.9 seconds
+## Time required for model estimation: 3.2 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
@@ -252,7 +252,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 2.9 seconds
+## Time required for model estimation: 3.2 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -324,10 +324,10 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <h2 class="hasAnchor">
 <a href="#conditional-and-unconditional-wind-rose-plots" class="anchor"></a>Conditional and Unconditional Wind Rose Plots</h2>
 <p>In addition, <a href="reference/windrose.foehnix.html">windrose</a> proides a convenient function to plot wind roses.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">mfcol =</span> <span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
 <p>The individual plots can also be plotted separately:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">which =</span> <span class="st">"foehn"</span>, <span class="dt">mfcol =</span> <span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">which =</span> <span class="st">"foehn"</span>, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
 <p>One type shows the density function (<code>type = "density"</code>), the other one a 2-D histogram (<code>type = "histogram"</code>). The argument <code>which</code> allows to plot the unconditional windrose (<code>which = "unconditional"</code>), the ‘no foehn event’ windrose (<code>which = "nofoehn"</code>) which shows only observations where the classification gives a probability of foehn below <code>0.5</code>, and a wind rose for ‘foehn’ events where the classification returned a probability of <code>&gt;= 0.5</code>.</p>
 </div>
