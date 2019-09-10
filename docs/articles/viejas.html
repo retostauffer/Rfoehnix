@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
 <meta property="og:description" content="">
@@ -37,12 +38,9 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/foehnix.html">Getting started</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How To
      
     <span class="caret"></span>
   </a>
@@ -63,7 +61,7 @@
       <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
-      <a href="../articles/simulation.html">Simulation Examples</a>
+      <a href="../articles/import_data.html">Import Data</a>
     </li>
   </ul>
 </li>
@@ -87,6 +85,9 @@
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
+      <a href="../articles/simulation.html">Verification with Simulated Data</a>
+    </li>
+    <li>
       <a href="../articles/families.html">foehnix Families</a>
     </li>
   </ul>
@@ -101,7 +102,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,6 +115,7 @@
 <!--/.navbar -->
 
       
+
       </header><script src="viejas_files/htmlwidgets-1.3/htmlwidgets.js"></script><script src="viejas_files/jquery-1.12.4/jquery.min.js"></script><link href="viejas_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="viejas_files/leaflet-1.3.1/leaflet.js"></script><link href="viejas_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="viejas_files/Proj4Leaflet-1.0.1/proj4-compressed.js"></script><script src="viejas_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="viejas_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
@@ -135,15 +137,15 @@
 <a href="#data-set-description" class="anchor"></a>Data Set Description</h1>
 <p>The “Californian” data set consists of hourly meteorological observations from station “Viejas Casino and Ranch” and station “Lucky Five Ranch” located in South California.</p>
 <p>Viejas is located at the foot of the westerly slope of the Sierra Nevada mountain range and exhibits strong easterly winds during downslope wind situations. The Lucky Five Ranch is located northeast of and provides information about the upstream air mass for the classification algorithm.</p>
-<div id="htmlwidget-a41c407090ce9c781f4a" style="width:100%;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a41c407090ce9c781f4a">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9d335a6c2a4583147141" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9d335a6c2a4583147141">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[32.84559,-116.70437,"Station Viejas, 715 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addPopups","args":[32.9331,-116.528,"Station Lucky Five Ranch, 1445 m a.m.s.l.",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]},{"method":"addProviderTiles","args":["OpenTopoMap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]}],"setView":[[32.889345,-116.616185],10.5,[]],"limits":{"lat":[32.84559,32.9331],"lng":[-116.70437,-116.528]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="loading-the-data-set" class="section level1">
 <h1 class="hasAnchor">
 <a href="#loading-the-data-set" class="anchor"></a>Loading the Data Set</h1>
 <p><a href="references/demodata"><code><a href="../reference/demodata.html">demodata("california")</a></code></a> returns a data set which combines hourly meteorological observations of both sites (Viejas; Lucky Five). In addition, the potential temperature difference between the two stations is calculated by reducing the dry air temperature from “Lucky Five Ranch” to the height of “Viejas” (dry adiabatic lapse rate of 1K per 100m; stored on <code>diff_temp</code>). For details see <a href="references/demodata.html"><code>demodata</code></a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"california"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
 <pre><code>##                     air_temp relative_humidity wind_speed wind_direction
 ## 2012-01-01 00:00:00    23.89                25       1.34            227
 ## 2012-01-01 01:00:00    20.00                22       2.68             43
@@ -161,24 +163,24 @@
 ## 2012-01-01 01:00:00      1.74
 ## 2012-01-01 02:00:00      1.75</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check if our object is a numeric zoo object:</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"is.zoo"</span> =<span class="st"> </span><span class="kw">is.zoo</span>(data), <span class="st">"is.numeric"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">is.numeric</a></span>(data))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"is.zoo"</span> =<span class="st"> </span><span class="kw">is.zoo</span>(data), <span class="st">"is.numeric"</span> =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span>(data))</code></pre></div>
 <pre><code>##     is.zoo is.numeric 
 ##       TRUE       TRUE</code></pre>
 <p>Missing values in the data set (<code>NA</code>) are allowed and will be properly handled by all functions. One restriction is that the time series object has to be regular (but not strictly regular). “Regular” means that the time steps have to be divisible by the smallest time step, “strictly regular” means that we have no missing observations (if our smallest time interval is 1 hour observations have to be available <em>every hour</em> have to be available to be strictly regular). The <a href="references/foehnix.html"><code>foehnix</code></a> will inflate the data set and make it strictly regular, if needed.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"is regular"</span> =<span class="st"> </span><span class="kw">is.regular</span>(data),
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"is regular"</span> =<span class="st"> </span><span class="kw">is.regular</span>(data),
   <span class="st">"is strictly regular"</span> =<span class="st"> </span><span class="kw">is.regular</span>(data, <span class="dt">strict =</span> <span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>##          is regular is strictly regular 
 ##                TRUE               FALSE</code></pre>
 <p>After preparing the data set (regular or strictly regular <code>zoo   object with</code>numeric` values) we can investigate the observed wind information.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="dt">mfrow =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>))
 <span class="co"># Observed wind speed/wind direction "Viejas"</span>
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"wind_speed"</span>,
          <span class="dt">main =</span> <span class="st">"Windrose</span><span class="ch">\n</span><span class="st">Viejas Casino and Resort"</span>,
-         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))
 <span class="co"># Observed wind speed/wind direction "Lucky Five"</span>
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"crest_wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"crest_wind_speed"</span>,
          <span class="dt">main =</span> <span class="st">"Windrose</span><span class="ch">\n</span><span class="st">Lucky Five Ranch"</span>, <span class="dt">hue =</span> <span class="dv">270</span>,
-         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">22</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
 <p><img src="viejas_files/figure-html/emp_windrose-1.png" width="1152"></p>
 <p>Given the plots above we define the <code>foehn</code> wind direction at Viejas between 305 and 160 degrees (a 215 degree wind sector centered northeast). This wind sector can be chosen rather wide, but should leave out non-foehn wind directions to exclude upslope winds. The wind sector(s) can be added to the <a href="references/windrose.html"><code>windrose</code></a> as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Windrose plot with custom variable names (ddvar, ffvar),</span>
@@ -186,8 +188,8 @@
 <span class="co"># with a custom color.</span>
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data, <span class="dt">ddvar =</span> <span class="st">"wind_direction"</span>, <span class="dt">ffvar =</span> <span class="st">"wind_speed"</span>,
          <span class="dt">main =</span> <span class="st">"Windrose Viejas with Custom foehn Wind Sector"</span>,
-         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dt">by =</span> <span class="dv">2</span>),
-         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dt">by =</span> <span class="dv">2</span>),
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
          <span class="dt">windsector.col =</span> <span class="st">"#DFEFF6"</span>,
          <span class="dt">border =</span> <span class="st">"gray50"</span>, <span class="dt">lwd =</span> <span class="fl">.5</span>)</code></pre></div>
 <p><img src="viejas_files/figure-html/unnamed-chunk-2-1.png" width="768"></p>
@@ -211,7 +213,7 @@
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_temp <span class="op">~</span><span class="st"> </span>wind_speed,
                <span class="dt">data   =</span> data,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>,
-               <span class="dt">filter =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)))</code></pre></div>
+               <span class="dt">filter =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)))</code></pre></div>
 <div id="model-summary" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-summary" class="anchor"></a>Model Summary</h3>
@@ -229,7 +231,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -86157.2, 6 effective degrees of freedom
 ## Corresponding AIC = 172326.5, BIC = 172376.6
-## Time required for model estimation: 8.4 seconds
+## Time required for model estimation: 7.5 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -251,13 +253,13 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p>Thereof, <span class="math inline">\(3569\)</span> are not considered due to missing data, <span class="math inline">\(26541\)</span> as they do not fulfil the filter constraint (<code>wind_direction</code> outside defined wind sector), wherefore the final model is based on <span class="math inline">\(31258\)</span> observations (or rows).</p>
 <p>One good indication whether the model well separates the two clusters is the “<em>Cluster separation</em>” output (<a href="references/summary.html"><code>summary</code></a>) or the posterior probability plot:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cluster separation (summary)</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod)<span class="op">$</span>separation</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(mod)<span class="op">$</span>separation</code></pre></div>
 <pre><code>##                            prior  size post&gt;0     ratio
 ## Component 1 (foehn)    0.1781598  5513  10677 0.5163435
 ## Component 2 (no foehn) 0.8218402 25745  28329 0.9087860</code></pre>
 <p>The <code>separation</code> matrix shows the prior probabilities, the size (number of observations assigned to each component; posterior probability), number of probabilities exceeding a threshold (default <code>eps = 1e-4</code>), and the ratio between the latter two. Ratios close to <span class="math inline">\(1.0\)</span> indicate that the two clusters are well separated (<span class="math inline">\(ratio &gt; 0.5\)</span> are already good for this application).</p>
 <p>Another indication is the <code>which = "posterior"</code> plot which shows the empirical histogram of estimated probabilities (for within-windsector observations). Point masses around <span class="math inline">\(0.0\)</span> and <span class="math inline">\(1.0\)</span> indicate that we have two well separated clusters (the probability to fall in one of the clusters is always close to either <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"posterior"</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>)) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"posterior"</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.05</span>)) </code></pre></div>
 <p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
 </div>
 <div id="model-coefficients" class="section level3">
@@ -270,7 +272,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <li>Concomitant model: positive <code>wind_speed</code> effect, +2823.4 percent per <span class="math inline">\(m~s^{-1}\)</span>
 </li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
 ## Model formula:           diff_temp ~ wind_speed
 ## foehnix family of class: Gaussian
@@ -280,46 +282,46 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ##   9.1263349   4.0800074   0.2234891   1.4175373  -7.8449992   3.3753179</code></pre>
 <div class="hide-Rinput">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Grid definition for 2-D plot</span>
-tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">diff_temp      =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="op">-</span><span class="dv">5</span>, <span class="op">+</span><span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
-            <span class="dt">wind_speed     =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
+tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">diff_temp      =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">5</span>, <span class="op">+</span><span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
+            <span class="dt">wind_speed     =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dt">by =</span> <span class="fl">.5</span>),
             <span class="dt">wind_direction =</span> <span class="dv">45</span>)
 <span class="co"># Expand grid to create 'newdata' data.frame</span>
-grd  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/do.call">do.call</a></span>(expand.grid, tmp)
-mat  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(grd<span class="op">$</span>diff_temp, <span class="dt">nrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(tmp<span class="op">$</span>diff_temp))
+grd  &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(expand.grid, tmp)
+mat  &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(grd<span class="op">$</span>diff_temp, <span class="dt">nrow =</span> <span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(tmp<span class="op">$</span>diff_temp))
 <span class="co"># Predict probabilities</span>
-pred &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(mod, <span class="dt">newdata =</span> grd)<span class="op">$</span>prob, <span class="dt">nrow =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(tmp<span class="op">$</span>diff_temp))
+pred &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(mod, <span class="dt">newdata =</span> grd)<span class="op">$</span>prob, <span class="dt">nrow =</span> <span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(tmp<span class="op">$</span>diff_temp))
 <span class="co"># Create plot</span>
-cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">diverging_hcl</a></span>(<span class="dv">51</span>, <span class="dt">p1 =</span> <span class="dv">5</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mar =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(.<span class="dv">5</span>, <span class="dv">4</span>), <span class="dt">oma =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">3.1</span>, <span class="fl">3.1</span>, <span class="fl">2.1</span>, <span class="fl">3.1</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/layout">layout</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">nrow =</span> 1L), <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">1</span>))
-<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="dt">x =</span> tmp<span class="op">$</span>diff_temp, <span class="dt">y =</span> tmp<span class="op">$</span>wind_speed, <span class="dt">z =</span> pred, <span class="dt">col =</span> cols, <span class="dt">zlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"diff_temp"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"wind_speed"</span>)
-<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">51</span>), <span class="dt">nrow =</span> <span class="dv">1</span>),
+cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">diverging_hcl</a></span>(<span class="dv">51</span>, <span class="dt">p1 =</span> <span class="dv">5</span>)
+<span class="kw"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="dt">mar =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(.<span class="dv">5</span>, <span class="dv">4</span>), <span class="dt">oma =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3.1</span>, <span class="fl">3.1</span>, <span class="fl">2.1</span>, <span class="fl">3.1</span>))
+<span class="kw"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">nrow =</span> 1L), <span class="dt">widths =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">1</span>))
+<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="dt">x =</span> tmp<span class="op">$</span>diff_temp, <span class="dt">y =</span> tmp<span class="op">$</span>wind_speed, <span class="dt">z =</span> pred, <span class="dt">col =</span> cols, <span class="dt">zlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>))
+<span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"diff_temp"</span>)
+<span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"wind_speed"</span>)
+<span class="kw"><a href="../reference/image.html">image</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">51</span>), <span class="dt">nrow =</span> <span class="dv">1</span>),
       <span class="dt">col =</span> cols, <span class="dt">yaxt =</span> <span class="st">"n"</span>, <span class="dt">xaxt =</span> <span class="st">"n"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"probability"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">3</span>, <span class="dt">outer =</span> <span class="ot">TRUE</span>, <span class="dt">font =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">1</span>,
+<span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">line =</span> <span class="fl">2.5</span>, <span class="st">"probability"</span>)
+<span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">3</span>, <span class="dt">outer =</span> <span class="ot">TRUE</span>, <span class="dt">font =</span> <span class="dv">2</span>, <span class="dt">cex =</span> <span class="dv">1</span>,
       <span class="st">"Predicted Probability | Wind Direction = 45"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/axis">axis</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">at =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">.1</span>))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span>(<span class="dt">side =</span> <span class="dv">4</span>, <span class="dt">at =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">.1</span>))</code></pre></div>
 <p><img src="viejas_files/figure-html/plot_mod_2dimg-1.png" width="768"></p>
 </div>
 <div class="hide-Rinput">
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Grid definition for 2-D plot</span>
-prob &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod)[mod<span class="op">$</span>filter_obj<span class="op">$</span>good] <span class="co"># Estimated probabilities</span>
-cols &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cut">cut</a></span>(prob, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.1</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,
-            <span class="dt">labels =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">diverging_hcl</a></span>(<span class="dv">10</span>))
+prob &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod)[mod<span class="op">$</span>filter_obj<span class="op">$</span>good] <span class="co"># Estimated probabilities</span>
+cols &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(prob, <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.1</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>,
+            <span class="dt">labels =</span> colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">diverging_hcl</a></span>(<span class="dv">10</span>))
 <span class="co"># Prepare temporary data set (out of those used for classification)</span>
-tmp  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/subset">subset</a></span>(mod<span class="op">$</span>data[mod<span class="op">$</span>filter_obj<span class="op">$</span>good, ],
-                             <span class="dt">select =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(wind_speed, diff_temp)))
+tmp  &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(mod<span class="op">$</span>data[mod<span class="op">$</span>filter_obj<span class="op">$</span>good, ],
+                             <span class="dt">select =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(wind_speed, diff_temp)))
 tmp<span class="op">$</span>col &lt;-<span class="st"> </span>cols      <span class="co"># Add color information</span>
-tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(tmp)   <span class="co"># We only need unique entries</span>
+tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(tmp)   <span class="co"># We only need unique entries</span>
 <span class="co"># Create plot</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(tmp,
-     <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(wind_speed <span class="op">~</span><span class="st"> </span>diff_temp, <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(col), <span class="dt">pch =</span> <span class="dv">19</span>,
+<span class="kw"><a href="https://rdrr.io/r/base/with.html">with</a></span>(tmp,
+     <span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(wind_speed <span class="op">~</span><span class="st"> </span>diff_temp, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(col), <span class="dt">pch =</span> <span class="dv">19</span>,
           <span class="dt">main =</span> <span class="st">"Fitted Probabilities | within Wind Sector"</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/legend">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">fill =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">diverging_hcl</a></span>(<span class="dv">10</span>), <span class="dt">bty =</span> <span class="st">"n"</span>,
+<span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">fill =</span> colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">diverging_hcl</a></span>(<span class="dv">10</span>), <span class="dt">bty =</span> <span class="st">"n"</span>,
        <span class="dt">title =</span> <span class="st">"probability"</span>,
-       <span class="dt">legend =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cut">cut</a></span>(<span class="dv">0</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.1</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)))</code></pre></div>
+       <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/cut.html">cut</a></span>(<span class="dv">0</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.1</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)))</code></pre></div>
 <p><img src="viejas_files/figure-html/plot_mod_2dpoints-1.png" width="768"></p>
 </div>
 </div>
@@ -336,17 +338,17 @@ tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumen
 </ul>
 <p>The abscissa shows (by default) the logarithm of the iterations during optimization.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log-likelihood contribution</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
 <p><img src="viejas_files/figure-html/plot_loglikcontribution-1.png" width="1152"></p>
 <p>In addition, the coefficient paths during optimization can be visualized:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Coefficient path</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> 3L)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> 3L)</code></pre></div>
 <p><img src="viejas_files/figure-html/plot_coefpath-1.png" width="1152"></p>
 <p>The left plot shows the parameters of the two components (<span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\log(\sigma_1)\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\log(\sigma_2)\)</span>), the right one the standardized coefficients of the concomitant model.</p>
 <p>Last but not least a histogram with the two clusters is plotted. <code>which = "hist"</code>creates an empirical density histogram separating “no foehn” and “foehn” events adding the estimated distribution for these two clusters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/load_all.html">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
 <pre><code>## Loading foehnix</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
 <p><img src="viejas_files/figure-html/plot_histogram-1.png" width="768"></p>
 </div>
 <div id="time-series-plot" class="section level1">
@@ -354,8 +356,8 @@ tmp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumen
 <a href="#time-series-plot" class="anchor"></a>Time Series Plot</h1>
 <p>The Californian demo data set has non-standard variable names (by purpose). Thus, when calling <code>tsplot</code> (time series plot) we do have to manually specify these names.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Some smaller quality issues in the data (should not be a big deal)</span>
-start &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-03-01"</span>)
-end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.POSIXlt">as.POSIXct</a></span>(<span class="st">"2012-03-12"</span>)
+start &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="st">"2012-03-01"</span>)
+end   &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="st">"2012-03-12"</span>)
 
 <span class="co"># As we dont have the standard names: re-specify variable names.</span>
 <span class="co"># In addition, use 'style = "advanced"' to show more details.</span>
@@ -365,7 +367,7 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
        <span class="dt">dd  =</span> <span class="st">"wind_direction"</span>,   <span class="dt">crest_dd  =</span> <span class="st">"crest_wind_direction"</span>,
        <span class="dt">ff  =</span> <span class="st">"wind_speed"</span>,       <span class="dt">crest_ff  =</span> <span class="st">"crest_wind_speed"</span>,
        <span class="dt">ffx =</span> <span class="st">"wind_gust"</span>,        <span class="dt">crest_ffx =</span> <span class="st">"crest_wind_gust"</span>,
-       <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
+       <span class="dt">windsector =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">wind_direction =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
        <span class="dt">start =</span> start, <span class="dt">end =</span> end)</code></pre></div>
 <pre><code>## [1] 305 160</code></pre>
 <p><img src="viejas_files/figure-html/tsplot-1.png" width="1152"></p>
@@ -373,12 +375,12 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <div id="wind-rose-plot" class="section level1">
 <h1 class="hasAnchor">
 <a href="#wind-rose-plot" class="anchor"></a>Wind Rose Plot</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/load_all">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/load_all.html">load_all</a></span>(<span class="st">".."</span>)</code></pre></div>
 <pre><code>## Loading foehnix</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(mod, <span class="dt">dd =</span> <span class="st">"wind_direction"</span>, <span class="dt">ff =</span> <span class="st">"wind_speed"</span>,
-         <span class="dt">type =</span> <span class="st">"hist"</span>, <span class="dt">which =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"foehn"</span>, <span class="st">"nofoehn"</span>),
-         <span class="dt">windsector =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
-         <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
+         <span class="dt">type =</span> <span class="st">"hist"</span>, <span class="dt">which =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"foehn"</span>, <span class="st">"nofoehn"</span>),
+         <span class="dt">windsector =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">305</span>, <span class="dv">160</span>)),
+         <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dt">by =</span> <span class="dv">2</span>))</code></pre></div>
 <p><img src="viejas_files/figure-html/windrose-1.png" width="1152"></p>
 </div>
 <div id="hovmoler-diagram" class="section level1">
@@ -391,13 +393,14 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Customizing image plot</span>
 <span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">deltad =</span> 14L, <span class="dt">deltat =</span> <span class="dv">3</span><span class="op">*</span><span class="dv">3600</span>, <span class="dt">contours =</span> <span class="ot">TRUE</span>,
       <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">labcex =</span> <span class="fl">1.5</span>,
-      <span class="dt">col =</span> colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="st">"Purple-Yellow"</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>),
-      <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">212</span>, <span class="dv">119</span>), <span class="dt">zlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="fl">0.4</span>))</code></pre></div>
+      <span class="dt">col =</span> colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="st">"Purple-Yellow"</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>),
+      <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">212</span>, <span class="dv">119</span>), <span class="dt">zlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="fl">0.4</span>))</code></pre></div>
 <p><img src="viejas_files/figure-html/image2-1.png" width="1152"></p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -416,17 +419,20 @@ end   &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

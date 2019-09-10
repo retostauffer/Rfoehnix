@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
 <meta property="og:description" content="">
@@ -37,12 +38,9 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/foehnix.html">Getting started</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How To
      
     <span class="caret"></span>
   </a>
@@ -63,7 +61,7 @@
       <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
-      <a href="../articles/simulation.html">Simulation Examples</a>
+      <a href="../articles/import_data.html">Import Data</a>
     </li>
   </ul>
 </li>
@@ -87,6 +85,9 @@
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
+      <a href="../articles/simulation.html">Verification with Simulated Data</a>
+    </li>
+    <li>
       <a href="../articles/families.html">foehnix Families</a>
     </li>
   </ul>
@@ -101,7 +102,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,6 +115,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -143,7 +145,7 @@
 <p>The <a href="../references/windrose.html"><code>windrose</code></a> function can be called with a set of (observed) wind direction and wind speed values. Wind direction has to be the meteorological wind direction in degrees (<code>[0, 360]</code>, <code>0</code> and <code>360</code> corresponds to wind coming from North, <code>90</code> for wind from East, <code>180</code> for wind from South, and <code>270</code> from West).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"ellboegen"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data))</code></pre></div>
 <pre><code>##                      dd  ff  rh    t
 ## 2006-01-01 01:00:00 171 0.6  90 -0.4
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8
@@ -154,7 +156,7 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Plotting windrose</span>
 <span class="kw"><a href="../reference/windrose.html">windrose</a></span>(data<span class="op">$</span>dd, data<span class="op">$</span>ff, <span class="dt">type =</span> <span class="st">"density"</span>)</code></pre></div>
 <p><img src="plotting_files/figure-html/unnamed-chunk-2-1.png" width="960"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>dd), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(data<span class="op">$</span>ff), <span class="dt">type =</span> <span class="st">"histogram"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/windrose.html">windrose</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(data<span class="op">$</span>dd), <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(data<span class="op">$</span>ff), <span class="dt">type =</span> <span class="st">"histogram"</span>)</code></pre></div>
 <p><img src="plotting_files/figure-html/unnamed-chunk-2-2.png" width="960"></p>
 </div>
 <div id="windrose-plot-for-foehnix-models" class="section level3">
@@ -163,7 +165,7 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 <p>Windrose plots can also be created for <code>foehnix</code> foehn classification models if wind speed and wind direction information has been provided to the <a href="../references/foehnix.html"><code>foehnix</code></a> function when estimating the classification model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for Tyrol (Ellboegen and Innsbruck)</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data))</code></pre></div>
 <pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
 ## 2006-01-01 01:00:00 171 0.6  90 -0.4      180     10.8      100    -7.8
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8      186     12.5      100    -8.0
@@ -179,7 +181,7 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 ## 2006-01-01 05:00:00   5.77
 ## 2006-01-01 06:00:00   5.07</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
-filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
@@ -189,9 +191,9 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p>By default, <code>windrose</code> expects that the parameters are called <code>dd</code> (wind direction) and <code>ff</code> (wind speed), however, custom names can also be used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen and Sattelberg (combined)</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>) <span class="co"># default</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"dd$"</span>, <span class="st">"winddir"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"ff$"</span>, <span class="st">"windspd"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(data))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"dd$"</span>, <span class="st">"winddir"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data))
+<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"ff$"</span>, <span class="st">"windspd"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(data))
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data))</code></pre></div>
 <pre><code>##                     winddir windspd  rh    t crest_winddir crest_windspd
 ## 2006-01-01 01:00:00     171     0.6  90 -0.4           180          10.8
 ## 2006-01-01 02:00:00     268     0.3 100 -1.8           186          12.5
@@ -207,7 +209,7 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demoda
 ## 2006-01-01 05:00:00      100    -7.1   5.77
 ## 2006-01-01 06:00:00      100    -6.9   5.07</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate a foehnix classification model</span>
-filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">winddir =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_winddir =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">winddir =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_winddir =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>windspd <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
@@ -222,7 +224,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p>TODO: Write vignette.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading the demo data set for station Ellboegen and Sattelberg (combined)</span>
 data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/demodata.html">demodata</a></span>(<span class="st">"tyrol"</span>)
-filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff <span class="op">+</span><span class="st"> </span>rh, <span class="dt">data =</span> data, <span class="dt">filter =</span> filter,
                <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
 
@@ -233,6 +235,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -246,17 +249,20 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

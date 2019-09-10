@@ -1,13 +1,14 @@
 template:
     params:
         bootswatch: "flatly"
+    assets: pkgdown/
 
 
 navbar:
     left:
-        - text: "Getting started"
-          href: articles/foehnix.html
-        - text: "Articles"
+        ##- text: "Getting started"
+        ##  href: articles/foehnix.html
+        - text: "How To"
           menu:
             - text: "[Demo] Ellbögen (Tyrol, A)"
               href: articles/ellboegen.html
@@ -19,8 +20,8 @@ navbar:
               href: articles/tsplot.html
             - text: "[Plot] Hovmöller Diagram"
               href: articles/image.html
-            - text: "Simulation Examples"
-              href: articles/simulation.html
+            - text: "Import Data"
+              href: articles/import_data.html
         - text: "Advanced"
           menu:
             - text: "Statistical Model"
@@ -31,6 +32,8 @@ navbar:
               href: articles/inference.html
             - text: "Censoring and Truncation"
               href: articles/advanced_simulation.html
+            - text: "Verification with Simulated Data"
+              href: articles/simulation.html
             - text: "foehnix Families"
               href: articles/families.html
         - text: "Reference"

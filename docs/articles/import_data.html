@@ -122,45 +122,51 @@
       <h1></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/families.Rmd"><code>vignettes/families.Rmd</code></a></small>
-      <div class="hidden name"><code>families.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/import_data.Rmd"><code>vignettes/import_data.Rmd</code></a></small>
+      <div class="hidden name"><code>import_data.Rmd</code></div>
 
     </div>
 
     
     
-<div id="foehnix-families" class="section level2">
+<div id="import-data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#foehnix-families" class="anchor"></a>foehnix Families</h2>
-<p>The foehnix mixture models are based on a set of families provided with this package. Currently, the package provides a two-component Gaussian and a two-component logistic mixture model and their truncated and censored versions.</p>
-<p>The method <code>foehnix</code> allows to specify a <code>family</code> argument which has to be either <code>"gaussian"</code> (the default) or <code>"logistic"</code> at the moment. If finite arguments for <code>left</code> and/or <code>right</code> are set as well a censored Gaussian/logistic mixture model will be estimated (or truncated, if <code>truncated = TRUE</code>).</p>
-<p>However, feel free to develop custom family objects if needed: if a <code>foehnix.family</code> object is provided on <code>family</code> when calling <code>foehnix</code> this custom object will be used. For example:</p>
-<pre><code>fam &lt;- foehnix:::foehnix_cgaussian(left = 0)
-mod &lt;- foehnix(dt ~ ff + dd + rh, data = data, family = fam)</code></pre>
-<p>For all others the two family classes provided with the package should typically be more than suitable for foehn classification.</p>
-<div id="foehn-family-objects" class="section level3">
-<h3 class="hasAnchor">
-<a href="#foehn-family-objects" class="anchor"></a>foehn.family Objects</h3>
-<p>Each <code>foehn.family</code> object consists of a set of functions:</p>
-<ul>
-<li>optional arguments not listed here (stored inside the object environment when specified on initialization, <code>left</code> and <code>right</code> used for the censored and truncated Gaussian/logistic families are such examples).</li>
-<li>
-<code>name</code>: character, name of the family object.</li>
-<li>
-<code>d</code>: density function of the mixture distribution.</li>
-<li>
-<code>p</code>: distribution function of the mixture distribution.</li>
-<li>
-<code>r</code>: not required for optimization but nice for testing: returns random numbers from the mixed distribution to simulate data.</li>
-<li>
-<code>loglik</code>: function returning the log-likelihood sum, used for model estimation (EM algorithm).</li>
-<li>
-<code>posterior</code>: returns the (updated) posterior probabilities, used for model estimation (EM algorithm).</li>
-<li>
-<code>theta</code>: returns the parameters of the distributions of the components of the mixture models. Used for model estimation (EM algorithm).</li>
-</ul>
-<p>Examples are: <code>foehnix_gaussian</code>, <code>foehnix_cgaussian</code>, <code>foehnix_tgaussian</code>, <code>foehnix_logistic</code>, <code>foehnix_clogistic</code>, and <code>foehnix_tlogistic</code> in <code>R/families.R</code>.</p>
-</div>
+<a href="#import-data" class="anchor"></a>Import Data</h2>
+<p>Content of the demo data set “<a href="../data/ellboegen_100.csv">ellboegen_100.csv</a>”</p>
+<pre><code>## timestamp;dd;ff;rh;t
+## 1136077200;171; 0.6; 90; -0.4
+## 1136080800;268; 0.3;100; -1.8
+## 1136084400;115; 5.2; 79;  0.9
+## 1136088000;152; 2.1; 88; -0.6
+## 1136091600;319; 0.7;100; -2.6
+## 1136095200; 36; 0.1; 99; -1.7
+## 1136098800;338; 1.0;100; -2.1
+## 1136102400;324; 1.1;100; -2.7
+## 1136106000;303; 0.2;100; -2.6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Change directory (where 'ellboegen_100.csv' is stored)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"../pkgdown/data"</span>)
+
+<span class="co"># Loading library "zoo"</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"zoo"</span>)
+
+<span class="co"># Import data set</span>
+<span class="co"># Define the function which converts the index column (first column)</span>
+<span class="co"># from UNIX time stamp (seconds since 1970-01-01 00:00:00) to POSIXct</span>
+FUN &lt;-<span class="st"> </span><span class="cf">function</span>(x, origin, tz) <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(x, <span class="dt">tz =</span> tz, <span class="dt">origin =</span> <span class="st">"1970-01-01 00:00:00"</span>)
+
+<span class="co"># Read data set</span>
+data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"ellboegen_100.csv"</span>, <span class="dt">sep =</span> <span class="st">";"</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>,
+                 <span class="dt">FUN =</span> FUN, <span class="dt">tz =</span> <span class="st">"UTC"</span>,
+                 <span class="dt">na.strings =</span> <span class="st">"NA"</span>, <span class="dt">strip.white =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Class/head of the object</span>
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data)</code></pre></div>
+<pre><code>##                      dd  ff  rh    t
+## 2006-01-01 01:00:00 171 0.6  90 -0.4
+## 2006-01-01 02:00:00 268 0.3 100 -1.8
+## 2006-01-01 03:00:00 115 5.2  79  0.9
+## 2006-01-01 04:00:00 152 2.1  88 -0.6
+## 2006-01-01 05:00:00 319 0.7 100 -2.6
+## 2006-01-01 06:00:00  36 0.1  99 -1.7</code></pre>
 </div>
   </div>
 
@@ -170,7 +176,7 @@ mod &lt;- foehnix(dt ~ ff + dd + rh, data = data, family = fam)</code></pre>
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#foehnix-families">foehnix Families</a></li>
+<li><a href="#import-data">Import Data</a></li>
       </ul>
 </div>
       </div>

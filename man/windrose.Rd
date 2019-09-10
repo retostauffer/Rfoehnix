@@ -9,7 +9,7 @@ windrose(x, ...)
 
 \method{windrose}{foehnix}(x, type = NULL, which = NULL,
   ddvar = "dd", ffvar = "ff", breaks = NULL, ncol = NULL,
-  maxpp = Inf, ...)
+  maxpp = Inf, ..., main = NULL)
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}} if the windrose plot is applied
@@ -36,6 +36,9 @@ the wind speed (or gust speed) data.}
 
 \item{maxpp}{integer (\code{>0}), maximum plots per page. Not all plots fit on one
 page the script loops trough.}
+
+\item{main}{\code{NULL} (default) or character. If \code{NULL} the function will
+add default figure titles.}
 }
 \description{
 foehnix Mixture Model Windrose Plot

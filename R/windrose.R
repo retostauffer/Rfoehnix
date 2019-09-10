@@ -26,6 +26,8 @@ utils::globalVariables(c("prob", "maxpp"))
 #' @param ncol integer, number of columns of subplots.
 #' @param maxpp integer (\code{>0}), maximum plots per page. Not all plots fit on one
 #'        page the script loops trough.
+#' @param main \code{NULL} (default) or character. If \code{NULL} the function will
+#'        add default figure titles.
 #'
 #' @details Allows to draw windrose plots from \code{\link{foehnix}} mixture model
 #' object or a set of observations. If input \code{x} to \code{\link{windrose}} is
@@ -110,7 +112,7 @@ windrose <- function(x, ...) UseMethod("windrose")
 #' @rdname windrose
 #' @export
 windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar = "ff",
-                             breaks = NULL, ncol = NULL, maxpp = Inf, ...) {
+                             breaks = NULL, ncol = NULL, maxpp = Inf, ..., main = NULL) {
 
     # Just to be on the very safe side.
     stopifnot(inherits(x, "foehnix"))
@@ -201,28 +203,28 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
     if ( "density_unconditional" %in% which )
         tmp[["density_unconditional"]] <- with(data,
               windrose(dd, ff, hue = c(10, 130), breaks = breaks,
-                       main = expression("Unconditional"), ...))
+                       main = if (!is.null(main)) main else expression("Unconditional"), ...))
     if ( "density_nofoehn" %in% which )
         tmp[["density_nofoehn"]] <- with(subset(data, prob < 0.5),
               windrose(dd, ff, hue = c(100, 180), breaks = breaks,
-                       main = expression(paste("No Foehn [",pi < 0.5,"]")), ...))
+                       main = if (!is.null(main)) main else expression(paste("No Foehn [",pi < 0.5,"]")), ...))
     if ( "density_foehn" %in% which )
         tmp[["density_foehn"]] <- with(subset(data, prob >= 0.5),
               windrose(dd, ff, hue = c(-20, 30), breaks = breaks,
-                       main = expression(paste("Foehn [",pi >= 0.5,"]")), ...))
+                       main = if (!is.null(main)) main else expression(paste("Foehn [",pi >= 0.5,"]")), ...))
     # Plot type = "histogram"
     if ( "histogram_unconditional" %in% which )
         tmp[["histogram_unconditional"]] <- with(data,
               windrose(dd, ff, hue = c(10, 130), type = "histogram", breaks = breaks,
-                       main = expression("Unconditional"), ...))
+                       main = if (!is.null(main)) main else expression("Unconditional"), ...))
     if ( "histogram_nofoehn" %in% which )
         tmp[["histogram_nofoehn"]] <- with(subset(data, prob <  0.5),
               windrose(dd, ff, hue = c(100, 180), type = "histogram", breaks = breaks,
-                       main = expression(paste("No Foehn [",pi < 0.5,"]")), ...))
+                       main = if (!is.null(main)) main else expression(paste("No Foehn [",pi < 0.5,"]")), ...))
     if ( "histogram_foehn" %in% which )
         tmp[["histogram_foehn"]] <- with(subset(data, prob >= 0.5),
               windrose(dd, ff, hue = c(-20, 30), type = "histogram", breaks = breaks,
-                       main = expression(paste("Foehn [",pi >= 0.5,"]")), ...))
+                       main = if (!is.null(main)) main else expression(paste("Foehn [",pi >= 0.5,"]")), ...))
 
     # Invisible return of all windrose-returns, mainly for testing.
     invisible(tmp)
@@ -248,7 +250,8 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #' @param windsector list, matrix, or data frame for highlighting one or multiple
 #'        wind sectors. See 'Examples' ('Highlighting wind sectors').
 #' @param windsector.col color of the wind sector (if provided).
-#' @param main character, title. If no title is set a default one will be shown.
+#' @param main \code{character} or \code{expression}, figure title.
+#'        If not specified, a default one will be used.
 #' @param hue numeric vector of length 1 or two (for \code{type = "density"}
 #'        two are used, for \code{type = "histogram"} only the first one will be
 #'        used at the moment). Hue(s) for \code{colorspace::heat_hcl(...)}.
@@ -266,6 +269,11 @@ windrose.foehnix <- function(x, type = NULL, which = NULL, ddvar = "dd", ffvar =
 #'        if \code{x} is a multivariate object (see 'Details' section).
 #' @param breaks \code{NULL} or a sequence of \code{numeric} values to set
 #'        the breaks along \code{ff}.
+#' @param legend.pos character, either \code{right} (default) or \code{left}. Where to put
+#'        the legend.
+#' @param legend.title \code{character} or \code{expression} to set legend title. 
+#' @param labels.angle numeric, default is \code{225}. Where to draw the
+#'        labels in the density plot. \code{labels.angle} is in meteorological degrees.
 #'
 #' @details The \code{\link{windrose}} function can be used in different ways.
 #' The main purpose is to plot (conditional) wind roses for
@@ -412,7 +420,11 @@ windrose.default <- function(x, ff,
                              windsector = NULL, windsector.col = "gray90",
                              main = NULL, hue = c(10,100),
                              power = .5, ..., dd = NULL, filter = NULL,
-                             ffvar = "ff", ddvar = "dd", breaks = NULL) {
+                             ffvar = "ff", ddvar = "dd", breaks = NULL,
+                             legend.pos = c("right", "left"), legend.title = NULL, labels.angle = 225) {
+
+    stopifnot(is.numeric(labels.angle) | !length(labels.angle) == 1L)
+    legend.pos = match.arg(legend.pos)
 
     # If "x" is missing we need "dd"
     if (missing(x)) x <- dd
@@ -523,7 +535,7 @@ windrose.default <- function(x, ff,
 
         # X and Y limits
         xlim <- ylim <- max(density.breaks) * c(-1, 1)
-        xlim <- xlim * c(1, 1.5)
+        xlim <- xlim * if (legend.pos == "right") c(1.0, 1.5) else c(1.5, 1.0)
         # Title
         if ( is.null(main) ) main <- "Windrose"
 
@@ -538,7 +550,7 @@ windrose.default <- function(x, ff,
 
         # X and Y limits
         xlim <- ylim <- max(ff.breaks) * c(-1, 1)
-        xlim <- xlim * c(1, 1.5)
+        xlim <- xlim * if (legend.pos == "right") c(1.0, 1.5) else c(1.5, 1.0)
         
         # Picking some colors
         tab  <- windrose_get_cols(counts, tail(cols,1L), p = power)
@@ -606,7 +618,7 @@ windrose.default <- function(x, ff,
         lines(tmp$u, tmp$v, col = "gray50", lty = 2)
         # Else add label
         if ( d <= 0 ) next
-        tmp <- ddff2uv(45, d)
+        tmp <- ddff2uv(180 + labels.angle, d)
         text(tmp$u, tmp$v, sprintf(fmt, d), cex = .7)
     }
     lines(c(0,0), c(-1,1) * ifelse(type == "density", max(density.breaks), max(ff.breaks)))
@@ -621,9 +633,13 @@ windrose.default <- function(x, ff,
 
 
     if ( type == "density" ) {
-        legend("topright", fill = rev(cols), legend = rev(colnames(tab)), bty = "n")
+        legend(sprintf("top%s", legend.pos),
+               title = legend.title,
+               fill = rev(cols), legend = rev(colnames(tab)), bty = "n")
     } else {
-        legend("topright", fill = rev(tab$legend$color), legend = rev(tab$legend$level), bty = "n")
+        legend(sprintf("top%s", legend.pos),
+               title = legend.title,
+               fill = rev(tab$legend$color), legend = rev(tab$legend$level), bty = "n")
     }
     msg <- if(is.null(filter)) {
                sprintf("N = %d", nrow(data))
@@ -631,7 +647,7 @@ windrose.default <- function(x, ff,
                sprintf("N = %d/%d\ncustom data filter", nrow(data), filter_obj$total)
            }
     #text(x0, -mean(tail(at, 2)), pos = 4, msg)
-    legend("bottomright", bty = "n", legend = msg)
+    legend(sprintf("bottom%s", legend.pos), bty = "n", legend = msg)
 
     # Invisible return of some properties, mainly for testing.
     invisible(list(xlim       = xlim,

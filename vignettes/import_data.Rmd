@@ -1,0 +1,46 @@
+
+```{r, echo = FALSE}
+suppressPackageStartupMessages(library("foehnix"))
+```
+
+## Import Data
+
+Content of the demo data set "[ellboegen_100.csv](../data/ellboegen_100.csv)"
+
+```{r import ellboegen 1, echo = FALSE, result = "asis"}
+# Read the first few lines of the demo data set. Path relative to the
+# 'vignettes' folder.  Note: new files have to be copied into the docs folder
+# using pkgdown::init_site().
+x <- readLines("../pkgdown/data/ellboegen_100.csv", n = 10)
+cat(paste(x, collapse = "\n"), "\n")
+```
+
+```{r, echo = FALSE}
+## Keep current location, invisible
+```
+
+```{r}
+# Change directory (where 'ellboegen_100.csv' is stored)
+setwd("../pkgdown/data")
+
+# Loading library "zoo"
+library("zoo")
+
+# Import data set
+# Define the function which converts the index column (first column)
+# from UNIX time stamp (seconds since 1970-01-01 00:00:00) to POSIXct
+FUN <- function(x, origin, tz) as.POSIXct(x, tz = tz, origin = "1970-01-01 00:00:00")
+
+# Read data set
+data <- read.zoo("ellboegen_100.csv", sep = ";", header = TRUE,
+                 FUN = FUN, tz = "UTC",
+                 na.strings = "NA", strip.white = TRUE)
+```
+
+```{r}
+# Class/head of the object
+head(data)
+```
+
+
+

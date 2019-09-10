@@ -7,7 +7,9 @@
 \method{windrose}{default}(x, ff, interval = 10, type = "density",
   windsector = NULL, windsector.col = "gray90", main = NULL,
   hue = c(10, 100), power = 0.5, ..., dd = NULL, filter = NULL,
-  ffvar = "ff", ddvar = "dd", breaks = NULL)
+  ffvar = "ff", ddvar = "dd", breaks = NULL,
+  legend.pos = c("right", "left"), legend.title = NULL,
+  labels.angle = 225)
 }
 \arguments{
 \item{x}{either an univariate object (\code{numeric} vector or \code{zoo})
@@ -29,7 +31,8 @@ wind sectors. See 'Examples' ('Highlighting wind sectors').}
 
 \item{windsector.col}{color of the wind sector (if provided).}
 
-\item{main}{character, title. If no title is set a default one will be shown.}
+\item{main}{\code{character} or \code{expression}, figure title.
+If not specified, a default one will be used.}
 
 \item{hue}{numeric vector of length 1 or two (for \code{type = "density"}
 two are used, for \code{type = "histogram"} only the first one will be
@@ -55,6 +58,14 @@ if \code{x} is a multivariate object (see 'Details' section).}
 
 \item{breaks}{\code{NULL} or a sequence of \code{numeric} values to set
 the breaks along \code{ff}.}
+
+\item{legend.pos}{character, either \code{right} (default) or \code{left}. Where to put
+the legend.}
+
+\item{legend.title}{\code{character} or \code{expression} to set legend title.}
+
+\item{labels.angle}{numeric, default is \code{225}. Where to draw the
+labels in the density plot. \code{labels.angle} is in meteorological degrees.}
 }
 \description{
 Windrose plot, can handle two type of plots (see \code{type}) using

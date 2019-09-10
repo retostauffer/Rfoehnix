@@ -18,6 +18,12 @@
 
 * Additional tests added.
 * Added generic function for `IGN` (ignorance) as alternative score.
+* Windrose: now allows for inputs \code{main}, \code{legend.pos} ("right" or "left"),
+    \code{legend.title} (add legend title),
+    and \code{labels.angle} (where to plot the labels on density plots), and
+* Updated structure of the `pkgdown` site: combined `README.md` (`index.html` and 
+    github readme), removed "getting started", added demo data sets and vignette
+    "Import data".
 
 # foehnix 0.1-3 (August 2019)
 

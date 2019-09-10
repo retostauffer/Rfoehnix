@@ -8,21 +8,25 @@
 
 <title>Evaluates Data Filter Rules for foehnix Mixture Moel Calls — foehnix_filter • foehnix</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -32,8 +36,8 @@
 
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
-<meta property="og:title" content="Evaluates Data Filter Rules for foehnix Mixture Moel Calls — foehnix_filter" />
 
+<meta property="og:title" content="Evaluates Data Filter Rules for foehnix Mixture Moel Calls — foehnix_filter" />
 <meta property="og:description" content="foehnix models allow to specify an optional
 foehnix_filter. If a filter is given only a subset
 of the data set provided to foehnix is used
@@ -51,6 +55,7 @@ be used." />
 
 
 
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -59,6 +64,7 @@ be used." />
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -83,12 +89,9 @@ be used." />
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../articles/foehnix.html">Getting started</a>
-</li>
-<li class="dropdown">
+        <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How To
      
     <span class="caret"></span>
   </a>
@@ -109,7 +112,7 @@ be used." />
       <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
-      <a href="../articles/simulation.html">Simulation Examples</a>
+      <a href="../articles/import_data.html">Import Data</a>
     </li>
   </ul>
 </li>
@@ -133,6 +136,9 @@ be used." />
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
+      <a href="../articles/simulation.html">Verification with Simulated Data</a>
+    </li>
+    <li>
       <a href="../articles/families.html">foehnix Families</a>
     </li>
   </ul>
@@ -144,11 +150,10 @@ be used." />
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -159,6 +164,7 @@ be used." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -170,7 +176,6 @@ be used." />
     </div>
 
     <div class="ref-description">
-    
     <p><code><a href='foehnix.html'>foehnix</a></code> models allow to specify an optional
 <code>foehnix_filter</code>. If a filter is given only a subset
 of the data set provided to <code><a href='foehnix.html'>foehnix</a></code> is used
@@ -184,14 +189,13 @@ However, the filter option allows to even implement complex
 filter rules if required. The 'Details' section contains
 further information and examples how this filter rules can
 be used.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>foehnix_filter</span>(<span class='no'>x</span>, <span class='no'>filter</span>, <span class='kw'>cols</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='co'># S3 method for foehnix.filter</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
-    
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -218,13 +222,12 @@ If <code>NULL</code> all elements have to be non-missing.</p></td>
       <td><p>currently unused.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns a vector of integers corresponding to those rows in
 the data set <code>x</code> which fulfill all filte criteria. If input
 <code>filter = NULL</code> an integer vector <code>1:nrow(x)</code> is returned.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Foehn winds often (not always) show a very specific wind direction
@@ -263,7 +266,9 @@ filter. Examples:</p>
 <li><p>Filters are not restricted to wind direction (as shown in the
         examples above)!</p></li>
 </ul>
-    <p>Custom filter functions: Instead of only providing a segment/sector defined
+
+
+<p>Custom filter functions: Instead of only providing a segment/sector defined
 by two finite numeric values (see 'Simple filter' above) a named list of
 functions can be provided. These functions DO HAVE TO return a vector of
 logical values (<code>TRUE</code> (good),<code>FALSE</code> (bad), or <code>NA</code> (ugly))
@@ -274,7 +279,7 @@ examples:</p>
 <li><p><code>filter = list(dd = function(x) x &gt;= 43 &amp; x &lt;= 223)</code>:
         The function will be applied to <code>x$dd</code>.
         A vector with <code>TRUE</code>, <code>FALSE</code>, or <code>NA</code> is returned for
-        each <code>1:nrow{x}</code> which takes <code>NA</code> if <code><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na(x$dd)</a></code>,
+        each <code>1:nrow{x}</code> which takes <code>NA</code> if <code><a href='https://rdrr.io/r/base/NA.html'>is.na(x$dd)</a></code>,
         <code>TRUE</code> if <code>x$dd &gt;= 43 &amp; x$dd &lt;= 223</code> and <code>FALSE</code> else.
         Thus, this filter is the very same as the first example in the
         'Simple filter' section above.</p></li>
@@ -282,16 +287,17 @@ examples:</p>
         Custom filter applied to column <code>x$ff</code>.  A vector with
         <code>TRUE</code>, <code>FALSE</code>, and <code>NA</code> is returned for each
         observation <code>1:nrow{x}</code> which takes <code>NA</code> if
-        <code><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na(x$ff)</a></code>, <code>TRUE</code> if <code>x$ff &gt; 2.0</code>, and
+        <code><a href='https://rdrr.io/r/base/NA.html'>is.na(x$ff)</a></code>, <code>TRUE</code> if <code>x$ff &gt; 2.0</code>, and
         <code>FALSE</code> else.</p></li>
-<li><p><code>filter = list(ff = function(x) &#8230;, dd = function(x) &#8230;)</code>:
+<li><p><code>filter = list(ff = function(x) ..., dd = function(x) ...)</code>:
         two filter functions, one applied to <code>x$ff</code>, one to <code>x$dd</code>.
         Note that observations/rows will be classified as 'ugly' if one of the
         two filters returns <code>NA</code>. If no <code>NA</code> is returned the
         observation is classified as 'good' if both return <code>TRUE</code>, and
         as 'bad' (outside filter) if at least one returns <code>FALSE</code>.</p></li>
 </ul>
-    <p>Complex filters: If <code>filter</code> is a function this filter function will be
+
+<p>Complex filters: If <code>filter</code> is a function this filter function will be
 applied to the full input object <code>x</code>. This allows to write functions of
 any complexity. As an example:</p>
 <ul>
@@ -300,11 +306,11 @@ any complexity. As an example:</p>
         to the <code>foehnix_filter</code> function (<code>x</code>). Thus,
         the different columns of the object can be accessed directly
         trough their names (e.g., <code>x$dd</code>, <code>x$ff</code>).
-        A vector of length <code><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow(x)</a></code> with <code>TRUE</code>, <code>FALSE</code>,
+        A vector of length <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(x)</a></code> with <code>TRUE</code>, <code>FALSE</code>,
         and <code>NA</code> has to be returned. Only those classified as 'good' (<code>TRUE</code>)
         will be used for classification.</p></li>
 </ul>
-    
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Loading example data set and conver to zoo time series</span>
@@ -315,8 +321,8 @@ any complexity. As an example:</p>
 <span class='co'># -----------------</span>
 <span class='co'># Filter for observations where the wind direction is</span>
 <span class='co'># within 100 - 260 (southerly flow):</span>
-<span class='no'>idx_south</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>260</span>)))
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>idx_south</span>)</div><div class='output co'>#&gt; 
+<span class='no'>idx_south</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>100</span>, <span class='fl'>260</span>)))
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>idx_south</span>)</div><div class='output co'>#&gt; 
 #&gt; Foehnix Filter Object:
 #&gt; Call: foehnix_filter(x = ellboegen, filter = list(dd = c(100, 260)))
 #&gt; Total data set length:            105370
@@ -326,18 +332,18 @@ any complexity. As an example:</p>
 <span class='co'># Same filter but for northerly flows, taking rows with</span>
 <span class='co'># wind direction observations (dd) smaller than 45 or</span>
 <span class='co'># larger than 315 degrees:</span>
-<span class='no'>idx_north</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>315</span>, <span class='fl'>45</span>)))
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>idx_north</span>)</div><div class='output co'>#&gt; 
+<span class='no'>idx_north</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>ellboegen</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>315</span>, <span class='fl'>45</span>)))
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>idx_north</span>)</div><div class='output co'>#&gt; 
 #&gt; Foehnix Filter Object:
 #&gt; Call: foehnix_filter(x = ellboegen, filter = list(dd = c(315, 45)))
 #&gt; Total data set length:            105370
 #&gt; The good (within filter):          18143 (17.2 percent)
 #&gt; The bad (outside filter):          84505 (80.2 percent)
 #&gt; The ugly (NA; missing values):      2722 ( 2.6 percent)</div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>,                 <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"all observations"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_south</span>$<span class='no'>good</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"southerly winds"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/hist'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_north</span>$<span class='no'>good</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"northerly winds"</span>)</div><div class='img'><img src='foehnix_filter-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>,                 <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"all observations"</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_south</span>$<span class='no'>good</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"southerly winds"</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>ellboegen</span>$<span class='no'>dd</span>[<span class='no'>idx_north</span>$<span class='no'>good</span>], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"dd"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"northerly winds"</span>)</div><div class='img'><img src='foehnix_filter-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Case 2:</span>
 <span class='co'># -----------------</span>
 <span class='co'># A second useful option is to add two filters:</span>
@@ -351,9 +357,9 @@ any complexity. As an example:</p>
 <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='demodata.html'>demodata</a></span>()
 
 <span class='co'># Now apply a wind filter</span>
-<span class='no'>my_filter</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>crest_dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
+<span class='no'>my_filter</span>  <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>43</span>, <span class='fl'>223</span>), <span class='kw'>crest_dd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>90</span>, <span class='fl'>270</span>))
 <span class='no'>filter_obj</span> <span class='kw'>&lt;-</span> <span class='fu'>foehnix_filter</span>(<span class='no'>data</span>, <span class='no'>my_filter</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>filter_obj</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>filter_obj</span>)</div><div class='output co'>#&gt; 
 #&gt; Foehnix Filter Object:
 #&gt; Call: foehnix_filter(x = data, filter = my_filter)
 #&gt; Total data set length:            108425
@@ -363,7 +369,7 @@ any complexity. As an example:</p>
 <span class='co'># Subsetting the 'good' rows</span>
 <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='no'>data</span>[<span class='no'>filter_obj</span>$<span class='no'>good</span>,]
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/subset'>subset</a></span>(<span class='no'>data</span>, <span class='kw'>select</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>dd</span>, <span class='no'>crest_dd</span>)))</div><div class='output co'>#&gt;      Index                           dd           crest_dd  
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span>(<span class='no'>data</span>, <span class='kw'>select</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>dd</span>, <span class='no'>crest_dd</span>)))</div><div class='output co'>#&gt;      Index                           dd           crest_dd  
 #&gt;  Min.   :2006-01-01 01:00:00   Min.   : 43.0   Min.   : 90  
 #&gt;  1st Qu.:2008-05-24 03:45:00   1st Qu.:124.0   1st Qu.:176  
 #&gt;  Median :2011-03-03 22:30:00   Median :132.0   Median :181  
@@ -376,11 +382,8 @@ any complexity. As an example:</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
@@ -389,19 +392,23 @@ any complexity. As an example:</p>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

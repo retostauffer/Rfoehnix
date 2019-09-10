@@ -35,3 +35,7 @@ div.hide-Rinput::before {
 div.hide-Rinput:hover {
     color: white; 
 }
+
+h3 {
+    font-size: 1.5em;
+}

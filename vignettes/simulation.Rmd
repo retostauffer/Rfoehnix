@@ -1,5 +1,5 @@
 
-## Simulation
+## Verification with Simulated Data
 
 The `foehnix` package allows to estimate Gaussian and logistic
 mixture models with and without censoring and truncation.

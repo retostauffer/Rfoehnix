@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
 <meta property="og:description" content="">
@@ -37,12 +38,9 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/foehnix.html">Getting started</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    How To
      
     <span class="caret"></span>
   </a>
@@ -63,7 +61,7 @@
       <a href="../articles/image.html">[Plot] Hovmöller Diagram</a>
     </li>
     <li>
-      <a href="../articles/simulation.html">Simulation Examples</a>
+      <a href="../articles/import_data.html">Import Data</a>
     </li>
   </ul>
 </li>
@@ -87,6 +85,9 @@
       <a href="../articles/advanced_simulation.html">Censoring and Truncation</a>
     </li>
     <li>
+      <a href="../articles/simulation.html">Verification with Simulated Data</a>
+    </li>
+    <li>
       <a href="../articles/families.html">foehnix Families</a>
     </li>
   </ul>
@@ -101,7 +102,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,6 +115,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -131,8 +133,8 @@
 <h2 class="hasAnchor">
 <a href="#foehnix-demo" class="anchor"></a>Foehnix Demo</h2>
 <p>This page shows a <em>real world</em> demo of the automated foehn classification method <strong>foehnix</strong> based on meteorological observations from two sites in Tyrol, Austria. <a href="reference/ellboegen.html">One station</a> is located in the Brenner valley south of Innsbruck on 1080 meters above mean sea level, the <a href="reference/sattelberg.html">second station</a> is located close to the main alpine ridge on 2107 meters above mean sea level.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"ellboegen"</span>); <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"sattelberg"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(ellboegen);   <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(sattelberg)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"ellboegen"</span>); <span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"sattelberg"</span>)
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(ellboegen);   <span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(sattelberg)</code></pre></div>
 <pre><code>##                      dd  ff  rh    t
 ## 2006-01-01 01:00:00 171 0.6  90 -0.4
 ## 2006-01-01 02:00:00 268 0.3 100 -1.8
@@ -153,22 +155,22 @@
 <a href="#south-foehn-classification-for-ellbogen" class="anchor"></a>South Foehn Classification for Ellbögen</h3>
 <p>To perform the classification we first of all have to prepare our data sets. <code><a href="../reference/foehnix.html">foehnix(...)</a></code> expects the input to be of class <code>zoo</code> (zoo time series object; based on the  <code>zoo</code> package). The data sets included in this package (<code>ellboegen</code>, <code>sattelberg</code>, …; see <a href="references/demodata.html"><code>demodata</code></a>) are already zoo objects. Thus, we only have to load the meteorological observations for Ellbögen (valley station) and Sattelberg (crest station):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load demo data sets (zoo time series objects)</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"ellboegen"</span>,  <span class="dt">package =</span> <span class="st">"foehnix"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(<span class="st">"sattelberg"</span>, <span class="dt">package =</span> <span class="st">"foehnix"</span>)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"ellboegen"</span>,  <span class="dt">package =</span> <span class="st">"foehnix"</span>)
+<span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"sattelberg"</span>, <span class="dt">package =</span> <span class="st">"foehnix"</span>)</code></pre></div>
 <p>As we want to use information from both stations: rename the variables of the <code>sattelberg</code> object and combine the two data sets into one <code>zoo</code> object called <code>data</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Modify sattelberg variable names (crest_ identifies Sattelberg</span>
 <span class="co"># observations, our crest station) and combine both data sets.</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sattelberg) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"crest_"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(sattelberg))
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/merge">merge</a></span>(ellboegen, sattelberg)
+<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sattelberg) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"crest_"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sattelberg))
+data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(ellboegen, sattelberg)
 
 <span class="co"># </span><span class="al">NOTE</span><span class="co">: for demonstration purpose we split the data set into</span>
 <span class="co"># two pieces: a training and a test data set. </span>
 <span class="co"># The training data set is used to estimate the mixture model, the</span>
 <span class="co"># test data set will be used for "predictions" (see "Predictions"</span>
 <span class="co"># section of this file).</span>
-train &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(data, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(data) <span class="op">-</span><span class="st"> </span><span class="dv">10</span>)
-test  &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(data, <span class="dv">10</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rm">rm</a></span>(data) <span class="co"># Delete 'data'</span></code></pre></div>
+train &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(data) <span class="op">-</span><span class="st"> </span><span class="dv">10</span>)
+test  &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(data, <span class="dv">10</span>)
+<span class="kw"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(data) <span class="co"># Delete 'data'</span></code></pre></div>
 <p>In addition we are calculating the potential temperature difference between the two sites using a dry adiabatic lapse rate of one 10 degrees Celsius per 1000 meters. The difference in altitude between the two stations is 1027 meters which yields:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Dry adiabatic temperature difference between </span>
 <span class="co"># Sattelberg (data$crest_t) and Ellboegen (data$t) corrected by</span>
@@ -181,7 +183,7 @@ train<span class="op">$</span>diff_t &lt;-<span class="st"> </span>train<span cl
 <li>specify a second filter such that only observations are used for classification where the crest station shows a southerly flow (wind direction within <code>&gt;= 90</code> and <code>&lt;= 270</code>, <code>sat_dd = c(90, 270)</code>).</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify our wind filter rule(s)</span>
-filter &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
+filter &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">43</span>, <span class="dv">223</span>), <span class="dt">crest_dd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">90</span>, <span class="dv">270</span>))
 
 <span class="co"># Estimate the mixture model for automated foehn classification</span>
 mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff, <span class="dt">data =</span> train, <span class="dt">filter =</span> filter,
@@ -198,11 +200,11 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <span class="co"># edf: effective degrees of freedom</span>
 <span class="co"># AIC: Akaike information criterion</span>
 <span class="co"># BIC: Bayesian information criterion</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="../reference/foehnix.html">logLik</a></span>(mod), <span class="kw"><a href="../reference/edf.html">edf</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">AIC</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">BIC</a></span>(mod))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="../reference/foehnix.html">logLik</a></span>(mod), <span class="kw"><a href="../reference/edf.html">edf</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">AIC</a></span>(mod), <span class="kw"><a href="../reference/foehnix.html">BIC</a></span>(mod))</code></pre></div>
 <pre><code>##    loglik       edf       AIC       BIC 
 ## -55763.83      6.00 111539.67 111588.29</code></pre>
 <p>The <code>print</code> and <code>summary</code> methods show some information about the model such as number of observations used for the classification, the filter and its effect, and the corresponding information criteria.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(mod)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(mod)</code></pre></div>
 <pre><code>## 
 ## Call: foehnix(formula = diff_t ~ ff, data = train, switch = TRUE, filter = filter, 
 ##     verbose = FALSE)
@@ -217,11 +219,11 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 3.2 seconds
+## Time required for model estimation: 2.8 seconds
 ## 
 ## Use summary(object, detailed = TRUE) to get additional test statistics.</code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the estimated coefficients.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(mod)</code></pre></div>
 <pre><code>## Coefficients of foehnix model
 ## Model formula:           diff_t ~ ff
 ## foehnix family of class: Gaussian
@@ -229,15 +231,15 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## Coefficients
 ##         mu1      sigma1         mu2      sigma2 (Intercept)          ff 
 ##   5.6735162   2.7399700   0.8667821   1.3340624  -5.7422844   1.0656787</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/coef">coef</a></span>(mod)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(c[<span class="st">"mu1"</span>])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">c &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span>(mod)
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(c[<span class="st">"mu1"</span>])</code></pre></div>
 <pre><code>##      mu1 
 ## 5.673516</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(c[<span class="st">"mu2"</span>])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(c[<span class="st">"mu2"</span>])</code></pre></div>
 <pre><code>##       mu2 
 ## 0.8667821</code></pre>
 <p>The <code>summary</code> method allows to get the test statistics for the estimated coefficients, namely the z statistics for the concomitant model (if any) and the t statistics for the two location parameters of the two components.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(mod, <span class="dt">detailed =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(mod, <span class="dt">detailed =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## 
 ## Call: foehnix(formula = diff_t ~ ff, data = train, switch = TRUE, filter = filter, 
 ##     verbose = FALSE)
@@ -252,7 +254,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## 
 ## Log-likelihood: -55763.8, 6 effective degrees of freedom
 ## Corresponding AIC = 111539.7, BIC = 111588.3
-## Time required for model estimation: 3.2 seconds
+## Time required for model estimation: 2.8 seconds
 ## 
 ## Cluster separation (ratios close to 1 indicate
 ## well separated clusters):
@@ -272,22 +274,22 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ## Dispersion parameter for binomial family taken to be 1.</code></pre>
 <p>The method <code>plot</code> provides a set of model assessment plots. Different types are available, if no <code>which</code> argument is set all will be shown one after another.</p>
 <p><code>which = "loglik"</code> shows the log-likelihood path of the two components of the model (the part for the two components of the mixture model plus the one of the concomitant model) plus the full likelihood path. The x-axis shows the log-iterations of the EM algorithm (see <a href="articles/mixedmodel.html">statistical models</a> for more details). Increasing values indicate positive log-likelihood contributions (improvement of the model).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglik"</span>, <span class="dt">log =</span> F)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglik"</span>, <span class="dt">log =</span> F)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
 <p><code>which = "loglikcontribution"</code> shows the same information as <code>which = "loglik"</code> but with respect to the log-likelihood of the initial parameters. Increasing values indicate positive log-likelihood contributions (improvement of the model).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"loglikcontribution"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-12-1.png" width="960"></p>
 <p>Similar to the plots above we can also check the paths of the coefficients trough the iterations of the EM algorithm with <code>which = "coef"</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"coef"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"coef"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
 <p>Last but not least the <code>which = "hist"</code> plot shows the conditional histograms of the two clusters. Two histograms are shown given the main covariate of the <code>foehnix</code> mixture model, in this case (model <code>mod</code>) it is <code>delta_t</code>, the potential temperature difference between the valley station <a href="reference/ellboegen.html">Ellbögen</a> and the crest station <a href="reference/sattelberg.html">Sattelberg</a>. The left panel corresponds to the “no foehn” component or cluster, the right one to the “foehn” component. If a <code>filter</code> rule is used: only the data which have been used for classification will be shown. Observations with a higher probability to be in the left component are sown left, observations with a higher probability to be a member of the second component are shown right. On top (line) the estimated density of the two components is shown.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(mod, <span class="dt">which =</span> <span class="st">"hist"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-14-1.png" width="960"></p>
 <p>Fitted probabilities (the probabilities obtained by the model based on the training data set) can be accessed by calling <code>fitted</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Class of fitted probabilities is a zoo object</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">class</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod))</code></pre></div>
 <pre><code>## [1] "zoo"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod))</code></pre></div>
 <pre><code>##      Index                      fitted(mod)   
 ##  Min.   :2006-01-01 01:00:00   Min.   :0.00   
 ##  1st Qu.:2009-04-01 22:15:00   1st Qu.:0.00   
@@ -298,19 +300,19 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 ##                                NA's   :38700</code></pre>
 <p>The method let’s you access the fitted probabilities (<code>which = "probability"</code>), a flag which comes with the fitted values (<code>which = "flag"</code>), or both (<code>which = "both"</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Probabilities only</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"probability"</span>))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"probability"</span>))</code></pre></div>
 <pre><code>## 2018-12-31 09:00:00 2018-12-31 10:00:00 2018-12-31 11:00:00 
 ##                  NA                  NA                  NA 
 ## 2018-12-31 12:00:00 2018-12-31 13:00:00 2018-12-31 14:00:00 
 ##                  NA                  NA                  NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Flag only</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"flag"</span>))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"flag"</span>))</code></pre></div>
 <pre><code>## 2018-12-31 09:00:00 2018-12-31 10:00:00 2018-12-31 11:00:00 
 ##                  NA                  NA                  NA 
 ## 2018-12-31 12:00:00 2018-12-31 13:00:00 2018-12-31 14:00:00 
 ##                  NA                  NA                  NA</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Both</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"both"</span>))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod, <span class="dt">which =</span> <span class="st">"both"</span>))</code></pre></div>
 <pre><code>##                     prob flag
 ## 2018-12-31 09:00:00   NA   NA
 ## 2018-12-31 10:00:00   NA   NA
@@ -354,11 +356,11 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"freq"</span>)</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
 <p><strong>Example 2</strong>: Aggregated to three-hourly intervals (<code>deltat = 3600 * 3</code>), two-week mean values (<code>deltad = 14L</code>), occurrance of foehn (<code>FUN = "occ"</code>), with custom colors and contours (without labels).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(colorspace<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/colorspace/topics/hcl_palettes">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="dt">h =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">120</span>), <span class="dt">c. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">80</span>, <span class="dv">10</span>)))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">sequential_hcl</a></span>(<span class="dv">51</span>, <span class="dt">h =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="dv">50</span>, <span class="dv">120</span>), <span class="dt">c. =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">80</span>, <span class="dv">10</span>)))
 <span class="kw"><a href="../reference/image.html">image</a></span>(mod, <span class="dt">FUN =</span> <span class="st">"occ"</span>, <span class="dt">col =</span> col,
       <span class="dt">deltat =</span> <span class="dv">3</span> <span class="op">*</span><span class="st"> </span><span class="dv">3600</span>, <span class="dt">deltad =</span> 14L,
       <span class="dt">contours =</span> <span class="ot">TRUE</span>, <span class="dt">contour.col =</span> <span class="st">"white"</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">drawlabels =</span> <span class="ot">FALSE</span>,
-      <span class="dt">main =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,
+      <span class="dt">main =</span> <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,
                    <span class="st">"2-Weekly/3-Hourly Sums"</span>, <span class="dt">sep =</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>))</code></pre></div>
 <p><img src="foehnix_files/figure-html/unnamed-chunk-20-1.png" width="1152"></p>
 </div>
@@ -370,7 +372,7 @@ mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix
 <p>Assume we have estimated a <code>foehnix</code> mixture model and a set of new observations from our two stations (<a href="reference/ellboegen.html">Ellbögen</a> and <a href="reference/sattelberg.htlm">Sattelberg</a>) have become available. We would like to get foehn probabilities this new data set. Luckily we put aside 10 observations earlier (the <code>test</code> data set):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate potential temperature difference (as we did above)</span>
 test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span class="op">$</span>crest_t <span class="op">+</span><span class="st"> </span><span class="fl">10.27</span> <span class="op">-</span><span class="st"> </span>test<span class="op">$</span>t
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(test)</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(test)</code></pre></div>
 <pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
 ## 2018-12-31 15:00:00  NA  NA 100  0.0       NA       NA      100    -3.7
 ## 2018-12-31 16:00:00  NA  NA 100 -0.2       NA       NA      100    -4.0
@@ -394,7 +396,7 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
 ## 2018-12-31 23:00:00   5.37
 ## 2019-01-01 00:00:00     NA</code></pre>
 <p>Given our model we can now perform the classification on this new data set which has not been used for training the <code>foehnix</code> mixture model by calling:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(mod, <span class="dt">newdata =</span> test)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(mod, <span class="dt">newdata =</span> test)</code></pre></div>
 <pre><code>##                     prob flag
 ## 2018-12-31 15:00:00   NA   NA
 ## 2018-12-31 16:00:00   NA   NA
@@ -407,9 +409,9 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
 ## 2018-12-31 23:00:00   NA   NA
 ## 2019-01-01 00:00:00   NA   NA</code></pre>
 <p>For demonstration: we would have become the same (roughly the same, as a slightly different training data set is used) if we would re-estimate the model based on the whole data set (<code>train</code> and <code>test</code> combined) and check the estimated probabilities of the last 10 entries, the very same times we have put aside as our <code>test</code> data set:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff, <span class="dt">data =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(train,test),
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/foehnix.html">foehnix</a></span>(diff_t <span class="op">~</span><span class="st"> </span>ff, <span class="dt">data =</span> <span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(train,test),
                 <span class="dt">filter =</span> filter, <span class="dt">switch =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(mod2, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>), <span class="dv">10</span>))</code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/r/utils/head.html">tail</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/fitted.values.html">fitted</a></span>(mod2, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>), <span class="dv">10</span>))</code></pre></div>
 <pre><code>##                     prob flag
 ## 2018-12-31 15:00:00   NA   NA
 ## 2018-12-31 16:00:00   NA   NA
@@ -425,6 +427,7 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -441,17 +444,20 @@ test<span class="op">$</span>diff_t &lt;-<span class="st"> </span>test<span clas
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
