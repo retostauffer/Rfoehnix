@@ -33,14 +33,14 @@ Aim of this software package:
 * create results which are **comparable to other locations**
 
 
-# Important Links
+### Important Links
 
 * [_R foehnix_ documentation](http://retostauffer.github.io/Rfoehnix) available on github.
 * [Python version of foehnix](https://github.com/matthiasdusch/foehnix-python), also available on github.
 
 
 
-# First steps
+# First Steps
 
 ## Installation
 
@@ -61,7 +61,7 @@ However, feel free to install one of our earlier releases
 ([show release candidates](https://github.com/retostauffer/Rfoehnix/releases)).
 
 
-```
+``` r
 # Load library 'remotes'. If not yet installed, call
 # install.packages("remotes") first.
 library("remotes")
@@ -80,7 +80,7 @@ asdf
 Or do it the good old way via git clone (Note: dependencies have to
 be installed manually):
 
-```
+``` bash
 # Change directory
 cd <somewhere/on/your/local/disc>
 
@@ -104,7 +104,7 @@ devtools::install("foehnix")
 
 Fans of the good old console can of course use the good old way.
 
-```
+``` r
 # Change directory
 cd <somewhere/on/your/local/disc>
 
@@ -227,9 +227,5 @@ McCullagh P, Nelder JA (1999).
 Likelihood functions for binary data. In <i>Generalized Linear Models</i> (Chapter 4.4),
 2<i>nd</i> edition, ISBN 0-412-31760-5.
 </p>
-
-
-
-
 
 

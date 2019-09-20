@@ -8,8 +8,8 @@ test:
 # testing md5 idea
 md5:
 	make install
-	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test_md5.R')"
-	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test_results.R')"
+	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test-md5.R')"
+	Rscript -e "library('foehnix'); testthat::test_file('tests/testthat/test-results.R')"
 
 # Code coverage and report.
 # Requires 'covr' to be installed. Saves the coverage summary to '_coverage.rds'.

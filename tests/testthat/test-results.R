@@ -21,22 +21,22 @@ test_that("Testing results for models, Tyrolean data set", {
         expect_silent(ell1 <- foehnix(ff ~ 1, data = data_ell, filter = filter_ell, verbose = FALSE))
         expect_silent(write.csv(ell1, file = tmpfile, info = FALSE))
         #print(tools::md5sum(tmpfile))
-        expect_true(tools::md5sum(tmpfile) == "02d5c0c4ab6afafb27e178977e89fe1b")
+        expect_true(tools::md5sum(tmpfile) == "b604d81ce93f47d6479acf57c52f53a2")
 
         expect_silent(ell2 <- foehnix(ff ~ rh, data = data_ell, filter = filter_ell, verbose = FALSE))
         expect_silent(write.csv(ell2, file = tmpfile, info = FALSE))
         #print(tools::md5sum(tmpfile))
-        expect_true(tools::md5sum(tmpfile) == "1807cfb60f0b28438ab0fe80621a8ca1")
+        expect_true(tools::md5sum(tmpfile) == "c2fadc758ddbcb1973872f4a8c4f3db5")
 
         expect_silent(tyr1 <- foehnix(ff ~ 1, data = data_tyrol, filter = filter_tyrol, verbose = FALSE))
         expect_silent(write.csv(tyr1, file = tmpfile, info = FALSE))
         #print(tools::md5sum(tmpfile))
-        expect_true(tools::md5sum(tmpfile) == "0825a50c768fca512590f1ce49d0f37d")
+        expect_true(tools::md5sum(tmpfile) == "43562856bc775e05f8f17d3deb27447d")
 
-        expect_silent(tyr2 <- foehnix(ff ~ 1, data = data_tyrol, filter = filter_tyrol, verbose = FALSE))
+        expect_silent(tyr2 <- foehnix(ff ~ rh + diff_t, data = data_tyrol, filter = filter_tyrol, verbose = FALSE))
         expect_silent(write.csv(tyr2, file = tmpfile, info = FALSE))
         #print(tools::md5sum(tmpfile))
-        expect_true(tools::md5sum(tmpfile) == "0825a50c768fca512590f1ce49d0f37d")
+        expect_true(tools::md5sum(tmpfile) == "f1cb14d57e0a8697fd8d0e3c6c0360ff")
     }
 
 })

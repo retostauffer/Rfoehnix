@@ -267,13 +267,13 @@ write.csv.foehnix <- function(x, file, info = TRUE, format = NULL, ...) {
     # Prepare the data set
     if (is.null(format)) {
         datetime <- data.frame(timestamp = as.numeric(index(x$prob)))
-        fmt_data <- "%10d; %6.4f; %4d"
+        fmt_data <- "%10d; %6.3f; %4d"
         fmt_head <- "%10s; %6s; %4s"
     } else {
         datetime <- data.frame(datetime = strftime(index(x$prob), format), 
                                stringsAsFactors = FALSE)
         nmax <- max(nchar(datetime$datetime), na.rm = TRUE)
-        fmt_data <- paste0("%", nmax, "s; %6.4f; %4d")
+        fmt_data <- paste0("%", nmax, "s; %6.3f; %4d")
         fmt_head <- paste0("%", nmax, "s; %6s; %4s")
         if (anyDuplicated(datetime$datetime))
             warning(sprintf("Custom format \"%s\" results in non-unique datetime information.",
