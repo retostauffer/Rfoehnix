@@ -1,6 +1,6 @@
 Package: foehnix
 Type: Package
-Title: Objectiv Foehn Diagnosis
+Title: Objective Foehn Diagnosis
 Version: 0.1.4
 Date: 2019-08-13
 Authors@R: c(person(given = "Reto", family = "Stauffer", role = c("aut", "cre"),
