@@ -14,6 +14,11 @@
     labels/legends.
 * Updated a series of _R_ documentation pages.
 
+# foehnix 0.1-5 (March 2023; bugfixes)
+
+* Fix in `demodata()` when loading multiple stations.
+* Series of small testthat fixes (new default color, matrix/array class).
+
 # foehnix 0.1-4 (August 2019; development)
 
 * Additional tests added.

@@ -18,7 +18,7 @@ Destandardize a Standardized Matrix
 Reverse function of \code{\link[foehnix]{standardize}}.
 }
 \examples{
-# See example on R documentation for \\code{?standardize}.
+# See example on R documentation for \code{?standardize}.
 
 }
 \seealso{

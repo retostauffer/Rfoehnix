@@ -17,9 +17,15 @@
 \alias{summary.foehnix}
 \title{Foehn Classification Based on a Two-Component Mixture Model}
 \usage{
-foehnix(formula, data, switch = FALSE, filter = NULL,
-  family = "gaussian", control = foehnix.control(family, switch, ...),
-  ...)
+foehnix(
+  formula,
+  data,
+  switch = FALSE,
+  filter = NULL,
+  family = "gaussian",
+  control = foehnix.control(family, switch, ...),
+  ...
+)
 
 \method{logLik}{foehnix}(object, ...)
 

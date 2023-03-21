@@ -5,9 +5,16 @@
 \alias{image.foehnix}
 \title{foehnix Image Plot - Hovmoeller Diagram}
 \usage{
-\method{image}{foehnix}(x, FUN = "freq", deltat = NULL, deltad = 7L,
-  col = rev(gray.colors(20)), contours = FALSE,
-  contour.col = "black", ...)
+\method{image}{foehnix}(
+  x,
+  FUN = "freq",
+  deltat = NULL,
+  deltad = 7L,
+  col = rev(gray.colors(20)),
+  contours = FALSE,
+  contour.col = "black",
+  ...
+)
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}}.}

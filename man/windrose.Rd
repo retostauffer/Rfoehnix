@@ -7,9 +7,18 @@
 \usage{
 windrose(x, ...)
 
-\method{windrose}{foehnix}(x, type = NULL, which = NULL,
-  ddvar = "dd", ffvar = "ff", breaks = NULL, ncol = NULL,
-  maxpp = Inf, ..., main = NULL)
+\method{windrose}{foehnix}(
+  x,
+  type = NULL,
+  which = NULL,
+  ddvar = "dd",
+  ffvar = "ff",
+  breaks = NULL,
+  ncol = NULL,
+  maxpp = Inf,
+  ...,
+  main = NULL
+)
 }
 \arguments{
 \item{x}{object of class \code{\link{foehnix}} if the windrose plot is applied

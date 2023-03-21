@@ -4,12 +4,26 @@
 \alias{windrose.default}
 \title{Default Wind Rose Plot}
 \usage{
-\method{windrose}{default}(x, ff, interval = 10, type = "density",
-  windsector = NULL, windsector.col = "gray90", main = NULL,
-  hue = c(10, 100), power = 0.5, ..., dd = NULL, filter = NULL,
-  ffvar = "ff", ddvar = "dd", breaks = NULL,
-  legend.pos = c("right", "left"), legend.title = NULL,
-  labels.angle = 225)
+\method{windrose}{default}(
+  x,
+  ff,
+  interval = 10,
+  type = "density",
+  windsector = NULL,
+  windsector.col = "gray90",
+  main = NULL,
+  hue = c(10, 100),
+  power = 0.5,
+  ...,
+  dd = NULL,
+  filter = NULL,
+  ffvar = "ff",
+  ddvar = "dd",
+  breaks = NULL,
+  legend.pos = c("right", "left"),
+  legend.title = NULL,
+  labels.angle = 225
+)
 }
 \arguments{
 \item{x}{either an univariate object (\code{numeric} vector or \code{zoo})
@@ -128,40 +142,40 @@ head(data)
 dd <- as.vector(data$dd)
 ff <- as.vector(data$ff)
 windrose(dd, ff,
-         main = "Demo Windrose\\nUse vector inputs")
+         main = "Demo Windrose\nUse vector inputs")
 windrose(dd = dd, ff = ff,
-         main = "Demo Windrose\\nUse vector inputs")
+         main = "Demo Windrose\nUse vector inputs")
 
 # Using univariate zoo objects as input:
 windrose(dd = data$dd, ff = data$ff,
-         main = "Demo Windrose\\nUnivariate zoo objects as inputs")
+         main = "Demo Windrose\nUnivariate zoo objects as inputs")
 
 # Or specify a multivariate zoo object or data.frame
 # object on input x:
 windrose(data,
-         main = "Demo Windrose\\nUse multivariate zoo object")
+         main = "Demo Windrose\nUse multivariate zoo object")
 windrose(as.data.frame(data),
-         main = "Demo Windrose\\nUse multivariate data.frame object")
+         main = "Demo Windrose\nUse multivariate data.frame object")
 
 # Custom names for ff/dd
 copy <- data
 names(copy)[1:2] <- c("wind_dir", "wind_spd")
-windrose(copy, main = "Demo Windrose\\nMultivariate zoo, custom names",
+windrose(copy, main = "Demo Windrose\nMultivariate zoo, custom names",
          ddvar = "wind_dir", ffvar = "wind_spd")
 
 # Highlighting wind sectors
 windrose(data, windsector = list(c(43, 223)),
-         main = "Windrose\\nUnnamed Wind Sector")
+         main = "Windrose\nUnnamed Wind Sector")
 windrose(data, windsector = matrix(c(43, 223), nrow = 1),
-         main = "Windrose\\nUnnamed Wind Sector")
+         main = "Windrose\nUnnamed Wind Sector")
 windrose(data, windsector = data.frame(from = 43, to = 223),
-         main = "Windrose\\nUnnamed Wind Sector")
+         main = "Windrose\nUnnamed Wind Sector")
 windrose(data, windsector = list(A = c(100, 160), B = c(310, 10)),
-         main = "Windrose\\nNamed Wind Sector")
+         main = "Windrose\nNamed Wind Sector")
 sectors <- matrix(c(100, 160, 310, 10), nrow = 2, byrow = TRUE,
                   dimnames = list(c("Down", "Up"), NULL))
 windrose(data, windsector = sectors, 
-         main = "Windrose\\nUnnamed Wind Sector")
+         main = "Windrose\nUnnamed Wind Sector")
 sectors <- matrix(seq(0, 350, by = 10), ncol = 2, byrow = TRUE)
 windrose(data, windsector = sectors, main = "Yey")
 
@@ -170,14 +184,14 @@ windrose(data, windsector = sectors, main = "Yey")
 # - Plot windrose for all observations where the wind
 #   direction was within 43-233 degrees (south southeast)
 filter1 <- list(dd = c(43, 223))
-windrose(data, main = "Custom filter on wind direction,\\n43 - 223 degrees",
+windrose(data, main = "Custom filter on wind direction,\n43 - 223 degrees",
          type = "hist", filter = filter1)
 
 # Example 2:
 # - Plot windrose for all observations where the wind
 #   speed was > 5 meters per second.
 filter2 <- list(ff = function(x) x > 10)
-windrose(data, main = "Custom filter on wind speed\\nonly observations where ff > 5",
+windrose(data, main = "Custom filter on wind speed\nonly observations where ff > 5",
          type = "hist", filter = filter2)
 
 # Example 3:
@@ -204,7 +218,7 @@ windrose(data, main = "Wind rose for noon (12 UTC)",
 # for wind speeds exceeding 5 meters per second.
 filter5 <- function(x) x$month \%in\% c(12, 1, 2) & x$hour == 0 & x$ff > 5
 par(mfrow = c(1,2))
-windrose(data, main = "DJF 12 UTC (ff > 5)\\nComplex Filter", filter = filter5)
-windrose(data, main = "DJF 12 UTC (ff > 5)\\nComplex Filter", filter = filter5, type = "hist")
+windrose(data, main = "DJF 12 UTC (ff > 5)\nComplex Filter", filter = filter5)
+windrose(data, main = "DJF 12 UTC (ff > 5)\nComplex Filter", filter = filter5, type = "hist")
 
 }

@@ -4,9 +4,20 @@
 \alias{foehnix.control}
 \title{foehnix Two-Component Mixture-Model Control Object}
 \usage{
-foehnix.control(family, switch, left = -Inf, right = Inf,
-  truncated = FALSE, standardize = TRUE, maxit = 100L, tol = 1e-08,
-  force.inflate = FALSE, glmnet.control = NULL, verbose = TRUE, ...)
+foehnix.control(
+  family,
+  switch,
+  left = -Inf,
+  right = Inf,
+  truncated = FALSE,
+  standardize = TRUE,
+  maxit = 100L,
+  tol = 1e-08,
+  force.inflate = FALSE,
+  glmnet.control = NULL,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{family}{character specifying the distribution of the components in the

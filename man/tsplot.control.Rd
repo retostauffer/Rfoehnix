@@ -5,8 +5,7 @@
 \alias{tsplot_get_control}
 \title{foehnix Time Series Plot Config}
 \usage{
-tsplot.control(style = c("default", "bw", "advanced"),
-  windsector = NULL, ...)
+tsplot.control(style = c("default", "bw", "advanced"), windsector = NULL, ...)
 
 tsplot_get_control(x, var, property, args = list())
 }

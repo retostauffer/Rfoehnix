@@ -30,6 +30,4 @@ be estimated.
 }
 \author{
 Reto Stauffer
-
-Reto Stauffer
 }

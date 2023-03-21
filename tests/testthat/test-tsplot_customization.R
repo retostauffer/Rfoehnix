@@ -45,7 +45,7 @@ test_that("Testing tsplot.foehnix function", {
     expect_silent(res <- tsplot.control(t = list(col = "red")))
     expect_identical(res$t$col, "#FF0000")
     expect_silent(res <- tsplot.control(t = list(col = 2)))
-    expect_identical(res$t$col, "#FF0000")
+    expect_identical(res$t$col, "#DF536B")
 
     # Adding a new label
     expect_silent(res <- tsplot.control(t = list(ylab = "foo")))

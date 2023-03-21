@@ -26,8 +26,9 @@ Station Lucky Five Ranch operated by San Diego Gas and Electric and made freely
 publicly available through Synoptic PBC at \url{https://synopticdata.com/}.
 }
 \usage{
-demodata(which = c("tyrol", "ellboegen", "sattelberg", "california",
-  "viejas", "luckyfive"))
+demodata(
+  which = c("tyrol", "ellboegen", "sattelberg", "california", "viejas", "luckyfive")
+)
 }
 \arguments{
 \item{which}{\code{which = "tyrol"} returns the combined Tyrolean data set (A) and

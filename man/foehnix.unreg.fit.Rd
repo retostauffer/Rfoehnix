@@ -4,8 +4,16 @@
 \alias{foehnix.unreg.fit}
 \title{Fitting Unregularized foehnix Mixture Model With Concomitant Model.}
 \usage{
-foehnix.unreg.fit(y, logitX, family, switch = FALSE, maxit = 100L,
-  tol = 1e-05, verbose = TRUE, ...)
+foehnix.unreg.fit(
+  y,
+  logitX,
+  family,
+  switch = FALSE,
+  maxit = 100L,
+  tol = 1e-05,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the

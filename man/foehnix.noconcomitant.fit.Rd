@@ -4,8 +4,15 @@
 \alias{foehnix.noconcomitant.fit}
 \title{Fitting foehnix Mixture Model Without Concomitant Model.}
 \usage{
-foehnix.noconcomitant.fit(y, family, switch = FALSE, maxit = 100L,
-  tol = 1e-05, verbose = TRUE, ...)
+foehnix.noconcomitant.fit(
+  y,
+  family,
+  switch = FALSE,
+  maxit = 100L,
+  tol = 1e-05,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the

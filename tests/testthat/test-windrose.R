@@ -101,7 +101,7 @@ test_that("Testing foehnix plot on windrose object", {
     # Return of the density plots
     expect_silent(tmp <- res[grep("^density.*", names(res))])
     expect_identical(unname(sapply(tmp, function(x) class(x$counts))), rep("NULL", 3L))
-    expect_identical(unname(sapply(tmp, function(x) class(x$tab))), rep("matrix", 3L))
+    expect_identical(unname(sapply(tmp, function(x) class(x$tab))), matrix(rep(c("matrix", "array"), 3), nrow = 2))
     expect_true(all(all(sapply(tmp, function(x) nrow(x$tab) == (360L/x$interval)))))
     expect_true(all(all(sapply(tmp, function(x) ncol(x$tab) == (length(x$ff.breaks) - 1L)))))
 
@@ -109,7 +109,7 @@ test_that("Testing foehnix plot on windrose object", {
     expect_silent(tmp <- res[grep("^histogram.*", names(res))])
     expect_identical(unname(sapply(tmp, function(x) class(x$counts)[1L])), rep("xtabs", 3L))
     expect_identical(unname(sapply(tmp, function(x) class(x$tab))), rep("list", 3L))
-    expect_identical(unname(sapply(tmp, function(x) class(x$tab$colormatrix))), rep("matrix", 3L))
+    expect_identical(unname(sapply(tmp, function(x) class(x$tab$colormatrix))), matrix(rep(c("matrix", "array"), 3L), nrow = 2))
     expect_identical(unname(sapply(tmp, function(x) class(x$tab$legend))), rep("data.frame", 3L))
     expect_true(all(all(sapply(tmp, function(x) nrow(x$tab$colormatrix) == (360L/x$interval)))))
     expect_true(all(all(sapply(tmp, function(x) ncol(x$tab$colormatrix) == (length(x$ff.breaks) - 1L)))))

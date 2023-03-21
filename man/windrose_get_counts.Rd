@@ -4,8 +4,11 @@
 \alias{windrose_get_counts}
 \title{Get Count Matrix for Windrose Plot}
 \usage{
-windrose_get_counts(x, dd.breaks = seq(0, 360, by = 30),
-  ff.breaks = pretty(x$ff))
+windrose_get_counts(
+  x,
+  dd.breaks = seq(0, 360, by = 30),
+  ff.breaks = pretty(x$ff)
+)
 }
 \arguments{
 \item{x}{data object of type zoo or data.frame. Needs to contain

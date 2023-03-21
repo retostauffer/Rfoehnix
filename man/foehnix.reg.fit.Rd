@@ -4,8 +4,17 @@
 \alias{foehnix.reg.fit}
 \title{Fitting Regularized foehnix Mixture Model With Concomitant Model.}
 \usage{
-foehnix.reg.fit(y, logitX, family, glmnet.control, switch = FALSE,
-  maxit = 100L, tol = 1e-05, verbose = TRUE, ...)
+foehnix.reg.fit(
+  y,
+  logitX,
+  family,
+  glmnet.control,
+  switch = FALSE,
+  maxit = 100L,
+  tol = 1e-05,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{y}{numeric vector, covariate for the components of the

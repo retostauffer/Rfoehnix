@@ -106,6 +106,4 @@ Examples are: `foehnix_gaussian`, `foehnix_cgaussian`, `foehnix_tgaussian`,
 }
 \author{
 Reto Stauffer
-
-Reto Stauffer
 }

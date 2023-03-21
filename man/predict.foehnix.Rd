@@ -4,8 +4,7 @@
 \alias{predict.foehnix}
 \title{Predict Method for foehnix Mixture Models}
 \usage{
-\method{predict}{foehnix}(object, newdata = NULL, type = "response",
-  ...)
+\method{predict}{foehnix}(object, newdata = NULL, type = "response", ...)
 }
 \arguments{
 \item{object}{a \code{\link[foehnix]{foehnix}} mixture model object.}

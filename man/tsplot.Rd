@@ -4,8 +4,15 @@
 \alias{tsplot}
 \title{Time Series Plot of foehnix Models}
 \usage{
-tsplot(x, start = NULL, end = NULL, ndays = 10,
-  control = tsplot.control(...), ..., ask = TRUE)
+tsplot(
+  x,
+  start = NULL,
+  end = NULL,
+  ndays = 10,
+  control = tsplot.control(...),
+  ...,
+  ask = TRUE
+)
 }
 \arguments{
 \item{x}{object of type \code{foehnix} or a list with \code{foehnix} and
