@@ -482,7 +482,7 @@ print.summary.foehnix <- function(x, ...) {
                     nrow(x$prob), x$inflated))
     } else {
         cat(sprintf("\nNumber of observations (total) %8d (no inflation)\n",
-                    nrow(x$prob), x$inflated))
+                    nrow(x$prob)))
     }
     cat(sprintf("Removed due to missing values  %8d (%3.1f percent)\n",
                 sum_na, sum_na / nrow(x$prob) * 100))

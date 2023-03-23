@@ -1,5 +1,5 @@
-pandoc: 1.19.2.4
-pkgdown: 1.4.0
+pandoc: 2.9.2.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   advanced_simulation: advanced_simulation.html
@@ -16,4 +16,5 @@ articles:
   tsplot: tsplot.html
   viejas: viejas.html
   windrose: windrose.html
+last_built: 2023-03-23T10:26Z
 

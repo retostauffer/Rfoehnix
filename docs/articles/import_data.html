@@ -6,20 +6,22 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="foehnix">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,14 +34,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     How To
      
     <span class="caret"></span>
@@ -66,7 +68,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Advanced
      
     <span class="caret"></span>
@@ -101,8 +103,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -116,38 +118,38 @@
 
       
 
-      </header><div class="row">
+      </header><script src="import_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1></h1>
+      <h1 data-toc-skip></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/import_data.Rmd"><code>vignettes/import_data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/HEAD/vignettes/import_data.Rmd" class="external-link"><code>vignettes/import_data.Rmd</code></a></small>
       <div class="hidden name"><code>import_data.Rmd</code></div>
 
     </div>
 
     
     
-<p>This page shows how one can import observational data in such a way that they can be used with <em>foehnix</em>. <em>foehnix</em> uses <a href="https://cran.r-project.org/package=zoo"><code>zoo</code></a> objects (time series objects) to handle the input data. This page is not intended to be a complete manual or introduction to <a href="https://cran.r-project.org/package=zoo">zoo</a>! The <a href="https://cran.r-project.org/package=zoo">zoo</a> itself comes with a range of vignettes including commonly asked questions and detailed introductory material. If you are not familiar with the package and/or the following examples are not enough to get started, please visit the <a href="https://cran.r-project.org/package=zoo">zoo</a> package website to get more information.</p>
+<p>This page shows how one can import observational data in such a way that they can be used with <em>foehnix</em>. <em>foehnix</em> uses <a href="https://cran.r-project.org/package=zoo" class="external-link"><code>zoo</code></a> objects (time series objects) to handle the input data. This page is not intended to be a complete manual or introduction to <a href="https://cran.r-project.org/package=zoo" class="external-link">zoo</a>! The <a href="https://cran.r-project.org/package=zoo" class="external-link">zoo</a> itself comes with a range of vignettes including commonly asked questions and detailed introductory material. If you are not familiar with the package and/or the following examples are not enough to get started, please visit the <a href="https://cran.r-project.org/package=zoo" class="external-link">zoo</a> package website to get more information.</p>
 <ul>
-<li><a href="https://cran.r-project.org/package=zoo">cran.r-project.org/package=zoo</a></li>
+<li><a href="https://cran.r-project.org/package=zoo" class="external-link">cran.r-project.org/package=zoo</a></li>
 </ul>
-<div id="example-a" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-a" class="anchor"></a>Example A</h2>
-<p>Imagine you have a <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> file which looks as follows:</p>
-<pre><code>## "date_time","dd","ff","rh","t"
-## "2006-01-01 01:00:00",171,0.6,90,-0.4
-## "2006-01-01 02:00:00",268,0.3,100,-1.8
-## "2006-01-01 03:00:00",NA,NA,79,0.9
-## "2006-01-01 04:00:00",152,2.1,88,-0.6
-## "2006-01-01 05:00:00",319,0.7,100,-2.6
-## "2006-01-01 06:00:00",36,0.1,99,-1.7
-## "2006-01-01 07:00:00",338,1,100,-2.1
-## "2006-01-01 08:00:00",324,1.1,100,-2.7
-## "2006-01-01 09:00:00",303,0.2,100,-2.6</code></pre>
-<p>The output shows the first 10 rows (header and 9 data rows) of the demo data set “<a href="../pkgdown/data/ellboegen_A.csv">ellboegen_A.csv</a>” with hourly observations. This is the “default <em>R</em> CSV file format” (see <code>write.csv</code>) where the values are comma-separated, strings are quoted, missing values are simply “” (no character), and no unnecessary blanks are added to the file. The colums conntain:</p>
+<div class="section level3">
+<h3 id="example-a">Example A<a class="anchor" aria-label="anchor" href="#example-a"></a>
+</h3>
+<p>Imagine you have a <a href="https://en.wikipedia.org/wiki/Comma-separated_values" class="external-link">CSV</a> file which looks as follows:</p>
+<pre><code><span><span class="co">## "date_time","dd","ff","rh","t"</span></span>
+<span><span class="co">## "2006-01-01 01:00:00",171,0.6,90,-0.4</span></span>
+<span><span class="co">## "2006-01-01 02:00:00",268,0.3,100,-1.8</span></span>
+<span><span class="co">## "2006-01-01 03:00:00",NA,NA,79,0.9</span></span>
+<span><span class="co">## "2006-01-01 04:00:00",152,2.1,88,-0.6</span></span>
+<span><span class="co">## "2006-01-01 05:00:00",319,0.7,100,-2.6</span></span>
+<span><span class="co">## "2006-01-01 06:00:00",36,0.1,99,-1.7</span></span>
+<span><span class="co">## "2006-01-01 07:00:00",338,1,100,-2.1</span></span>
+<span><span class="co">## "2006-01-01 08:00:00",324,1.1,100,-2.7</span></span>
+<span><span class="co">## "2006-01-01 09:00:00",303,0.2,100,-2.6</span></span></code></pre>
+<p>The output shows the first 10 rows (header and 9 data rows) of the demo data set “<a href="../pkgdown/data/ellboegen_A.csv">ellboegen_A.csv</a>” with hourly observations. This is the “default <em>R</em> CSV file format” (see <code>write.csv</code>) where the values are comma-separated, strings are quoted, missing values are simply "" (no character), and no unnecessary blanks are added to the file. The colums conntain:</p>
 <ul>
 <li>
 <code>date_time</code>: a column with date and time information (default english date format)</li>
@@ -160,88 +162,94 @@
 <li>
 <code>t</code>: 2m air temperature</li>
 </ul>
-<div id="import-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-data" class="anchor"></a>Import data</h3>
-<p>To import the data set and convert the data into <code>zoo</code>, all we have to do is to use the function <code><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">zoo::read.zoo</a></code> like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load package 'zoo'</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"zoo"</span>)
-<span class="co"># Import the data set</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/ellboegen_A.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,
-                 <span class="dt">tz =</span> <span class="st">"UTC"</span>, <span class="dt">sep =</span> <span class="st">","</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p>The call <code><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo(...)</a></code> loads the demo data set (here <code>../pkgdown/data/ellboegen_A.csv</code>), specifies the date/time format (<code>format</code>; <code>read.zoo</code> expects this information in the first column by default), a time zone argument (<code>tz</code>), the separator in the CSV file (<code>sep</code>), and that we do have a header line (<code>header = TRUE</code>). <code>read.zoo</code> calls <code>read.table</code>, tries to extract the date/time information, and creates a <code>zoo</code> object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">4</span>)</code></pre></div>
-<pre><code>##                      dd  ff  rh    t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4
-## 2006-01-01 02:00:00 268 0.3 100 -1.8
-## 2006-01-01 03:00:00  NA  NA  79  0.9
-## 2006-01-01 04:00:00 152 2.1  88 -0.6</code></pre>
+<div class="section level4">
+<h4 id="import-data">Import data<a class="anchor" aria-label="anchor" href="#import-data"></a>
+</h4>
+<p>To import the data set and convert the data into <code>zoo</code>, all we have to do is to use the function <code><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">zoo::read.zoo</a></code> like this:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load package 'zoo'</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span>
+<span><span class="co"># Import the data set</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/ellboegen_A.csv"</span>, format <span class="op">=</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,</span>
+<span>                 tz <span class="op">=</span> <span class="st">"UTC"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The call <code>read.zoo(...)</code> loads the demo data set (here <code>../pkgdown/data/ellboegen_A.csv</code>), specifies the date/time format (<code>format</code>; <code>read.zoo</code> expects this information in the first column by default), a time zone argument (<code>tz</code>), the separator in the CSV file (<code>sep</code>), and that we do have a header line (<code>header = TRUE</code>). <code>read.zoo</code> calls <code>read.table</code>, tries to extract the date/time information, and creates a <code>zoo</code> object.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      dd  ff  rh    t</span></span>
+<span><span class="co">## 2006-01-01 01:00:00 171 0.6  90 -0.4</span></span>
+<span><span class="co">## 2006-01-01 02:00:00 268 0.3 100 -1.8</span></span>
+<span><span class="co">## 2006-01-01 03:00:00  NA  NA  79  0.9</span></span>
+<span><span class="co">## 2006-01-01 04:00:00 152 2.1  88 -0.6</span></span></code></pre>
 </div>
-<div id="import-and-combine-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-and-combine-data" class="anchor"></a>Import and combine data</h3>
+<div class="section level4">
+<h4 id="import-and-combine-data">Import and combine data<a class="anchor" aria-label="anchor" href="#import-and-combine-data"></a>
+</h4>
 <p>In case a crest station is available, we need to combine observations from two stations, in this case two demo data sets for Ellbögen (<a href="../pkgdown/data/ellboegen_A.csv">ellboegen_A.csv</a>) and Sattelberg (<a href="../pkgdown/data/sattelberg_A.csv">sattelberg_A.csv</a>; our crest station). Both files are in the very same format. Thus, we can load both data sets as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load package 'zoo' if not already loaded</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"zoo"</span>)
-<span class="co"># Import data set 'Ellboegen'</span>
-ell &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/ellboegen_A.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,
-                <span class="dt">tz =</span> <span class="st">"UTC"</span>, <span class="dt">sep =</span> <span class="st">","</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)
-<span class="co"># Import data set 'Sattelberg'</span>
-sat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/sattelberg_A.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,
-                <span class="dt">tz =</span> <span class="st">"UTC"</span>, <span class="dt">sep =</span> <span class="st">","</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load package 'zoo' if not already loaded</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span>
+<span><span class="co"># Import data set 'Ellboegen'</span></span>
+<span><span class="va">ell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/ellboegen_A.csv"</span>, format <span class="op">=</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,</span>
+<span>                tz <span class="op">=</span> <span class="st">"UTC"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Import data set 'Sattelberg'</span></span>
+<span><span class="va">sat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/sattelberg_A.csv"</span>, format <span class="op">=</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>,</span>
+<span>                tz <span class="op">=</span> <span class="st">"UTC"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>All we have to do is to combine the two objects <code>ell</code> and <code>sat</code> which an be done using the function <code>zoo::merge</code>. <code>zoo::merge</code> automatically takes care that the two time series are matched propperly (conditional on date/time).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine data</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(ell, sat)
-<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">8</span>)</code></pre></div>
-<pre><code>##                     dd.ell ff.ell rh.ell t.ell dd.sat ff.sat rh.sat t.sat
-## 2006-01-01 01:00:00    171    0.6     90  -0.4     NA     NA     NA    NA
-## 2006-01-01 02:00:00    268    0.3    100  -1.8     NA     NA     NA    NA
-## 2006-01-01 03:00:00     NA     NA     79   0.9     NA     NA     NA    NA
-## 2006-01-01 04:00:00    152    2.1     88  -0.6     NA     NA     NA    NA
-## 2006-01-01 05:00:00    319    0.7    100  -2.6    176   13.1    100  -7.1
-## 2006-01-01 06:00:00     36    0.1     99  -1.7    184   10.0    100  -6.9
-## 2006-01-01 07:00:00    338    1.0    100  -2.1    188    7.2    100  -6.6
-## 2006-01-01 08:00:00    324    1.1    100  -2.7    194    5.8    100  -6.6</code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Combine data</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">ell</span>, <span class="va">sat</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                     dd.ell ff.ell rh.ell t.ell dd.sat ff.sat rh.sat t.sat</span></span>
+<span><span class="co">## 2006-01-01 01:00:00    171    0.6     90  -0.4     NA     NA     NA    NA</span></span>
+<span><span class="co">## 2006-01-01 02:00:00    268    0.3    100  -1.8     NA     NA     NA    NA</span></span>
+<span><span class="co">## 2006-01-01 03:00:00     NA     NA     79   0.9     NA     NA     NA    NA</span></span>
+<span><span class="co">## 2006-01-01 04:00:00    152    2.1     88  -0.6     NA     NA     NA    NA</span></span>
+<span><span class="co">## 2006-01-01 05:00:00    319    0.7    100  -2.6    176   13.1    100  -7.1</span></span>
+<span><span class="co">## 2006-01-01 06:00:00     36    0.1     99  -1.7    184   10.0    100  -6.9</span></span>
+<span><span class="co">## 2006-01-01 07:00:00    338    1.0    100  -2.1    188    7.2    100  -6.6</span></span>
+<span><span class="co">## 2006-01-01 08:00:00    324    1.1    100  -2.7    194    5.8    100  -6.6</span></span></code></pre>
 <p>By default, missing data are filled with <code>NA</code> (missing value). As the demo data set for station Sattelberg starts four hours later than the one for Ellbögen, the first for rows for <code>sat</code> (<code>01:00:00</code> to <code>04:00:00</code>) are empty. As the variables in both files are the very same, <em>R</em> automatically adds <code>.ell</code> or <code>.sat</code> to the original variable names (columns in the CSV file). In case we would like to have nicer names, we could prepare them manually, e.g.,:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Rename the variables in 'sat'</span>
-<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sat) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"crest"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sat), <span class="dt">sep =</span> <span class="st">"_"</span>)
-<span class="co"># Show new names</span>
-<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sat)</code></pre></div>
-<pre><code>## [1] "crest_dd" "crest_ff" "crest_rh" "crest_t"</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Rename the variables in 'sat'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"crest"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sat</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="co"># Show new names</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "crest_dd" "crest_ff" "crest_rh" "crest_t"</span></span></code></pre>
 <p>And combine the data set once again (overwrites <code>data</code>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Combine (again)</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(ell, sat)
-<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">8</span>)</code></pre></div>
-<pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4       NA       NA       NA      NA
-## 2006-01-01 02:00:00 268 0.3 100 -1.8       NA       NA       NA      NA
-## 2006-01-01 03:00:00  NA  NA  79  0.9       NA       NA       NA      NA
-## 2006-01-01 04:00:00 152 2.1  88 -0.6       NA       NA       NA      NA
-## 2006-01-01 05:00:00 319 0.7 100 -2.6      176     13.1      100    -7.1
-## 2006-01-01 06:00:00  36 0.1  99 -1.7      184     10.0      100    -6.9
-## 2006-01-01 07:00:00 338 1.0 100 -2.1      188      7.2      100    -6.6
-## 2006-01-01 08:00:00 324 1.1 100 -2.7      194      5.8      100    -6.6</code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Combine (again)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">ell</span>, <span class="va">sat</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t</span></span>
+<span><span class="co">## 2006-01-01 01:00:00 171 0.6  90 -0.4       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 02:00:00 268 0.3 100 -1.8       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 03:00:00  NA  NA  79  0.9       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 04:00:00 152 2.1  88 -0.6       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 05:00:00 319 0.7 100 -2.6      176     13.1      100    -7.1</span></span>
+<span><span class="co">## 2006-01-01 06:00:00  36 0.1  99 -1.7      184     10.0      100    -6.9</span></span>
+<span><span class="co">## 2006-01-01 07:00:00 338 1.0 100 -2.1      188      7.2      100    -6.6</span></span>
+<span><span class="co">## 2006-01-01 08:00:00 324 1.1 100 -2.7      194      5.8      100    -6.6</span></span></code></pre>
 <p>And that’s it. This object (<code>data</code>) could now be used as input for the <code>foehnix</code> method.</p>
 </div>
 </div>
-<div id="example-b" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-b" class="anchor"></a>Example B</h2>
+<div class="section level3">
+<h3 id="example-b">Example B<a class="anchor" aria-label="anchor" href="#example-b"></a>
+</h3>
 <p>The next demo data contains the very same as the data set above, however, the are distinct differences in the format of the CSV file (see <a href="../pkgdown/data/ellboegen_B.csv">ellboegen_B.csv</a>, <a href="../pkgdown/data/sattelberg_B.csv">sattelberg_B.csv</a>):</p>
-<pre><code>## dd ff rh t date_time
-##     171     0.6  90 -0.4 20060101010000
-##     268     0.3 100 -1.8 20060101020000
-## missing missing  79  0.9 20060101030000
-##     152     2.1  88 -0.6 20060101040000
-##     319     0.7 100 -2.6 20060101050000
-##      36     0.1  99 -1.7 20060101060000
-##     338     1.0 100 -2.1 20060101070000
-##     324     1.1 100 -2.7 20060101080000
-##     303     0.2 100 -2.6 20060101090000</code></pre>
+<pre><code><span><span class="co">## dd ff rh t date_time</span></span>
+<span><span class="co">##     171     0.6  90 -0.4 20060101010000</span></span>
+<span><span class="co">##     268     0.3 100 -1.8 20060101020000</span></span>
+<span><span class="co">## missing missing  79  0.9 20060101030000</span></span>
+<span><span class="co">##     152     2.1  88 -0.6 20060101040000</span></span>
+<span><span class="co">##     319     0.7 100 -2.6 20060101050000</span></span>
+<span><span class="co">##      36     0.1  99 -1.7 20060101060000</span></span>
+<span><span class="co">##     338     1.0 100 -2.1 20060101070000</span></span>
+<span><span class="co">##     324     1.1 100 -2.7 20060101080000</span></span>
+<span><span class="co">##     303     0.2 100 -2.6 20060101090000</span></span></code></pre>
 <p>In contrast to ‘data set A’ the file solely contains numeric values - except the missing values (<code>missing</code>), the date/time information is coded as integer (<code>YYYYmmddHHMMSS</code>; last column) and there is no explicit column separator (columns are separated by one or multiple blanks).</p>
-<div id="import-data-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-data-1" class="anchor"></a>Import data</h3>
+<div class="section level4">
+<h4 id="import-data-1">Import data<a class="anchor" aria-label="anchor" href="#import-data-1"></a>
+</h4>
 <p>To be able to import the data set we do have to specify the format. In contrast to ‘data set A’ we need:</p>
 <ul>
 <li>different <code>format</code>
@@ -252,82 +260,79 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/b
 <li>an input <code>na.strings</code> which defines how the “missing values” in the CSV file look like</li>
 </ul>
 <p>Overall we can read the file(s) like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load library (if not yet done)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"zoo"</span>)
-<span class="co"># Custom function to convert the integers (data_time) into POSIXct</span>
-FUN =<span class="st"> </span><span class="cf">function</span>(x, format, tz, ...) <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/strptime.html">strptime</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"%.0f"</span>, x), format), <span class="dt">tz =</span> tz)
-<span class="co"># Import data set</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/ellboegen_B.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y%m%d%H%M%S"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>,
-                 <span class="dt">FUN =</span> FUN, <span class="dt">index.column =</span> <span class="st">"date_time"</span>, 
-                 <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">na.strings =</span> <span class="st">"missing"</span>)
-<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">3</span>)</code></pre></div>
-<pre><code>##                      dd  ff  rh    t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4
-## 2006-01-01 02:00:00 268 0.3 100 -1.8
-## 2006-01-01 03:00:00  NA  NA  79  0.9</code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load library (if not yet done)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span>
+<span><span class="co"># Custom function to convert the integers (data_time) into POSIXct</span></span>
+<span><span class="va">FUN</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">format</span>, <span class="va">tz</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strptime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.0f"</span>, <span class="va">x</span><span class="op">)</span>, <span class="va">format</span><span class="op">)</span>, tz <span class="op">=</span> <span class="va">tz</span><span class="op">)</span></span>
+<span><span class="co"># Import data set</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/ellboegen_B.csv"</span>, format <span class="op">=</span> <span class="st">"%Y%m%d%H%M%S"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span>,</span>
+<span>                 FUN <span class="op">=</span> <span class="va">FUN</span>, index.column <span class="op">=</span> <span class="st">"date_time"</span>, </span>
+<span>                 header <span class="op">=</span> <span class="cn">TRUE</span>, na.strings <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      dd  ff  rh    t</span></span>
+<span><span class="co">## 2006-01-01 01:00:00 171 0.6  90 -0.4</span></span>
+<span><span class="co">## 2006-01-01 02:00:00 268 0.3 100 -1.8</span></span>
+<span><span class="co">## 2006-01-01 03:00:00  NA  NA  79  0.9</span></span></code></pre>
 </div>
-<div id="import-and-combine" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-and-combine" class="anchor"></a>Import and combine</h3>
+<div class="section level4">
+<h4 id="import-and-combine">Import and combine<a class="anchor" aria-label="anchor" href="#import-and-combine"></a>
+</h4>
 <p>We can do the very same for the second data set (Sattelberg) and combine the the data from Sattelberg and Ellbögen:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading library 'zoo'</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"zoo"</span>)
-<span class="co"># User-defined function to convert date/time information</span>
-FUN =<span class="st"> </span><span class="cf">function</span>(x, format, tz, ...) <span class="kw"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/strptime.html">strptime</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"%.0f"</span>, x), format), <span class="dt">tz =</span> tz)
-<span class="co"># Read ellboegen data set</span>
-ell &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/ellboegen_B.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y%m%d%H%M%S"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>,
-                <span class="dt">FUN =</span> FUN, <span class="dt">index.column =</span> <span class="st">"date_time"</span>, 
-                <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">na.strings =</span> <span class="st">"missing"</span>)
-sat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">read.zoo</a></span>(<span class="st">"../pkgdown/data/sattelberg_B.csv"</span>, <span class="dt">format =</span> <span class="st">"%Y%m%d%H%M%S"</span>, <span class="dt">tz =</span> <span class="st">"UTC"</span>,
-                <span class="dt">FUN =</span> FUN, <span class="dt">index.column =</span> <span class="st">"date_time"</span>, 
-                <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">na.strings =</span> <span class="st">"missing"</span>)
-<span class="co"># Rename columns in 'sat'</span>
-<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sat) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"crest"</span>, <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(sat), <span class="dt">sep =</span> <span class="st">"_"</span>)
-<span class="co"># Combine</span>
-data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/merge.html">merge</a></span>(ell, sat)
-<span class="co"># Show first 8 entries</span>
-<span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(data, <span class="dt">n =</span> <span class="dv">8</span>)</code></pre></div>
-<pre><code>##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t
-## 2006-01-01 01:00:00 171 0.6  90 -0.4       NA       NA       NA      NA
-## 2006-01-01 02:00:00 268 0.3 100 -1.8       NA       NA       NA      NA
-## 2006-01-01 03:00:00  NA  NA  79  0.9       NA       NA       NA      NA
-## 2006-01-01 04:00:00 152 2.1  88 -0.6       NA       NA       NA      NA
-## 2006-01-01 05:00:00 319 0.7 100 -2.6      176     13.1      100    -7.1
-## 2006-01-01 06:00:00  36 0.1  99 -1.7      184     10.0      100    -6.9
-## 2006-01-01 07:00:00 338 1.0 100 -2.1      188      7.2      100    -6.6
-## 2006-01-01 08:00:00 324 1.1 100 -2.7      194      5.8      100    -6.6</code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Loading library 'zoo'</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://zoo.R-Forge.R-project.org/" class="external-link">"zoo"</a></span><span class="op">)</span></span>
+<span><span class="co"># User-defined function to convert date/time information</span></span>
+<span><span class="va">FUN</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">format</span>, <span class="va">tz</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strptime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.0f"</span>, <span class="va">x</span><span class="op">)</span>, <span class="va">format</span><span class="op">)</span>, tz <span class="op">=</span> <span class="va">tz</span><span class="op">)</span></span>
+<span><span class="co"># Read ellboegen data set</span></span>
+<span><span class="va">ell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/ellboegen_B.csv"</span>, format <span class="op">=</span> <span class="st">"%Y%m%d%H%M%S"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span>,</span>
+<span>                FUN <span class="op">=</span> <span class="va">FUN</span>, index.column <span class="op">=</span> <span class="st">"date_time"</span>, </span>
+<span>                header <span class="op">=</span> <span class="cn">TRUE</span>, na.strings <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
+<span><span class="va">sat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">read.zoo</a></span><span class="op">(</span><span class="st">"../pkgdown/data/sattelberg_B.csv"</span>, format <span class="op">=</span> <span class="st">"%Y%m%d%H%M%S"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span>,</span>
+<span>                FUN <span class="op">=</span> <span class="va">FUN</span>, index.column <span class="op">=</span> <span class="st">"date_time"</span>, </span>
+<span>                header <span class="op">=</span> <span class="cn">TRUE</span>, na.strings <span class="op">=</span> <span class="st">"missing"</span><span class="op">)</span></span>
+<span><span class="co"># Rename columns in 'sat'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"crest"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sat</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="co"># Combine</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">ell</span>, <span class="va">sat</span><span class="op">)</span></span>
+<span><span class="co"># Show first 8 entries</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      dd  ff  rh    t crest_dd crest_ff crest_rh crest_t</span></span>
+<span><span class="co">## 2006-01-01 01:00:00 171 0.6  90 -0.4       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 02:00:00 268 0.3 100 -1.8       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 03:00:00  NA  NA  79  0.9       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 04:00:00 152 2.1  88 -0.6       NA       NA       NA      NA</span></span>
+<span><span class="co">## 2006-01-01 05:00:00 319 0.7 100 -2.6      176     13.1      100    -7.1</span></span>
+<span><span class="co">## 2006-01-01 06:00:00  36 0.1  99 -1.7      184     10.0      100    -6.9</span></span>
+<span><span class="co">## 2006-01-01 07:00:00 338 1.0 100 -2.1      188      7.2      100    -6.6</span></span>
+<span><span class="co">## 2006-01-01 08:00:00 324 1.1 100 -2.7      194      5.8      100    -6.6</span></span></code></pre>
 </div>
 </div>
-<div id="other-formats" class="section level1">
-<h1 class="hasAnchor">
-<a href="#other-formats" class="anchor"></a>Other Formats</h1>
-<p>The method <code><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html">zoo::read.zoo</a></code> has a wide range of arguments (see also <code><a href="https://rdrr.io/r/utils/read.table.html">?read.table</a></code>) which allows to import a wide range of possible formats. If you need more information please visit the <a href="https://cran.r-project.org/package=zoo">zoo</a> package information page on <a href="https://cran.r-project.org">CRAN</a> where you can find manuals and vignettes with more details about the <a href="https://cran.r-project.org/package=zoo">zoo</a> package and how to import/create <code>zoo</code> time series objects in <em>R</em>.</p>
+<div class="section level2">
+<h2 id="other-formats">Other Formats<a class="anchor" aria-label="anchor" href="#other-formats"></a>
+</h2>
+<p>The method <code><a href="https://rdrr.io/pkg/zoo/man/read.zoo.html" class="external-link">zoo::read.zoo</a></code> has a wide range of arguments (see also <code><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">?read.table</a></code>) which allows to import a wide range of possible formats. If you need more information please visit the <a href="https://cran.r-project.org/package=zoo" class="external-link">zoo</a> package information page on <a href="https://cran.r-project.org" class="external-link">CRAN</a> where you can find manuals and vignettes with more details about the <a href="https://cran.r-project.org/package=zoo" class="external-link">zoo</a> package and how to import/create <code>zoo</code> time series objects in <em>R</em>.</p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#example-a">Example A</a></li>
-      <li><a href="#example-b">Example B</a></li>
-      <li><a href="#other-formats">Other Formats</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
 
 
       <footer><div class="copyright">
-  <p>Developed by Reto Stauffer.</p>
+  <p></p>
+<p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -335,6 +340,8 @@ data &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/b
 
   
 
+
+  
 
   </body>
 </html>

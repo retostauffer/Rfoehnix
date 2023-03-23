@@ -18,6 +18,7 @@
 
 * Fix in `demodata()` when loading multiple stations.
 * Series of small testthat fixes (new default color, matrix/array class).
+* Fixing a bug in `summary.foehnix()` when no inflation happened (sprintf error)
 
 # foehnix 0.1-4 (August 2019; development)
 

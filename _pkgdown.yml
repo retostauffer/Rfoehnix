@@ -51,6 +51,8 @@ reference:
         - foehnix.reg.fit
         - foehnix_filter
         - summary.foehnix
+        - plot.foehnix
+        - coef.foehnix
     - title: "Demo Data Sets"
       contents:
         - demodata
@@ -60,6 +62,10 @@ reference:
         - luckyfive
     - title: "Support functions"
       contents:
+        - write.csv
+        - write.csv.foehnix
+        - fitted.foehnix
+        - predict.foehnix
         - iwls_logit
         - image.foehnix
         - windrose
@@ -73,5 +79,20 @@ reference:
         - uv2ddff
         - center
         - standardize
+        - destandardize
         - destandardize_coefficients
+    - title: "Additional functions"
+      contents:
+        - IGN
+        - edf
+        - foehnix.family
+        - foehnix_glmnet
+        - glmnet.control
+        - is.standardized
+        - windrose_add_windsector
+        - windrose_get_cols
+        - windrose_get_counts
+        - windrose_get_density
+        - windsector_convert
+
 

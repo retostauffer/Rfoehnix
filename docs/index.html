@@ -5,23 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Objectiv Foehn Diagnosis • foehnix</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<title>Objective Foehn Diagnosis • foehnix</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<script src="extra.js"></script><meta property="og:title" content="Objectiv Foehn Diagnosis">
+<script src="extra.js"></script><meta property="og:title" content="Objective Foehn Diagnosis">
 <meta property="og:description" content="A package providing tools to perform objective probabilistic foehn
              wind diagnosis and methods based on Gaussian mixture models with optional
              concomitants and methods to access the estimates.">
-<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,14 +36,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     How To
      
     <span class="caret"></span>
@@ -68,7 +70,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Advanced
      
     <span class="caret"></span>
@@ -103,8 +105,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -121,17 +123,17 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="foehnix" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#foehnix" class="anchor"></a>foehnix <a href="https://retostauffer.github.io/Rfoehnix/"><img src="https://github.com/retostauffer/Rfoehnix/raw/master/foehnix-logo.png" align="right" height="139"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="foehnix-">foehnix <a href="https://retostauffer.github.io/Rfoehnix/" class="external-link"><img src="https://github.com/retostauffer/Rfoehnix/raw/master/foehnix-logo.png" align="right" height="139"></a>
+<a class="anchor" aria-label="anchor" href="#foehnix-"></a>
 </h1></div>
-
+<p><a href="https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master" class="external-link"><img src="https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master" alt="Build Status"></a> <a href="https://codecov.io/gh/retostauffer/Rfoehnix" class="external-link"><img src="https://codecov.io/gh/retostauffer/Rfoehnix/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://www.repostatus.org/badges/latest/wip.svg" class="external-link"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Repository Status"></a> <a href="https://matthiasdusch.github.io/foehnix-python/_build/html/" class="external-link"><img src="https://img.shields.io/badge/Python-githubio-yellowgreen" alt="Python"></a></p>
 </div>
-<div id="a-toolbox-for-automated-foehn-classification-based-on-mixture-models" class="section level1">
-<h1 class="hasAnchor">
-<a href="#a-toolbox-for-automated-foehn-classification-based-on-mixture-models" class="anchor"></a>A Toolbox for Automated Foehn Classification based on Mixture Models</h1>
+<div class="section level1">
+<h1 id="a-toolbox-for-automated-foehn-classification-based-on-mixture-models">A Toolbox for Automated Foehn Classification based on Mixture Models<a class="anchor" aria-label="anchor" href="#a-toolbox-for-automated-foehn-classification-based-on-mixture-models"></a>
+</h1>
 <p><em>foehnix</em> package provides a toolbox for automated probabilistic foehn wind classification based on two-component mixture models (<strong>foehn</strong> m<strong>ix</strong>ture models). <em>foehnix</em> models are a special case of the general flexible mixture model class (<a href="#fraley2000">Fraley 2002</a>, <a href="#leisch2004">Leisch 2004</a>, <a href="#gruen2007">Grün 2007</a>, <a href="#gruen2008">Grün 2008</a>), an unsupervised statistical model to identify unobserveable clusters or components in data sets.</p>
-<p>The application of mixture models for an automated classification of foehn winds has first been proposed by <a href="#plavcan2014">Plavcan et al. (2014)</a>. The “Community Foehn Classification Experiment” shows that the method performs similar compared to another semi-automatic classification, foehn experts, students, and weather enthusiasts (see <a href="mayr2018">Mayr 2019</a>).</p>
+<p>The application of mixture models for an automated classification of foehn winds has first been proposed by <a href="#plavcan2014">Plavcan et al. (2014)</a>. The “Community Foehn Classification Experiment” shows that the method performs similar compared to another semi-automatic classification, foehn experts, students, and weather enthusiasts (see <a href="mayr2018">Mayr 2019</a>).</p>
 <p>Aim of this software package:</p>
 <ul>
 <li>provide <strong>easy-to-use functions</strong> for classification</li>
@@ -144,92 +146,91 @@
 <li>create results which are <strong>comparable to other locations</strong>
 </li>
 </ul>
-<div id="important-links" class="section level3">
-<h3 class="hasAnchor">
-<a href="#important-links" class="anchor"></a>Important Links</h3>
-<ul>
-<li>
-<a href="http://retostauffer.github.io/Rfoehnix"><em>R foehnix</em> documentation</a> available on github.</li>
-<li>
-<a href="https://github.com/matthiasdusch/foehnix-python">Python version of foehnix</a>, also available on github.</li>
-</ul>
-</div>
-</div>
-<div id="first-steps" class="section level1">
-<h1 class="hasAnchor">
-<a href="#first-steps" class="anchor"></a>First Steps</h1>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>The package is not yet published via the <em>Comprehensive R Archive Network</em> (<a href="https://cran.r-project.org">CRAN</a>) but will be made available as soon as finished. Currently the package has to be downloaded/installed via <a href="https://github.com/retostauffer/Rfoehnix">github</a> which can be done in different ways. <strong>Note</strong> that the <em>foehnix</em> package comes with routines written in <em>C</em>. Thus, on Windows, the <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a> have to be installed to be able to compile the <em>C</em> code!</p>
-<div id="via-the-r-package-remotes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#via-the-r-package-remotes" class="anchor"></a>Via the <em>R</em> package <em>remotes</em>
+<div class="section level3">
+<h3 id="important-links">Important Links<a class="anchor" aria-label="anchor" href="#important-links"></a>
 </h3>
-<p>The <em>R</em> package <a href="https://cran.r-project.org/package=remotes">remotes</a> allows one to install packages from <a href="https://github.com">github</a> via the <em>R</em> command line interface using the function <code>install_github</code>. By default, <a href="https://cran.r-project.org/package=remotes">remotes</a> installes the latest version of the <code>master</code> branch. However, feel free to install one of our earlier releases (<a href="https://github.com/retostauffer/Rfoehnix/releases">show release candidates</a>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load library 'remotes'. If not yet installed, call</span>
-<span class="co"># install.packages("remotes") first.</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"remotes"</span>)
-
-<span class="co"># Install package (automatically resolves required dependencies)</span>
-<span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"retostauffer/Rfoehnix"</span>)
-
-<span class="co"># Or install a specific release candiate (here v0.1-2)</span>
-<span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"retostauffer/Rfoehnix@v0.1-2"</span>)
-asdf</code></pre></div>
-</div>
-<div id="by-cloning-the-repository" class="section level3">
-<h3 class="hasAnchor">
-<a href="#by-cloning-the-repository" class="anchor"></a>By cloning the repository</h3>
-<p>Or do it the good old way via git clone (Note: dependencies have to be installed manually):</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co"># Change directory</span>
-<span class="bu">cd</span> <span class="op">&lt;</span>somewhere/on/your/local/disc<span class="op">&gt;</span>
-
-<span class="co"># Clone repository</span>
-<span class="fu">git</span> clone https://github.com/retostauffer/Rfoehnix.git foehnix</code></pre></div>
-<p>Afterwards use your preferred way to install local packages. E.g., using <a href="https://cran.r-project.org/package=devtools">devtools</a> or <a href="https://cran.r-project.org/package=remotes">remotes</a>:</p>
-<pre><code><a href="https://rdrr.io/pkg/remotes/man/install_local.html"># Use remotes
-remotes::install_local("foehnix")
-
-# Using devtools
-devtools::install("foehnix")</a></code></pre>
-</div>
-<div id="for-command-shell-fans" class="section level3">
-<h3 class="hasAnchor">
-<a href="#for-command-shell-fans" class="anchor"></a>For Command Shell Fans</h3>
-<p>Fans of the good old console can of course use the good old way.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Change directory</span>
-cd <span class="op">&lt;</span>somewhere<span class="op">/</span>on<span class="op">/</span>your<span class="op">/</span>local<span class="op">/</span>disc<span class="op">&gt;</span>
-
-<span class="co"># Clone repository</span>
-git clone https<span class="op">:</span><span class="er">//</span>github.com<span class="op">/</span>retostauffer<span class="op">/</span>Rfoehnix.git foehnix
-
-<span class="co"># Feel free to use on of our release candidates which</span>
-<span class="co"># might miss some features, but might also be more stable.</span>
-<span class="co"># A list of release candidates can be found on:</span>
-<span class="co"># - https://github.com/retostauffer/Rfoehnix/releases</span>
-(cd foehnix <span class="op">&amp;&amp;</span><span class="st"> </span>git checkout tags<span class="op">/</span><span class="er">&lt;</span>tagname<span class="op">&gt;</span><span class="st"> </span><span class="er">&amp;&amp;</span><span class="st"> </span>cd ..)
-
-<span class="co"># Install directly</span>
-R CMD INSTALL foehnix
-
-<span class="co"># OR</span>
-R CMD build foehnix
-R CMD INSTALL foehnix_<span class="op">&lt;</span>version<span class="op">&gt;</span>.tar.gz</code></pre></div>
-</div>
-</div>
-<div id="import-observation-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#import-observation-data" class="anchor"></a>Import observation data</h2>
-<p>The <em>foehnix</em> package depends on the <em>R</em> package <a href="https://cran.r-project.org/package=zoo"><em>zoo</em></a> (Z’s Ordered Observations), a package/object to handle (un-)regular time series data. Import data as <em>zoo</em> is relatively straight forward for those being used to <em>R</em>. For all others, we provide a small “how-to” which can be found here:</p>
 <ul>
-<li><a href="articles/import_data.html">Import data for <em>foehnix</em></a></li>
+<li>
+<a href="http://retostauffer.github.io/Rfoehnix" class="external-link"><em>R foehnix</em> documentation</a> available on github.</li>
+<li>
+<a href="https://github.com/matthiasdusch/foehnix-python" class="external-link">Python version of foehnix</a>, also available on github.</li>
 </ul>
-<p>More information is provided in the “<a href="https://cran.r-project.org/web/packages/zoo/vignettes/zoo-read.pdf">Reading Data into zoo</a>” vignette of the <em>R</em> package <a href="https://cran.r-project.org/package=zoo"><em>zoo</em></a>.</p>
 </div>
-<div id="create-classification" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-classification" class="anchor"></a>Create classification</h2>
+</div>
+<div class="section level1">
+<h1 id="first-steps">First Steps<a class="anchor" aria-label="anchor" href="#first-steps"></a>
+</h1>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The package is not yet published via the <em>Comprehensive R Archive Network</em> (<a href="https://cran.r-project.org" class="external-link">CRAN</a>) but will be made available as soon as finished. Currently the package has to be downloaded/installed via <a href="https://github.com/retostauffer/Rfoehnix" class="external-link">github</a> which can be done in different ways. <strong>Note</strong> that the <em>foehnix</em> package comes with routines written in <em>C</em>. Thus, on Windows, the <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> have to be installed to be able to compile the <em>C</em> code!</p>
+<div class="section level3">
+<h3 id="via-the-r-package-remotes">Via the <em>R</em> package <em>remotes</em>
+<a class="anchor" aria-label="anchor" href="#via-the-r-package-remotes"></a>
+</h3>
+<p>The <em>R</em> package <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a> allows one to install packages from <a href="https://github.com" class="external-link">github</a> via the <em>R</em> command line interface using the function <code>install_github</code>. By default, <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a> installes the latest version of the <code>master</code> branch. However, feel free to install one of our earlier releases (<a href="https://github.com/retostauffer/Rfoehnix/releases" class="external-link">show release candidates</a>).</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load library 'remotes'. If not yet installed, call</span></span>
+<span><span class="co"># install.packages("remotes") first.</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Install package (automatically resolves required dependencies)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"retostauffer/Rfoehnix"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or install a specific release candiate (here v0.1-2)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"retostauffer/Rfoehnix@v0.1-2"</span><span class="op">)</span></span>
+<span><span class="va">asdf</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="by-cloning-the-repository">By cloning the repository<a class="anchor" aria-label="anchor" href="#by-cloning-the-repository"></a>
+</h3>
+<p>Or do it the good old way via git clone (Note: dependencies have to be installed manually):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co"># Change directory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="bu">cd</span> <span class="op">&lt;</span>somewhere/on/your/local/disc<span class="op">&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="co"># Clone repository</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/retostauffer/Rfoehnix.git foehnix</span></code></pre></div>
+<p>Afterwards use your preferred way to install local packages. E.g., using <a href="https://cran.r-project.org/package=devtools" class="external-link">devtools</a> or <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a>:</p>
+<pre><code><span><span class="co"># Use remotes</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_local.html" class="external-link">install_local</a></span><span class="op">(</span><span class="st">"foehnix"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Using devtools</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"foehnix"</span><span class="op">)</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="for-command-shell-fans">For Command Shell Fans<a class="anchor" aria-label="anchor" href="#for-command-shell-fans"></a>
+</h3>
+<p>Fans of the good old console can of course use the good old way.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co"># Change directory</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>cd <span class="op">&lt;</span>somewhere<span class="op">/</span>on<span class="op">/</span>your<span class="op">/</span>local<span class="op">/</span>disc<span class="op">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co"># Clone repository</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>git clone https<span class="op">:</span><span class="er">//</span>github.com<span class="op">/</span>retostauffer<span class="op">/</span>Rfoehnix.git foehnix</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co"># Feel free to use on of our release candidates which</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co"># might miss some features, but might also be more stable.</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="co"># A list of release candidates can be found on:</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="co"># - https://github.com/retostauffer/Rfoehnix/releases</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>(cd foehnix <span class="op">&amp;&amp;</span><span class="st"> </span>git checkout tags<span class="op">/</span><span class="er">&lt;</span>tagname<span class="op">&gt;</span><span class="st"> </span><span class="er">&amp;&amp;</span><span class="st"> </span>cd ..)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a><span class="co"># Install directly</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>R CMD INSTALL foehnix</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a><span class="co"># OR</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>R CMD build foehnix</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>R CMD INSTALL foehnix_<span class="op">&lt;</span>version<span class="op">&gt;</span>.tar.gz</span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="import-observation-data">Import observation data<a class="anchor" aria-label="anchor" href="#import-observation-data"></a>
+</h2>
+<p>The <em>foehnix</em> package depends on the <em>R</em> package <a href="https://cran.r-project.org/package=zoo" class="external-link"><em>zoo</em></a> (Z’s Ordered Observations), a package/object to handle (un-)regular time series data. Import data as <em>zoo</em> is relatively straight forward for those being used to <em>R</em>. For all others, we provide a small “how-to” which can be found here:</p>
+<ul><li><a href="articles/import_data.html">Import data for <em>foehnix</em></a></li></ul>
+<p>More information is provided in the “<a href="https://cran.r-project.org/web/packages/zoo/vignettes/zoo-read.pdf" class="external-link">Reading Data into zoo</a>” vignette of the <em>R</em> package <a href="https://cran.r-project.org/package=zoo" class="external-link"><em>zoo</em></a>.</p>
+</div>
+<div class="section level2">
+<h2 id="create-classification">Create classification<a class="anchor" aria-label="anchor" href="#create-classification"></a>
+</h2>
 <p>Once the observation data have been imported, one can start doing the classification. The <em>foehnix</em> package comes with two demo data sets, one for Southern California (USA) and one for Tyrol (A). The documentation provides a walk-through on how to start using <em>foehnix</em>:</p>
 <ul>
 <li>Demo for <a href="articles/ellboegen.html">Ellbögen (Tyrol, A)</a>
@@ -248,108 +249,70 @@ not change (much).
 If there are any questions please do not hesitate to contact me (via github).
 
 All best,
---><p><em><a href="https://github.com/retostauffer/Rfoehnix">Reto</a>, Matthias, Georg, and Fabien.</em></p>
-<div id="references" class="section level3">
-<h3 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h3>
-<p id="mayr2018">
-Mayr GJ, Plavcan D, Laurence A, Elvidge A, Grisogono B, Horvath K, Jackson P,
-Neururer A, Seibert P, Steenburgh JW, Stiperski I, Sturman A, Večenaj
-Ž, Vergeiner J, Vosper S, Zängl G (2018).  The Community Foehn
-Classification Experiment.
-<i>Bulletin of the American Meteorological Society</i>, <b>99</b>(11), 2229—2235,
-<a href="https://doi.org/10.1175/BAMS-D-17-0200.1" target="_blank">10.1175/BAMS-D-17-0200.1</a>
-</p>
-<p id="plavcan2014">
-Plavcan D, Mayr GJ, Zeileis A (2014).
-Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model.
-<i>Journal of Applied Meteorology and Climatology</i>, <b>53</b>(3), 652—659,
-<a href="https://dx.doi.org/10.1175/JAMC-D-13-0267.1" target="_blank">10.1175/JAMC-D-13-0267.1</a>
-</p>
-<p id="hastie2009">
-Hastie T, Tibshirani R, Friedman J (2009).
-Fitting Logistic Regression Models. In <i>The Elements of Statistical Learning</i>
-(Chapter 4.4.1), 2<i>nd</i> edition, ISBN 978-0387848570.
-<a href="https://web.stanford.edu/~hastie/ElemStatLearn/" target="_blank">PDF download</a>
-</p>
-<p id="gruen2008">
-Grün B, Friedrich L (2008).
-FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters.
-<i>Journal of Statistical Software, Articles</i>, <b>28</b>(4), 1—35,
-doi:<a href="https://dx.doi.org/10.18637/jss.v028.i04" target="_blank">10.18637/jss.v028.i04</a>
-</p>
-<p id="gruen2007">
-Grün B, Leisch F (2007).
-Fitting Finite Mixtures of Generalized Linear Regressions in _R_.
-<i>Computational Statistics &amp; Data Analysis</i>, <b>51</b>(11),
-doi:<a href="https://dx.doi.org/10.1016/j.csda.2006.08.014" target="_blank">10.1016/j.csda.2006.08.014</a>
-</p>
-<p id="leisch2004">
-Friedrich L (2004).
-FlexMix: A General Framework for Finite Mixture Models and Latent Class Regression in <i>R</i>.
-<i>Journal of Statistical Software, Articles</i>, <b>11</b>(8), 1—18,
-doi:<a href="https://dx.doi.org/10.18637/jss.v011.i08" target="_blank">10.18637/jss.v011.i08</a>
-</p>
-<p id="fraley2000">
-Fraley C, Raftery AE (2000).
-Model-Based Clustering, Discriminant Analysis, and Density Estimation.
-<i>Journal of the American Statistical Association</i>, <b>97</b>(458), 611—631,
-doi:<a href="https://dx.doi.org/10.1198/016214502760047131" target="_blank">10.1198/016214502760047131</a>
-</p>
-<p id="mccullagh1999">
-McCullagh P, Nelder JA (1999).
-Likelihood functions for binary data. In <i>Generalized Linear Models</i> (Chapter 4.4),
-2<i>nd</i> edition, ISBN 0-412-31760-5.
-</p>
+--><p><em><a href="https://github.com/retostauffer/Rfoehnix" class="external-link">Reto</a>, Matthias, Georg, and Fabien.</em></p>
+<div class="section level3">
+<h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h3>
+<p id="mayr2018">Mayr GJ, Plavcan D, Laurence A, Elvidge A, Grisogono B, Horvath K, Jackson P, Neururer A, Seibert P, Steenburgh JW, Stiperski I, Sturman A, Večenaj Ž, Vergeiner J, Vosper S, Zängl G (2018). The Community Foehn Classification Experiment. <i>Bulletin of the American Meteorological Society</i>, <b>99</b>(11), 2229—2235, <a href="https://doi.org/10.1175/BAMS-D-17-0200.1" target="_blank" class="external-link">10.1175/BAMS-D-17-0200.1</a></p>
+<p id="plavcan2014">Plavcan D, Mayr GJ, Zeileis A (2014). Automatic and Probabilistic Foehn Diagnosis with a Statistical Mixture Model. <i>Journal of Applied Meteorology and Climatology</i>, <b>53</b>(3), 652—659, <a href="https://dx.doi.org/10.1175/JAMC-D-13-0267.1" target="_blank" class="external-link">10.1175/JAMC-D-13-0267.1</a></p>
+<p id="hastie2009">Hastie T, Tibshirani R, Friedman J (2009). Fitting Logistic Regression Models. In <i>The Elements of Statistical Learning</i> (Chapter 4.4.1), 2<i>nd</i> edition, ISBN 978-0387848570. <a href="https://web.stanford.edu/~hastie/ElemStatLearn/" target="_blank" class="external-link">PDF download</a></p>
+<p id="gruen2008">Grün B, Friedrich L (2008). FlexMix Version 2: Finite Mixtures with Concomitant Variables and Varying and Constant Parameters. <i>Journal of Statistical Software, Articles</i>, <b>28</b>(4), 1—35, doi:<a href="https://dx.doi.org/10.18637/jss.v028.i04" target="_blank" class="external-link">10.18637/jss.v028.i04</a></p>
+<p id="gruen2007">Grün B, Leisch F (2007). Fitting Finite Mixtures of Generalized Linear Regressions in <em>R</em>. <i>Computational Statistics &amp; Data Analysis</i>, <b>51</b>(11), doi:<a href="https://dx.doi.org/10.1016/j.csda.2006.08.014" target="_blank" class="external-link">10.1016/j.csda.2006.08.014</a></p>
+<p id="leisch2004">Friedrich L (2004). FlexMix: A General Framework for Finite Mixture Models and Latent Class Regression in <i>R</i>. <i>Journal of Statistical Software, Articles</i>, <b>11</b>(8), 1—18, doi:<a href="https://dx.doi.org/10.18637/jss.v011.i08" target="_blank" class="external-link">10.18637/jss.v011.i08</a></p>
+<p id="fraley2000">Fraley C, Raftery AE (2000). Model-Based Clustering, Discriminant Analysis, and Density Estimation. <i>Journal of the American Statistical Association</i>, <b>97</b>(458), 611—631, doi:<a href="https://dx.doi.org/10.1198/016214502760047131" target="_blank" class="external-link">10.1198/016214502760047131</a></p>
+<p id="mccullagh1999">McCullagh P, Nelder JA (1999). Likelihood functions for binary data. In <i>Generalized Linear Models</i> (Chapter 4.4), 2<i>nd</i> edition, ISBN 0-412-31760-5.</p>
 </div>
 </div>
 </div>
 
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/retostauffer/Rfoehnix">https://​github.com/​retostauffer/​Rfoehnix</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/retostauffer/Rfoehnix/issues">https://​github.com/​retostauffer/​Rfoehnix/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Reto Stauffer <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3798-5507" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/retostauffer/Rfoehnix/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master"><img src="https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/gh/retostauffer/Rfoehnix"><img src="https://codecov.io/gh/retostauffer/Rfoehnix/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://www.repostatus.org/badges/latest/wip.svg"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Repository Status"></a></li>
-<li><a href="https://matthiasdusch.github.io/foehnix-python/_build/html/"><img src="https://img.shields.io/badge/Python-githubio-yellowgreen" alt="Python"></a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-2" class="external-link">GPL-2</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing foehnix</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Reto Stauffer <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3798-5507" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Reto Stauffer.</p>
+  <p></p>
+<p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -357,6 +320,8 @@ Likelihood functions for binary data. In <i>Generalized Linear Models</i> (Chapt
 
   
 
+
+  
 
   </body>
 </html>

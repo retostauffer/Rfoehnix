@@ -6,20 +6,22 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="foehnix">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,14 +34,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     How To
      
     <span class="caret"></span>
@@ -66,7 +68,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Advanced
      
     <span class="caret"></span>
@@ -101,8 +103,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/retostauffer/Rfoehnix">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -116,65 +118,65 @@
 
       
 
-      </header><div class="row">
+      </header><script src="mixedmodel_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1></h1>
+      <h1 data-toc-skip></h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/master/vignettes/mixedmodel.Rmd"><code>vignettes/mixedmodel.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/HEAD/vignettes/mixedmodel.Rmd" class="external-link"><code>vignettes/mixedmodel.Rmd</code></a></small>
       <div class="hidden name"><code>mixedmodel.Rmd</code></div>
 
     </div>
 
     
     
-<div id="statistical-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#statistical-model" class="anchor"></a>Statistical Model</h2>
+<div class="section level2">
+<h2 id="statistical-model">Statistical Model<a class="anchor" aria-label="anchor" href="#statistical-model"></a>
+</h2>
 <p>The automated foehn classification <code>foehnix</code> is based on a two-component mixture model. The basic idea is that two unobservable components (or clusters) exist. One component for situations without foehn, one component for situations with foehn. <code>foehnix</code> uses an unsupervised statistical method to identify the two components based on a set of observed values (e.g., wind speed, gust speed, potential temperature differences) to model the probability whether or not a specific observation is related to a foehn event.</p>
 <p>The statistical model consists of two parts: one part to identify the two components, and a second part modelling the probability whether or not a specific observation belongs to component 1 or component 2. The latter is known as the <em>concomitant model</em>.</p>
 <p>The density of a two-component mixed distribution <span class="math inline">\(h(\dots)\)</span> in its general form is specified as follows for a specific observation <span class="math inline">\(i\)</span>:</p>
 <ul>
-<li><span class="math inline">\(h(y_i, \mathit{x}_i, \mathit{\theta}, \mathit{\alpha}) =  \underbrace{(1 - \pi(\mathit{x}_i, \alpha)) \cdot f(y_i, \mathit{\theta}_1)}_{\text{component 1}} +  \underbrace{\pi(\mathit{x}_i, \alpha) \cdot f(y_i, \mathit{\theta}_2)}_{\text{component 2}}\)</span></li>
+<li><span class="math inline">\(h(y_i, \mathit{x}_i, \mathit{\theta}, \mathit{\alpha}) = \underbrace{(1 - \pi(\mathit{x}_i, \alpha)) \cdot f(y_i, \mathit{\theta}_1)}_{\text{component 1}} + \underbrace{\pi(\mathit{x}_i, \alpha) \cdot f(y_i, \mathit{\theta}_2)}_{\text{component 2}}\)</span></li>
 </ul>
 <p>… where <span class="math inline">\(\mathit{y}\)</span> is the covariate for the first part of the statistical model to identify components 1 and 2, and <span class="math inline">\(\mathbf{x}\)</span> the covariates for the concomitant model. The density of the mixed distribution <span class="math inline">\(h\)</span> is the sum (or superposition) of the densities of the two components (<span class="math inline">\(f\)</span>; i.e., Gaussian distribution) times the probability <span class="math inline">\(\pi\)</span> from the concomitant model which describes whether or not a specific observation belongs to component 2. <span class="math inline">\(\mathit{\theta} = (\mathit{\theta}_1, \mathit{\theta}_2)\)</span> are the distribution parameters of the components, <span class="math inline">\(\mathit{\alpha}\)</span> the parameters of the concomitant model.</p>
 <p>The concomitant model can be any model which fulfills <span class="math inline">\(\pi \in~]0,1[\)</span>, e.g., an constant value or intercept only model (mixture model <em>without concomitants</em>), or any kind of probability model. <code>foehnix</code> uses a logistic regression model of the following form:</p>
 <ul>
-<li><span class="math inline">\(\log\big(\frac{\pi}{1 - \pi}\big) = \mathbf{x}^\top \mathit{\alpha};~~  \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span></li>
+<li><span class="math inline">\(\log\big(\frac{\pi}{1 - \pi}\big) = \mathbf{x}^\top \mathit{\alpha};~~ \pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span></li>
 </ul>
 <p>The final <em>foehn</em> probability of the two-component mixture model, also known as the a-posteriori probability, is given by:</p>
 <ul>
-<li><span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =  \frac{\pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{ (1 - \pi(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) ~+~ \pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)  }\)</span></li>
+<li><span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = \frac{\pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{  (1 - \pi(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) ~+~  \pi(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2) }\)</span></li>
 </ul>
 <p>… where <span class="math inline">\(\hat{\mathit{p}}\)</span> in our case represents the probability of foehn. All one has to know are the parameters <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which can be estimated using an appropriate M-estimator such as maximum likelihood.</p>
 </div>
-<div id="parameter-estimation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#parameter-estimation" class="anchor"></a>Parameter Estimation</h2>
+<div class="section level2">
+<h2 id="parameter-estimation">Parameter Estimation<a class="anchor" aria-label="anchor" href="#parameter-estimation"></a>
+</h2>
 <p>The maximum likelihood of a mixture model can usually not be maximized directly. One possibility to estimate the coefficients of is an iterative <em>expectation maximization</em> (EM) algorithm. The EM algorithm otimizes the following log-likelihood:</p>
 <ul>
 <li>
-<span class="math inline">\(\ell = \sum_{i=1}^N \big( (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) + \hat{\mathit{p}} \cdot \log(f(\mathit{y}, \mathit{\theta}_2)) + (1 - \hat{\mathit{p}} \cdot \log(1 - \mathit{\pi}(\mathbf{x}, \mathit{\alpha})) + \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha}))  \big)\)</span>.</li>
+<span class="math inline">\(\ell = \sum_{i=1}^N \big(  (1 - \hat{\mathit{p}}) \cdot \log(f(\mathit{y}, \mathit{\theta}_1)) +  \hat{\mathit{p}} \cdot \log(f(\mathit{y}, \mathit{\theta}_2)) +  (1 - \hat{\mathit{p}} \cdot \log(1 - \mathit{\pi}(\mathbf{x}, \mathit{\alpha})) +  \hat{\mathit{p}} \cdot \log(\mathit{\pi}(\mathbf{x}, \mathit{\alpha})) \big)\)</span>.</li>
 </ul>
 <p>with <span class="math inline">\(\hat{\mathit{p}}\)</span> as specified above (a-posteriori probability). <span class="math inline">\(N\)</span> represents the number of observations.</p>
 <p>The EM algorithm is specified as follows:</p>
 <ul>
 <li><p><strong>Initialization:</strong> initialize values for <span class="math inline">\(\mathbf{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span>.</p></li>
 <li><p><strong>Estimation:</strong> compute the posterior class probability <span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha})\)</span></p></li>
-<li><p><strong>Maximize:</strong> estimate <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which maximize the likelihood using the posterior class probability <span class="math inline">\(\hat{\mathit{p}}\)</span> from the estimation step as weights: <span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) = \frac{\hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{  (1 - \hat{p}(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) +  \hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2) }\)</span></p></li>
+<li><p><strong>Maximize:</strong> estimate <span class="math inline">\(\mathit{\theta}\)</span> and <span class="math inline">\(\mathit{\alpha}\)</span> which maximize the likelihood using the posterior class probability <span class="math inline">\(\hat{\mathit{p}}\)</span> from the estimation step as weights: <span class="math inline">\(\hat{\mathit{p}}(\mathit{y}, \mathbf{x}, \mathit{\theta}, \mathit{\alpha}) =  \frac{\hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)}{  (1 - \hat{p}(\mathbf{x}, \mathit{\alpha})) \cdot f(\mathbf{y}, \mathbf{\theta}_1) +  \hat{p}(\mathbf{x}, \mathit{\alpha}) \cdot f(\mathbf{y}, \mathbf{\theta}_2)  }\)</span></p></li>
 </ul>
 <p>The EM steps are repeated until the likelihood improvement falls below a certain threshold or the maximum number of iterations is reached.</p>
 </div>
-<div id="gaussian-mixture-model-without-concomitants" class="section level2">
-<h2 class="hasAnchor">
-<a href="#gaussian-mixture-model-without-concomitants" class="anchor"></a>Gaussian Mixture Model Without Concomitants</h2>
+<div class="section level2">
+<h2 id="gaussian-mixture-model-without-concomitants">Gaussian Mixture Model Without Concomitants<a class="anchor" aria-label="anchor" href="#gaussian-mixture-model-without-concomitants"></a>
+</h2>
 <p>The simplest case is a Gaussian two-component mixture model without concomitants. In this case the density of the two components is the density <span class="math inline">\(\phi\)</span> of the Gaussian distribution with its parameters <span class="math inline">\(\mathit{\theta}_1 = (\mu_1, \sigma_1)\)</span> and <span class="math inline">\(\mathit{\theta}_2 = (\mu_2, \sigma_2)\)</span> where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the <em>location</em> and <em>scale parameter</em> of the Gaussian distribution, or <em>mean</em> and <em>standard deviation</em>.</p>
-<div id="initialization-step" class="section level4">
-<h4 class="hasAnchor">
-<a href="#initialization-step" class="anchor"></a>Initialization step</h4>
+<div class="section level4">
+<h4 id="initialization-step">Initialization step<a class="anchor" aria-label="anchor" href="#initialization-step"></a>
+</h4>
 <p>First, initial values for the parameters (<span class="math inline">\(\mathit{\theta}\)</span>) and the posterior weights (<span class="math inline">\(\hat{\mathit{p}}\)</span>) have to be specified. <span class="math inline">\(\mathit{\alpha}\)</span> does not have to be initialized as no concomitant model is used in this case! To be able to do so we have to attribute each observation <span class="math inline">\(\mathit{y}_i \forall i = 1, \dots, N\)</span> to one of the two components. This initial membership will be denoted as <span class="math inline">\(\mathit{z}\)</span> and takes 1 if observation <span class="math inline">\(y_i\)</span> belongs to <em>component 2</em> and 0 else. This initial attribution defines that observations with high values of <span class="math inline">\(\mathit{y}\)</span> belong to component 2, observations with low values of <span class="math inline">\(\mathit{y}\)</span> to component 1.</p>
-<p><strong>Note:</strong> Depending on the model specification this can lead to models where the probability for <em>no foehn</em> will be returned by <code>foehnix</code> rather than posteriori probability of <em>foehn</em>. However, the <code>switch</code> argument of the <code><a href="../reference/foehnix.html">foehnix(...)</a></code> function allows you to control this behavior (see <a href="reference/foehnix.html"><code>foehnix</code> manual page</a>).</p>
+<p><strong>Note:</strong> Depending on the model specification this can lead to models where the probability for <em>no foehn</em> will be returned by <code>foehnix</code> rather than posteriori probability of <em>foehn</em>. However, the <code>switch</code> argument of the <code>foehnix(...)</code> function allows you to control this behavior (see <a href="reference/foehnix.html"><code>foehnix</code> manual page</a>).</p>
 <p><code>foehnix</code> uses the following initialization for the two-component Gaussian mixture model without concomitants:</p>
 <ol style="list-style-type: decimal">
 <li>Initialize class membership: <span class="math inline">\(z_i = \begin{cases}1 &amp; \text{if}~y_i \ge \bar{y} \\ 0 &amp; \text{else}\end{cases}\)</span>
@@ -216,9 +218,9 @@
 </ol>
 </div>
 </div>
-<div id="gaussian-mixture-model-with-concomitants" class="section level2">
-<h2 class="hasAnchor">
-<a href="#gaussian-mixture-model-with-concomitants" class="anchor"></a>Gaussian Mixture Model With Concomitants</h2>
+<div class="section level2">
+<h2 id="gaussian-mixture-model-with-concomitants">Gaussian Mixture Model With Concomitants<a class="anchor" aria-label="anchor" href="#gaussian-mixture-model-with-concomitants"></a>
+</h2>
 <p>The optimizer for a two-component Gaussian mixture model with additional concomitants is very similar except that we also have to update the concomitant model (logistic regression model). For mixed models with concomitants the probabilities <span class="math inline">\(\mathit{\pi}\)</span> are a function of the concomitant covariates <span class="math inline">\(\mathbf{x}\)</span> and the regression coefficients <span class="math inline">\(\mathit{\alpha}\)</span>.</p>
 <p>The following algorithm is used:</p>
 <ol style="list-style-type: decimal">
@@ -237,48 +239,40 @@
 <em>As for the Gaussian mixture model without concomitants</em>: proceed with <strong>step 5</strong> until one of the stopping criteria is reached.</li>
 </ol>
 </div>
-<div id="logistic-mixture-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#logistic-mixture-model" class="anchor"></a>Logistic Mixture Model</h2>
+<div class="section level2">
+<h2 id="logistic-mixture-model">Logistic Mixture Model<a class="anchor" aria-label="anchor" href="#logistic-mixture-model"></a>
+</h2>
 <p>The logistic two-component mixture models can be estimated as the Gaussian ones except that component density is the density of the logistic distribution, and that the weighted empirical moments for <span class="math inline">\(\sigma_1\)</span> and <span class="math inline">\(\sigma_2\)</span>, the scale of the logistic distribution, is now:</p>
 <ul>
-<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})}  \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}  \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
-<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}}  \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2}  \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
+<li><span class="math inline">\(\sigma_1^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} (1-\hat{p}_i^{(j-1)})} \sum_{i=1}^{N} (1 - \hat{p}_i^{(j-1)}) \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2} \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
+<li><span class="math inline">\(\sigma_2^{(j)} = \Big(\frac{1}{\sum_{i=1}^{N} \hat{p}_i^{(j-1)}} \sum_{i=1}^{N} \hat{p}_i^{(j-1)} \cdot (y_i - \bar{y})^2\Big)^\frac{1}{2} \cdot \frac{\sqrt{3}}{3.1415}\)</span></li>
 </ul>
 </div>
-<div id="censored-and-truncated-models" class="section level2">
-<h2 class="hasAnchor">
-<a href="#censored-and-truncated-models" class="anchor"></a>Censored and Truncated Models</h2>
+<div class="section level2">
+<h2 id="censored-and-truncated-models">Censored and Truncated Models<a class="anchor" aria-label="anchor" href="#censored-and-truncated-models"></a>
+</h2>
 <p>In case of a censored or truncated mixed model the distributional parameters <span class="math inline">\(\mathit{\theta}\)</span> of the components of the mixture model cannot be calculated using weighted empirical moments. In these cases a numreical likelihood-based solver is used to estimate <span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\mu_2\)</span>, <span class="math inline">\(\sigma_1\)</span>, and <span class="math inline">\(\sigma_2\)</span>.</p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#statistical-model">Statistical Model</a></li>
-      <li><a href="#parameter-estimation">Parameter Estimation</a></li>
-      <li><a href="#gaussian-mixture-model-without-concomitants">Gaussian Mixture Model Without Concomitants</a></li>
-      <li><a href="#gaussian-mixture-model-with-concomitants">Gaussian Mixture Model With Concomitants</a></li>
-      <li><a href="#logistic-mixture-model">Logistic Mixture Model</a></li>
-      <li><a href="#censored-and-truncated-models">Censored and Truncated Models</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
 
 
       <footer><div class="copyright">
-  <p>Developed by Reto Stauffer.</p>
+  <p></p>
+<p>Developed by Reto Stauffer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -286,6 +280,8 @@
 
   
 
+
+  
 
   </body>
 </html>
