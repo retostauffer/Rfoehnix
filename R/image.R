@@ -8,7 +8,7 @@
 #' @param FUN character string or a custom aggregation function. See 'Details'
 #'        section for more information.
 #' @param deltat integer, interval in seconds for the time of day axis. Has to be
-#'        a fraction of 86400 (24 hours in seconds). It \code{NuLL} (default) the
+#'        a fraction of 86400 (24 hours in seconds). It \code{NULL} (default) the
 #'        interval of the time series object will be used.
 #' @param deltad integer, similar to \code{deltat}, the interval in days for the
 #'        grid on the x-axis. Default is \code{7L} (aggregate to weekly values).
