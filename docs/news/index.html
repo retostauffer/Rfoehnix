@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">foehnix</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.6</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@
       <small>Source: <a href="https://github.com/retostauffer/Rfoehnix/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1-5" id="foehnix-01-5-mai-2023-bugfixes">foehnix 0.1-5 (Mai 2023; bugfixes)<a class="anchor" aria-label="anchor" href="#foehnix-01-5-mai-2023-bugfixes"></a></h2>
+<ul><li>Found an issue in the <code>windrose.foehnix</code> plotting routine which - by default - centers the sector around north by shifting the sector by one half of the interval selected (default is 10). Thus, the most northern sector internally got defined as <code>[-interval/2, interval/2]</code> but forgot to take into account the data <code>360 - interval / 2</code>. Should be fixed now.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1-5" id="foehnix-01-5-march-2023-bugfixes">foehnix 0.1-5 (March 2023; bugfixes)<a class="anchor" aria-label="anchor" href="#foehnix-01-5-march-2023-bugfixes"></a></h2>
 <ul><li>Fix in <code><a href="../reference/demodata.html">demodata()</a></code> when loading multiple stations.</li>

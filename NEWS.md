@@ -14,6 +14,14 @@
     labels/legends.
 * Updated a series of _R_ documentation pages.
 
+# foehnix 0.1-5 (Mai 2023; bugfixes)
+
+* Found an issue in the `windrose.foehnix` plotting routine which - by default - 
+  centers the sector around north by shifting the sector by one half of the 
+  interval selected (default is 10). Thus, the most northern sector internally
+  got defined as `[-interval/2, interval/2]` but forgot to take into account
+  the data `360 - interval / 2`. Should be fixed now.
+
 # foehnix 0.1-5 (March 2023; bugfixes)
 
 * Fix in `demodata()` when loading multiple stations.

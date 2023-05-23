@@ -522,6 +522,15 @@ windrose.default <- function(x, ff,
         warning("breaks on \"ff\" do not span the full range of the data!")
 
     # ----------------
+    # For the windrose plot we are shifting the wind direction
+    # intervals (see `inverval`) by `- interval / 2` to center the
+    # one sector/bin around {0, 360} degrees. To ensure to count
+    # all observations we do need to modify data$dd. In case data$dd
+    # is larger than the most upper bound, subtract 360 degrees!
+    idx <- which(data$dd > max(dd.breaks))
+    if (length(idx) > 0) data$dd[idx] <- data$dd[idx] - 360
+
+    # ----------------
     # Prepare data for the plots
     # Type "density"
     if ( type == "density") {
