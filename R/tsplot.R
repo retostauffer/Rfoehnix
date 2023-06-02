@@ -636,7 +636,14 @@ tsplot_add_tempdiff <- function(tmp, control, prob_boxes) {
     # Temperature difference
     param <- get(control, "diff_t", "name")
     if (param %in% names(tmp)) {
-        plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
+        if (all(is.na(tmp[, param]))) {
+            plot(NA, ylim = 0:1, xlim = range(index(tmp)),
+                 type = "n", xaxt = "n", bty = "n")
+            text(mean(index(tmp)), 0.5, "NO DATA", cex = 1.5, col = "gray")
+        } else {
+            plot(tmp[,param], type = "n", xaxt = "n", bty = "n")
+        }
+
         tsplot_add_boxes(prob_boxes)
         tsplot_add_midnight_lines(tmp)
         # Call the line plot

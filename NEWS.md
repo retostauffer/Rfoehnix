@@ -13,6 +13,11 @@
 * Windrose: changed argument `mfcol` to `ncol`, adjusted handling of
     labels/legends.
 * Updated a series of _R_ documentation pages.
+* See foehnix `0.1-6`, `tsplot()` fix: Should be implemented everywhere?
+
+# foehnix 0.1-6 (June 2023; bugfixes)
+
+* `tsplot()` for temperature difference can now deal with all-missing (shows NO DATA)
 
 # foehnix 0.1-5 (Mai 2023; bugfixes)
 
