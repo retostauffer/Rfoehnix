@@ -6,21 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
-<meta property="og:description" content="foehnix">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -43,7 +42,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     How To
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -70,7 +69,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Advanced
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -105,7 +104,7 @@
 <li>
   <a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -116,9 +115,9 @@
 </div>
 <!--/.navbar -->
 
-      
 
-      </header><script src="logisticregression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
@@ -134,79 +133,160 @@
 <div class="section level2">
 <h2 id="logistic-regression-with-iterative-re-weighted-least-squares">Logistic Regression with Iterative (re-)Weighted Least Squares<a class="anchor" aria-label="anchor" href="#logistic-regression-with-iterative-re-weighted-least-squares"></a>
 </h2>
-<p>Logistic regression (LR) models are generalized linear models and often used for binary response models where an observation <span class="math inline">\(\mathit{y}\)</span> is binary zero or one. The logit-link is used as cannonical link to ensure that the modelled probabilities <span class="math inline">\(\mathit{\pi}\)</span> lie within <span class="math inline">\(]0, 1[\)</span>. <span class="math inline">\(\pi_i\)</span> for a specific observation <span class="math inline">\(i \in \{1, \dots, N\}\)</span> is the probability that we will observe <span class="math inline">\(y_i = 1\)</span>. The model can be written as follows:</p>
+<p>Logistic regression (LR) models are generalized linear models and
+often used for binary response models where an observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝑦</mi><annotation encoding="application/x-tex">\mathit{y}</annotation></semantics></math>
+is binary zero or one. The logit-link is used as cannonical link to
+ensure that the modelled probabilities
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝜋</mi><annotation encoding="application/x-tex">\mathit{\pi}</annotation></semantics></math>
+lie within
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">]</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="prefix">[</mo></mrow><annotation encoding="application/x-tex">]0, 1[</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\pi_i</annotation></semantics></math>
+for a specific observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">i \in \{1, \dots, N\}</annotation></semantics></math>
+is the probability that we will observe
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">y_i = 1</annotation></semantics></math>.
+The model can be written as follows:</p>
 <ul>
 <li>
-<span class="math inline">\(\log\big(\frac{\mathit{\pi}}{1 - \mathit{\pi}}\big) = \mathbf{x}^\top \mathit{\alpha}~~\)</span> or <span class="math inline">\(~~\pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}\)</span>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mfrac><mi>𝜋</mi><mrow><mn>1</mn><mo>−</mo><mi>𝜋</mi></mrow></mfrac><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝛼</mi><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace></mrow><annotation encoding="application/x-tex">\log\big(\frac{\mathit{\pi}}{1 - \mathit{\pi}}\big) = \mathbf{x}^\top \mathit{\alpha}~~</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>π</mi><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">~~\pi = \frac{\exp(\mathbf{x}^\top \mathit{\alpha})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha})}</annotation></semantics></math>.</li>
 </ul>
-<p><span class="math inline">\(\mathit{\alpha}\)</span> is a vector of length <span class="math inline">\(P\)</span> of regression coefficients, <span class="math inline">\(\mathbf{x}\)</span> a matrix of dimension <span class="math inline">\(N \times P\)</span> containing the covariates. Given as set of observations <span class="math inline">\(\mathit{y} \in \{0, 1\}\)</span> and the corresponding covariates <span class="math inline">\(\mathbf{x}\)</span> the regression coefficients <span class="math inline">\(\mathit{\alpha}\)</span> can be estimated using e.g., maximum likelihood. The log-likelihood sum of the LR model can be written as follows:</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛼</mi><annotation encoding="application/x-tex">\mathit{\alpha}</annotation></semantics></math>
+is a vector of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+of regression coefficients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
+a matrix of dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>P</mi></mrow><annotation encoding="application/x-tex">N \times P</annotation></semantics></math>
+containing the covariates. Given as set of observations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝑦</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathit{y} \in \{0, 1\}</annotation></semantics></math>
+and the corresponding covariates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
+the regression coefficients
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛼</mi><annotation encoding="application/x-tex">\mathit{\alpha}</annotation></semantics></math>
+can be estimated using e.g., maximum likelihood. The log-likelihood sum
+of the LR model can be written as follows:</p>
 <ul>
 <li>
-<span class="math inline">\(\ell(\mathit{\alpha}~|~\mathit{y}, \mathbf{x}) = \sum_{i=1}^N \big( \mathit{y} \mathbf{x}^\top \mathit{\alpha} - \log(1 + \exp(\mathbf{x}^\top \mathit{\alpha})) \big)\)</span>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.222em"></mspace><mi>𝑦</mi><mo>,</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mi>𝑦</mi><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝛼</mi><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\ell(\mathit{\alpha}~|~\mathit{y}, \mathbf{x}) = \sum_{i=1}^N \big( \mathit{y} \mathbf{x}^\top \mathit{\alpha} - \log(1 + \exp(\mathbf{x}^\top \mathit{\alpha})) \big)</annotation></semantics></math>.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="fitting-logistic-regression-models">Fitting Logistic Regression Models<a class="anchor" aria-label="anchor" href="#fitting-logistic-regression-models"></a>
 </h2>
-<p>The parameters of binary LR models can be estimated using an interative (re-)Weighted least squares (IWLS) solver. The regression coefficients <span class="math inline">\(\mathit{\alpha}\)</span> are iteratively updated using a Newton-Raphson update procedure. A single Newton update (one single iteration) is:</p>
+<p>The parameters of binary LR models can be estimated using an
+interative (re-)Weighted least squares (IWLS) solver. The regression
+coefficients
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛼</mi><annotation encoding="application/x-tex">\mathit{\alpha}</annotation></semantics></math>
+are iteratively updated using a Newton-Raphson update procedure. A
+single Newton update (one single iteration) is:</p>
 <ul>
-<li><span class="math inline">\(\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} - \Big(\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top}\Big)^{-1} \frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}}\)</span></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>−</mo><mo minsize="1.8" maxsize="1.8" stretchy="false" form="prefix">(</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi><mi>∂</mi><msup><mi>𝛼</mi><mi>⊤</mi></msup></mrow></mfrac><msup><mo minsize="1.8" maxsize="1.8" stretchy="false" form="postfix">)</mo><mrow><mo>−</mo><mn>1</mn></mrow></msup><mfrac><mrow><mi>∂</mi><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} - \Big(\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top}\Big)^{-1} \frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}}</annotation></semantics></math></li>
 </ul>
-<p>Where the derivates are evaluated at <span class="math inline">\(\mathit{\alpha}^{(j)}\)</span> from the previouse iteration. The first order and second order derivatives of the log-likelihood are:</p>
+<p>Where the derivates are evaluated at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathit{\alpha}^{(j)}</annotation></semantics></math>
+from the previouse iteration. The first order and second order
+derivatives of the log-likelihood are:</p>
 <ul>
-<li><span class="math inline">\(\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \sum_{i=1}^N x_i \big(y_i - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = \sum_{i=1}^N x_i (y_i - \pi_i)\)</span></li>
-<li><span class="math inline">\(\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = \sum_{i=1}^N x_i^2 \big(\frac{\exp(\mathit{x}_i^\top \mathit{\alpha})^2}{(1 + \exp(\mathit{x}_i^\top \mathit{\alpha}))^2} - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = - \sum_{i=1}^N x_i^2 \pi_i (1 - \pi_i)\)</span></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi></mrow></mfrac><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><msub><mi>x</mi><mi>i</mi></msub><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \sum_{i=1}^N x_i \big(y_i - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = \sum_{i=1}^N x_i (y_i - \pi_i)</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi><mi>∂</mi><msup><mi>𝛼</mi><mi>⊤</mi></msup></mrow></mfrac><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mfrac><mrow><mo>exp</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mfrac><mo>−</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝑥</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mo>=</mo><mo>−</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup><msub><mi>π</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>π</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = \sum_{i=1}^N x_i^2 \big(\frac{\exp(\mathit{x}_i^\top \mathit{\alpha})^2}{(1 + \exp(\mathit{x}_i^\top \mathit{\alpha}))^2} - \frac{\exp(\mathit{x}_i^\top \mathit{\alpha})}{1 + \exp(\mathit{x}_i^\top \mathit{\alpha})}\big) = - \sum_{i=1}^N x_i^2 \pi_i (1 - \pi_i)</annotation></semantics></math></li>
 </ul>
 <p>The same can be written in matrix notation:</p>
 <ul>
 <li>
-<span class="math inline">\(\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = - \mathbf{x}^\top \mathbf{w} \mathbf{x}\)</span>, <span class="math inline">\(~~~\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \mathbf{x}^\top (\mathit{y} - \mathit{\pi})\)</span>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi><mi>∂</mi><msup><mi>𝛼</mi><mi>⊤</mi></msup></mrow></mfrac><mo>=</mo><mo>−</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝐰</mi><mi>𝐱</mi></mrow><annotation encoding="application/x-tex">\frac{\partial^2\ell(\mathit{\alpha})}{\partial\mathit{\alpha}\partial\mathit{\alpha}^\top} = - \mathbf{x}^\top \mathbf{w} \mathbf{x}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mfrac><mrow><mi>∂</mi><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛼</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝛼</mi></mrow></mfrac><mo>=</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">~~~\frac{\partial\ell(\mathit{\alpha})}{\partial\mathit{\alpha}} = \mathbf{x}^\top (\mathit{y} - \mathit{\pi})</annotation></semantics></math>
 </li>
 </ul>
-<p>… where <span class="math inline">\(\mathbf{w}\)</span> is an <span class="math inline">\(N \times N\)</span> diagonal matrix of weights with the diagonal elements <span class="math inline">\(\mathit{\pi} (1 - \mathit{\pi})\)</span> evaluated at <span class="math inline">\(\mathit{\alpha}^{(j)}\)</span>. Thus, the Newton step in matrix notation is given as:</p>
+<p>… where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐰</mi><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math>
+is an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">N \times N</annotation></semantics></math>
+diagonal matrix of weights with the diagonal elements
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathit{\pi} (1 - \mathit{\pi})</annotation></semantics></math>
+evaluated at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathit{\alpha}^{(j)}</annotation></semantics></math>.
+Thus, the Newton step in matrix notation is given as:</p>
 <ul>
-<li><span class="math inline">\(\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} + (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top (\mathit{y} - \mathit{\pi}) = (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top \mathbf{w} (\mathbf{x}\mathit{\alpha}^{(j)} + \mathbf{w}^{-1} (\mathit{y} - \mathit{\pi}))\)</span></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝐰</mi><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐱</mi><mi>⊤</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝐰</mi><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐱</mi><mi>⊤</mi></msup><mi>𝐰</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mi>𝐰</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(j+1)} = \mathit{\alpha}^{(j)} + (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top (\mathit{y} - \mathit{\pi}) = (\mathbf{x}^\top \mathbf{w} \mathbf{x})^{-1} \mathbf{x}^\top \mathbf{w} (\mathbf{x}\mathit{\alpha}^{(j)} + \mathbf{w}^{-1} (\mathit{y} - \mathit{\pi}))</annotation></semantics></math></li>
 </ul>
-<p>With <span class="math inline">\(\tilde{\mathbf{w}} = \mathbf{w}^\frac{1}{2}\)</span> (<span class="math inline">\(\mathbf{w} = \tilde{\mathbf{w}}^2\)</span>) we can write the Newton step as:</p>
+<p>With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mo>=</mo><msup><mi>𝐰</mi><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{w}} = \mathbf{w}^\frac{1}{2}</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐰</mi><mo>=</mo><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\mathbf{w} = \tilde{\mathbf{w}}^2</annotation></semantics></math>)
+we can write the Newton step as:</p>
 <ul>
 <li>
-<span class="math inline">\(\mathit{\alpha}^{(j+1)} = (\mathbf{x}^\top \tilde{\mathbf{w}} \tilde{\mathbf{w}} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}} (\underbrace{\mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})}_{\text{weighted adjusted response}})\)</span>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐱</mi><mi>⊤</mi></msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><munder><munder><mrow><mi>𝐱</mi><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mo accent="true">⏟</mo></munder><mtext mathvariant="normal">weighted adjusted response</mtext></munder><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(j+1)} = (\mathbf{x}^\top \tilde{\mathbf{w}} \tilde{\mathbf{w}} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}} (\underbrace{\mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})}_{\text{weighted adjusted response}})</annotation></semantics></math>.</li>
 </ul>
-<p>With <span class="math inline">\(\mathbf{x^*} = \mathbf{x} \tilde{\mathbf{w}}\)</span> and <span class="math inline">\(z = \mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})\)</span> the equation can be rewritten as:</p>
+<p>With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐱</mi><mo mathvariant="bold">*</mo></msup><mo>=</mo><mi>𝐱</mi><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover></mrow><annotation encoding="application/x-tex">\mathbf{x^*} = \mathbf{x} \tilde{\mathbf{w}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mi>𝐱</mi><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><mi>𝜋</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">z = \mathbf{x} \tilde{\mathbf{w}} \mathit{\alpha}^{(j)} + \tilde{\mathbf{w}}^{-1} (\mathit{y} - \mathit{\pi})</annotation></semantics></math>
+the equation can be rewritten as:</p>
 <ul>
-<li><span class="math inline">\(\mathit{\alpha}^{(j+1)} = (\mathbf{x}^{*\top} \mathbf{x}^*)^{-1} \mathbf{x}^{*\top} \mathit{z}\)</span></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mrow><mo>*</mo><mi>⊤</mi></mrow></msup><msup><mi>𝐱</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐱</mi><mrow><mo>*</mo><mi>⊤</mi></mrow></msup><mi>𝑧</mi></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(j+1)} = (\mathbf{x}^{*\top} \mathbf{x}^*)^{-1} \mathbf{x}^{*\top} \mathit{z}</annotation></semantics></math></li>
 </ul>
 <p>… similar to ordinary least squares.</p>
 </div>
 <div class="section level2">
 <h2 id="iwls-algorithm">IWLS Algorithm<a class="anchor" aria-label="anchor" href="#iwls-algorithm"></a>
 </h2>
-<p>Given the equations above the iterative algorithm can be written as follows:</p>
+<p>Given the equations above the iterative algorithm can be written as
+follows:</p>
 <p>Initialization</p>
 <ol style="list-style-type: decimal">
-<li>Initialize <span class="math inline">\(\mathit{\alpha}^{(0)} = 0\)</span> (set all coefficients to zero)</li>
-<li>Initialize <span class="math inline">\(\mathit{\pi}^{(0)} = 0.5\)</span> (<span class="math inline">\(\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}\)</span>)</li>
+<li>Initialize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(0)} = 0</annotation></semantics></math>
+(set all coefficients to zero)</li>
+<li>Initialize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\mathit{\pi}^{(0)} = 0.5</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathit{\pi}^{(0)} = \frac{\exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}{1 + \exp(\mathbf{x}^\top \mathit{\alpha}^{(0)})}</annotation></semantics></math>)</li>
 </ol>
-<p>Update step for iteration <span class="math inline">\(j = 1, \dots, \text{maxit}\)</span>:</p>
+<p>Update step for iteration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mtext mathvariant="normal">maxit</mtext></mrow><annotation encoding="application/x-tex">j = 1, \dots, \text{maxit}</annotation></semantics></math>:</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Update weights: <span class="math inline">\(\tilde{\mathbf{w}}^{(j)} = \big(\mathit{\pi}^{(j-1)} (1 - \mathit{\pi}^{(j-1)})\big)^\frac{1}{2}\)</span>
+<li>Update weights:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><msup><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></msup></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{w}}^{(j)} = \big(\mathit{\pi}^{(j-1)} (1 - \mathit{\pi}^{(j-1)})\big)^\frac{1}{2}</annotation></semantics></math>
 </li>
-<li>Update weighted adjusted response: <span class="math inline">\(\mathit{z}^{(j)} = \mathbf{x} \tilde{\mathbf{w}}^{(j)} \mathit{\alpha}^{(j-1)} + (\tilde{\mathbf{w}}^{(j)})^{-1} (\mathit{y} - \mathit{\pi}^{(j-1)})\)</span>
+<li>Update weighted adjusted response:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝑧</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mi>𝐱</mi><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝑦</mi><mo>−</mo><msup><mi>𝜋</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathit{z}^{(j)} = \mathbf{x} \tilde{\mathbf{w}}^{(j)} \mathit{\alpha}^{(j-1)} + (\tilde{\mathbf{w}}^{(j)})^{-1} (\mathit{y} - \mathit{\pi}^{(j-1)})</annotation></semantics></math>
 </li>
-<li>Update coefficients: <span class="math inline">\(\mathit{\alpha}^{(j)} = (\mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \tilde{\mathbf{w}}^{(j)} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \mathit{z}^{(j)}\)</span>
+<li>Update coefficients:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐱</mi><mi>⊤</mi></msup><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msup><mi>𝐱</mi><mi>⊤</mi></msup><msup><mover><mi>𝐰</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><msup><mi>𝑧</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathit{\alpha}^{(j)} = (\mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \tilde{\mathbf{w}}^{(j)} \mathbf{x})^{-1} \mathbf{x}^\top \tilde{\mathbf{w}}^{(j)} \mathit{z}^{(j)}</annotation></semantics></math>
 </li>
-<li>Calculate likelihood: <span class="math inline">\(\ell^{(j)}\)</span>. If <span class="math inline">\(j = 1\)</span> proceed with <strong>step 3</strong>.</li>
-<li>For <span class="math inline">\(j &gt; 1\)</span>: if <span class="math inline">\((\ell^{(j)} - \ell^{(j-1)}) &lt; \text{tol}\)</span> the likelihood could not have been improved in this iteration (converged or stuck): stop IWLS algorithm and return <span class="math inline">\(\mathit{\alpha}^{(j-1)}\)</span>. If <span class="math inline">\(j = \text{maxit}\)</span>: maximum number of iterations reached, stop algorith and return <span class="math inline">\(\mathit{\alpha}^{(j)}\)</span>. Else proceed with <strong>step 3</strong> until one of the stopping criteria is reached.</li>
+<li>Calculate likelihood:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\ell^{(j)}</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">j = 1</annotation></semantics></math>
+proceed with <strong>step 3</strong>.</li>
+<li>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">j &gt; 1</annotation></semantics></math>:
+if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>−</mo><msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mtext mathvariant="normal">tol</mtext></mrow><annotation encoding="application/x-tex">(\ell^{(j)} - \ell^{(j-1)}) &lt; \text{tol}</annotation></semantics></math>
+the likelihood could not have been improved in this iteration (converged
+or stuck): stop IWLS algorithm and return
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathit{\alpha}^{(j-1)}</annotation></semantics></math>.
+If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mtext mathvariant="normal">maxit</mtext></mrow><annotation encoding="application/x-tex">j = \text{maxit}</annotation></semantics></math>:
+maximum number of iterations reached, stop algorith and return
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝛼</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathit{\alpha}^{(j)}</annotation></semantics></math>.
+Else proceed with <strong>step 3</strong> until one of the stopping
+criteria is reached.</li>
 </ol>
-<p>The <a href="../reference/iwls_logit.html">manual page of the iwls_logit function</a> contains a practical example. More details about the IWLS procedure can be found in <a href="../index.html#hastie2009">Hastie, Tibshirani, and Friedman (2009, Chap. 4.4.1)</a>, <a href="../index.html#mccullagh1999">McCullagh and Nelder (1999, Chap. 4.4)</a>, and many other statistical text books (see <a href="../index.html#references">References</a> for details).</p>
+<p>The <a href="../reference/iwls_logit.html">manual page of the
+iwls_logit function</a> contains a practical example. More details about
+the IWLS procedure can be found in <a href="../index.html#hastie2009">Hastie, Tibshirani, and Friedman (2009,
+Chap. 4.4.1)</a>, <a href="../index.html#mccullagh1999">McCullagh and
+Nelder (1999, Chap. 4.4)</a>, and many other statistical text books (see
+<a href="../index.html#references">References</a> for details).</p>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -219,16 +299,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

@@ -1,4 +1,6 @@
 
+# Reading version number from the package DESCRIPTION file
+VERSION := $(shell grep '^Version:' DESCRIPTION | awk '{print $$2}')
 
 # Export user login details, used for testing
 test:
@@ -19,16 +21,18 @@ coverage:
 	#Rscript -e "devtools::test_coverage(show_report = TRUE)"
 
 # Build site, create documentation.
-doc:
-	make install && \
+document:
 	Rscript -e "pkgdown::build_site()"
 
-# Package check
-check:
-	make install && Rscript -e "devtools::check()"
+.PHONY: build install check
+build: document
+	@echo Building current version: $(VERSION)
+	(cd ../ && R CMD build Rfoehnix)
+install: build
+	@echo Installing current version: $(VERSION)
+	(cd ../ && R CMD INSTALL foehnix_$(VERSION).tar.gz)
+check: build
+	@echo Checking current version: $(VERSION)
+	(cd ../ && R CMD check --as-cran foehnix_$(VERSION).tar.gz)
 
-#install: SHELL:=/bin/bash
-install:
-	Rscript -e "devtools::load_all(); devtools::document()" && \
-	Rscript -e "devtools::install(upgrade = 'always')"
 

@@ -572,8 +572,10 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
         idx    <- grep(sprintf("^(%s)$", paste(param_t, param_crest_t, sep = "|")), names(x))
         # ylimits for temperatures - will be use once more later on
         ylim_t <- range(x[, idx], na.rm = TRUE)
-        plot(NA, ylim = ylim_t, xlim = range(index(x)),
+        isinf <- all(!is.finite(ylim_t))
+        plot(NA, ylim = if (isinf) 0:1 else ylim_t, xlim = range(index(x)),
              type = "n", ylab = NA, xaxt = "n", bty = "n")
+        if (isinf) text(mean(index(x)), 0.5, "NO DATA", cex = 1.5, col = "gray")
         tsplot_add_boxes(prob_boxes)
         tsplot_add_midnight_lines(x)
         mtext(side = 2, line = 3, get(control, names(x)[idx[1L]], "ylab"))
@@ -610,7 +612,8 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
     # target station and at the crest) or only one of both.
     if (all(c(param_t, param_crest_t) %in% names(x))) {
         par(new = TRUE)
-        do.call(plot, get(control, "t", "args_plot", list(x = x[, param_t], ylim = ylim_t,
+        do.call(plot, get(control, "t", "args_plot", list(x = x[, param_t],
+                                                          ylim = if (isinf) 0:1 else ylim_t,
                                                           xaxt = "n", yaxt = "n", main = NA)))
         do.call(lines, get(control, "crest_t", "args_lines", list(x = x[, param_crest_t])))
         tsplot_add_legend("topright", control, param_t, param_crest_t)
@@ -619,7 +622,8 @@ tsplot_add_temp <- function(x, control, prob_boxes) {
         param <- ifelse(param_t %in% names(x), param_t, param_crest_t)
         tmp   <- ifelse(param_t %in% names(x), "t", "crest_t")
         par(new = TRUE)
-        do.call(plot, get(control, tmp, "args_plot", list(x = x[, param], ylim = ylim_t,
+        do.call(plot, get(control, tmp, "args_plot", list(x = x[, param],
+                                                          ylim = if (isinf) 0:1 else ylim_t,
                                                           xaxt = "n", yaxt = "n", main = NA)))
     }
 

@@ -6,21 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> • foehnix</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <script src="../extra.js"></script><meta property="og:title" content="">
-<meta property="og:description" content="foehnix">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -43,7 +42,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     How To
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -70,7 +69,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Advanced
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -105,7 +104,7 @@
 <li>
   <a href="https://github.com/retostauffer/Rfoehnix/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -116,9 +115,9 @@
 </div>
 <!--/.navbar -->
 
-      
 
-      </header><script src="simulation_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
@@ -134,15 +133,27 @@
 <div class="section level2">
 <h2 id="verification-with-simulated-data">Verification with Simulated Data<a class="anchor" aria-label="anchor" href="#verification-with-simulated-data"></a>
 </h2>
-<p>The <code>foehnix</code> package allows to estimate Gaussian and logistic mixture models with and without censoring and truncation. The package default is <em>Gaussian</em> without censoring or truncation which typically works quite well. Fore those interested in censoring and truncation please have a look to the <strong>Advanced</strong> pages of this manual.</p>
-<p>This page shows two examples using simulated data from a Gaussian mixed distribution and a logistic mixed distribution without additional concomitants and the corresponding model fits.</p>
+<p>The <code>foehnix</code> package allows to estimate Gaussian and
+logistic mixture models with and without censoring and truncation. The
+package default is <em>Gaussian</em> without censoring or truncation
+which typically works quite well. Fore those interested in censoring and
+truncation please have a look to the <strong>Advanced</strong> pages of
+this manual.</p>
+<p>This page shows two examples using simulated data from a Gaussian
+mixed distribution and a logistic mixed distribution without additional
+concomitants and the corresponding model fits.</p>
 <div class="section level3">
 <h3 id="gaussian">Gaussian<a class="anchor" aria-label="anchor" href="#gaussian"></a>
 </h3>
-<p>Simulate random data from a mixed Gaussian distribution using the following <em>true parameters</em>:</p>
+<p>Simulate random data from a mixed Gaussian distribution using the
+following <em>true parameters</em>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The first component has a mean (mu) of <code>1.0</code> and a standard deviation (sigma) of <code>1.0</code>, the second component a mean of <code>5.0</code> and a corresponding standard deviation of <code>2.0</code>. Given these parameters we can draw a set of random numbers from a two-component Gaussian mixture distribution:</p>
+<p>The first component has a mean (mu) of <code>1.0</code> and a
+standard deviation (sigma) of <code>1.0</code>, the second component a
+mean of <code>5.0</code> and a corresponding standard deviation of
+<code>2.0</code>. Given these parameters we can draw a set of random
+numbers from a two-component Gaussian mixture distribution:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Drawing 15000 random numbers from Gaussian mixed distribution</span></span>
 <span><span class="va">family</span> <span class="op">&lt;-</span> <span class="fu">foehnix</span><span class="fu">:::</span><span class="fu"><a href="../reference/foehnix.family.html">foehnix_gaussian</a></span><span class="op">(</span><span class="op">)</span>;   <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">666</span><span class="op">)</span></span>
@@ -150,7 +161,12 @@
 <span><span class="co"># Convert data to zoo (time series object) as foehnix expects</span></span>
 <span><span class="co"># time series input data</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/zoo.html" class="external-link">zoo</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Our <code>data</code> set now consists of <code>15000</code> random numbers from the two components specified above (<code>true</code>) whereof two third come from the first component, one third from the second component. Or in other words: the <em>true probability</em> that an observation comes from the second component is <code>0.333</code>. We can now <em>estimate a foehnix model</em>:</p>
+<p>Our <code>data</code> set now consists of <code>15000</code> random
+numbers from the two components specified above (<code>true</code>)
+whereof two third come from the first component, one third from the
+second component. Or in other words: the <em>true probability</em> that
+an observation comes from the second component is <code>0.333</code>. We
+can now <em>estimate a foehnix model</em>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Estimate foehnix model</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foehnix.html">foehnix</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></code></pre></div>
@@ -164,7 +180,9 @@
 <span><span class="co">## Coefficients</span></span>
 <span><span class="co">##      mu1   sigma1      mu2   sigma2 </span></span>
 <span><span class="co">## 1.023433 1.004856 5.053293 1.938052</span></span></code></pre>
-<p>By default, a Gaussian mixture model is estimated. <code>coef(mod)</code> is used to extract the estimated coefficients:</p>
+<p>By default, a Gaussian mixture model is estimated.
+<code>coef(mod)</code> is used to extract the estimated
+coefficients:</p>
 <ul>
 <li>Estimated parameters for component 1:
 <ul>
@@ -206,7 +224,10 @@
 <div class="section level3">
 <h3 id="logistic">Logistic<a class="anchor" aria-label="anchor" href="#logistic"></a>
 </h3>
-<p>The very same can be done using a two-component logistic mixture model. As above a set of <code>15000</code> random values from the mixture model are drawn and modelled using foehnix with the same <em>true parameters</em> as above for the Gaussian model.</p>
+<p>The very same can be done using a two-component logistic mixture
+model. As above a set of <code>15000</code> random values from the
+mixture model are drawn and modelled using foehnix with the same
+<em>true parameters</em> as above for the Gaussian model.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The true parameters of the distribution</span></span>
 <span><span class="va">true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -215,7 +236,8 @@
 <span><span class="va">family</span> <span class="op">&lt;-</span> <span class="fu">foehnix</span><span class="fu">:::</span><span class="fu"><a href="../reference/foehnix.family.html">foehnix_logistic</a></span><span class="op">(</span><span class="op">)</span>;    <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">666</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">family</span><span class="op">$</span><span class="fu">r</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fl">5000</span><span class="op">)</span>, mu <span class="op">=</span> <span class="va">true</span><span class="op">$</span><span class="va">mu</span>, sigma <span class="op">=</span> <span class="va">true</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/zoo.html" class="external-link">zoo</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, origin <span class="op">=</span> <span class="st">"1970-01-01"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>All we have to do is to specify <code>family = "logistic"</code> when calling the <code>foehnix(...)</code> method:</p>
+<p>All we have to do is to specify <code>family = "logistic"</code> when
+calling the <code>foehnix(...)</code> method:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Estimate foehnix model</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foehnix.html">foehnix</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"logistic"</span><span class="op">)</span></span></code></pre></div>
@@ -275,9 +297,7 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -290,16 +310,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
