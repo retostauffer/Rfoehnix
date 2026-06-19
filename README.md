@@ -1,4 +1,11 @@
 
+# 🚀 This Repository Has Moved to Codeberg!
+
+We have migrated development away from GitHub. This repository is now a read-only mirror. 
+Please submit all new issues, feature requests, and pull requests over at Codeberg:
+
+👉 **[Join us on Codeberg: codeberg.org/retostauffer/foehnix](http://codeberg.org/retostauffer/foehnix)
+
 # foehnix <a href='https://retostauffer.github.io/Rfoehnix/'><img src='https://github.com/retostauffer/Rfoehnix/raw/master/foehnix-logo.png' align="right" height="139" /></a>
 
 [![Build Status](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)](https://api.travis-ci.org/retostauffer/Rfoehnix.svg?branch=master)

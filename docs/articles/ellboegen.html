@@ -120,7 +120,7 @@
       </header><script src="ellboegen_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="ellboegen_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="ellboegen_files/leaflet-1.3.1/leaflet.js"></script><link href="ellboegen_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="ellboegen_files/proj4-2.6.2/proj4.min.js"></script><script src="ellboegen_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="ellboegen_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-<script src="ellboegen_files/leaflet-binding-2.2.2/leaflet.js"></script><script src="ellboegen_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="ellboegen_files/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script><div class="row">
+<script src="ellboegen_files/leaflet-binding-2.2.3/leaflet.js"></script><script src="ellboegen_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="ellboegen_files/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
@@ -232,7 +232,7 @@ observed wind information.</p>
 <span><span class="fu"><a href="../reference/windrose.html">windrose</a></span><span class="op">(</span><span class="va">data</span>, ddvar <span class="op">=</span> <span class="st">"crest_dd"</span>, ffvar <span class="op">=</span> <span class="st">"crest_ff"</span>,</span>
 <span>         main <span class="op">=</span> <span class="st">"Windrose Sattelberg"</span>, hue <span class="op">=</span> <span class="fl">270</span>,</span>
 <span>         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">35</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/emp_windrose-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/emp_windrose-1.png" alt="" width="1152"></p>
 <p>Based on prior knowledge and the plots above we define two “foehn
 wind sectors” as follows:</p>
 <ul>
@@ -259,7 +259,7 @@ model.</p>
 <span>         windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"south wind"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">270</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         main <span class="op">=</span> <span class="st">"Windrose Sattelberg"</span>, hue <span class="op">=</span> <span class="fl">270</span>,</span>
 <span>         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">35</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/windsector_windrose-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/windsector_windrose-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="estimate-classification-model">Estimate Classification Model<a class="anchor" aria-label="anchor" href="#estimate-classification-model"></a>
@@ -306,7 +306,7 @@ temperature difference).</li>
 <span><span class="co">## </span></span>
 <span><span class="co">## Log-likelihood: -55044.0, 7 effective degrees of freedom</span></span>
 <span><span class="co">## Corresponding AIC = 110101.9, BIC = 110158.6</span></span>
-<span><span class="co">## Time required for model estimation: 3.2 seconds</span></span>
+<span><span class="co">## Time required for model estimation: 2.9 seconds</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Cluster separation (ratios close to 1 indicate</span></span>
 <span><span class="co">## well separated clusters):</span></span>
@@ -377,7 +377,7 @@ or
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"posterior"</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
+<p><img src="ellboegen_files/figure-html/unnamed-chunk-3-1.png" alt="" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -432,13 +432,13 @@ during optimization.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Log-likelihood contribution</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"loglikcontribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/plot_loglikcontribution-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/plot_loglikcontribution-1.png" alt="" width="1152"></p>
 <p>In addition, the coefficient paths during optimization can be
 visualized:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Coefficient path</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/plot_coefpath-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/plot_coefpath-1.png" alt="" width="1152"></p>
 <p>The left plot shows the parameters of the two components
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\mu_1</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\log(\sigma_1)</annotation></semantics></math>,
@@ -452,7 +452,7 @@ separating “no foehn” and “foehn” events adding the estimated
 distribution for these two clusters.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"hist"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/plot_histogram-1.png" width="768"></p>
+<p><img src="ellboegen_files/figure-html/plot_histogram-1.png" alt="" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="time-series-plot">Time Series Plot<a class="anchor" aria-label="anchor" href="#time-series-plot"></a>
@@ -470,7 +470,7 @@ do have to manually specify these names.</p>
 <span><span class="fu"><a href="../reference/tsplot.html">tsplot</a></span><span class="op">(</span><span class="va">mod</span>, style <span class="op">=</span> <span class="st">"advanced"</span>, </span>
 <span>       windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">43</span>, <span class="fl">223</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>       start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/tsplot-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/tsplot-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="wind-rose-plot">Wind Rose Plot<a class="anchor" aria-label="anchor" href="#wind-rose-plot"></a>
@@ -483,7 +483,7 @@ do have to manually specify these names.</p>
 <span>         type <span class="op">=</span> <span class="st">"hist"</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"foehn"</span>, <span class="st">"nofoehn"</span><span class="op">)</span>,</span>
 <span>         windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">43</span>, <span class="fl">223</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">22</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/windrose-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/windrose-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="hovmöler-diagram">Hovmöler Diagram<a class="anchor" aria-label="anchor" href="#hovm%C3%B6ler-diagram"></a>
@@ -491,7 +491,7 @@ do have to manually specify these names.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Default image plot</span></span>
 <span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/image1-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/image1-1.png" alt="" width="1152"></p>
 <p>Customized plot which shows the “foehn frequency” for the interesting
 time period from August to April with custom colors and additional
 contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
@@ -504,7 +504,7 @@ contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
 <span>      contour.col <span class="op">=</span> <span class="st">"white"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, labcex <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>      col <span class="op">=</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/hcl_palettes.html" class="external-link">sequential_hcl</a></span><span class="op">(</span><span class="fl">51</span>, <span class="st">"Purple-Yellow"</span>, rev <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>      xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">212</span>, <span class="fl">119</span><span class="op">)</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/image2-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/image2-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="compare-models-gaussian">Compare Models (Gaussian)<a class="anchor" aria-label="anchor" href="#compare-models-gaussian"></a>
@@ -537,7 +537,7 @@ following model specification:</p>
 <span><span class="va">mod_valley</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foehnix.html">foehnix</a></span><span class="op">(</span><span class="va">ff</span> <span class="op">~</span> <span class="va">rh</span>, data <span class="op">=</span> <span class="va">ell</span>,</span>
 <span>                      filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">43</span>, <span class="fl">223</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_valley</span>, which <span class="op">=</span> <span class="st">"hist"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/mod_valley-1.png" width="768"></p>
+<p><img src="ellboegen_files/figure-html/mod_valley-1.png" alt="" width="768"></p>
 <p>To compare the performance of the two models we can calculate a set
 of information criterion. The following matrix shows the sample size
 (<code>N</code>), log-likelihood sum (<code>loglik</code>), Akaike
@@ -654,7 +654,7 @@ available,</li>
 <span>       style <span class="op">=</span> <span class="st">"advanced"</span>,</span>
 <span>       windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">43</span>, <span class="fl">223</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>       start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ellboegen_files/figure-html/alt_tsplot-1.png" width="1152"></p>
+<p><img src="ellboegen_files/figure-html/alt_tsplot-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="compare-models-distributions">Compare Models (Distributions)<a class="anchor" aria-label="anchor" href="#compare-models-distributions"></a>
@@ -897,7 +897,7 @@ seems to perform best among these models.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>

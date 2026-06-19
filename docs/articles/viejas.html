@@ -120,7 +120,7 @@
       </header><script src="viejas_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="viejas_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="viejas_files/leaflet-1.3.1/leaflet.js"></script><link href="viejas_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="viejas_files/proj4-2.6.2/proj4.min.js"></script><script src="viejas_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="viejas_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-<script src="viejas_files/leaflet-binding-2.2.2/leaflet.js"></script><script src="viejas_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="viejas_files/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script><div class="row">
+<script src="viejas_files/leaflet-binding-2.2.3/leaflet.js"></script><script src="viejas_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="viejas_files/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
@@ -207,7 +207,7 @@ observed wind information.</p>
 <span><span class="fu"><a href="../reference/windrose.html">windrose</a></span><span class="op">(</span><span class="va">data</span>, ddvar <span class="op">=</span> <span class="st">"crest_wind_direction"</span>, ffvar <span class="op">=</span> <span class="st">"crest_wind_speed"</span>,</span>
 <span>         main <span class="op">=</span> <span class="st">"Windrose\nLucky Five Ranch"</span>, hue <span class="op">=</span> <span class="fl">270</span>,</span>
 <span>         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">22</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/emp_windrose-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/emp_windrose-1.png" alt="" width="1152"></p>
 <p>Given the plots above we define the <code>foehn</code> wind direction
 at Viejas between 305 and 160 degrees (a 215 degree wind sector centered
 northeast). This wind sector can be chosen rather wide, but should leave
@@ -224,7 +224,7 @@ follows:</p>
 <span>         windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">305</span>, <span class="fl">160</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         windsector.col <span class="op">=</span> <span class="st">"#DFEFF6"</span>,</span>
 <span>         border <span class="op">=</span> <span class="st">"gray50"</span>, lwd <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/unnamed-chunk-2-1.png" width="768"></p>
+<p><img src="viejas_files/figure-html/unnamed-chunk-2-1.png" alt="" width="768"></p>
 <p>The <code>windsector</code> is solely used for visual justification,
 the same restriction will be used in the following step when estimating
 the <a href="references/foehnix.html"><code>foehnix</code></a>
@@ -275,7 +275,7 @@ direction; see above).</li>
 <span><span class="co">## </span></span>
 <span><span class="co">## Log-likelihood: -86157.2, 6 effective degrees of freedom</span></span>
 <span><span class="co">## Corresponding AIC = 172326.5, BIC = 172376.6</span></span>
-<span><span class="co">## Time required for model estimation: 6.0 seconds</span></span>
+<span><span class="co">## Time required for model estimation: 6.1 seconds</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Cluster separation (ratios close to 1 indicate</span></span>
 <span><span class="co">## well separated clusters):</span></span>
@@ -340,7 +340,7 @@ or
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"posterior"</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
+<p><img src="viejas_files/figure-html/unnamed-chunk-4-1.png" alt="" width="768"></p>
 </div>
 <div class="section level4">
 <h4 id="model-coefficients">Model coefficients<a class="anchor" aria-label="anchor" href="#model-coefficients"></a>
@@ -394,7 +394,7 @@ percent per
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span>side <span class="op">=</span> <span class="fl">3</span>, outer <span class="op">=</span> <span class="cn">TRUE</span>, font <span class="op">=</span> <span class="fl">2</span>, cex <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>      <span class="st">"Predicted Probability | Wind Direction = 45"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span>side <span class="op">=</span> <span class="fl">4</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/plot_mod_2dimg-1.png" width="768"></p>
+<p><img src="viejas_files/figure-html/plot_mod_2dimg-1.png" alt="" width="768"></p>
 </div>
 <div class="hide-Rinput">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -414,7 +414,7 @@ percent per
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, fill <span class="op">=</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/hcl_palettes.html" class="external-link">diverging_hcl</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, bty <span class="op">=</span> <span class="st">"n"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"probability"</span>,</span>
 <span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="fl">0</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/plot_mod_2dpoints-1.png" width="768"></p>
+<p><img src="viejas_files/figure-html/plot_mod_2dpoints-1.png" alt="" width="768"></p>
 </div>
 </div>
 </div>
@@ -437,13 +437,13 @@ during optimization.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Log-likelihood contribution</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"loglikcontribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/plot_loglikcontribution-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/plot_loglikcontribution-1.png" alt="" width="1152"></p>
 <p>In addition, the coefficient paths during optimization can be
 visualized:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Coefficient path</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/plot_coefpath-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/plot_coefpath-1.png" alt="" width="1152"></p>
 <p>The left plot shows the parameters of the two components
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\mu_1</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\log(\sigma_1)</annotation></semantics></math>,
@@ -460,7 +460,7 @@ distribution for these two clusters.</p>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">foehnix</span></span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"hist"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/plot_histogram-1.png" width="768"></p>
+<p><img src="viejas_files/figure-html/plot_histogram-1.png" alt="" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="time-series-plot">Time Series Plot<a class="anchor" aria-label="anchor" href="#time-series-plot"></a>
@@ -484,7 +484,7 @@ do have to manually specify these names.</p>
 <span>       windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>wind_direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">305</span>, <span class="fl">160</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>       start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 305 160</span></span></code></pre>
-<p><img src="viejas_files/figure-html/tsplot-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/tsplot-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="wind-rose-plot">Wind Rose Plot<a class="anchor" aria-label="anchor" href="#wind-rose-plot"></a>
@@ -497,7 +497,7 @@ do have to manually specify these names.</p>
 <span>         type <span class="op">=</span> <span class="st">"hist"</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"foehn"</span>, <span class="st">"nofoehn"</span><span class="op">)</span>,</span>
 <span>         windsector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">305</span>, <span class="fl">160</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">16</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/windrose-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/windrose-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="hovmöler-diagram">Hovmöler Diagram<a class="anchor" aria-label="anchor" href="#hovm%C3%B6ler-diagram"></a>
@@ -505,7 +505,7 @@ do have to manually specify these names.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Default image plot</span></span>
 <span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/image1-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/image1-1.png" alt="" width="1152"></p>
 <p>Customized plot which shows the “foehn frequency” for the interesting
 time period from August to April with custom colors and additional
 contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
@@ -515,7 +515,7 @@ contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
 <span>      contour.col <span class="op">=</span> <span class="st">"white"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, labcex <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>      col <span class="op">=</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/hcl_palettes.html" class="external-link">sequential_hcl</a></span><span class="op">(</span><span class="fl">51</span>, <span class="st">"Purple-Yellow"</span>, rev <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>      xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">212</span>, <span class="fl">119</span><span class="op">)</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="viejas_files/figure-html/image2-1.png" width="1152"></p>
+<p><img src="viejas_files/figure-html/image2-1.png" alt="" width="1152"></p>
 </div>
   </div>
 
@@ -534,7 +534,7 @@ contour lines and custom aggregation period (two-weeks, 3-hourly).</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>

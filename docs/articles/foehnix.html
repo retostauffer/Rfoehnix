@@ -270,7 +270,7 @@ information criteria.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Log-likelihood: -55763.8, 6 effective degrees of freedom</span></span>
 <span><span class="co">## Corresponding AIC = 111539.7, BIC = 111588.3</span></span>
-<span><span class="co">## Time required for model estimation: 2.7 seconds</span></span>
+<span><span class="co">## Time required for model estimation: 2.9 seconds</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Use summary(object, detailed = TRUE) to get additional test statistics.</span></span></code></pre>
 <p>The <code>coef</code> or <code>coefficients</code> method returns the
@@ -313,7 +313,7 @@ the two components.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Log-likelihood: -55763.8, 6 effective degrees of freedom</span></span>
 <span><span class="co">## Corresponding AIC = 111539.7, BIC = 111588.3</span></span>
-<span><span class="co">## Time required for model estimation: 2.7 seconds</span></span>
+<span><span class="co">## Time required for model estimation: 2.9 seconds</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Cluster separation (ratios close to 1 indicate</span></span>
 <span><span class="co">## well separated clusters):</span></span>
@@ -343,20 +343,20 @@ details). Increasing values indicate positive log-likelihood
 contributions (improvement of the model).</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"loglik"</span>, log <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-11-1.png" alt="" width="960"></p>
 <p><code>which = "loglikcontribution"</code> shows the same information
 as <code>which = "loglik"</code> but with respect to the log-likelihood
 of the initial parameters. Increasing values indicate positive
 log-likelihood contributions (improvement of the model).</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"loglikcontribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-12-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-12-1.png" alt="" width="960"></p>
 <p>Similar to the plots above we can also check the paths of the
 coefficients trough the iterations of the EM algorithm with
 <code>which = "coef"</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"coef"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-13-1.png" alt="" width="960"></p>
 <p>Last but not least the <code>which = "hist"</code> plot shows the
 conditional histograms of the two clusters. Two histograms are shown
 given the main covariate of the <code>foehnix</code> mixture model, in
@@ -371,7 +371,7 @@ component are shown right. On top (line) the estimated density of the
 two components is shown.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"hist"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-14-1.png" width="960"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-14-1.png" alt="" width="960"></p>
 <p>Fitted probabilities (the probabilities obtained by the model based
 on the training data set) can be accessed by calling
 <code>fitted</code>:</p>
@@ -382,12 +382,12 @@ on the training data set) can be accessed by calling
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      Index                      fitted(mod)   </span></span>
-<span><span class="co">##  Min.   :2006-01-01 01:00:00   Min.   :0.00   </span></span>
-<span><span class="co">##  1st Qu.:2009-04-01 22:15:00   1st Qu.:0.00   </span></span>
-<span><span class="co">##  Median :2012-07-01 19:30:00   Median :0.00   </span></span>
-<span><span class="co">##  Mean   :2012-07-01 19:30:00   Mean   :0.18   </span></span>
-<span><span class="co">##  3rd Qu.:2015-10-01 16:45:00   3rd Qu.:0.00   </span></span>
-<span><span class="co">##  Max.   :2018-12-31 14:00:00   Max.   :1.00   </span></span>
+<span><span class="co">##  Min.   :2006-01-01 01:00:00   Min.   :0.000  </span></span>
+<span><span class="co">##  1st Qu.:2009-04-01 22:15:00   1st Qu.:0.000  </span></span>
+<span><span class="co">##  Median :2012-07-01 19:30:00   Median :0.000  </span></span>
+<span><span class="co">##  Mean   :2012-07-01 19:30:00   Mean   :0.177  </span></span>
+<span><span class="co">##  3rd Qu.:2015-10-01 16:45:00   3rd Qu.:0.000  </span></span>
+<span><span class="co">##  Max.   :2018-12-31 14:00:00   Max.   :1.000  </span></span>
 <span><span class="co">##                                NA's   :38700</span></span></code></pre>
 <p>The method let’s you access the fitted probabilities
 (<code>which = "probability"</code>), a flag which comes with the fitted
@@ -433,11 +433,11 @@ estimated probability.</p>
 proides a convenient function to plot wind roses.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/windrose.html">windrose</a></span><span class="op">(</span><span class="va">mod</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-17-1.png" alt="" width="1152"></p>
 <p>The individual plots can also be plotted separately:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/windrose.html">windrose</a></span><span class="op">(</span><span class="va">mod</span>, which <span class="op">=</span> <span class="st">"foehn"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-18-1.png" alt="" width="1152"></p>
 <p>One type shows the density function (<code>type = "density"</code>),
 the other one a 2-D histogram (<code>type = "histogram"</code>). The
 argument <code>which</code> allows to plot the unconditional windrose
@@ -481,7 +481,7 @@ data), weekly aggregation along the time of the year axis
 plotted without contours.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span>, FUN <span class="op">=</span> <span class="st">"freq"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-19-1.png" alt="" width="1152"></p>
 <p><strong>Example 2</strong>: Aggregated to three-hourly intervals
 (<code>deltat = 3600 * 3</code>), two-week mean values
 (<code>deltad = 14L</code>), occurrance of foehn
@@ -494,7 +494,7 @@ labels).</p>
 <span>      contours <span class="op">=</span> <span class="cn">TRUE</span>, contour.col <span class="op">=</span> <span class="st">"white"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, drawlabels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>      main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Hovmoeller Diagram, Occurrence of Foehn"</span>,</span>
 <span>                   <span class="st">"2-Weekly/3-Hourly Sums"</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="foehnix_files/figure-html/unnamed-chunk-20-1.png" width="1152"></p>
+<p><img src="foehnix_files/figure-html/unnamed-chunk-20-1.png" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="predictions">Predictions<a class="anchor" aria-label="anchor" href="#predictions"></a>
@@ -582,7 +582,7 @@ the last 10 entries, the very same times we have put aside as our
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>

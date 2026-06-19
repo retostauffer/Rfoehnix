@@ -146,7 +146,7 @@ diagram of the estimated probabilities.</p>
 <span></span>
 <span><span class="co"># Create plot</span></span>
 <span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></code></pre></div>
-<p><img src="image_files/figure-html/image_default-1.png" width="1152"></p>
+<p><img src="image_files/figure-html/image_default-1.png" alt="" width="1152"></p>
 <p>By default, the Hovmöller diagram shows the frequency occurrence
 (estimated probability
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>≥</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\pi \ge 0.5</annotation></semantics></math>)
@@ -176,7 +176,7 @@ be used to change the aggregation intervals.</p>
 <span>      contours <span class="op">=</span> <span class="cn">TRUE</span>,        <span class="co"># enable contour lines</span></span>
 <span>      contour.col <span class="op">=</span> <span class="st">"gray20"</span>, <span class="co"># custom contour colors</span></span>
 <span>      main <span class="op">=</span> <span class="st">"Custom Colors and Contours"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="image_files/figure-html/image_colors_contours_limits-1.png" width="1152"></p>
+<p><img src="image_files/figure-html/image_colors_contours_limits-1.png" alt="" width="1152"></p>
 <p>The limits can be used to adjust the area to be plotted.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span>,</span>
@@ -189,7 +189,7 @@ be used to change the aggregation intervals.</p>
 <span>      main <span class="op">=</span> <span class="st">"Custom Plot and Color Limits"</span>,</span>
 <span>      xlab <span class="op">=</span> <span class="st">"April and May"</span>,</span>
 <span>      ylab <span class="op">=</span> <span class="st">"09:00 UTC - 18:00 UTC"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="image_files/figure-html/image_custom_limits-1.png" width="1152"></p>
+<p><img src="image_files/figure-html/image_custom_limits-1.png" alt="" width="1152"></p>
 <p>This is especially useful if one has a data set which only covers a
 short time period (e.g., only several months). <strong>Please
 note</strong> that, for demonstration purposes, we will use a subset of
@@ -212,7 +212,7 @@ may use a higher temporal resolution (e.g., 10min observations).</p>
 <span><span class="va">xlim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXlt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">data_subset</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">yday</span></span>
 <span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod_subset</span>, xlim <span class="op">=</span> <span class="va">xlim</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>      main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Custom x limits from %d - %d (Julian day)"</span>, <span class="va">xlim</span><span class="op">[</span><span class="fl">1L</span><span class="op">]</span>, <span class="va">xlim</span><span class="op">[</span><span class="fl">2L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="image_files/figure-html/image_custom_data1-1.png" width="960"></p>
+<p><img src="image_files/figure-html/image_custom_data1-1.png" alt="" width="960"></p>
 <p><strong>Note</strong> that our data subset contains observations from
 September 2015 trough April 2016 (one winter; over new years eve). If
 decreasing x-limits are provided the <a href="references/image.html"><code>image</code></a> function adjusts
@@ -243,7 +243,7 @@ number;
 <p>Some examples:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/image.html">image</a></span><span class="op">(</span><span class="va">mod</span>, FUN <span class="op">=</span> <span class="st">"occ"</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"foo"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="image_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="image_files/figure-html/unnamed-chunk-2-1.png" alt="" width="700"></p>
 </div>
   </div>
 
@@ -262,7 +262,7 @@ number;
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
